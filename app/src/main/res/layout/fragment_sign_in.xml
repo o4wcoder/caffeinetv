@@ -4,7 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_margin="16dp"
     tools:context=".auth.SignInFragment">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:contentDescription="@string/caffeine_logo_content_description" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ScreenTitle"
+        android:text="@string/sign_in_title"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -31,12 +45,14 @@
         android:id="@+id/sign_in_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/ActionButton"
         android:text="@string/sign_in_button"/>
 
     <Button
         android:id="@+id/forgot_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/LinkButton"
         android:text="@string/forgot_button"/>
 
 </LinearLayout>

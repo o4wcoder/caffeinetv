@@ -19,4 +19,9 @@
     <string name="i_agree_to_legal">I have read and agree to the Terms of Service, Privacy Policy and Community Guidelines</string>
     <string name="sign_in_hint_dob">Date of Birth</string>
     <string name="send_email_button">Send Email</string>
+    <string name="caffeine_logo_content_description">Caffeine Logo</string>
+    <string name="sign_up_title">Sign Up</string>
+    <string name="sign_in_title">Sign In</string>
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="forgot_password_subtitle">That\'s ok. We\'ll send you an email with a link to reset your password.</string>
 </resources>

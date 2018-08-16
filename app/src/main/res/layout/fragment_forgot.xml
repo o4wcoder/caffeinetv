@@ -4,7 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_margin="16dp"
     tools:context=".auth.ForgotFragment">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:contentDescription="@string/caffeine_logo_content_description" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ScreenTitle"
+        android:text="@string/forgot_password_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/forgot_password_subtitle"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -20,6 +40,7 @@
         android:id="@+id/send_email_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/ActionButton"
         android:text="@string/send_email_button"/>
 
 </LinearLayout>
