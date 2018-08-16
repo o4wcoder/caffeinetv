@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Caffeine</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="landing_signup_prompt">Sign up and make friends around live entertainment.</string>
+    <string name="sign_in_with_facebook">Sign In with Facebook</string>
+    <string name="sign_in_with_twitter">Sign In with Twitter</string>
+    <string name="new_account">New Account</string>
+    <string name="sign_in_with_email">Sign In</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sign_in_hint_username">Username</string>
+    <string name="sign_in_hint_password">Password</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="forgot_button">Forgot?</string>
+    <string name="sign_in_hint_email">Email</string>
+    <string name="sign_up_button">Sign Up</string>
+    <string name="i_agree_to_legal">I have read and agree to the Terms of Service, Privacy Policy and Community Guidelines</string>
+    <string name="sign_in_hint_dob">Date of Birth</string>
+    <string name="send_email_button">Send Email</string>
 </resources>
