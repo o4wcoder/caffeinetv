@@ -1,12 +1,15 @@
 package tv.caffeine.app.lobby
 
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -87,6 +90,10 @@ class LobbyAdapter(val cards: Array<LobbyCard>) : RecyclerView.Adapter<LobbyCard
                 .transform(CropCircleTransformation())
                 .into(holder.avatarImageView)
         Log.d("LobbyAdapter", "Avatar image: ${avatarImageUrl}")
+        holder.itemView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.caffeine.tv/${card.broadcast.user.username}"))
+            startActivity(holder.itemView.context, intent, null)
+        }
     }
 
 }

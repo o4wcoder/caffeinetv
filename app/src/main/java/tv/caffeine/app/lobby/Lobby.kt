@@ -12,7 +12,7 @@ interface Lobby {
 class LobbyResult(val requestAvatarUpdate: Boolean, val welcomeCard: Boolean, val cards: Array<LobbyCard>)
 
 class LobbyCard(val id: String, val broadcast: Broadcast, val followingViewers: Array<User>, val followingViewersCount: Int, val score: Int, val reason: String)
-class Broadcast(val id: String, val name: String, val gameImagePath: String?, val webcamImagePath: String?, val previewImagePath: String, val user: User, val game: Object?)
+class Broadcast(val id: String, val name: String, val gameImagePath: String?, val webcamImagePath: String?, val previewImagePath: String, val user: User, val game: Any?)
 class User(val caid: String, val username: String, val name: String, val avatarImagePath: String, val followingCount: Int, val followersCount: Int, val isVerified: Boolean, val broadcastId: String, val stageId: String)
 
 
