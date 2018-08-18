@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_landingFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_lobby"
+            app:destination="@id/lobby" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"

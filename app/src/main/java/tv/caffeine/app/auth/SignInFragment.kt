@@ -1,6 +1,7 @@
 package tv.caffeine.app.auth
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -52,6 +53,9 @@ class SignInFragment : Fragment() {
 
             override fun onResponse(call: Call<SignInResult?>?, response: Response<SignInResult?>?) {
                 Log.d("API: Auth", "Login successful, ${response?.body()}")
+                response?.body()?.refreshToken?.let { refreshToken ->
+                    activity?.getSharedPreferences("caffeine", Context.MODE_PRIVATE)?.edit()?.putString("REFRESH_TOKEN", refreshToken)?.apply()
+                }
                 response?.body()?.accessToken?.run {
                     val bundle = Bundle()
                     bundle.putString("ACCESS_TOKEN", this)
