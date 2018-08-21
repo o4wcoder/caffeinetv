@@ -4,29 +4,28 @@ package tv.caffeine.app.lobby
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
 import com.squareup.picasso.Picasso
+import dagger.android.support.DaggerFragment
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.fragment_lobby.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import tv.caffeine.app.R
+import javax.inject.Inject
 
-class LobbyFragment : Fragment() {
+class LobbyFragment : DaggerFragment() {
+
+    @Inject lateinit var lobby: Lobby
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,20 +44,13 @@ class LobbyFragment : Fragment() {
     }
 
     private fun loadLobby(accessToken: String) {
-        val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
-        val gsonConverterFactory = GsonConverterFactory.create(gson)
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://api.caffeine.tv")
-                .addConverterFactory(gsonConverterFactory)
-                .build()
-        val lobby = retrofit.create(Lobby::class.java)
         lobby.lobby("Bearer $accessToken").enqueue(object: Callback<LobbyResult?> {
             override fun onFailure(call: Call<LobbyResult?>?, t: Throwable?) {
-                Log.e("API: Lobby", "Failed to get lobby", t)
+                Timber.e(t, "Failed to get lobby")
             }
 
             override fun onResponse(call: Call<LobbyResult?>?, response: Response<LobbyResult?>?) {
-                Log.d("API: Lobby", "Success! Got lobby! ${response?.body()}")
+                Timber.d("Success! Got lobby! ${response?.body()}")
                 response?.body()?.cards?.run {
                     lobby_recycler_view.adapter = LobbyAdapter(this)
                 }
@@ -83,13 +75,13 @@ class LobbyAdapter(val cards: Array<LobbyCard>) : RecyclerView.Adapter<LobbyCard
                 .load(previewImageUrl)
                 .transform(RoundedCornersTransformation(40, 0)) // TODO: multiply by display density
                 .into(holder.previewImageView)
-        Log.d("LobbyAdapter", "Preview image: ${previewImageUrl}")
+        Timber.d("Preview image: ${previewImageUrl}")
         val avatarImageUrl = "https://images.caffeine.tv${card.broadcast.user.avatarImagePath}"
         Picasso.get()
                 .load(avatarImageUrl)
                 .transform(CropCircleTransformation())
                 .into(holder.avatarImageView)
-        Log.d("LobbyAdapter", "Avatar image: ${avatarImageUrl}")
+        Timber.d("Avatar image: ${avatarImageUrl}")
         holder.itemView.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.caffeine.tv/${card.broadcast.user.username}"))
             startActivity(holder.itemView.context, intent, null)
