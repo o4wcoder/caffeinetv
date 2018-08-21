@@ -2,6 +2,7 @@ package tv.caffeine.app.auth
 
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 
 interface Accounts {
@@ -10,6 +11,12 @@ interface Accounts {
 
     @POST("v1/account/token")
     fun refreshToken(@Body refreshTokenBody: RefreshTokenBody): Call<RefreshTokenResult>
+
+    @POST("v1/account/forgot-password")
+    fun forgotPassword(@Body forgotPasswordBody: ForgotPasswordBody): Call<Void>
+
+    @DELETE("v1/account/token")
+    fun signOut(): Call<Unit>
 }
 
 class SignInBody(val account: Account)
@@ -25,3 +32,6 @@ class CaffeineCredentials(val accessToken: String, val caid: String, val credent
 class ApiErrorResult(val errors: ApiError)
 
 class ApiError(val _error: Array<String>, val username: Array<String>, val password: Array<String>)
+
+class ForgotPasswordBody(val email: String)
+
