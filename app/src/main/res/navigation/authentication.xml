@@ -24,7 +24,11 @@
         android:id="@+id/signUpFragment"
         android:name="tv.caffeine.app.auth.SignUpFragment"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" />
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_lobby"
+            app:destination="@id/lobby" />
+    </fragment>
     <fragment
         android:id="@+id/signInFragment"
         android:name="tv.caffeine.app.auth.SignInFragment"

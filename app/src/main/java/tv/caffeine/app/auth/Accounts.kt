@@ -17,6 +17,9 @@ interface Accounts {
 
     @DELETE("v1/account/token")
     fun signOut(): Call<Unit>
+
+    @POST("v1/account")
+    fun signUp(@Body signUpBody: SignUpBody): Call<SignUpResult>
 }
 
 class SignInBody(val account: Account)
@@ -35,3 +38,6 @@ class ApiError(val _error: Array<String>, val username: Array<String>, val passw
 
 class ForgotPasswordBody(val email: String)
 
+class SignUpBody(val account: SignUpAccount, val iid: String?, val tos: Boolean)
+class SignUpAccount(val username: String, val password: String, val email: String, val dob: String, val countryCode: String)
+class SignUpResult(val credentials: CaffeineCredentials, val next: String)

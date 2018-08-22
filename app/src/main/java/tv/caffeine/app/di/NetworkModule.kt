@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.auth.Accounts
 import tv.caffeine.app.lobby.Lobby
+import tv.caffeine.app.net.AuthorizationInterceptor
 import javax.inject.Named
 
 const val BASE_URL = "BASE_URL"
@@ -33,6 +34,7 @@ class NetworkModule {
 
     @Provides
     fun providesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
+            .addInterceptor(AuthorizationInterceptor())
             .addInterceptor(loggingInterceptor)
             .build()
 
