@@ -1,20 +1,15 @@
 package tv.caffeine.app.di
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.app.Application
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import javax.inject.Named
+import tv.caffeine.app.CaffeineApplication
 
 const val CAFFEINE_SHARED_PREFERENCES = "caffeine"
 const val REFRESH_TOKEN = "REFRESH_TOKEN"
 
 @Module
-class AppModule {
-    @Provides
-    fun providesCaffeineSharedPreferences(context: Context) = context.getSharedPreferences(CAFFEINE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-
-    @Provides
-    @Named(REFRESH_TOKEN)
-    fun providesRefreshToken(sharedPreferences: SharedPreferences): String? = sharedPreferences.getString(REFRESH_TOKEN, null)
+abstract class AppModule {
+    @Binds
+    abstract fun application(app: CaffeineApplication): Application
 }

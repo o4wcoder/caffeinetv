@@ -9,5 +9,10 @@
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"
         android:label="fragment_lobby"
-        tools:layout="@layout/fragment_lobby" />
+        tools:layout="@layout/fragment_lobby" >
+        <action
+            android:id="@+id/action_lobbyFragment_to_stage"
+            app:destination="@id/stage" />
+    </fragment>
+    <include app:graph="@navigation/stage" />
 </navigation>

@@ -24,4 +24,5 @@
     <string name="sign_in_title">Sign In</string>
     <string name="forgot_password_title">Forgot Password</string>
     <string name="forgot_password_subtitle">That\'s ok. We\'ll send you an email with a link to reset your password.</string>
+    <string name="open_in_browser">Open in Browser</string>
 </resources>

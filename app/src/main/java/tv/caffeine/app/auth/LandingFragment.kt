@@ -42,8 +42,10 @@ class LandingFragment : DaggerFragment() {
                 Timber.d("Request succeeded response: $response, body: ${response?.body()}")
                 val refreshTokenResult = response?.body() ?: return
                 val accessToken = refreshTokenResult.credentials.accessToken
+                val xCredential = refreshTokenResult.credentials.credential
                 val bundle = Bundle()
                 bundle.putString("ACCESS_TOKEN", accessToken)
+                bundle.putString("X_CREDENTIAL", xCredential)
                 val navController = Navigation.findNavController(view)
                 navController.navigate(R.id.action_landingFragment_to_lobby, bundle)
             }
