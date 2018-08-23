@@ -46,9 +46,10 @@ class SignInFragment : DaggerFragment() {
                 response?.body()?.refreshToken?.let { refreshToken ->
                     activity?.getSharedPreferences("caffeine", Context.MODE_PRIVATE)?.edit()?.putString("REFRESH_TOKEN", refreshToken)?.apply()
                 }
-                response?.body()?.accessToken?.run {
+                response?.body()?.let { result ->
                     val bundle = Bundle()
-                    bundle.putString("ACCESS_TOKEN", this)
+                    bundle.putString("ACCESS_TOKEN", result.accessToken)
+                    bundle.putString("X_CREDENTIAL", result.credentials.credential)
                     val navController = Navigation.findNavController(view!!)
                     val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
                     navController.navigate(R.id.action_signInFragment_to_lobby, bundle, navOptions)
