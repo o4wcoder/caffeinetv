@@ -33,6 +33,7 @@ class StageFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         accessToken = arguments?.getString("ACCESS_TOKEN")
         xCredential = arguments?.getString("X_CREDENTIAL")
         stageIdentifier = arguments?.getString("STAGE_IDENTIFIER")

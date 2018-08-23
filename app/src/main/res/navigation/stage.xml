@@ -10,4 +10,9 @@
         android:name="tv.caffeine.app.stage.StageFragment"
         android:label="fragment_stage"
         tools:layout="@layout/fragment_stage" />
+    <activity
+        android:id="@+id/stageActivity"
+        android:name="tv.caffeine.app.stage.StageActivity"
+        android:label="activity_stage"
+        tools:layout="@layout/activity_stage" />
 </navigation>
