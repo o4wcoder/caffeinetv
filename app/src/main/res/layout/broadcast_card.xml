@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:layout_margin="10dp">
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
 
     <ImageView
         android:id="@+id/preview_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H, 16:9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,13 +21,9 @@
         android:id="@+id/avatar_image_view"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginBottom="22dp"
-        app:layout_constraintBottom_toTopOf="@+id/game_logo_image_view"
-        app:layout_constraintEnd_toStartOf="@+id/game_logo_image_view"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/preview_image_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -34,12 +31,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:drawablePadding="4dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
-        android:textColor="@android:color/white"
-        android:drawablePadding="4dp"
-        tools:textColor="@android:color/darker_gray"
-        tools:text="Caffeine" />
+        tools:text="Caffeine"
+        tools:textColor="@android:color/darker_gray" />
 
     <ImageView
         android:id="@+id/game_logo_image_view"
@@ -55,10 +52,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:lines="2"
         android:textColor="@android:color/white"
-        tools:text="What is happening at Caffeine"
-        tools:textColor="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/username_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/username_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/username_text_view"
+        tools:text="What is happening at Caffeine"
+        tools:textColor="@android:color/darker_gray" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
