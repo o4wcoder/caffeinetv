@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Browser
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +29,7 @@ class StageFragment : DaggerFragment() {
     var broadcaster: String? = null
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
+    @Inject lateinit var eglBase: EglBase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,17 +52,18 @@ class StageFragment : DaggerFragment() {
         val listener = StageSocketListener(accessToken!!, xCredential!!, activity!!, surface_view_renderer, realtime, peerConnectionFactory)
         okHttpClient.newWebSocket(request, listener)
 
-        val eglBase = createEglBase14()
-
         surface_view_renderer.init(eglBase.eglBaseContext, null)
+        surface_view_renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+        surface_view_renderer.setEnableHardwareScaler(true)
+//        surface_view_renderer.setZOrderMediaOverlay(true)
+//        surface_view_renderer.setZOrderOnTop(true)
 
-        open_in_browser.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.caffeine.tv/$broadcaster"))
-            val headers = Bundle()
-            headers.putString("Authorization", "Bearer $accessToken")
-            intent.putExtra(Browser.EXTRA_HEADERS, headers)
-            startActivity(intent)
-        }
+        open_in_browser.setOnClickListener { openInBrowser() }
+    }
+
+    private fun openInBrowser() {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.caffeine.tv/$broadcaster"))
+        startActivity(intent)
     }
 
 }
@@ -80,18 +81,14 @@ class StageSocketListener(val accessToken: String, val xCredential: String, val 
     }
     override fun onOpen(webSocket: WebSocket?, response: Response?) {
         Timber.d("Opened, response = $response")
-        webSocket?.run {
-            val json = """{
+        webSocket?.send("""{
                 "Headers": {
                     "x-credential" : "$xCredential",
                     "authorization" : "Bearer $accessToken",
                     "X-Client-Type" : "android",
                     "X-Client-Version" : "0"
                 }
-            }
-            """.trimMargin()
-            send(json)
-        }
+            }""".trimMargin())
     }
 
     override fun onMessage(webSocket: WebSocket?, text: String?) {
@@ -160,9 +157,11 @@ fun handleInitStream(offer: String, context: Context, surface_view_renderer: Sur
     val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, sanitizedOffer)
     val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
     val observer = object : PeerConnectionObserver() {
+        var peerConnection: PeerConnection? = null
         override fun onIceCandidate(candidate: IceCandidate?) {
             super.onIceCandidate(candidate)
             if (candidate == null) return
+            peerConnection?.addIceCandidate(candidate)
             val candidate = IndividualIceCandidate(candidate.sdp, candidate.sdpMid, candidate.sdpMLineIndex)
             val body = IceCandidatesBody(arrayOf(candidate), signedPayload)
             realtime.sendIceCandidate("Bearer $accessToken", xCredential, body, viewerId).enqueue(object: Callback<Void?> {
@@ -177,6 +176,7 @@ fun handleInitStream(offer: String, context: Context, surface_view_renderer: Sur
         }
     }
     val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, observer) ?: return
+    observer.peerConnection = peerConnection
     peerConnection.setRemoteDescription(object : CafSdpObserver() {
         override fun onSetSuccess() {
             super.onSetSuccess()
@@ -197,28 +197,31 @@ fun handleInitStream(offer: String, context: Context, surface_view_renderer: Sur
 
                                     override fun onResponse(call: Call<Void?>?, response: retrofit2.Response<Void?>?) {
                                         Timber.d("sendAnswer succeeded $response, ${response?.body()}")
-                                    }
-                                })
-                            }
-                            val numberOfVideoTracks = peerConnection.receivers.count { it.track() is VideoTrack }
-                            val numberOfAudioTracks = peerConnection.receivers.count { it.track() is AudioTrack }
-                            Timber.d("Found $numberOfVideoTracks video tracks and $numberOfAudioTracks audio tracks")
-                            val videoTrack = peerConnection.receivers
-                                    .find { it.track() is VideoTrack }
-                                    ?.track() as? VideoTrack
-                            Timber.d("Track: $videoTrack")
-                            videoTrack?.apply {
-                                videoTrack.addSink(surface_view_renderer)
-                                Timber.d("Track id = ${videoTrack.id()}, kind = ${videoTrack.kind()}, state = ${videoTrack.state().name}")
-                            }
-                            val audioTrack = peerConnection.receivers
-                                    .find { it.track() is AudioTrack }
-                                    ?.track() as? AudioTrack
-                            Timber.d("ICE Connection State: ${peerConnection.iceConnectionState()}")
-                            // Below fails with "GetTransceivers is only supported with Unified Plan SdpSemantics."
+                                        val receivers = peerConnection.receivers
+                                        val numberOfVideoTracks = receivers.count { it.track() is VideoTrack }
+                                        val numberOfAudioTracks = receivers.count { it.track() is AudioTrack }
+                                        Timber.d("Found $numberOfVideoTracks video tracks and $numberOfAudioTracks audio tracks")
+                                        val videoTrack = receivers
+                                                .find { it.track() is VideoTrack }
+                                                ?.track() as? VideoTrack
+                                        Timber.d("Track: $videoTrack")
+                                        videoTrack?.apply {
+                                            videoTrack.addSink(surface_view_renderer)
+                                            Timber.d("Track id = ${videoTrack.id()}, kind = ${videoTrack.kind()}, state = ${videoTrack.state().name}")
+                                        }
+                                        val audioTrack = receivers
+                                                .find { it.track() is AudioTrack }
+                                                ?.track() as? AudioTrack
+                                        audioTrack?.setVolume(0.5) //TODO: make it possible to control volume
+                                        Timber.d("ICE Connection State: ${peerConnection.iceConnectionState()}")
+                                        // Below fails with "GetTransceivers is only supported with Unified Plan SdpSemantics."
 //                            peerConnection.transceivers
 //                                    .find { it.receiver.track() is VideoTrack }
 //                                    ?.receiver?.track()?.apply { (this as VideoTrack).addSink(surface_view_renderer) }
+                                    }
+                                })
+                            }
+
                         }
                     }, localSessionDescription)
                 }

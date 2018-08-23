@@ -10,7 +10,10 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.webrtc.DefaultVideoDecoderFactory
+import org.webrtc.EglBase
 import org.webrtc.PeerConnectionFactory
+import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.auth.Accounts
@@ -82,14 +85,20 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun providesPeerConnectionFactory(context: Context): PeerConnectionFactory {
+    fun providesEglBase() = createEglBase14()
+
+    @Provides
+    @Singleton
+    fun providesPeerConnectionFactory(context: Context, eglBase: EglBase): PeerConnectionFactory {
         val initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(context)
                 .createInitializationOptions()
         PeerConnectionFactory.initialize(initializationOptions)
         val options = PeerConnectionFactory.Options()
+        val videoDecoderFactory = DefaultVideoDecoderFactory(eglBase.eglBaseContext)
         return PeerConnectionFactory.builder()
                 .setOptions(options)
+                .setVideoDecoderFactory(videoDecoderFactory)
                 .createPeerConnectionFactory()
     }
 }
