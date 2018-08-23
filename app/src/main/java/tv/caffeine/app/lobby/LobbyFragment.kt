@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.LayoutInflater
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -111,6 +112,17 @@ class LobbyAdapter(val accessToken: String, val xCredential: String, val cards: 
                 .transform(CropCircleTransformation())
                 .into(holder.avatarImageView)
         Timber.d("Avatar image: ${avatarImageUrl}")
+        val gameLogoImageUrl = "https://images.caffeine.tv${card.broadcast.game.bannerImagePath}"
+        Picasso.get()
+                .load(gameLogoImageUrl)
+                .into(holder.gameLogoImageView)
+        holder.usernameTextView.text = card.broadcast.user.username
+        if (card.broadcast.user.isVerified) {
+            holder.usernameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)
+        } else {
+            holder.usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+        }
+        holder.broadcastTitleTextView.text = card.broadcast.name
         holder.itemView.setOnClickListener {
             val args = Bundle()
             args.putString("STAGE_IDENTIFIER", card.broadcast.user.stageId)
@@ -126,4 +138,7 @@ class LobbyAdapter(val accessToken: String, val xCredential: String, val cards: 
 class LobbyCardVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val previewImageView: ImageView = itemView.findViewById(R.id.preview_image_view)
     val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
+    val gameLogoImageView: ImageView = itemView.findViewById(R.id.game_logo_image_view)
+    val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
+    val broadcastTitleTextView: TextView = itemView.findViewById(R.id.broadcast_title_text_view)
 }
