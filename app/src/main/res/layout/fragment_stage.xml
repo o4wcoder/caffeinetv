@@ -7,7 +7,7 @@
     tools:context=".stage.StageFragment">
 
     <org.webrtc.SurfaceViewRenderer
-        android:id="@+id/surface_view_renderer"
+        android:id="@+id/primary_view_renderer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,7 +18,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <org.webrtc.SurfaceViewRenderer
-        android:id="@+id/webcam_view_renderer"
+        android:id="@+id/secondary_view_renderer"
         android:layout_width="160dp"
         android:layout_height="120dp"
         android:layout_marginTop="16dp"
