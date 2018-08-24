@@ -1,8 +1,6 @@
 package tv.caffeine.app.stage
 
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +23,8 @@ class StageFragment : DaggerFragment() {
     lateinit var xCredential: String
     lateinit var stageIdentifier : String
     lateinit var broadcaster: String
-    var peerConnection: PeerConnection? = null
+    var primaryPeerConnection: PeerConnection? = null
+    var secondaryPeerConnection: PeerConnection? = null
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -53,8 +52,6 @@ class StageFragment : DaggerFragment() {
         connectStreams()
 
         configureSurfaceViewRenderer()
-
-        open_in_browser.setOnClickListener { openInBrowser() }
     }
 
     private fun configureSurfaceViewRenderer() {
@@ -67,12 +64,21 @@ class StageFragment : DaggerFragment() {
         val stageHandshake = StageHandshake(accessToken, xCredential)
         val streamController = StreamController(realtime, accessToken, xCredential, peerConnectionFactory)
         stageHandshake.connect(stageIdentifier) { event ->
-            val stream = event.streams.find { it.type == "primary" } ?: return@connect
-            streamController.connect(stream) { peerConnection ->
-                this.peerConnection = peerConnection
+            val primaryStream = event.streams.find { it.type == "primary" } ?: return@connect
+            streamController.connect(primaryStream) { peerConnection ->
+                this.primaryPeerConnection = peerConnection
                 val receivers = peerConnection.receivers
                 val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
                 videoTrack?.run { addSink(surface_view_renderer) }
+                val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
+                audioTrack?.setVolume(0.5) //TODO: make it possible to control volume
+            }
+            val webcamStream = event.streams.find { it.type != "primary" } ?: return@connect
+            streamController.connect(webcamStream) { peerConnection ->
+                this.secondaryPeerConnection = peerConnection
+                val receivers = peerConnection.receivers
+                val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
+                videoTrack?.run { addSink(webcam_view_renderer) }
                 val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
                 audioTrack?.setVolume(0.5) //TODO: make it possible to control volume
             }
@@ -82,12 +88,8 @@ class StageFragment : DaggerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         surface_view_renderer.release()
-        peerConnection?.dispose()
-    }
-
-    private fun openInBrowser() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.caffeine.tv/$broadcaster"))
-        startActivity(intent)
+        primaryPeerConnection?.dispose()
+        secondaryPeerConnection?.dispose()
     }
 
 }
