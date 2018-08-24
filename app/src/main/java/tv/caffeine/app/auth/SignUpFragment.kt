@@ -20,7 +20,7 @@ import javax.inject.Inject
 class SignUpFragment : DaggerFragment() {
 
     @Inject
-    lateinit var accounts: Accounts
+    lateinit var accountsService: AccountsService
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -43,7 +43,7 @@ class SignUpFragment : DaggerFragment() {
         val agreedToTos = agree_to_legal_checkbox.isChecked
         val account = SignUpAccount(username, password, email, dob, countryCode)
         val signUpBody = SignUpBody(account, iid, agreedToTos)
-        accounts.signUp(signUpBody).enqueue(object : Callback<SignUpResult?> {
+        accountsService.signUp(signUpBody).enqueue(object : Callback<SignUpResult?> {
             override fun onFailure(call: Call<SignUpResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to sign up")
             }

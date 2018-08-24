@@ -16,7 +16,7 @@ import tv.caffeine.app.R
 import javax.inject.Inject
 
 class LandingFragment : DaggerFragment() {
-    @Inject lateinit var accounts: Accounts
+    @Inject lateinit var accountsService: AccountsService
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -33,7 +33,7 @@ class LandingFragment : DaggerFragment() {
                 ?.getString("REFRESH_TOKEN", null)
                 ?: return
         val refreshTokenBody = RefreshTokenBody(refreshToken)
-        accounts.refreshToken(refreshTokenBody).enqueue(object : Callback<RefreshTokenResult?> {
+        accountsService.refreshToken(refreshTokenBody).enqueue(object : Callback<RefreshTokenResult?> {
             override fun onFailure(call: Call<RefreshTokenResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to login automatically")
             }

@@ -18,7 +18,7 @@ import tv.caffeine.app.R
 import javax.inject.Inject
 
 class SignInFragment : DaggerFragment() {
-    @Inject lateinit var accounts: Accounts
+    @Inject lateinit var accountsService: AccountsService
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,7 +36,7 @@ class SignInFragment : DaggerFragment() {
 
     private fun login(username: String, password: String) {
         val signInBody = SignInBody(Account(username, password))
-        accounts.signin(signInBody).enqueue(object: Callback<SignInResult?> {
+        accountsService.signIn(signInBody).enqueue(object: Callback<SignInResult?> {
             override fun onFailure(call: Call<SignInResult?>?, t: Throwable?) {
                 Timber.d("Login failed")
             }

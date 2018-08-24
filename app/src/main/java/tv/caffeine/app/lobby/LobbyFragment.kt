@@ -20,7 +20,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.auth.Accounts
+import tv.caffeine.app.auth.AccountsService
 import javax.inject.Inject
 
 class LobbyFragment : DaggerFragment() {
@@ -28,7 +28,7 @@ class LobbyFragment : DaggerFragment() {
     private lateinit var accessToken: String
     private lateinit var xCredential: String
 
-    @Inject lateinit var accounts: Accounts
+    @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var lobby: Lobby
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +62,7 @@ class LobbyFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
             R.id.profile -> {
-                accounts.signOut().enqueue(object: Callback<Unit?> {
+                accountsService.signOut().enqueue(object: Callback<Unit?> {
                     override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                         Timber.e(t, "Failed to sign out")
                     }
@@ -117,9 +117,9 @@ class LobbyAdapter(val accessToken: String, val xCredential: String, val cards: 
                 .into(holder.avatarImageView)
         Timber.d("Avatar image: ${avatarImageUrl}")
         val gameLogoImageUrl = "https://images.caffeine.tv${card.broadcast.game.bannerImagePath}"
-        Picasso.get()
-                .load(gameLogoImageUrl)
-                .into(holder.gameLogoImageView)
+            Picasso.get()
+                    .load(gameLogoImageUrl)
+                    .into(holder.gameLogoImageView)
         holder.usernameTextView.text = card.broadcast.user.username
         if (card.broadcast.user.isVerified) {
             holder.usernameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)

@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class ForgotFragment : DaggerFragment() {
     @Inject
-    lateinit var accountsService: Accounts
+    lateinit var accountsService: AccountsService
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

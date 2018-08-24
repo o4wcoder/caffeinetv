@@ -5,9 +5,9 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST
 
-interface Accounts {
+interface AccountsService {
     @POST("v1/account/signin")
-    fun signin(@Body signInBody: SignInBody): Call<SignInResult>
+    fun signIn(@Body signInBody: SignInBody): Call<SignInResult>
 
     @POST("v1/account/token")
     fun refreshToken(@Body refreshTokenBody: RefreshTokenBody): Call<RefreshTokenResult>

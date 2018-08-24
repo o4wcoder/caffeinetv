@@ -16,7 +16,7 @@ import org.webrtc.PeerConnectionFactory
 import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import tv.caffeine.app.auth.Accounts
+import tv.caffeine.app.auth.AccountsService
 import tv.caffeine.app.lobby.Lobby
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.stage.Realtime
@@ -68,7 +68,7 @@ class NetworkModule {
     @Named(BASE_URL)
     fun providesBaseUrl() = "https://api.caffeine.tv"
 
-    @Provides fun providesAccountsService(retrofit: Retrofit) = retrofit.create(Accounts::class.java)
+    @Provides fun providesAccountsService(retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
 
     @Provides fun providesLobbyService(retrofit: Retrofit) = retrofit.create(Lobby::class.java)
 
