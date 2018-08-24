@@ -25,16 +25,18 @@ import javax.inject.Inject
 
 class LobbyFragment : DaggerFragment() {
 
+    private lateinit var accessToken: String
+    private lateinit var xCredential: String
+
     @Inject lateinit var accounts: Accounts
     @Inject lateinit var lobby: Lobby
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        arguments?.run {
-            val accessToken = getString("ACCESS_TOKEN")
-            val xCredential = getString("X_CREDENTIAL")
-            loadLobby(accessToken, xCredential)
+        arguments!!.run {
+            accessToken = getString("ACCESS_TOKEN")!!
+            xCredential = getString("X_CREDENTIAL")!!
         }
     }
 
@@ -48,6 +50,8 @@ class LobbyFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(lobby_toolbar)
         lobby_recycler_view.layoutManager = LinearLayoutManager(context)
+        lobby_recycler_view.adapter = LobbyAdapter(accessToken, xCredential, arrayOf())
+        loadLobby()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -73,7 +77,7 @@ class LobbyFragment : DaggerFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun loadLobby(accessToken: String, xCredential: String) {
+    private fun loadLobby() {
         lobby.lobby("Bearer $accessToken").enqueue(object: Callback<LobbyResult?> {
             override fun onFailure(call: Call<LobbyResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to get lobby")
