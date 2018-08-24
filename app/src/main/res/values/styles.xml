@@ -31,4 +31,6 @@
 
     </style>
 
+    <style name="OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
 </resources>
