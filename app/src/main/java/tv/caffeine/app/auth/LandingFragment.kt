@@ -26,8 +26,8 @@ class LandingFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        new_account_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_landingFragment_to_signUpFragment))
-        sign_in_with_email_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_landingFragment_to_signInFragment))
+        new_account_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signUpFragment))
+        sign_in_with_email_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         val refreshToken = activity
                 ?.getSharedPreferences("caffeine", Context.MODE_PRIVATE)
                 ?.getString("REFRESH_TOKEN", null)
@@ -47,7 +47,7 @@ class LandingFragment : DaggerFragment() {
                 bundle.putString("ACCESS_TOKEN", accessToken)
                 bundle.putString("X_CREDENTIAL", xCredential)
                 val navController = Navigation.findNavController(view)
-                navController.navigate(R.id.action_landingFragment_to_lobby, bundle)
+                navController.navigate(R.id.lobby, bundle)
             }
         })
     }

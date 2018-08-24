@@ -138,7 +138,7 @@ class LobbyAdapter(val accessToken: String, val xCredential: String, val cards: 
             args.putString("ACCESS_TOKEN", accessToken)
             args.putString("X_CREDENTIAL", xCredential)
             args.putString("BROADCASTER", card.broadcast.user.username)
-            Navigation.findNavController(holder.itemView).navigate(R.id.action_lobbyFragment_to_stage, args)
+            Navigation.findNavController(holder.itemView).navigate(R.id.stage, args)
         }
     }
 

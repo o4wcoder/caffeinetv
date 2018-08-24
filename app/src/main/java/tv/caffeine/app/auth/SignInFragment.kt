@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
@@ -32,7 +31,7 @@ class SignInFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        forgot_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_signInFragment_to_forgotFragment))
+        forgot_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
         sign_in_button.setOnClickListener {
             login(username_edit_text.text.toString(), password_edit_text.text.toString())
         }
@@ -52,16 +51,21 @@ class SignInFragment : DaggerFragment() {
 
     private fun onSuccess(signInResult: SignInResult) {
         sharedPreferences.edit().putString("REFRESH_TOKEN", signInResult.refreshToken).apply()
-        if (signInResult.next == "mfa_otp_required") {
-            // TODO: prompt for OTP
-            return
-        }
-        val bundle = Bundle()
-        bundle.putString("ACCESS_TOKEN", signInResult.accessToken)
-        bundle.putString("X_CREDENTIAL", signInResult.credentials.credential)
         val navController = Navigation.findNavController(view!!)
-        val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
-        navController.navigate(R.id.action_signInFragment_to_lobby, bundle, navOptions)
+        when(signInResult.next) {
+            "mfa_otp_required" -> {
+                val username = username_edit_text.text.toString()
+                val password = password_edit_text.text.toString()
+                val action = SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password)
+                navController.navigate(action)
+            }
+            else -> {
+                val bundle = Bundle()
+                bundle.putString("ACCESS_TOKEN", signInResult.accessToken)
+                bundle.putString("X_CREDENTIAL", signInResult.credentials.credential)
+                navController.navigate(R.id.lobby, bundle)
+            }
+        }
     }
 
     private fun onError(signInError: ResponseBody) {

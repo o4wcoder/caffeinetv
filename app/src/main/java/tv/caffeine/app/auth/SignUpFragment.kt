@@ -57,7 +57,7 @@ class SignUpFragment : DaggerFragment() {
                     bundle.putString("X_CREDENTIAL", it.credential)
                     val navController = Navigation.findNavController(view!!)
                     val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
-                    navController.navigate(R.id.action_signUpFragment_to_lobby, bundle, navOptions)
+                    navController.navigate(R.id.lobby, bundle, navOptions)
                 }
             }
         })

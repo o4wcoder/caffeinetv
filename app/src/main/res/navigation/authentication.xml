@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_signInFragment_to_lobby"
             app:destination="@id/lobby" />
+        <action
+            android:id="@+id/action_signInFragment_to_mfaCodeFragment"
+            app:destination="@id/mfaCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/forgotFragment"
@@ -47,4 +50,19 @@
         android:label="fragment_forgot"
         tools:layout="@layout/fragment_forgot" />
     <include app:graph="@navigation/lobby" />
+    <fragment
+        android:id="@+id/mfaCodeFragment"
+        android:name="tv.caffeine.app.auth.MfaCodeFragment"
+        android:label="fragment_mfa_code"
+        tools:layout="@layout/fragment_mfa_code" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_mfaCodeFragment_to_lobby"
+            app:destination="@id/lobby" />
+    </fragment>
 </navigation>

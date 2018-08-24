@@ -11,6 +11,9 @@ interface AccountsService {
     @POST("v1/account/signin")
     fun signIn(@Body signInBody: SignInBody): Deferred<Response<SignInResult>>
 
+    @POST("v1/account/signin")
+    fun submitMfaCode(@Body mfaCodeBody: MfaCodeBody): Deferred<Response<SignInResult>>
+
     @POST("v1/account/token")
     fun refreshToken(@Body refreshTokenBody: RefreshTokenBody): Call<RefreshTokenResult>
 
@@ -24,8 +27,17 @@ interface AccountsService {
     fun signUp(@Body signUpBody: SignUpBody): Call<SignUpResult>
 }
 
+class AccountsManager(val accountsService: AccountsService) {
+    fun signIn(username: String, password: String) {
+
+    }
+}
+
 class SignInBody(val account: Account)
 class Account(val username: String, val password: String)
+
+class MfaCodeBody(val account: Account, val mfa: MfaCode)
+class MfaCode(val otp: String)
 
 class SignInResult(val accessToken: String, val caid: String, val credentials: CaffeineCredentials, val refreshToken: String, val next: String?, val mfaOtpMethod: String?)
 
@@ -36,7 +48,7 @@ class CaffeineCredentials(val accessToken: String, val caid: String, val credent
 
 class ApiErrorResult(val errors: ApiError)
 
-class ApiError(val _error: Array<String>?, val username: Array<String>?, val password: Array<String>?, val email: Array<String>?)
+class ApiError(val _error: Array<String>?, val username: Array<String>?, val password: Array<String>?, val email: Array<String>?, val otp: Array<String>?)
 
 class ForgotPasswordBody(val email: String)
 

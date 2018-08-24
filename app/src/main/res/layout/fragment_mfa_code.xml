@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:layout_margin="16dp"
-    tools:context=".auth.SignInFragment">
+    tools:context=".auth.MfaCodeFragment">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/ScreenTitle"
-        android:text="@string/sign_in_title"/>
+        android:text="@string/mfa_code_title"/>
 
     <TextView
         android:id="@+id/form_error_text_view"
@@ -26,42 +26,23 @@
         android:layout_height="wrap_content" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/username_text_input_layout"
+        android:id="@+id/mfa_code_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/OutlinedBox">
         <EditText
-            android:id="@+id/username_edit_text"
+            android:id="@+id/mfa_code_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/sign_in_hint_username"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/OutlinedBox">
-        <EditText
-            android:id="@+id/password_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/sign_in_hint_password"
-            android:inputType="textPassword" />
+            android:inputType="number"
+            android:hint="@string/mfa_code_hint"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/sign_in_button"
+        android:id="@+id/submit_mfa_code_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/ActionButton"
-        android:text="@string/sign_in_button"/>
-
-    <Button
-        android:id="@+id/forgot_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/LinkButton"
-        android:text="@string/forgot_button"/>
+        android:text="@string/submit_mfa_code"/>
 
 </LinearLayout>
