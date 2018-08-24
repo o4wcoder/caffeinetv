@@ -85,6 +85,7 @@ class LobbyFragment : DaggerFragment() {
 
             override fun onResponse(call: Call<LobbyResult?>?, response: Response<LobbyResult?>?) {
                 Timber.d("Success! Got lobby! ${response?.body()}")
+                lobby_recycler_view ?: return Timber.d("RecyclerView is null, exiting")
                 response?.body()?.cards?.run {
                     lobby_recycler_view.adapter = LobbyAdapter(accessToken, xCredential, this)
                 }
