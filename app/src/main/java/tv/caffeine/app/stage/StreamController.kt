@@ -6,7 +6,7 @@ import retrofit2.Callback
 import timber.log.Timber
 
 class StreamController(val realtime: Realtime, val accessToken: String, val xCredential: String, val peerConnectionFactory: PeerConnectionFactory) {
-    fun connect(stream: WebSocketStream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
+    fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
         realtime.createViewer("Bearer $accessToken", xCredential, stream.id).enqueue(object: Callback<CreateViewerResult?> {
             override fun onFailure(call: Call<CreateViewerResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to create viewer for stream ID: ${stream.id}")
