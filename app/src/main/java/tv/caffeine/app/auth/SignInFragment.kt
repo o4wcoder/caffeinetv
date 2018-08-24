@@ -1,24 +1,28 @@
 package tv.caffeine.app.auth
 
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_sign_in.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import javax.inject.Inject
 
 class SignInFragment : DaggerFragment() {
     @Inject lateinit var accountsService: AccountsService
+    @Inject lateinit var sharedPreferences: SharedPreferences
+    @Inject lateinit var gson: Gson
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -35,26 +39,38 @@ class SignInFragment : DaggerFragment() {
     }
 
     private fun login(username: String, password: String) {
+        form_error_text_view.text = null
         val signInBody = SignInBody(Account(username, password))
-        accountsService.signIn(signInBody).enqueue(object: Callback<SignInResult?> {
-            override fun onFailure(call: Call<SignInResult?>?, t: Throwable?) {
-                Timber.d("Login failed")
+        launch(CommonPool) {
+            val request = accountsService.signIn(signInBody).await()
+            when {
+                request.isSuccessful -> onSuccess(request.body()!!)
+                else -> onError(request.errorBody()!!)
             }
+        }
+    }
 
-            override fun onResponse(call: Call<SignInResult?>?, response: Response<SignInResult?>?) {
-                Timber.d("Login successful, ${response?.body()}")
-                response?.body()?.refreshToken?.let { refreshToken ->
-                    activity?.getSharedPreferences("caffeine", Context.MODE_PRIVATE)?.edit()?.putString("REFRESH_TOKEN", refreshToken)?.apply()
-                }
-                response?.body()?.let { result ->
-                    val bundle = Bundle()
-                    bundle.putString("ACCESS_TOKEN", result.accessToken)
-                    bundle.putString("X_CREDENTIAL", result.credentials.credential)
-                    val navController = Navigation.findNavController(view!!)
-                    val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
-                    navController.navigate(R.id.action_signInFragment_to_lobby, bundle, navOptions)
-                }
-            }
-        })
+    private fun onSuccess(signInResult: SignInResult) {
+        sharedPreferences.edit().putString("REFRESH_TOKEN", signInResult.refreshToken).apply()
+        if (signInResult.next == "mfa_otp_required") {
+            // TODO: prompt for OTP
+            return
+        }
+        val bundle = Bundle()
+        bundle.putString("ACCESS_TOKEN", signInResult.accessToken)
+        bundle.putString("X_CREDENTIAL", signInResult.credentials.credential)
+        val navController = Navigation.findNavController(view!!)
+        val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
+        navController.navigate(R.id.action_signInFragment_to_lobby, bundle, navOptions)
+    }
+
+    private fun onError(signInError: ResponseBody) {
+        val error = gson.fromJson(signInError.string(), ApiErrorResult::class.java)
+        Timber.d("Error: $error")
+        launch(UI) {
+            error.errors._error?.joinToString("\n")?.let { form_error_text_view.text = it }
+            error.errors.username?.joinToString("\n")?.let { username_text_input_layout.error = it }
+            error.errors.password?.joinToString("\n")?.let { password_text_input_layout.error = it }
+        }
     }
 }

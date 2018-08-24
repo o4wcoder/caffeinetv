@@ -116,10 +116,15 @@ class LobbyAdapter(val accessToken: String, val xCredential: String, val cards: 
                 .transform(CropCircleTransformation())
                 .into(holder.avatarImageView)
         Timber.d("Avatar image: ${avatarImageUrl}")
-        val gameLogoImageUrl = "https://images.caffeine.tv${card.broadcast.game.bannerImagePath}"
+        val game = card.broadcast.game
+        if (game != null) {
+            val gameLogoImageUrl = "https://images.caffeine.tv${game.bannerImagePath}"
             Picasso.get()
                     .load(gameLogoImageUrl)
                     .into(holder.gameLogoImageView)
+        } else {
+            holder.gameLogoImageView.setImageDrawable(null)
+        }
         holder.usernameTextView.text = card.broadcast.user.username
         if (card.broadcast.user.isVerified) {
             holder.usernameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)

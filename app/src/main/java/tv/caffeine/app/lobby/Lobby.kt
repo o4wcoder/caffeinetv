@@ -23,7 +23,7 @@ class Broadcast(val id: String,
                 val webcamImagePath: String?,
                 val previewImagePath: String,
                 val user: User,
-                val game: Game)
+                val game: Game?)
 class User(val caid: String,
            val username: String,
            val name: String,
