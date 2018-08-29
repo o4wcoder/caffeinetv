@@ -4,6 +4,7 @@ import org.webrtc.*
 import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
+import tv.caffeine.app.realtime.*
 
 class StreamController(val realtime: Realtime, val accessToken: String, val xCredential: String, val peerConnectionFactory: PeerConnectionFactory) {
     fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {

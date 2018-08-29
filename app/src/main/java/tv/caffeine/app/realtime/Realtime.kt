@@ -1,4 +1,4 @@
-package tv.caffeine.app.stage
+package tv.caffeine.app.realtime
 
 import retrofit2.Call
 import retrofit2.http.*

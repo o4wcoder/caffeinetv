@@ -12,6 +12,7 @@ import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.RendererCommon
 import tv.caffeine.app.R
+import tv.caffeine.app.realtime.Realtime
 import javax.inject.Inject
 
 class StageFragment : DaggerFragment() {

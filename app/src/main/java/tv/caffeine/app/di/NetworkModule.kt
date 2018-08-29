@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.auth.AccountsService
 import tv.caffeine.app.lobby.Lobby
 import tv.caffeine.app.net.AuthorizationInterceptor
-import tv.caffeine.app.stage.Realtime
+import tv.caffeine.app.realtime.Realtime
 import javax.inject.Named
 import javax.inject.Singleton
 
