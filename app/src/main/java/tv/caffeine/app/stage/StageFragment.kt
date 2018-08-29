@@ -22,6 +22,7 @@ class StageFragment : DaggerFragment() {
     lateinit var broadcaster: String
     var primaryPeerConnection: PeerConnection? = null
     var secondaryPeerConnection: PeerConnection? = null
+    var stageHandshake: StageHandshake? = null
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -58,9 +59,9 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun connectStreams() {
-        val stageHandshake = StageHandshake(accessToken, xCredential)
+        stageHandshake = StageHandshake(accessToken, xCredential)
         val streamController = StreamController(realtime, accessToken, xCredential, peerConnectionFactory)
-        stageHandshake.connect(stageIdentifier) { event ->
+        stageHandshake?.connect(stageIdentifier) { event ->
             val primaryStream = event.streams.find { it.type == "primary" } ?: return@connect
             streamController.connect(primaryStream) { peerConnection, videoTrack, audioTrack ->
                 this.primaryPeerConnection = peerConnection
@@ -76,11 +77,16 @@ class StageFragment : DaggerFragment() {
         }
     }
 
+    private fun disconnectStreams() {
+        stageHandshake?.close()
+        primaryPeerConnection?.dispose()
+        secondaryPeerConnection?.dispose()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         primary_view_renderer.release()
-        primaryPeerConnection?.dispose()
-        secondaryPeerConnection?.dispose()
+        disconnectStreams()
     }
 
 }

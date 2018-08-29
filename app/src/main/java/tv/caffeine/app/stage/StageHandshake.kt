@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder
 import okhttp3.*
 import timber.log.Timber
 
+private const val STATUS_CODE_NORMAL_CLOSURE = 1000
+
 class StageHandshake(private val accessToken: String, private val xCredential: String) {
 
     class Event(val gameId: String, val hostConnectionQuality: String, val sessionId: String, val state: String, val streams: Array<Stream>, val title: String)
@@ -13,6 +15,8 @@ class StageHandshake(private val accessToken: String, private val xCredential: S
 
     private class HandshakeMessage(val body: String, val compatibilityMode: Boolean, val headers: Map<String, String>, val status: Int)
     private class EventEnvelope(val v2: Event)
+
+    private var webSocket: WebSocket? = null
 
     fun connect(stageIdentifier: String, callback: (Event) -> Unit) {
         val okHttpClient = OkHttpClient.Builder().build()
@@ -26,7 +30,11 @@ class StageHandshake(private val accessToken: String, private val xCredential: S
                 }
             }""".trimMargin()
         val listener = Listener(headers, callback)
-        okHttpClient.newWebSocket(request, listener)
+        webSocket = okHttpClient.newWebSocket(request, listener)
+    }
+
+    fun close() {
+        webSocket?.close(STATUS_CODE_NORMAL_CLOSURE, null)
     }
 
     private class Listener(private val headers: String, val callback: (Event) -> Unit): WebSocketListener() {
