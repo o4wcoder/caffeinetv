@@ -1,6 +1,6 @@
 package tv.caffeine.app.auth
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 class LandingFragment : DaggerFragment() {
     @Inject lateinit var accountsService: AccountsService
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -28,10 +29,11 @@ class LandingFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         new_account_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signUpFragment))
         sign_in_with_email_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
-        val refreshToken = activity
-                ?.getSharedPreferences("caffeine", Context.MODE_PRIVATE)
-                ?.getString("REFRESH_TOKEN", null)
-                ?: return
+        loginIfPossible(view)
+    }
+
+    private fun loginIfPossible(view: View) {
+        val refreshToken = sharedPreferences.getString("REFRESH_TOKEN", null) ?: return
         val refreshTokenBody = RefreshTokenBody(refreshToken)
         accountsService.refreshToken(refreshTokenBody).enqueue(object : Callback<RefreshTokenResult?> {
             override fun onFailure(call: Call<RefreshTokenResult?>?, t: Throwable?) {

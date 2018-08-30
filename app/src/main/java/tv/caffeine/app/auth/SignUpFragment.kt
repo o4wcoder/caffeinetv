@@ -1,10 +1,11 @@
 package tv.caffeine.app.auth
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import dagger.android.support.DaggerFragment
@@ -19,8 +20,8 @@ import javax.inject.Inject
 
 class SignUpFragment : DaggerFragment() {
 
-    @Inject
-    lateinit var accountsService: AccountsService
+    @Inject lateinit var accountsService: AccountsService
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,7 +52,7 @@ class SignUpFragment : DaggerFragment() {
             override fun onResponse(call: Call<SignUpResult?>?, response: Response<SignUpResult?>?) {
                 Timber.d("Sign up API call succeeded $response")
                 response?.body()?.credentials?.let {
-                    activity?.getSharedPreferences("caffeine", Context.MODE_PRIVATE)?.edit()?.putString("REFRESH_TOKEN", it.refreshToken)?.apply()
+                    sharedPreferences.edit { putString("REFRESH_TOKEN", it.refreshToken) }
                     val bundle = Bundle()
                     bundle.putString("ACCESS_TOKEN", it.accessToken)
                     bundle.putString("X_CREDENTIAL", it.credential)

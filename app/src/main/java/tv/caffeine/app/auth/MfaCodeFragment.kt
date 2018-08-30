@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.navigation.Navigation
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
@@ -47,7 +48,7 @@ class MfaCodeFragment : DaggerFragment() {
     }
 
     private fun onSuccess(result: SignInResult) {
-        sharedPreferences.edit().putString("REFRESH_TOKEN", result.refreshToken).apply()
+        sharedPreferences.edit { putString("REFRESH_TOKEN", result.refreshToken) }
         val bundle = Bundle()
         bundle.putString("ACCESS_TOKEN", result.accessToken)
         bundle.putString("X_CREDENTIAL", result.credentials.credential)

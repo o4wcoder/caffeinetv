@@ -1,12 +1,14 @@
 package tv.caffeine.app.lobby
 
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +32,7 @@ class LobbyFragment : DaggerFragment() {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var lobby: Lobby
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +72,10 @@ class LobbyFragment : DaggerFragment() {
 
                     override fun onResponse(call: Call<Unit?>?, response: Response<Unit?>?) {
                         Timber.d("Signed out successfully $response")
+                        sharedPreferences.edit { remove("REFRESH_TOKEN") }
+                        view?.apply {
+                            Navigation.findNavController(this).navigateUp()
+                        }
                     }
                 })
                 return true

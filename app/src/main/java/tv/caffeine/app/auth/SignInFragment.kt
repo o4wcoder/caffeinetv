@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.navigation.Navigation
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
@@ -50,7 +51,7 @@ class SignInFragment : DaggerFragment() {
     }
 
     private fun onSuccess(signInResult: SignInResult) {
-        sharedPreferences.edit().putString("REFRESH_TOKEN", signInResult.refreshToken).apply()
+        sharedPreferences.edit { putString("REFRESH_TOKEN", signInResult.refreshToken) }
         val navController = Navigation.findNavController(view!!)
         when(signInResult.next) {
             "mfa_otp_required" -> {
