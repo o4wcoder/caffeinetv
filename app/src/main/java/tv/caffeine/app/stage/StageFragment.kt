@@ -11,6 +11,7 @@ import org.webrtc.EglBase
 import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.RendererCommon
+import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.realtime.Realtime
 import javax.inject.Inject
@@ -23,6 +24,7 @@ class StageFragment : DaggerFragment() {
     var primaryPeerConnection: PeerConnection? = null
     var secondaryPeerConnection: PeerConnection? = null
     var stageHandshake: StageHandshake? = null
+    var messageHandshake: MessageHandshake? = null
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -75,10 +77,15 @@ class StageFragment : DaggerFragment() {
                 audioTrack?.setVolume(0.5) //TODO: make it possible to control volume
             }
         }
+        messageHandshake = MessageHandshake(accessToken, xCredential)
+        messageHandshake?.connect(stageIdentifier) {
+            Timber.d("Received message (${it.type}) from ${it.publisher.username} (${it.publisher.name}): ${it.body.text}")
+        }
     }
 
     private fun disconnectStreams() {
         stageHandshake?.close()
+        messageHandshake?.close()
         primaryPeerConnection?.dispose()
         secondaryPeerConnection?.dispose()
     }

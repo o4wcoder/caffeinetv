@@ -6,8 +6,9 @@ import com.google.gson.GsonBuilder
 import tv.caffeine.app.realtime.WebSocketController
 
 class StageHandshake(private val accessToken: String, private val xCredential: String) {
-    private val webSocketController = WebSocketController()
+    private val webSocketController = WebSocketController("stg")
     private val gsonForEvents: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
+    private var stageInitialized = false
 
     class Event(val gameId: String, val hostConnectionQuality: String, val sessionId: String, val state: String, val streams: Array<Stream>, val title: String)
     class Stream(val capabilities: Map<String, Boolean>, val id: String, val label: String, val type: String)
@@ -25,6 +26,8 @@ class StageHandshake(private val accessToken: String, private val xCredential: S
                 }
             }""".trimMargin()
         webSocketController.connect(url, headers) {
+            if (stageInitialized) return@connect
+            stageInitialized = true
             val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
             callback(eventEnvelope.v2)
         }
