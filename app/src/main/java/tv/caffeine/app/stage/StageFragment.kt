@@ -1,16 +1,14 @@
 package tv.caffeine.app.stage
 
 
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
-import org.webrtc.EglBase
-import org.webrtc.PeerConnection
-import org.webrtc.PeerConnectionFactory
-import org.webrtc.RendererCommon
+import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.realtime.Realtime
@@ -21,10 +19,11 @@ class StageFragment : DaggerFragment() {
     lateinit var xCredential: String
     lateinit var stageIdentifier : String
     lateinit var broadcaster: String
-    var primaryPeerConnection: PeerConnection? = null
-    var secondaryPeerConnection: PeerConnection? = null
+    private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
+    private val renderers: MutableMap<String, SurfaceViewRenderer> = mutableMapOf()
     var stageHandshake: StageHandshake? = null
     var messageHandshake: MessageHandshake? = null
+    var streamController: StreamController? = null
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -55,26 +54,28 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun configureSurfaceViewRenderer() {
-        primary_view_renderer.init(eglBase.eglBaseContext, null)
-        primary_view_renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
-        primary_view_renderer.setEnableHardwareScaler(true)
+        renderers["primary"] = primary_view_renderer
+        renderers["secondary"] = secondary_view_renderer
+        listOf(primary_view_renderer, secondary_view_renderer)
+                .forEach {
+                    it.init(eglBase.eglBaseContext, null)
+                    it.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+                    it.setEnableHardwareScaler(true)
+                }
     }
 
     private fun connectStreams() {
+        activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
         stageHandshake = StageHandshake(accessToken, xCredential)
-        val streamController = StreamController(realtime, accessToken, xCredential, peerConnectionFactory)
+        streamController = StreamController(realtime, accessToken, xCredential, peerConnectionFactory)
         stageHandshake?.connect(stageIdentifier) { event ->
-            val primaryStream = event.streams.find { it.type == "primary" } ?: return@connect
-            streamController.connect(primaryStream) { peerConnection, videoTrack, audioTrack ->
-                this.primaryPeerConnection = peerConnection
-                videoTrack?.run { addSink(primary_view_renderer) }
-                audioTrack?.setVolume(1.5) //TODO: make it possible to control volume
-            }
-            val webcamStream = event.streams.find { it.type != "primary" } ?: return@connect
-            streamController.connect(webcamStream) { peerConnection, videoTrack, audioTrack ->
-                this.secondaryPeerConnection = peerConnection
-                videoTrack?.run { addSink(secondary_view_renderer) }
-                audioTrack?.setVolume(0.5) //TODO: make it possible to control volume
+            Timber.d("Streams: ${event.streams.map { it.type }}")
+            event.streams.forEach { stream ->
+                streamController?.connect(stream) { peerConnection, videoTrack, audioTrack ->
+                    peerConnections[stream.type] = peerConnection
+                    renderers[stream.type]?.let { videoTrack?.addSink(it) }
+//                    audioTrack?.setVolume(0.125) //TODO: make it possible to control volume
+                }
             }
         }
         messageHandshake = MessageHandshake(accessToken, xCredential)
@@ -85,14 +86,16 @@ class StageFragment : DaggerFragment() {
 
     private fun disconnectStreams() {
         stageHandshake?.close()
+        streamController?.close()
         messageHandshake?.close()
-        primaryPeerConnection?.dispose()
-        secondaryPeerConnection?.dispose()
+        peerConnections.values.onEach { it.dispose() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         primary_view_renderer.release()
+        secondary_view_renderer.release()
+        renderers.clear()
         disconnectStreams()
     }
 

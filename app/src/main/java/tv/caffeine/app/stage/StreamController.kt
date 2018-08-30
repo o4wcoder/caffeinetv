@@ -1,12 +1,19 @@
 package tv.caffeine.app.stage
 
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.timeunit.TimeUnit
 import org.webrtc.*
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.realtime.*
 
 class StreamController(val realtime: Realtime, val accessToken: String, val xCredential: String, val peerConnectionFactory: PeerConnectionFactory) {
+    private var heartbeatJob: Job? = null
+
     fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
         realtime.createViewer("Bearer $accessToken", xCredential, stream.id).enqueue(object: Callback<CreateViewerResult?> {
             override fun onFailure(call: Call<CreateViewerResult?>?, t: Throwable?) {
@@ -23,17 +30,19 @@ class StreamController(val realtime: Realtime, val accessToken: String, val xCre
         })
     }
 
+    fun close() {
+        heartbeatJob?.cancel()
+    }
+
     fun handleOffer(offer: String, viewerId: String, signedPayload: String, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
         val mediaConstraints = MediaConstraints()
         val sanitizedOffer = offer.replace("42001f", "42e01f")
         val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, sanitizedOffer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
         val observer = object : PeerConnectionObserver() {
-            var peerConnection: PeerConnection? = null
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
                 super.onIceCandidate(iceCandidate)
                 if (iceCandidate == null) return
-                peerConnection?.addIceCandidate(iceCandidate)
                 val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
                 val body = IceCandidatesBody(arrayOf(candidate), signedPayload)
                 realtime.sendIceCandidate("Bearer $accessToken", xCredential, body, viewerId).enqueue(object: Callback<Void?> {
@@ -48,7 +57,6 @@ class StreamController(val realtime: Realtime, val accessToken: String, val xCre
             }
         }
         val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, observer) ?: return
-        observer.peerConnection = peerConnection
         peerConnection.setRemoteDescription(object : CafSdpObserver() {
             override fun onSetSuccess() {
                 super.onSetSuccess()
@@ -73,6 +81,21 @@ class StreamController(val realtime: Realtime, val accessToken: String, val xCre
                                             val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
                                             val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
                                             callback(peerConnection, videoTrack, audioTrack)
+                                            heartbeatJob = launch {
+                                                while(true) {
+                                                    delay(15, TimeUnit.SECONDS)
+                                                    val heartbeatBody = HeartbeatBody(signedPayload)
+                                                    realtime.sendHeartbeat("Bearer $accessToken", xCredential, viewerId, heartbeatBody).enqueue(object: Callback<Void?> {
+                                                        override fun onFailure(call: Call<Void?>?, t: Throwable?) {
+                                                            Timber.e(t, "Failed to send a heartbeat")
+                                                        }
+
+                                                        override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
+                                                            Timber.d("Sent heartbeat, got response $response")
+                                                        }
+                                                    })
+                                                }
+                                            }
                                         }
                                     })
                                 }

@@ -8,10 +8,10 @@ import tv.caffeine.app.realtime.WebSocketController
 class StageHandshake(private val accessToken: String, private val xCredential: String) {
     private val webSocketController = WebSocketController("stg")
     private val gsonForEvents: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
-    private var stageInitialized = false
+    private var lastEvent: Event? = null
 
-    class Event(val gameId: String, val hostConnectionQuality: String, val sessionId: String, val state: String, val streams: Array<Stream>, val title: String)
-    class Stream(val capabilities: Map<String, Boolean>, val id: String, val label: String, val type: String)
+    data class Event(val gameId: String, val hostConnectionQuality: String, val sessionId: String, val state: String, val streams: List<Stream>, val title: String)
+    data class Stream(val capabilities: Map<String, Boolean>, val id: String, val label: String, val type: String)
 
     private class EventEnvelope(val v2: Event)
 
@@ -26,10 +26,11 @@ class StageHandshake(private val accessToken: String, private val xCredential: S
                 }
             }""".trimMargin()
         webSocketController.connect(url, headers) {
-            if (stageInitialized) return@connect
-            stageInitialized = true
             val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
-            callback(eventEnvelope.v2)
+            val event = eventEnvelope.v2
+            if (event == lastEvent) return@connect
+            lastEvent = event
+            callback(event)
         }
     }
 
