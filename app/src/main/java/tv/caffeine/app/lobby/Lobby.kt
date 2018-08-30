@@ -26,7 +26,7 @@ class Broadcast(val id: String,
                 val game: Game?)
 class User(val caid: String,
            val username: String,
-           val name: String,
+           val name: String?,
            val avatarImagePath: String,
            val followingCount: Int,
            val followersCount: Int,
