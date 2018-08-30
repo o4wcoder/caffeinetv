@@ -1,14 +1,12 @@
 package tv.caffeine.app.lobby
 
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,24 +21,18 @@ import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.auth.AccountsService
+import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
 
 class LobbyFragment : DaggerFragment() {
 
-    private lateinit var accessToken: String
-    private lateinit var xCredential: String
-
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var lobby: Lobby
-    @Inject lateinit var sharedPreferences: SharedPreferences
+    @Inject lateinit var tokenStore: TokenStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        arguments!!.run {
-            accessToken = getString("ACCESS_TOKEN")!!
-            xCredential = getString("X_CREDENTIAL")!!
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +45,7 @@ class LobbyFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(lobby_toolbar)
         lobby_recycler_view.layoutManager = LinearLayoutManager(context)
-        lobby_recycler_view.adapter = LobbyAdapter(accessToken, xCredential, arrayOf())
+        lobby_recycler_view.adapter = LobbyAdapter(arrayOf())
         loadLobby()
     }
 
@@ -72,7 +64,7 @@ class LobbyFragment : DaggerFragment() {
 
                     override fun onResponse(call: Call<Unit?>?, response: Response<Unit?>?) {
                         Timber.d("Signed out successfully $response")
-                        sharedPreferences.edit { remove("REFRESH_TOKEN") }
+                        tokenStore.clear()
                         view?.apply {
                             Navigation.findNavController(this).navigateUp()
                         }
@@ -85,7 +77,7 @@ class LobbyFragment : DaggerFragment() {
     }
 
     private fun loadLobby() {
-        lobby.lobby("Bearer $accessToken").enqueue(object: Callback<LobbyResult?> {
+        lobby.lobby().enqueue(object: Callback<LobbyResult?> {
             override fun onFailure(call: Call<LobbyResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to get lobby")
             }
@@ -94,7 +86,7 @@ class LobbyFragment : DaggerFragment() {
                 Timber.d("Success! Got lobby! ${response?.body()}")
                 lobby_recycler_view ?: return Timber.d("RecyclerView is null, exiting")
                 response?.body()?.cards?.run {
-                    lobby_recycler_view.adapter = LobbyAdapter(accessToken, xCredential, this)
+                    lobby_recycler_view.adapter = LobbyAdapter(this)
                 }
             }
         })
@@ -102,7 +94,7 @@ class LobbyFragment : DaggerFragment() {
 
 }
 
-class LobbyAdapter(val accessToken: String, val xCredential: String, val cards: Array<LobbyCard>) : RecyclerView.Adapter<LobbyCardVH>() {
+class LobbyAdapter(val cards: Array<LobbyCard>) : RecyclerView.Adapter<LobbyCardVH>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LobbyCardVH {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.broadcast_card, parent, false)
         return LobbyCardVH(view)
@@ -143,8 +135,6 @@ class LobbyAdapter(val accessToken: String, val xCredential: String, val cards: 
         holder.itemView.setOnClickListener {
             val args = Bundle()
             args.putString("STAGE_IDENTIFIER", card.broadcast.user.stageId)
-            args.putString("ACCESS_TOKEN", accessToken)
-            args.putString("X_CREDENTIAL", xCredential)
             args.putString("BROADCASTER", card.broadcast.user.username)
             Navigation.findNavController(holder.itemView).navigate(R.id.stage, args)
         }

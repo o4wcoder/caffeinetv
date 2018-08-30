@@ -1,12 +1,10 @@
 package tv.caffeine.app.auth
 
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.edit
 import androidx.navigation.Navigation
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
@@ -21,8 +19,8 @@ import javax.inject.Inject
 
 class SignInFragment : DaggerFragment() {
     @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var sharedPreferences: SharedPreferences
     @Inject lateinit var gson: Gson
+    @Inject lateinit var tokenStore: TokenStore
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,7 +49,7 @@ class SignInFragment : DaggerFragment() {
     }
 
     private fun onSuccess(signInResult: SignInResult) {
-        sharedPreferences.edit { putString("REFRESH_TOKEN", signInResult.refreshToken) }
+        tokenStore.storeSignInResult(signInResult)
         val navController = Navigation.findNavController(view!!)
         when(signInResult.next) {
             "mfa_otp_required" -> {
@@ -61,10 +59,7 @@ class SignInFragment : DaggerFragment() {
                 navController.navigate(action)
             }
             else -> {
-                val bundle = Bundle()
-                bundle.putString("ACCESS_TOKEN", signInResult.accessToken)
-                bundle.putString("X_CREDENTIAL", signInResult.credentials.credential)
-                navController.navigate(R.id.lobby, bundle)
+                navController.navigate(R.id.lobby)
             }
         }
     }

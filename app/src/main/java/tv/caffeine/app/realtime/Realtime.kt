@@ -1,23 +1,26 @@
 package tv.caffeine.app.realtime
 
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface Realtime {
     @POST("v2/broadcasts/streams/{streamId}/viewers")
-    fun createViewer(@Header("Authorization") authorization: String, @Header("x-credential") xCredential: String, @Path("streamId") streamId: String): Call<CreateViewerResult>
+    fun createViewer(@Path("streamId") streamId: String): Call<CreateViewerResult>
 
     @POST("v2/broadcasts/streams")
-    fun initializeStream(@Header("Authorization") authorization: String, @Header("x-credential") xCredential: String, @Body initBody: StreamInitBody): Call<StreamInitResult>
+    fun initializeStream(@Body initBody: StreamInitBody): Call<StreamInitResult>
 
     @PUT("v2/broadcasts/viewers/{viewerId}")
-    fun sendIceCandidate(@Header("Authorization") authorization: String, @Header("x-credential") xCredential: String, @Body iceCandidates: IceCandidatesBody, @Path("viewerId") viewerId: String): Call<Void>
+    fun sendIceCandidate(@Path("viewerId") viewerId: String, @Body iceCandidates: IceCandidatesBody): Call<Void>
 
     @PUT("v2/broadcasts/viewers/{viewerId}")
-    fun sendAnswer(@Header("Authorization") authorization: String, @Header("x-credential") xCredential: String, @Body answer: AnswerBody, @Path("viewerId") viewerId: String): Call<Void>
+    fun sendAnswer(@Path("viewerId") viewerId: String, @Body answer: AnswerBody): Call<Void>
 
     @POST("v2/broadcasts/viewers/{viewerId}/heartbeat")
-    fun sendHeartbeat(@Header("Authorization") authorization: String, @Header("x-credential") xCredential: String, @Path("viewerId") viewerId: String, @Body heartbeatBody: HeartbeatBody): Call<Void>
+    fun sendHeartbeat(@Path("viewerId") viewerId: String, @Body heartbeatBody: HeartbeatBody): Call<Void>
 }
 
 class CreateViewerResult(val id: String, val offer: String, val signed_payload: String)

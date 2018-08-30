@@ -18,8 +18,11 @@ import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.auth.AccountsService
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.lobby.Lobby
-import tv.caffeine.app.net.AuthorizationInterceptor
+import tv.caffeine.app.auth.AuthorizationInterceptor
+import tv.caffeine.app.auth.RefreshTokenService
+import tv.caffeine.app.auth.TokenAuthenticator
 import tv.caffeine.app.realtime.Realtime
 import javax.inject.Named
 import javax.inject.Singleton
@@ -53,8 +56,28 @@ class NetworkModule {
     fun providesHttpLoggingInterceptor(level: HttpLoggingInterceptor.Level) = HttpLoggingInterceptor().apply { setLevel(level) }
 
     @Provides
-    fun providesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor())
+    @Singleton
+    fun providesTokenStore(sharedPreferences: SharedPreferences) = TokenStore(sharedPreferences)
+
+    @Provides
+    fun providesRefreshTokenService(gsonConverterFactory: GsonConverterFactory, @Named(BASE_URL) baseUrl: String): RefreshTokenService {
+        val retrofit = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(gsonConverterFactory)
+                .build()
+        return retrofit.create(RefreshTokenService::class.java)
+    }
+
+    @Provides
+    fun providesTokenAuthenticator(refreshTokenService: RefreshTokenService, tokenStore: TokenStore) = TokenAuthenticator(refreshTokenService, tokenStore)
+
+    @Provides
+    fun providesAuthorizationInterceptor(tokenStore: TokenStore) = AuthorizationInterceptor(tokenStore)
+
+    @Provides
+    fun providesOkHttpClient(tokenAuthenticator: TokenAuthenticator, authorizationInterceptor: AuthorizationInterceptor, loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
+            .authenticator(tokenAuthenticator)
+            .addInterceptor(authorizationInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()
 

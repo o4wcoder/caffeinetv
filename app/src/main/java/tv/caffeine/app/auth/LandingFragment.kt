@@ -1,6 +1,5 @@
 package tv.caffeine.app.auth
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,7 @@ import javax.inject.Inject
 
 class LandingFragment : DaggerFragment() {
     @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var sharedPreferences: SharedPreferences
+    @Inject lateinit var tokenStore: TokenStore
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -33,7 +32,7 @@ class LandingFragment : DaggerFragment() {
     }
 
     private fun loginIfPossible(view: View) {
-        val refreshToken = sharedPreferences.getString("REFRESH_TOKEN", null) ?: return
+        val refreshToken = tokenStore.refreshToken ?: return
         val refreshTokenBody = RefreshTokenBody(refreshToken)
         accountsService.refreshToken(refreshTokenBody).enqueue(object : Callback<RefreshTokenResult?> {
             override fun onFailure(call: Call<RefreshTokenResult?>?, t: Throwable?) {
@@ -45,11 +44,8 @@ class LandingFragment : DaggerFragment() {
                 val refreshTokenResult = response?.body() ?: return
                 val accessToken = refreshTokenResult.credentials.accessToken
                 val xCredential = refreshTokenResult.credentials.credential
-                val bundle = Bundle()
-                bundle.putString("ACCESS_TOKEN", accessToken)
-                bundle.putString("X_CREDENTIAL", xCredential)
                 val navController = Navigation.findNavController(view)
-                navController.navigate(R.id.lobby, bundle)
+                navController.navigate(R.id.lobby)
             }
         })
     }

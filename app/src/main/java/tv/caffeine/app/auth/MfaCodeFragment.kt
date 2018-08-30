@@ -49,11 +49,8 @@ class MfaCodeFragment : DaggerFragment() {
 
     private fun onSuccess(result: SignInResult) {
         sharedPreferences.edit { putString("REFRESH_TOKEN", result.refreshToken) }
-        val bundle = Bundle()
-        bundle.putString("ACCESS_TOKEN", result.accessToken)
-        bundle.putString("X_CREDENTIAL", result.credentials.credential)
         val navController = Navigation.findNavController(view!!)
-        navController.navigate(R.id.lobby, bundle)
+        navController.navigate(R.id.lobby)
     }
 
     private fun onError(errorBody: ResponseBody) {

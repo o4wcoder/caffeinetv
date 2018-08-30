@@ -2,11 +2,10 @@ package tv.caffeine.app.lobby
 
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
 
 interface Lobby {
     @GET("v2/lobby")
-    fun lobby(@Header("Authorization") authorization: String): Call<LobbyResult>
+    fun lobby(): Call<LobbyResult>
 }
 
 class LobbyResult(val requestAvatarUpdate: Boolean, val welcomeCard: Boolean, val cards: Array<LobbyCard>)

@@ -11,11 +11,11 @@ import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.realtime.*
 
-class StreamController(val realtime: Realtime, val accessToken: String, val xCredential: String, val peerConnectionFactory: PeerConnectionFactory) {
+class StreamController(val realtime: Realtime, val peerConnectionFactory: PeerConnectionFactory) {
     private var heartbeatJob: Job? = null
 
     fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
-        realtime.createViewer("Bearer $accessToken", xCredential, stream.id).enqueue(object: Callback<CreateViewerResult?> {
+        realtime.createViewer(stream.id).enqueue(object: Callback<CreateViewerResult?> {
             override fun onFailure(call: Call<CreateViewerResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to create viewer for stream ID: ${stream.id}")
             }
@@ -45,7 +45,7 @@ class StreamController(val realtime: Realtime, val accessToken: String, val xCre
                 if (iceCandidate == null) return
                 val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
                 val body = IceCandidatesBody(arrayOf(candidate), signedPayload)
-                realtime.sendIceCandidate("Bearer $accessToken", xCredential, body, viewerId).enqueue(object: Callback<Void?> {
+                realtime.sendIceCandidate(viewerId, body).enqueue(object: Callback<Void?> {
                     override fun onFailure(call: Call<Void?>?, t: Throwable?) {
                         Timber.e(t, "Failed to send ICE candidates")
                     }
@@ -70,7 +70,7 @@ class StreamController(val realtime: Realtime, val accessToken: String, val xCre
                                 Timber.d("LocalDesc: Success! $localSessionDescription - ${localSessionDescription?.type} - ${localSessionDescription?.description}")
                                 localSessionDescription?.let {
                                     val answer = it.description
-                                    realtime.sendAnswer("Bearer $accessToken", xCredential, AnswerBody(answer, signedPayload), viewerId).enqueue(object: Callback<Void?> {
+                                    realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).enqueue(object: Callback<Void?> {
                                         override fun onFailure(call: Call<Void?>?, t: Throwable?) {
                                             Timber.e(t, "sendAnswer failed")
                                         }
@@ -85,7 +85,7 @@ class StreamController(val realtime: Realtime, val accessToken: String, val xCre
                                                 while(true) {
                                                     delay(15, TimeUnit.SECONDS)
                                                     val heartbeatBody = HeartbeatBody(signedPayload)
-                                                    realtime.sendHeartbeat("Bearer $accessToken", xCredential, viewerId, heartbeatBody).enqueue(object: Callback<Void?> {
+                                                    realtime.sendHeartbeat(viewerId, heartbeatBody).enqueue(object: Callback<Void?> {
                                                         override fun onFailure(call: Call<Void?>?, t: Throwable?) {
                                                             Timber.e(t, "Failed to send a heartbeat")
                                                         }

@@ -4,10 +4,11 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import timber.log.Timber
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.lobby.User
 import tv.caffeine.app.realtime.WebSocketController
 
-class MessageHandshake(private val accessToken: String, private val xCredential: String) {
+class MessageHandshake(private val tokenStore: TokenStore) {
     private val webSocketController = WebSocketController("msg")
     private val gson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
@@ -18,8 +19,8 @@ class MessageHandshake(private val accessToken: String, private val xCredential:
         val url = "wss://realtime.caffeine.tv/v2/reaper/stages/$stageIdentifier/messages"
         val headers = """{
                 "Headers": {
-                    "x-credential" : "$xCredential",
-                    "authorization" : "Bearer $accessToken",
+                    "x-credential" : "${tokenStore.credential ?: ""}",
+                    "authorization" : "Bearer ${tokenStore.accessToken ?: ""}",
                     "X-Client-Type" : "android",
                     "X-Client-Version" : "0"
                 }

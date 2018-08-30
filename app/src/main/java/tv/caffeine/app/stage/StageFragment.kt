@@ -11,12 +11,11 @@ import kotlinx.android.synthetic.main.fragment_stage.*
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.realtime.Realtime
 import javax.inject.Inject
 
 class StageFragment : DaggerFragment() {
-    lateinit var accessToken: String
-    lateinit var xCredential: String
     lateinit var stageIdentifier : String
     lateinit var broadcaster: String
     private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
@@ -28,13 +27,12 @@ class StageFragment : DaggerFragment() {
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
     @Inject lateinit var eglBase: EglBase
+    @Inject lateinit var tokenStore: TokenStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         arguments?.run {
-            accessToken = getString("ACCESS_TOKEN")!!
-            xCredential = getString("X_CREDENTIAL")!!
             stageIdentifier = getString("STAGE_IDENTIFIER")!!
             broadcaster = getString("BROADCASTER")!!
         }
@@ -66,8 +64,8 @@ class StageFragment : DaggerFragment() {
 
     private fun connectStreams() {
         activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
-        stageHandshake = StageHandshake(accessToken, xCredential)
-        streamController = StreamController(realtime, accessToken, xCredential, peerConnectionFactory)
+        stageHandshake = StageHandshake(tokenStore)
+        streamController = StreamController(realtime, peerConnectionFactory)
         stageHandshake?.connect(stageIdentifier) { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
             event.streams.forEach { stream ->
@@ -78,7 +76,7 @@ class StageFragment : DaggerFragment() {
                 }
             }
         }
-        messageHandshake = MessageHandshake(accessToken, xCredential)
+        messageHandshake = MessageHandshake(tokenStore)
         messageHandshake?.connect(stageIdentifier) {
             Timber.d("Received message (${it.type}) from ${it.publisher.username} (${it.publisher.name}): ${it.body.text}")
         }

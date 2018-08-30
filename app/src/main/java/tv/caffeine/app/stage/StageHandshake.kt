@@ -3,9 +3,10 @@ package tv.caffeine.app.stage
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.realtime.WebSocketController
 
-class StageHandshake(private val accessToken: String, private val xCredential: String) {
+class StageHandshake(private val tokenStore: TokenStore) {
     private val webSocketController = WebSocketController("stg")
     private val gsonForEvents: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     private var lastEvent: Event? = null
@@ -19,8 +20,8 @@ class StageHandshake(private val accessToken: String, private val xCredential: S
         val url = "wss://realtime.caffeine.tv/v2/stages/$stageIdentifier/details"
         val headers = """{
                 "Headers": {
-                    "x-credential" : "$xCredential",
-                    "authorization" : "Bearer $accessToken",
+                    "x-credential" : "${tokenStore.credential ?: ""}",
+                    "authorization" : "Bearer ${tokenStore.accessToken ?: ""}",
                     "X-Client-Type" : "android",
                     "X-Client-Version" : "0"
                 }
