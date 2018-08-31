@@ -4,6 +4,7 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
 import tv.caffeine.app.di.DaggerCaffeineComponent
+import tv.caffeine.app.util.CrashlyticsTree
 
 class CaffeineApplication : DaggerApplication() {
     override fun onCreate() {
@@ -15,6 +16,7 @@ class CaffeineApplication : DaggerApplication() {
             = DaggerCaffeineComponent.builder().create(this)
 
     private fun initializeTimber() {
-        Timber.plant(Timber.DebugTree())
+        val tree = if (BuildConfig.DEBUG) CrashlyticsTree() else Timber.DebugTree()
+        Timber.plant(tree)
     }
 }
