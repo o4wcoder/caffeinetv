@@ -15,6 +15,7 @@ import kotlinx.coroutines.experimental.launch
 import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.api.*
 import javax.inject.Inject
 
 class SignInFragment : DaggerFragment() {

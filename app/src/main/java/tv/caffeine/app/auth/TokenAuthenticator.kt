@@ -7,6 +7,8 @@ import okhttp3.Route
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
+import tv.caffeine.app.api.RefreshTokenBody
+import tv.caffeine.app.api.RefreshTokenResult
 
 class TokenAuthenticator(private val refreshTokenService: RefreshTokenService, private val tokenStore: TokenStore) : Authenticator {
     override fun authenticate(route: Route?, response: Response?): Request? {

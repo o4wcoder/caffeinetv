@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
-import tv.caffeine.app.realtime.*
+import tv.caffeine.app.api.*
 
 class StreamController(val realtime: Realtime, val peerConnectionFactory: PeerConnectionFactory) {
     private var heartbeatJob: Job? = null

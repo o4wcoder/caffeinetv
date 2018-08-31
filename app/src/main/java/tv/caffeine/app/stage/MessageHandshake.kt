@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import timber.log.Timber
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.lobby.User
+import tv.caffeine.app.api.User
 import tv.caffeine.app.realtime.WebSocketController
 
 class MessageHandshake(private val tokenStore: TokenStore) {

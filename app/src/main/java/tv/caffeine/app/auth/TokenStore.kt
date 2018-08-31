@@ -2,6 +2,8 @@ package tv.caffeine.app.auth
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import tv.caffeine.app.api.CaffeineCredentials
+import tv.caffeine.app.api.SignInResult
 
 class TokenStore(private val sharedPreferences: SharedPreferences) {
     var refreshToken: String?

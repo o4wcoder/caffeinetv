@@ -1,4 +1,4 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.api
 
 import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call

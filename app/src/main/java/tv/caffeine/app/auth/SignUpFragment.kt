@@ -13,6 +13,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.SignUpAccount
+import tv.caffeine.app.api.SignUpBody
+import tv.caffeine.app.api.SignUpResult
 import javax.inject.Inject
 
 

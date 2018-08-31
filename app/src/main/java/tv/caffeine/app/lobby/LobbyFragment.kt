@@ -20,7 +20,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.auth.AccountsService
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.Lobby
+import tv.caffeine.app.api.LobbyCard
+import tv.caffeine.app.api.LobbyResult
 import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
 

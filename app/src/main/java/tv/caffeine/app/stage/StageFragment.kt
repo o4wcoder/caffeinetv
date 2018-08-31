@@ -12,7 +12,7 @@ import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.realtime.Realtime
+import tv.caffeine.app.api.Realtime
 import javax.inject.Inject
 
 class StageFragment : DaggerFragment() {

@@ -1,4 +1,4 @@
-package tv.caffeine.app.lobby
+package tv.caffeine.app.api
 
 import retrofit2.Call
 import retrofit2.http.GET

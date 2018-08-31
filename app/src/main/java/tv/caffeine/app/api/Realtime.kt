@@ -1,4 +1,4 @@
-package tv.caffeine.app.realtime
+package tv.caffeine.app.api
 
 import retrofit2.Call
 import retrofit2.http.Body

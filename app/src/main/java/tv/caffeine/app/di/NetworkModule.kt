@@ -17,13 +17,13 @@ import org.webrtc.PeerConnectionFactory
 import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import tv.caffeine.app.auth.AccountsService
+import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.lobby.Lobby
+import tv.caffeine.app.api.Lobby
 import tv.caffeine.app.auth.AuthorizationInterceptor
 import tv.caffeine.app.auth.RefreshTokenService
 import tv.caffeine.app.auth.TokenAuthenticator
-import tv.caffeine.app.realtime.Realtime
+import tv.caffeine.app.api.Realtime
 import javax.inject.Named
 import javax.inject.Singleton
 
