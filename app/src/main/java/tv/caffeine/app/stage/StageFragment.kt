@@ -23,6 +23,8 @@ class StageFragment : DaggerFragment() {
     var stageHandshake: StageHandshake? = null
     var messageHandshake: MessageHandshake? = null
     var streamController: StreamController? = null
+    val videoTracks: MutableList<VideoTrack> = mutableListOf()
+    val audioTracks: MutableList<AudioTrack> = mutableListOf()
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -72,6 +74,8 @@ class StageFragment : DaggerFragment() {
                 streamController?.connect(stream) { peerConnection, videoTrack, audioTrack ->
                     peerConnections[stream.type] = peerConnection
                     renderers[stream.type]?.let { videoTrack?.addSink(it) }
+                    videoTrack?.let { videoTracks.add(it) }
+                    audioTrack?.let { audioTracks.add(it) }
 //                    audioTrack?.setVolume(0.125) //TODO: make it possible to control volume
                 }
             }
@@ -97,5 +101,16 @@ class StageFragment : DaggerFragment() {
         disconnectStreams()
     }
 
+    override fun onStart() {
+        super.onStart()
+        videoTracks.forEach { it.setEnabled(true) }
+        audioTracks.forEach { it.setEnabled(true) }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        videoTracks.forEach { it.setEnabled(false) }
+        audioTracks.forEach { it.setEnabled(false) }
+    }
 }
 
