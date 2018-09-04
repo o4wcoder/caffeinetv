@@ -41,10 +41,9 @@ class StageFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        arguments?.run {
-            stageIdentifier = getString("STAGE_IDENTIFIER")!!
-            broadcaster = getString("BROADCASTER")!!
-        }
+        val args = StageFragmentArgs.fromBundle(arguments)
+        stageIdentifier = args.stageIdentifier
+        broadcaster = args.broadcaster
         connectStreams()
     }
 
@@ -135,7 +134,7 @@ class StageFragment : DaggerFragment() {
         renderers.clear()
     }
 
-    fun setMediaTracksEnabled(enabled: Boolean) {
+    private fun setMediaTracksEnabled(enabled: Boolean) {
         videoTracks.values.forEach { it.setEnabled(enabled) }
         audioTracks.values.forEach { it.setEnabled(enabled) }
     }

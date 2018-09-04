@@ -123,9 +123,13 @@ class LobbyAdapter(val cards: Array<LobbyCard>) : RecyclerView.Adapter<LobbyCard
         }
         holder.broadcastTitleTextView.text = card.broadcast.name
         holder.itemView.setOnClickListener {
-            val args = Bundle()
-            args.putString("STAGE_IDENTIFIER", card.broadcast.user.stageId)
-            args.putString("BROADCASTER", card.broadcast.user.username)
+            // TODO: switch to safeargs when their code gen is fixed
+//            val action = LobbyFragmentDirections.actionLobbyFragmentToStage(card.broadcast.user.stageId, card.broadcast.user.username)
+//            Navigation.findNavController(holder.itemView).navigate(action)
+            val args = Bundle().apply {
+                putString("stageIdentifier", card.broadcast.user.stageId)
+                putString("broadcaster", card.broadcast.user.username)
+            }
             Navigation.findNavController(holder.itemView).navigate(R.id.stage, args)
         }
     }
