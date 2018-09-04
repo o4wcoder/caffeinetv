@@ -62,10 +62,30 @@ class StageFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configureSurfaceViewRenderer()
+        initSurfaceViewRenderer()
     }
 
-    private fun configureSurfaceViewRenderer() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        deinitSurfaceViewRenderers()
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setMediaTracksEnabled(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        setMediaTracksEnabled(false)
+    }
+
+    private fun initSurfaceViewRenderer() {
         renderers[PRIMARY] = primary_view_renderer
         renderers[SECONDARY] = secondary_view_renderer
         renderers.forEach { entry ->
@@ -90,7 +110,6 @@ class StageFragment : DaggerFragment() {
                     renderers[streamType]?.let { videoTrack?.addSink(it) }
                     videoTrack?.let { videoTracks[streamType] = it }
                     audioTrack?.let { audioTracks[streamType] = it }
-//                    audioTrack?.setVolume(0.125) //TODO: make it possible to control volume
                 }
             }
         }
@@ -107,8 +126,7 @@ class StageFragment : DaggerFragment() {
         peerConnections.values.onEach { it.dispose() }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    private fun deinitSurfaceViewRenderers() {
         ALL_STREAMS.forEach {
             videoTracks[it]?.removeSink(renderers[it])
         }
@@ -117,21 +135,10 @@ class StageFragment : DaggerFragment() {
         renderers.clear()
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
+    fun setMediaTracksEnabled(enabled: Boolean) {
+        videoTracks.values.forEach { it.setEnabled(enabled) }
+        audioTracks.values.forEach { it.setEnabled(enabled) }
     }
 
-    override fun onStart() {
-        super.onStart()
-        videoTracks.values.forEach { it.setEnabled(true) }
-        audioTracks.values.forEach { it.setEnabled(true) }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        videoTracks.values.forEach { it.setEnabled(false) }
-        audioTracks.values.forEach { it.setEnabled(false) }
-    }
 }
 
