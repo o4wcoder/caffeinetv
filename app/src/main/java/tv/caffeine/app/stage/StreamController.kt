@@ -86,6 +86,7 @@ class StreamController(private val realtime: Realtime,
                                                 val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
                                                 while(true) {
                                                     repeat(5) {
+                                                        if (heartbeatJob?.isCancelled == true) return@launch
                                                         peerConnection.getStats { stats ->
                                                             val relevantStats = stats.statsMap
                                                                     .filter { relevantStats.contains(it.value.type) }
