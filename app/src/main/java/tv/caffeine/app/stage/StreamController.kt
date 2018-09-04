@@ -3,7 +3,6 @@ package tv.caffeine.app.stage
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.timeunit.TimeUnit
 import org.webrtc.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -11,7 +10,10 @@ import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.api.*
 
-class StreamController(val realtime: Realtime, val peerConnectionFactory: PeerConnectionFactory) {
+class StreamController(private val realtime: Realtime,
+                       private val peerConnectionFactory: PeerConnectionFactory,
+                       private val eventsService: EventsService,
+                       private val stageIdentifier: String) {
     private var heartbeatJob: Job? = null
 
     fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
@@ -39,7 +41,7 @@ class StreamController(val realtime: Realtime, val peerConnectionFactory: PeerCo
         val sanitizedOffer = offer.replace("42001f", "42e01f")
         val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, sanitizedOffer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
-        val observer = object : PeerConnectionObserver() {
+        val observer = object : PeerConnectionObserver(eventsService, viewerId, stageIdentifier) {
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
                 super.onIceCandidate(iceCandidate)
                 if (iceCandidate == null) return
@@ -82,8 +84,41 @@ class StreamController(val realtime: Realtime, val peerConnectionFactory: PeerCo
                                             val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
                                             callback(peerConnection, videoTrack, audioTrack)
                                             heartbeatJob = launch {
+                                                val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
                                                 while(true) {
-                                                    delay(15, TimeUnit.SECONDS)
+                                                    repeat(5) {
+                                                        peerConnection.getStats { stats ->
+                                                            val relevantStats = stats.statsMap
+                                                                    .filter { relevantStats.contains(it.value.type) }
+                                                                    .map {
+                                                                        it.value.members.plus(
+                                                                                mapOf(
+                                                                                        "id" to it.value.id,
+                                                                                        "timestamp" to (it.value.timestampUs / 1000.0).toInt().toString(),
+                                                                                        "type" to it.value.type,
+                                                                                        "kind" to it.value.id.substringBefore("_")
+                                                                                )
+                                                                        )
+                                                                    }
+                                                            val data = mapOf(
+                                                                    "mode" to "viewer", // TODO: support broadcasts
+                                                                    "stats" to relevantStats
+                                                            )
+                                                            eventsService.sendEvent(EventBody("webrtc_stats", data = data)).enqueue(object: Callback<Void?> {
+                                                                override fun onFailure(call: Call<Void?>?, t: Throwable?) {
+                                                                    Timber.e(t, "Failed to send the event")
+                                                                }
+
+                                                                override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
+                                                                    Timber.d("Sent the event, got response $response")
+                                                                    response?.body()?.let { body ->
+                                                                        Timber.d("Got response body: $body")
+                                                                    }
+                                                                }
+                                                            })
+                                                        }
+                                                        delay(3, java.util.concurrent.TimeUnit.SECONDS)
+                                                    }
                                                     val heartbeatBody = HeartbeatBody(signedPayload)
                                                     realtime.sendHeartbeat(viewerId, heartbeatBody).enqueue(object: Callback<Void?> {
                                                         override fun onFailure(call: Call<Void?>?, t: Throwable?) {
@@ -110,13 +145,23 @@ class StreamController(val realtime: Realtime, val peerConnectionFactory: PeerCo
     }
 }
 
-open class PeerConnectionObserver : PeerConnection.Observer {
+open class PeerConnectionObserver(private val eventsService: EventsService,
+                                  private val viewerId: String,
+                                  private val stageIdentifier: String) : PeerConnection.Observer {
     override fun onSignalingChange(newState: PeerConnection.SignalingState?) {
         Timber.d("onSignalingChange: $newState")
     }
 
     override fun onIceConnectionChange(newState: PeerConnection.IceConnectionState?) {
         Timber.d("onIceConnectionChange: $newState")
+        if (newState == null) return
+        val data = mapOf(
+                "connection_state" to newState.name,
+                "stage_id" to stageIdentifier,
+                "mode" to "viewer", // TODO: support broadcast
+                "viewer_id" to viewerId
+                )
+        eventsService.sendEvent(EventBody("ice_connection_state", data = data))
     }
 
     override fun onIceConnectionReceivingChange(receiving: Boolean) {

@@ -11,8 +11,9 @@ import kotlinx.android.synthetic.main.fragment_stage.*
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
 
 class StageFragment : DaggerFragment() {
@@ -30,6 +31,7 @@ class StageFragment : DaggerFragment() {
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
     @Inject lateinit var eglBase: EglBase
     @Inject lateinit var tokenStore: TokenStore
+    @Inject lateinit var eventsService: EventsService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +69,7 @@ class StageFragment : DaggerFragment() {
     private fun connectStreams() {
         activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
         stageHandshake = StageHandshake(tokenStore)
-        streamController = StreamController(realtime, peerConnectionFactory)
+        streamController = StreamController(realtime, peerConnectionFactory, eventsService, stageIdentifier)
         stageHandshake?.connect(stageIdentifier) { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
             event.streams.forEach { stream ->

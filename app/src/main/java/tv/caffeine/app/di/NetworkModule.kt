@@ -18,12 +18,13 @@ import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.Lobby
+import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.auth.AuthorizationInterceptor
 import tv.caffeine.app.auth.RefreshTokenService
 import tv.caffeine.app.auth.TokenAuthenticator
-import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.auth.TokenStore
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -96,6 +97,8 @@ class NetworkModule {
     @Provides fun providesAccountsService(retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
 
     @Provides fun providesLobbyService(retrofit: Retrofit) = retrofit.create(Lobby::class.java)
+
+    @Provides fun providesEventsService(retrofit: Retrofit) = retrofit.create(EventsService::class.java)
 
     @Provides fun providesRealtimeService(client: OkHttpClient): Realtime {
 //        val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
