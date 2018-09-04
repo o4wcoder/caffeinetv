@@ -24,8 +24,8 @@ class StageFragment : DaggerFragment() {
     var stageHandshake: StageHandshake? = null
     var messageHandshake: MessageHandshake? = null
     var streamController: StreamController? = null
-    val videoTracks: MutableList<VideoTrack> = mutableListOf()
-    val audioTracks: MutableList<AudioTrack> = mutableListOf()
+    private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
+    private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -40,6 +40,12 @@ class StageFragment : DaggerFragment() {
             stageIdentifier = getString("STAGE_IDENTIFIER")!!
             broadcaster = getString("BROADCASTER")!!
         }
+        connectStreams()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disconnectStreams()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +56,6 @@ class StageFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        connectStreams()
 
         configureSurfaceViewRenderer()
     }
@@ -58,12 +63,14 @@ class StageFragment : DaggerFragment() {
     private fun configureSurfaceViewRenderer() {
         renderers["primary"] = primary_view_renderer
         renderers["secondary"] = secondary_view_renderer
-        listOf(primary_view_renderer, secondary_view_renderer)
-                .forEach {
-                    it.init(eglBase.eglBaseContext, null)
-                    it.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
-                    it.setEnableHardwareScaler(true)
-                }
+        renderers.forEach { entry ->
+            val key = entry.key
+            val renderer = entry.value
+            renderer.init(eglBase.eglBaseContext, null)
+            renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+            renderer.setEnableHardwareScaler(true)
+            videoTracks[key]?.addSink(renderer)
+        }
     }
 
     private fun connectStreams() {
@@ -74,10 +81,11 @@ class StageFragment : DaggerFragment() {
             Timber.d("Streams: ${event.streams.map { it.type }}")
             event.streams.forEach { stream ->
                 streamController?.connect(stream) { peerConnection, videoTrack, audioTrack ->
-                    peerConnections[stream.type] = peerConnection
-                    renderers[stream.type]?.let { videoTrack?.addSink(it) }
-                    videoTrack?.let { videoTracks.add(it) }
-                    audioTrack?.let { audioTracks.add(it) }
+                    val streamType = stream.type
+                    peerConnections[streamType] = peerConnection
+                    renderers[streamType]?.let { videoTrack?.addSink(it) }
+                    videoTrack?.let { videoTracks[streamType] = it }
+                    audioTrack?.let { audioTracks[streamType] = it }
 //                    audioTrack?.setVolume(0.125) //TODO: make it possible to control volume
                 }
             }
@@ -100,19 +108,18 @@ class StageFragment : DaggerFragment() {
         primary_view_renderer.release()
         secondary_view_renderer.release()
         renderers.clear()
-        disconnectStreams()
     }
 
     override fun onStart() {
         super.onStart()
-        videoTracks.forEach { it.setEnabled(true) }
-        audioTracks.forEach { it.setEnabled(true) }
+        videoTracks.values.forEach { it.setEnabled(true) }
+        audioTracks.values.forEach { it.setEnabled(true) }
     }
 
     override fun onStop() {
         super.onStop()
-        videoTracks.forEach { it.setEnabled(false) }
-        audioTracks.forEach { it.setEnabled(false) }
+        videoTracks.values.forEach { it.setEnabled(false) }
+        audioTracks.values.forEach { it.setEnabled(false) }
     }
 }
 
