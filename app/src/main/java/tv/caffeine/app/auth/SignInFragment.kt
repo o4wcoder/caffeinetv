@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_sign_in.*
@@ -51,7 +52,7 @@ class SignInFragment : DaggerFragment() {
 
     private fun onSuccess(signInResult: SignInResult) {
         tokenStore.storeSignInResult(signInResult)
-        val navController = Navigation.findNavController(view!!)
+        val navController = findNavController()
         when(signInResult.next) {
             "mfa_otp_required" -> {
                 val username = username_edit_text.text.toString()

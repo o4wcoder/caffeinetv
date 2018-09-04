@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import retrofit2.Call
@@ -55,7 +55,7 @@ class SignUpFragment : DaggerFragment() {
                 Timber.d("Sign up API call succeeded $response")
                 response?.body()?.credentials?.let {
                     tokenStore.storeCredentials(it)
-                    val navController = Navigation.findNavController(view!!)
+                    val navController = findNavController()
                     val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
                     navController.navigate(R.id.lobby, null, navOptions)
                 }

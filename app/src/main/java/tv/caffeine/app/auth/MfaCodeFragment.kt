@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_mfa_code.*
@@ -50,8 +50,7 @@ class MfaCodeFragment : DaggerFragment() {
 
     private fun onSuccess(result: SignInResult) {
         sharedPreferences.edit { putString("REFRESH_TOKEN", result.refreshToken) }
-        val navController = Navigation.findNavController(view!!)
-        navController.navigate(R.id.lobby)
+        findNavController().navigate(R.id.lobby)
     }
 
     private fun onError(errorBody: ResponseBody) {

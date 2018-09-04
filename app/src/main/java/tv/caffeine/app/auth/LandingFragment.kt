@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_landing.*
 import retrofit2.Call
@@ -47,7 +48,7 @@ class LandingFragment : DaggerFragment() {
                 val refreshTokenResult = response?.body() ?: return
                 val accessToken = refreshTokenResult.credentials.accessToken
                 val xCredential = refreshTokenResult.credentials.credential
-                val navController = Navigation.findNavController(view)
+                val navController = findNavController()
                 navController.navigate(R.id.lobby)
             }
         })
