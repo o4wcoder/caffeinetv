@@ -105,6 +105,9 @@ class StageFragment : DaggerFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        listOf("primary", "secondary").forEach {
+            videoTracks[it]?.removeSink(renderers[it])
+        }
         primary_view_renderer.release()
         secondary_view_renderer.release()
         renderers.clear()
