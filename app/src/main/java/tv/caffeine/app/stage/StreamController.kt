@@ -38,8 +38,7 @@ class StreamController(private val realtime: Realtime,
 
     fun handleOffer(offer: String, viewerId: String, signedPayload: String, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
         val mediaConstraints = MediaConstraints()
-        val sanitizedOffer = offer.replace("42001f", "42e01f")
-        val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, sanitizedOffer)
+        val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, offer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
         val observer = object : PeerConnectionObserver(eventsService, viewerId, stageIdentifier) {
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
