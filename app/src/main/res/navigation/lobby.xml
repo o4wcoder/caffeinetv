@@ -13,6 +13,10 @@
         <action
             android:id="@+id/action_lobbyFragment_to_stage"
             app:destination="@id/stage" />
+        <action
+            android:id="@+id/action_lobbyFragment_to_profile"
+            app:destination="@id/profile" />
     </fragment>
     <include app:graph="@navigation/stage" />
+    <include app:graph="@navigation/profile" />
 </navigation>

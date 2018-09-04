@@ -27,4 +27,6 @@
     <string name="mfa_code_title">MFA Code</string>
     <string name="mfa_code_hint">MFA Code</string>
     <string name="submit_mfa_code">Submit</string>
+    <string name="oss_licenses_button">Open Source Software Licenses</string>
+    <string name="sign_out_button">Sign Out</string>
 </resources>

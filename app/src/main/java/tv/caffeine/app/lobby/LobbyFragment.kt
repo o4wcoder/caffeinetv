@@ -3,7 +3,6 @@ package tv.caffeine.app.lobby
 
 import android.os.Bundle
 import android.view.*
-import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -60,19 +59,7 @@ class LobbyFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
             R.id.profile -> {
-                accountsService.signOut().enqueue(object: Callback<Unit?> {
-                    override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
-                        Timber.e(t, "Failed to sign out")
-                    }
-
-                    override fun onResponse(call: Call<Unit?>?, response: Response<Unit?>?) {
-                        Timber.d("Signed out successfully $response")
-                        tokenStore.clear()
-                        view?.apply {
-                            Navigation.findNavController(this).navigateUp()
-                        }
-                    }
-                })
+                Navigation.findNavController(view!!).navigate(R.id.profile)
                 return true
             }
         }
