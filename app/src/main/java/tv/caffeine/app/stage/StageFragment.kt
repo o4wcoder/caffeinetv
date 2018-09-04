@@ -1,6 +1,7 @@
 package tv.caffeine.app.stage
 
 
+import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +16,10 @@ import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
+
+private const val PRIMARY = "primary"
+private const val SECONDARY = "secondary"
+private val ALL_STREAMS = arrayOf(PRIMARY, SECONDARY)
 
 class StageFragment : DaggerFragment() {
     lateinit var stageIdentifier : String
@@ -61,8 +66,8 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun configureSurfaceViewRenderer() {
-        renderers["primary"] = primary_view_renderer
-        renderers["secondary"] = secondary_view_renderer
+        renderers[PRIMARY] = primary_view_renderer
+        renderers[SECONDARY] = secondary_view_renderer
         renderers.forEach { entry ->
             val key = entry.key
             val renderer = entry.value
@@ -74,7 +79,6 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun connectStreams() {
-        activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
         stageHandshake = StageHandshake(tokenStore)
         streamController = StreamController(realtime, peerConnectionFactory, eventsService, stageIdentifier)
         stageHandshake?.connect(stageIdentifier) { event ->
@@ -105,12 +109,17 @@ class StageFragment : DaggerFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        listOf("primary", "secondary").forEach {
+        ALL_STREAMS.forEach {
             videoTracks[it]?.removeSink(renderers[it])
         }
         primary_view_renderer.release()
         secondary_view_renderer.release()
         renderers.clear()
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
     }
 
     override fun onStart() {
