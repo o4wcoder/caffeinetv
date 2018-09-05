@@ -51,7 +51,6 @@ class SignInFragment : DaggerFragment() {
     }
 
     private fun onSuccess(signInResult: SignInResult) {
-        tokenStore.storeSignInResult(signInResult)
         val navController = findNavController()
         when(signInResult.next) {
             "mfa_otp_required" -> {
@@ -61,6 +60,7 @@ class SignInFragment : DaggerFragment() {
                 navController.navigate(action)
             }
             else -> {
+                tokenStore.storeSignInResult(signInResult)
                 navController.navigate(R.id.lobby)
             }
         }
