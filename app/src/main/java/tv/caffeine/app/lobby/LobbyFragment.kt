@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -59,7 +60,7 @@ class LobbyFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
             R.id.profile -> {
-                Navigation.findNavController(view!!).navigate(R.id.profile)
+                findNavController().navigate(R.id.profile)
                 return true
             }
         }

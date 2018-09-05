@@ -32,7 +32,7 @@ class ProfileFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         sign_out_button.setOnClickListener {
             tokenStore.clear()
-            findNavController().navigateUp()
+            findNavController().popBackStack(R.id.landingFragment, false)
             accountsService.signOut().enqueue(object: Callback<Unit?> {
                 override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                     Timber.e(t, "Failed to sign out")
