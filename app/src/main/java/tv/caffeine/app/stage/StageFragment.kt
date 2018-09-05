@@ -38,6 +38,8 @@ class StageFragment : DaggerFragment() {
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var eventsService: EventsService
 
+    private val latestMessages: MutableList<MessageHandshake.Message> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
@@ -62,6 +64,7 @@ class StageFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initSurfaceViewRenderer()
+        displayMessages()
     }
 
     override fun onDestroyView() {
@@ -113,8 +116,14 @@ class StageFragment : DaggerFragment() {
             }
         }
         messageHandshake = MessageHandshake(tokenStore)
-        messageHandshake?.connect(stageIdentifier) {
-            Timber.d("Received message (${it.type}) from ${it.publisher.username} (${it.publisher.name}): ${it.body.text}")
+        messageHandshake?.connect(stageIdentifier) { message ->
+            val oldInstance = latestMessages.find { it.id == message.id }
+            if (oldInstance != null) {
+                latestMessages.remove(oldInstance)
+            }
+            latestMessages.add(message)
+            Timber.d("Received message (${message.type}) from ${message.publisher.username} (${message.publisher.name}): ${message.body.text}")
+            displayMessages()
         }
     }
 
@@ -123,6 +132,15 @@ class StageFragment : DaggerFragment() {
         streamController?.close()
         messageHandshake?.close()
         peerConnections.values.onEach { it.dispose() }
+    }
+
+    private fun displayMessages() {
+        val summary = latestMessages
+                .takeLast(5)
+                .joinToString("\n") {
+                    "${it.publisher.username}: ${it.body.text}" + if (it.endorsementCount > 0) " <${it.endorsementCount}>" else ""
+                }
+        messagesTextView?.setText(summary)
     }
 
     private fun deinitSurfaceViewRenderers() {
