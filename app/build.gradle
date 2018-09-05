@@ -39,7 +39,7 @@ dependencies {
 
     // UI
     implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc01'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc02'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'jp.wasabeef:picasso-transformations:2.2.1'
     implementation 'com.google.android.material:material:1.0.0-rc01'
