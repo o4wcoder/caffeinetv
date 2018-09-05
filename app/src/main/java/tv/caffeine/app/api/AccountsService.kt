@@ -27,12 +27,6 @@ interface AccountsService {
     fun signUp(@Body signUpBody: SignUpBody): Call<SignUpResult>
 }
 
-class AccountsManager(val accountsService: AccountsService) {
-    fun signIn(username: String, password: String) {
-
-    }
-}
-
 class SignInBody(val account: Account)
 class Account(val username: String, val password: String)
 

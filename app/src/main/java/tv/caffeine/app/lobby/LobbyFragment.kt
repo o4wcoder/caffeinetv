@@ -21,16 +21,15 @@ import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.api.Lobby
-import tv.caffeine.app.api.LobbyCard
-import tv.caffeine.app.api.LobbyResult
+import tv.caffeine.app.api.Api
+import tv.caffeine.app.api.LobbyService
 import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
 
 class LobbyFragment : DaggerFragment() {
 
     @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var lobby: Lobby
+    @Inject lateinit var lobbyService: LobbyService
     @Inject lateinit var tokenStore: TokenStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,12 +67,12 @@ class LobbyFragment : DaggerFragment() {
     }
 
     private fun loadLobby() {
-        lobby.lobby().enqueue(object: Callback<LobbyResult?> {
-            override fun onFailure(call: Call<LobbyResult?>?, t: Throwable?) {
+        lobbyService.lobby().enqueue(object: Callback<Api.LobbyResult?> {
+            override fun onFailure(call: Call<Api.LobbyResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to get lobby")
             }
 
-            override fun onResponse(call: Call<LobbyResult?>?, response: Response<LobbyResult?>?) {
+            override fun onResponse(call: Call<Api.LobbyResult?>?, response: Response<Api.LobbyResult?>?) {
                 Timber.d("Success! Got lobby! ${response?.body()}")
                 lobby_recycler_view ?: return Timber.d("RecyclerView is null, exiting")
                 response?.body()?.cards?.run {
@@ -81,11 +80,20 @@ class LobbyFragment : DaggerFragment() {
                 }
             }
         })
+        lobbyService.newLobby().enqueue(object: Callback<Api.v3.Lobby.Result?> {
+            override fun onFailure(call: Call<Api.v3.Lobby.Result?>?, t: Throwable?) {
+                Timber.e(t, "NEWLOBBY Failed to get the new lobby")
+            }
+
+            override fun onResponse(call: Call<Api.v3.Lobby.Result?>?, response: Response<Api.v3.Lobby.Result?>?) {
+                Timber.d("NEWLOBBY Got the new lobby ${response?.body()}")
+            }
+        })
     }
 
 }
 
-class LobbyAdapter(val cards: Array<LobbyCard>) : RecyclerView.Adapter<LobbyCardVH>() {
+class LobbyAdapter(val cards: Array<Api.LobbyCard>) : RecyclerView.Adapter<LobbyCardVH>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LobbyCardVH {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.broadcast_card, parent, false)
         return LobbyCardVH(view)

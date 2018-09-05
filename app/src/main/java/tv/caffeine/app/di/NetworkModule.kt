@@ -19,7 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.EventsService
-import tv.caffeine.app.api.Lobby
+import tv.caffeine.app.api.LobbyService
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.auth.AuthorizationInterceptor
 import tv.caffeine.app.auth.RefreshTokenService
@@ -96,7 +96,7 @@ class NetworkModule {
 
     @Provides fun providesAccountsService(retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
 
-    @Provides fun providesLobbyService(retrofit: Retrofit) = retrofit.create(Lobby::class.java)
+    @Provides fun providesLobbyService(retrofit: Retrofit) = retrofit.create(LobbyService::class.java)
 
     @Provides fun providesEventsService(retrofit: Retrofit) = retrofit.create(EventsService::class.java)
 
