@@ -9,12 +9,12 @@ import tv.caffeine.app.stage.StageFragment
 
 @Module
 abstract class InjectionModule {
-    @ContributesAndroidInjector abstract fun contributesSignInFragmentInjector(): SignInFragment
-    @ContributesAndroidInjector abstract fun contributesSignUpFragmentInjector(): SignUpFragment
-    @ContributesAndroidInjector abstract fun contributesLandingFragmentInjector(): LandingFragment
-    @ContributesAndroidInjector abstract fun contributesForgotFragmentInjector(): ForgotFragment
-    @ContributesAndroidInjector abstract fun contributesLobbyFragmentInjector(): LobbyFragment
-    @ContributesAndroidInjector abstract fun contributesStageFragmentInjector(): StageFragment
-    @ContributesAndroidInjector abstract fun contributesMfaCodeFragmentInjector(): MfaCodeFragment
-    @ContributesAndroidInjector abstract fun contributesProfileFragmentInjector(): ProfileFragment
+    @ContributesAndroidInjector abstract fun signInFragment(): SignInFragment
+    @ContributesAndroidInjector abstract fun signUpFragment(): SignUpFragment
+    @ContributesAndroidInjector abstract fun landingFragment(): LandingFragment
+    @ContributesAndroidInjector abstract fun forgotFragment(): ForgotFragment
+    @ContributesAndroidInjector abstract fun lobbyFragment(): LobbyFragment
+    @ContributesAndroidInjector abstract fun stageFragment(): StageFragment
+    @ContributesAndroidInjector abstract fun mfaCodeFragment(): MfaCodeFragment
+    @ContributesAndroidInjector abstract fun profileFragment(): ProfileFragment
 }
