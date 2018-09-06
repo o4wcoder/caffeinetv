@@ -32,10 +32,10 @@ class LandingFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         new_account_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signUpFragment))
         sign_in_with_email_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
-        loginIfPossible(view)
+        loginIfPossible()
     }
 
-    private fun loginIfPossible(view: View) {
+    private fun loginIfPossible() {
         val refreshToken = tokenStore.refreshToken ?: return
         val refreshTokenBody = RefreshTokenBody(refreshToken)
         accountsService.refreshToken(refreshTokenBody).enqueue(object : Callback<RefreshTokenResult?> {
@@ -46,8 +46,7 @@ class LandingFragment : DaggerFragment() {
             override fun onResponse(call: Call<RefreshTokenResult?>?, response: Response<RefreshTokenResult?>?) {
                 Timber.d("Request succeeded response: $response, body: ${response?.body()}")
                 val refreshTokenResult = response?.body() ?: return
-                val accessToken = refreshTokenResult.credentials.accessToken
-                val xCredential = refreshTokenResult.credentials.credential
+                tokenStore.storeRefreshTokenResult(refreshTokenResult)
                 val navController = findNavController()
                 navController.navigate(R.id.lobby)
             }

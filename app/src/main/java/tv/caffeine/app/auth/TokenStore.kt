@@ -3,6 +3,7 @@ package tv.caffeine.app.auth
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import tv.caffeine.app.api.CaffeineCredentials
+import tv.caffeine.app.api.RefreshTokenResult
 import tv.caffeine.app.api.SignInResult
 
 class TokenStore(private val sharedPreferences: SharedPreferences) {
@@ -28,6 +29,12 @@ class TokenStore(private val sharedPreferences: SharedPreferences) {
         refreshToken = credentials.refreshToken
         accessToken = credentials.accessToken
         credential = credentials.credential
+    }
+
+    fun storeRefreshTokenResult(refreshTokenResult: RefreshTokenResult) {
+        refreshToken = refreshTokenResult.credentials.refreshToken
+        accessToken = refreshTokenResult.credentials.accessToken
+        credential = refreshTokenResult.credentials.credential
     }
 
     fun clear() {
