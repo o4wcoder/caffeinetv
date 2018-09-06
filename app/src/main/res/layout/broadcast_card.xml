@@ -11,8 +11,10 @@
         android:id="@+id/preview_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="H, 16:9"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H, 16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,9 +24,9 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="@+id/preview_image_view"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tag_text_view" />
 
     <TextView
         android:id="@+id/username_text_view"
@@ -33,6 +35,7 @@
         android:layout_marginStart="8dp"
         android:drawablePadding="4dp"
         android:textColor="@android:color/white"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
         tools:text="Caffeine"
@@ -61,5 +64,17 @@
         app:layout_constraintTop_toBottomOf="@+id/username_text_view"
         tools:text="What is happening at Caffeine"
         tools:textColor="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/tag_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        tools:text="FEATURED"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+        tools:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
