@@ -143,11 +143,14 @@ sealed class LobbyVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     class ListCard(view: View) : LobbyVH(view) {
         private val recyclerView: RecyclerView = view.findViewById(R.id.card_list_recycler_view)
+        private val snapHelper = LinearSnapHelper()
+        init {
+            recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
+            snapHelper.attachToRecyclerView(recyclerView)
+        }
         override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
             val item = item as LobbyItem.CardList
-            recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
             recyclerView.adapter = LobbyAdapter(item.cards, tags, content)
-            LinearSnapHelper().attachToRecyclerView(recyclerView)
         }
     }
 
