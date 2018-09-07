@@ -93,4 +93,15 @@
         app:layout_constraintStart_toStartOf="@id/preview_image_view"
         app:layout_constraintTop_toTopOf="@id/preview_image_view" />
 
+    <TextView
+        android:id="@+id/live_indicator_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/live_indicator"
+        style="@style/LiveIndicator"
+        app:layout_constraintBottom_toBottomOf="@+id/preview_image_view"
+        app:layout_constraintStart_toStartOf="@+id/preview_image_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

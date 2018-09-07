@@ -17,8 +17,7 @@ class Api {
                     val name: String,
                     val contentId: String,
                     val previewImagePath: String,
-                    val user: User,
-                    val game: Game?)
+                    val dateText: String)
 
     class User(val caid: String,
                val username: String,

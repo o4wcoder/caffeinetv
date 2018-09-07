@@ -40,4 +40,13 @@
         <item name="android:textColor">#aaaaaa</item>
     </style>
 
+    <style name="LiveIndicator">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@drawable/live_indicator</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
 </resources>
