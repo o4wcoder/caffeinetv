@@ -22,7 +22,7 @@ import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.LobbyService
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.auth.AuthorizationInterceptor
-import tv.caffeine.app.auth.RefreshTokenService
+import tv.caffeine.app.api.RefreshTokenService
 import tv.caffeine.app.auth.TokenAuthenticator
 import tv.caffeine.app.auth.TokenStore
 import javax.inject.Named

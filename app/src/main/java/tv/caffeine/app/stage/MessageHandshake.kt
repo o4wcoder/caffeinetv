@@ -17,14 +17,7 @@ class MessageHandshake(private val tokenStore: TokenStore) {
 
     fun connect(stageIdentifier: String, callback: (Message) -> Unit) {
         val url = "wss://realtime.caffeine.tv/v2/reaper/stages/$stageIdentifier/messages"
-        val headers = """{
-                "Headers": {
-                    "x-credential" : "${tokenStore.credential ?: ""}",
-                    "authorization" : "Bearer ${tokenStore.accessToken ?: ""}",
-                    "X-Client-Type" : "android",
-                    "X-Client-Version" : "0"
-                }
-            }""".trimMargin()
+        val headers = tokenStore.webSocketHeader()
         webSocketController.connect(url, headers) {
             Timber.d("Received message $it")
             val message = gson.fromJson(it, Message::class.java)

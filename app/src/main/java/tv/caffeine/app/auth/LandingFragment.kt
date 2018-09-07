@@ -14,7 +14,6 @@ import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.api.RefreshTokenBody
 import tv.caffeine.app.api.RefreshTokenResult
 import javax.inject.Inject
 
@@ -36,8 +35,7 @@ class LandingFragment : DaggerFragment() {
     }
 
     private fun loginIfPossible() {
-        val refreshToken = tokenStore.refreshToken ?: return
-        val refreshTokenBody = RefreshTokenBody(refreshToken)
+        val refreshTokenBody = tokenStore.createRefreshTokenBody() ?: return
         accountsService.refreshToken(refreshTokenBody).enqueue(object : Callback<RefreshTokenResult?> {
             override fun onFailure(call: Call<RefreshTokenResult?>?, t: Throwable?) {
                 Timber.e(t, "Failed to login automatically")

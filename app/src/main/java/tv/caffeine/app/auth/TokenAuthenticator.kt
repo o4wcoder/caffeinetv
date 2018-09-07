@@ -4,35 +4,21 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.POST
-import tv.caffeine.app.api.RefreshTokenBody
-import tv.caffeine.app.api.RefreshTokenResult
+import tv.caffeine.app.api.RefreshTokenService
 
 class TokenAuthenticator(private val refreshTokenService: RefreshTokenService, private val tokenStore: TokenStore) : Authenticator {
     override fun authenticate(route: Route?, response: Response?): Request? {
-        val response = response ?: return null
-        val refreshToken = tokenStore.refreshToken ?: return null
-        val refreshTokenBody = RefreshTokenBody(refreshToken)
+        if (response == null) return null
+        val refreshTokenBody = tokenStore.createRefreshTokenBody() ?: return null
 
         val result = refreshTokenService.refreshTokenSync(refreshTokenBody).execute()
         if (!result.isSuccessful) return null
-        val yay = result.body() ?: return null
+        val credentials = result.body()?.credentials ?: return null
 
-        val credentials = yay.credentials
-        tokenStore.refreshToken = credentials.refreshToken
-        tokenStore.accessToken = credentials.accessToken
-        tokenStore.credential = credentials.credential
+        tokenStore.storeCredentials(credentials)
         return response.request().newBuilder()
-                .header("Authorization", "Bearer ${credentials.accessToken}")
-                .header("X-Credential", "Bearer ${credentials.credential}")
+                .apply { tokenStore.addHttpHeaders(this) }
                 .build()
     }
 
-}
-
-interface RefreshTokenService {
-    @POST("v1/account/token")
-    fun refreshTokenSync(@Body refreshTokenBody: RefreshTokenBody): Call<RefreshTokenResult>
 }
