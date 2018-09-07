@@ -33,4 +33,11 @@
 
     <style name="OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
+    <style name="LobbyHeader" parent="@style/TextAppearance.MaterialComponents.Headline4">
+    </style>
+
+    <style name="LobbySubtitle" parent="@style/TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">#aaaaaa</item>
+    </style>
+
 </resources>
