@@ -61,7 +61,7 @@ class Api {
                               val broadcast: Broadcast?,
                               val lastBroadcast: Broadcast?,
                               val followingViewers: Array<User>,
-                              val followingCount: Int)
+                              val followingViewersCount: Int)
             class Category(val id: String, val name: String, val broadcasters: Array<Broadcaster>)
         }
     }

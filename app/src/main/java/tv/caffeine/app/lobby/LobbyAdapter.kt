@@ -82,10 +82,17 @@ sealed class LobbyVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val usernameTextView: TextView = view.findViewById(R.id.username_text_view)
         private val broadcastTitleTextView: TextView = view.findViewById(R.id.broadcast_title_text_view)
         private val tagTextView: TextView = view.findViewById(R.id.tag_text_view)
+        private val friendsWatchingTextView: TextView = view.findViewById(R.id.friends_watching_text_view)
 
         override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
             val item = item as LobbyItem.SingleCard
             val broadcast = item.broadcaster.broadcast ?: item.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
+            friendsWatchingTextView.isVisible = item.broadcaster.followingViewersCount > 0
+            when(item.broadcaster.followingViewersCount) {
+                0 -> friendsWatchingTextView.text = null
+                1 -> friendsWatchingTextView.text =  itemView.context.getString(R.string.user_watching, item.broadcaster.followingViewers[0].username)
+                else -> friendsWatchingTextView.text = itemView.context.resources.getQuantityString(R.plurals.user_and_friends_watching, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewersCount - 1)
+            }
             Picasso.get().load(broadcast.previewImagePath)
             val previewImageUrl = "https://images.caffeine.tv${broadcast.previewImagePath}"
             Picasso.get()

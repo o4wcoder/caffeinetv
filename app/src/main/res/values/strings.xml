@@ -29,4 +29,9 @@
     <string name="submit_mfa_code">Submit</string>
     <string name="oss_licenses_button">Open Source Software Licenses</string>
     <string name="sign_out_button">Sign Out</string>
+    <string name="user_watching">%s is watching</string>
+    <plurals name="user_and_friends_watching">
+        <item quantity="one">%s and one other are watching</item>
+        <item quantity="other">%s and %d others are watching</item>
+    </plurals>
 </resources>
