@@ -97,12 +97,16 @@ sealed class LobbyVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val previewImageUrl = "https://images.caffeine.tv${broadcast.previewImagePath}"
             Picasso.get()
                     .load(previewImageUrl)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.default_lobby_image)
                     .transform(RoundedCornersTransformation(40, 0)) // TODO: multiply by display density
                     .into(previewImageView)
             Timber.d("Preview image: $previewImageUrl")
             val avatarImageUrl = "https://images.caffeine.tv${item.broadcaster.user.avatarImagePath}"
             Picasso.get()
                     .load(avatarImageUrl)
+                    .placeholder(R.drawable.default_avatar)
                     .transform(CropCircleTransformation())
                     .into(avatarImageView)
             Timber.d("Avatar image: $avatarImageUrl")
