@@ -19,10 +19,10 @@ class StageHandshake(private val tokenStore: TokenStore) {
     fun connect(stageIdentifier: String, callback: (Event) -> Unit) {
         val url = "wss://realtime.caffeine.tv/v2/stages/$stageIdentifier/details"
         val headers = tokenStore.webSocketHeader()
-        webSocketController.connect(url, headers) {
+        webSocketController.open(url, headers) {
             val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
             val event = eventEnvelope.v2
-            if (event == lastEvent) return@connect
+            if (event == lastEvent) return@open
             lastEvent = event
             callback(event)
         }

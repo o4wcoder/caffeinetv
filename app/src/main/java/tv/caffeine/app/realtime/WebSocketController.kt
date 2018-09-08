@@ -19,7 +19,7 @@ class WebSocketController(private val tag: String) {
 
     private var webSocket: WebSocket? = null
 
-    fun connect(url: String, headers: String, callback: (String) -> Unit) {
+    fun open(url: String, headers: String, callback: (String) -> Unit) {
         val okHttpClient = OkHttpClient.Builder().build()
         val request = Request.Builder().url(url).build()
         val listener = Listener(tag, headers) { callback(it) }
