@@ -29,16 +29,16 @@ sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 class HeaderCard(view: View) : LobbyViewHolder(view) {
     private val headerTextView: TextView = view.findViewById(R.id.header_text_view)
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
-        val item = item as LobbyItem.Header
-        headerTextView.text = item.text
+        val header = item as LobbyItem.Header
+        headerTextView.text = header.text
     }
 }
 
 class SubtitleCard(view: View) : LobbyViewHolder(view) {
     private val subtitleTextView: TextView = view.findViewById(R.id.subtitle_text_view)
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
-        val item = item as LobbyItem.Subtitle
-        subtitleTextView.text = item.text
+        val subtitle = item as LobbyItem.Subtitle
+        subtitleTextView.text = subtitle.text
     }
 }
 
@@ -59,8 +59,8 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     private val cropCircleTransformation = CropCircleTransformation()
 
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
-        val item = item as LobbyItem.SingleCard
-        val broadcast = item.broadcaster.broadcast ?: item.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
+        val singleCard = item as LobbyItem.SingleCard
+        val broadcast = singleCard.broadcaster.broadcast ?: singleCard.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
         val previewImageUrl = "https://images.caffeine.tv${broadcast.previewImagePath}"
         Picasso.get()
                 .load(previewImageUrl)
@@ -70,8 +70,8 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .transform(roundedCornersTransformation)
                 .into(previewImageView)
         Timber.d("Preview image: $previewImageUrl")
-        val avatarImageUrl = "https://images.caffeine.tv${item.broadcaster.user.avatarImagePath}"
-        val following = followManager.isFollowing(item.broadcaster.user.caid)
+        val avatarImageUrl = "https://images.caffeine.tv${singleCard.broadcaster.user.avatarImagePath}"
+        val following = followManager.isFollowing(singleCard.broadcaster.user.caid)
         val transformation = if (following) {
             cropBorderedCircleTransformation
         } else {
@@ -82,7 +82,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
             followButton.setOnClickListener {
                 followButton.isVisible = false
                 // TODO: trigger lobby reload?
-                followManager.followUser(item.broadcaster.user.caid)
+                followManager.followUser(singleCard.broadcaster.user.caid)
             }
         } else {
             followButton.setOnClickListener(null)
@@ -93,14 +93,14 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .transform(transformation)
                 .into(avatarImageView)
         Timber.d("Avatar image: $avatarImageUrl")
-        usernameTextView.text = item.broadcaster.user.username
-        if (item.broadcaster.user.isVerified) {
+        usernameTextView.text = singleCard.broadcaster.user.username
+        if (singleCard.broadcaster.user.isVerified) {
             usernameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)
         } else {
             usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
         }
         broadcastTitleTextView.text = broadcast.name
-        val tag = tags[item.broadcaster.tagId]
+        val tag = tags[singleCard.broadcaster.tagId]
         tagTextView.isVisible = tag != null
         if (tag != null) {
             tagTextView.text = tag.name
