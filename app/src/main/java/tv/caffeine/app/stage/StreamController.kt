@@ -15,6 +15,7 @@ class StreamController(private val realtime: Realtime,
                        private val eventsService: EventsService,
                        private val stageIdentifier: String) {
     private var heartbeatJob: Job? = null
+    private var closed = false
 
     fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
         realtime.createViewer(stream.id).enqueue(object: Callback<CreateViewerResult?> {
@@ -24,6 +25,7 @@ class StreamController(private val realtime: Realtime,
 
             override fun onResponse(call: Call<CreateViewerResult?>?, response: retrofit2.Response<CreateViewerResult?>?) {
                 Timber.d("Created viewer for stream ID ${stream.id}, ${response?.body()}, ${call?.request()?.headers()}, ${response?.headers()}")
+                if (closed) return
                 response?.body()?.let {
                     Timber.d("Got offer ${it.offer}")
                     handleOffer(it.offer, it.id, it.signed_payload, callback)
@@ -33,6 +35,7 @@ class StreamController(private val realtime: Realtime,
     }
 
     fun close() {
+        closed = true
         heartbeatJob?.cancel()
     }
 
@@ -64,77 +67,75 @@ class StreamController(private val realtime: Realtime,
                 peerConnection.createAnswer(object: CafSdpObserver() {
                     override fun onCreateSuccess(localSessionDescription: SessionDescription?) {
                         super.onCreateSuccess(localSessionDescription)
+                        if (localSessionDescription == null) return
                         peerConnection.setLocalDescription(object: CafSdpObserver() {
                             override fun onSetSuccess() {
                                 super.onSetSuccess()
                                 //
-                                Timber.d("LocalDesc: Success! $localSessionDescription - ${localSessionDescription?.type} - ${localSessionDescription?.description}")
-                                localSessionDescription?.let {
-                                    val answer = it.description
-                                    realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).enqueue(object: Callback<Void?> {
-                                        override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                                            Timber.e(t, "sendAnswer failed")
-                                        }
+                                Timber.d("LocalDesc: Success! $localSessionDescription - ${localSessionDescription.type} - ${localSessionDescription.description}")
+                                val answer = localSessionDescription.description
+                                realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).enqueue(object: Callback<Void?> {
+                                    override fun onFailure(call: Call<Void?>?, t: Throwable?) {
+                                        Timber.e(t, "sendAnswer failed")
+                                    }
 
-                                        override fun onResponse(call: Call<Void?>?, response: retrofit2.Response<Void?>?) {
-                                            Timber.d("sendAnswer succeeded $response, ${response?.body()}")
-                                            val receivers = peerConnection.receivers
-                                            val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
-                                            val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
-                                            callback(peerConnection, videoTrack, audioTrack)
-                                            heartbeatJob = launch {
-                                                val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
-                                                while(true) {
-                                                    repeat(5) {
-                                                        if (heartbeatJob?.isCancelled == true) return@launch
-                                                        peerConnection.getStats { stats ->
-                                                            val relevantStats = stats.statsMap
-                                                                    .filter { relevantStats.contains(it.value.type) }
-                                                                    .map {
-                                                                        it.value.members.plus(
-                                                                                mapOf(
-                                                                                        "id" to it.value.id,
-                                                                                        "timestamp" to (it.value.timestampUs / 1000.0).toInt().toString(),
-                                                                                        "type" to it.value.type,
-                                                                                        "kind" to it.value.id.substringBefore("_")
-                                                                                )
-                                                                        )
-                                                                    }
-                                                            val data = mapOf(
-                                                                    "mode" to "viewer", // TODO: support broadcasts
-                                                                    "stats" to relevantStats
-                                                            )
-                                                            eventsService.sendEvent(EventBody("webrtc_stats", data = data)).enqueue(object: Callback<Void?> {
-                                                                override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                                                                    Timber.e(t, "Failed to send the event")
+                                    override fun onResponse(call: Call<Void?>?, response: retrofit2.Response<Void?>?) {
+                                        Timber.d("sendAnswer succeeded $response, ${response?.body()}")
+                                        val receivers = peerConnection.receivers
+                                        val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
+                                        val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
+                                        callback(peerConnection, videoTrack, audioTrack)
+                                        heartbeatJob = launch {
+                                            val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
+                                            while(true) {
+                                                repeat(5) {
+                                                    if (heartbeatJob?.isCancelled == true) return@launch
+                                                    peerConnection.getStats { stats ->
+                                                        val relevantStats = stats.statsMap
+                                                                .filter { relevantStats.contains(it.value.type) }
+                                                                .map {
+                                                                    it.value.members.plus(
+                                                                            mapOf(
+                                                                                    "id" to it.value.id,
+                                                                                    "timestamp" to (it.value.timestampUs / 1000.0).toInt().toString(),
+                                                                                    "type" to it.value.type,
+                                                                                    "kind" to it.value.id.substringBefore("_")
+                                                                            )
+                                                                    )
                                                                 }
+                                                        val data = mapOf(
+                                                                "mode" to "viewer", // TODO: support broadcasts
+                                                                "stats" to relevantStats
+                                                        )
+                                                        eventsService.sendEvent(EventBody("webrtc_stats", data = data)).enqueue(object: Callback<Void?> {
+                                                            override fun onFailure(call: Call<Void?>?, t: Throwable?) {
+                                                                Timber.e(t, "Failed to send the event")
+                                                            }
 
-                                                                override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
-                                                                    Timber.d("Sent the event, got response $response")
-                                                                    response?.body()?.let { body ->
-                                                                        Timber.d("Got response body: $body")
-                                                                    }
+                                                            override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
+                                                                Timber.d("Sent the event, got response $response")
+                                                                response?.body()?.let { body ->
+                                                                    Timber.d("Got response body: $body")
                                                                 }
-                                                            })
-                                                        }
-                                                        delay(3, java.util.concurrent.TimeUnit.SECONDS)
+                                                            }
+                                                        })
                                                     }
-                                                    val heartbeatBody = HeartbeatBody(signedPayload)
-                                                    realtime.sendHeartbeat(viewerId, heartbeatBody).enqueue(object: Callback<Void?> {
-                                                        override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                                                            Timber.e(t, "Failed to send a heartbeat")
-                                                        }
-
-                                                        override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
-                                                            Timber.d("Sent heartbeat, got response $response")
-                                                        }
-                                                    })
+                                                    delay(3, java.util.concurrent.TimeUnit.SECONDS)
                                                 }
+                                                val heartbeatBody = HeartbeatBody(signedPayload)
+                                                realtime.sendHeartbeat(viewerId, heartbeatBody).enqueue(object: Callback<Void?> {
+                                                    override fun onFailure(call: Call<Void?>?, t: Throwable?) {
+                                                        Timber.e(t, "Failed to send a heartbeat")
+                                                    }
+
+                                                    override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
+                                                        Timber.d("Sent heartbeat, got response $response")
+                                                    }
+                                                })
                                             }
                                         }
-                                    })
-                                }
-
+                                    }
+                                })
                             }
                         }, localSessionDescription)
                     }
