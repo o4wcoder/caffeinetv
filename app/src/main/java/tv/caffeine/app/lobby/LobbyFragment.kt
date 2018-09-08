@@ -12,15 +12,18 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_lobby.*
 import tv.caffeine.app.R
 import tv.caffeine.app.di.LobbyViewModelFactory
+import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
 class LobbyFragment : DaggerFragment() {
 
     @Inject lateinit var viewModelFactory: LobbyViewModelFactory
+    @Inject lateinit var followManager: FollowManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        followManager.refreshFollowedUsers()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +36,7 @@ class LobbyFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(lobby_toolbar)
         lobby_recycler_view.layoutManager = LinearLayoutManager(context)
-        lobby_recycler_view.adapter = LobbyAdapter(listOf(), mapOf(), mapOf())
+        lobby_recycler_view.adapter = LobbyAdapter(listOf(), mapOf(), mapOf(), followManager)
         loadLobby()
     }
 
@@ -56,7 +59,7 @@ class LobbyFragment : DaggerFragment() {
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel::class.java)
         viewModel.getLobby().observe(this, Observer {
             val items = LobbyItem.parse(it)
-            lobby_recycler_view.adapter = LobbyAdapter(items, it.tags, it.content)
+            lobby_recycler_view.adapter = LobbyAdapter(items, it.tags, it.content, followManager)
         })
     }
 

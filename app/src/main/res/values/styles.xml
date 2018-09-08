@@ -19,6 +19,12 @@
         <item name="cornerRadius">16dp</item>
     </style>
 
+    <style name="LobbyFollowButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">16dp</item>
+        <item name="strokeColor">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="ActionButton" parent="@style/Widget.MaterialComponents.Button">
         <item name="cornerRadius">16dp</item>
     </style>
@@ -47,6 +53,11 @@
         <item name="android:paddingEnd">10dp</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
+    </style>
+    
+    <style name="BroadcastCardUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

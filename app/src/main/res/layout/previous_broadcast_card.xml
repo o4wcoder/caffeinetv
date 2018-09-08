@@ -37,8 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:drawablePadding="4dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        android:textColor="@android:color/white"
+        android:textAppearance="@style/BroadcastCardUsername"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,5 +87,16 @@
         app:layout_constraintStart_toStartOf="@+id/username_text_view"
         app:layout_constraintTop_toBottomOf="@+id/broadcast_title_text_view"
         tools:text="About 42 Minutes Ago" />
+
+    <Button
+        android:id="@+id/follow_button"
+        style="@style/LobbyFollowButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/follow_button"
+        app:layout_constraintBottom_toBottomOf="@+id/preview_image_view"
+        app:layout_constraintEnd_toEndOf="@+id/username_text_view"
+        app:layout_constraintStart_toStartOf="@+id/username_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/last_broadcast_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

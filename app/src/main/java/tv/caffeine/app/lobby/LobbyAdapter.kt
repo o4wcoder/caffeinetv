@@ -10,10 +10,12 @@ import tv.caffeine.app.lobby.LobbyItem.Companion.HEADER
 import tv.caffeine.app.lobby.LobbyItem.Companion.LIVE_BROADCAST_CARD
 import tv.caffeine.app.lobby.LobbyItem.Companion.PREVIOUS_BROADCAST_CARD
 import tv.caffeine.app.lobby.LobbyItem.Companion.SUBTITLE
+import tv.caffeine.app.session.FollowManager
 
 class LobbyAdapter(private val items: List<LobbyItem>,
                    private val tags: Map<String, Api.v3.Lobby.Tag>,
-                   private val content: Map<String, Api.v3.Lobby.Content>
+                   private val content: Map<String, Api.v3.Lobby.Content>,
+                   private val followManager: FollowManager
 ) : RecyclerView.Adapter<LobbyViewHolder>() {
 
     override fun getItemCount(): Int = items.count()
@@ -42,7 +44,7 @@ class LobbyAdapter(private val items: List<LobbyItem>,
 
     override fun onBindViewHolder(holder: LobbyViewHolder, position: Int) {
         val item = items[position]
-        holder.configure(item, tags, content)
+        holder.configure(item, tags, content, followManager)
     }
 
 }

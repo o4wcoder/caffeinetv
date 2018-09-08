@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import tv.caffeine.app.api.LobbyService
 import tv.caffeine.app.lobby.LobbyViewModel
+import javax.inject.Inject
 
-class LobbyViewModelFactory(private val lobbyService: LobbyService) : ViewModelProvider.Factory {
+class LobbyViewModelFactory @Inject constructor(
+        private val lobbyService: LobbyService
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LobbyViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

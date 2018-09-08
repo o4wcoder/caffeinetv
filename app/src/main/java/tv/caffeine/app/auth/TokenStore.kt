@@ -20,7 +20,8 @@ class TokenStore(private val sharedPreferences: SharedPreferences) {
         }
     private var accessToken: String? = null
     private var credential: String? = null
-    private var caid: String? = null
+    var caid: String? = null
+    private set
 
     fun storeSignInResult(signInResult: SignInResult) {
         refreshToken = signInResult.refreshToken

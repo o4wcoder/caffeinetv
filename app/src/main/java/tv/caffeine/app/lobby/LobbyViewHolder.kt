@@ -1,7 +1,10 @@
 package tv.caffeine.app.lobby
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
@@ -16,14 +19,16 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.Api
+import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.util.CropBorderedCircleTransformation
 
 sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    abstract fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>)
+    abstract fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager)
 }
 
 class HeaderCard(view: View) : LobbyViewHolder(view) {
     private val headerTextView: TextView = view.findViewById(R.id.header_text_view)
-    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
+    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         val item = item as LobbyItem.Header
         headerTextView.text = item.text
     }
@@ -31,7 +36,7 @@ class HeaderCard(view: View) : LobbyViewHolder(view) {
 
 class SubtitleCard(view: View) : LobbyViewHolder(view) {
     private val subtitleTextView: TextView = view.findViewById(R.id.subtitle_text_view)
-    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
+    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         val item = item as LobbyItem.Subtitle
         subtitleTextView.text = item.text
     }
@@ -43,8 +48,17 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     private val usernameTextView: TextView = view.findViewById(R.id.username_text_view)
     private val broadcastTitleTextView: TextView = view.findViewById(R.id.broadcast_title_text_view)
     private val tagTextView: TextView = view.findViewById(R.id.tag_text_view)
+    private val followButton: Button = view.findViewById(R.id.follow_button)
 
-    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
+    private val roundedCornersTransformation = RoundedCornersTransformation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f, itemView.resources.displayMetrics).toInt(), 0)
+
+    private val cropBorderedCircleTransformation = CropBorderedCircleTransformation(
+            itemView.resources.getColor(R.color.colorPrimary, null),
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, itemView.resources.displayMetrics))
+
+    private val cropCircleTransformation = CropCircleTransformation()
+
+    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         val item = item as LobbyItem.SingleCard
         val broadcast = item.broadcaster.broadcast ?: item.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
         val previewImageUrl = "https://images.caffeine.tv${broadcast.previewImagePath}"
@@ -53,14 +67,30 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .fit()
                 .centerCrop()
                 .placeholder(R.drawable.default_lobby_image)
-                .transform(RoundedCornersTransformation(40, 0)) // TODO: multiply by display density
+                .transform(roundedCornersTransformation)
                 .into(previewImageView)
         Timber.d("Preview image: $previewImageUrl")
         val avatarImageUrl = "https://images.caffeine.tv${item.broadcaster.user.avatarImagePath}"
+        val following = followManager.isFollowing(item.broadcaster.user.caid)
+        val transformation = if (following) {
+            cropBorderedCircleTransformation
+        } else {
+            cropCircleTransformation
+        }
+        followButton.isVisible = followManager.followersLoaded() && !following
+        if (followManager.followersLoaded() && !following) {
+            followButton.setOnClickListener {
+                followButton.isVisible = false
+                // TODO: trigger lobby reload?
+                followManager.followUser(item.broadcaster.user.caid)
+            }
+        } else {
+            followButton.setOnClickListener(null)
+        }
         Picasso.get()
                 .load(avatarImageUrl)
                 .placeholder(R.drawable.default_avatar)
-                .transform(CropCircleTransformation())
+                .transform(transformation)
                 .into(avatarImageView)
         Timber.d("Avatar image: $avatarImageUrl")
         usernameTextView.text = item.broadcaster.user.username
@@ -76,6 +106,11 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
             tagTextView.text = tag.name
             tagTextView.setTextColor(tag.color.toColorInt())
         }
+        if (following) {
+            usernameTextView.setTextColor(itemView.resources.getColor(R.color.colorPrimary, null))
+        } else {
+            usernameTextView.setTextColor(Color.WHITE)
+        }
     }
 }
 
@@ -83,8 +118,8 @@ class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
     private val friendsWatchingTextView: TextView = view.findViewById(R.id.friends_watching_text_view)
     private val gameLogoImageView: ImageView = view.findViewById(R.id.game_logo_image_view)
 
-    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
-        super.configure(item, tags, content)
+    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
+        super.configure(item, tags, content, followManager)
         val liveBroadcastItem = item as LobbyItem.LiveBroadcast
         friendsWatchingTextView.isVisible = item.broadcaster.followingViewersCount > 0
         when(item.broadcaster.followingViewersCount) {
@@ -117,8 +152,8 @@ class PreviousBroadcastCard(view: View) : BroadcasterCard(view) {
     private val nameTextView: TextView = view.findViewById(R.id.name_text_view)
     private val lastBroadcastTextView: TextView = view.findViewById(R.id.last_broadcast_text_view)
 
-    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
-        super.configure(item, tags, content)
+    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
+        super.configure(item, tags, content, followManager)
         val previousBroadcastItem = item as LobbyItem.PreviousBroadcast
         val broadcast = previousBroadcastItem.broadcaster.lastBroadcast ?: error("Unexpected broadcast state")
         nameTextView.text = previousBroadcastItem.broadcaster.user.name
@@ -136,9 +171,9 @@ class ListCard(view: View) : LobbyViewHolder(view) {
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.HORIZONTAL, false)
         snapHelper.attachToRecyclerView(recyclerView)
     }
-    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
+    override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         val item = item as LobbyItem.CardList
-        recyclerView.adapter = LobbyAdapter(item.cards, tags, content)
+        recyclerView.adapter = LobbyAdapter(item.cards, tags, content, followManager)
     }
 }
 
