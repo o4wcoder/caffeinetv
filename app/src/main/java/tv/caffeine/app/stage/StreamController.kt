@@ -91,7 +91,7 @@ class StreamController(private val realtime: Realtime,
                                                 repeat(5) {
                                                     if (heartbeatJob?.isCancelled == true) return@launch
                                                     peerConnection.getStats { stats ->
-                                                        val relevantStats = stats.statsMap
+                                                        val statsToSend = stats.statsMap
                                                                 .filter { relevantStats.contains(it.value.type) }
                                                                 .map {
                                                                     it.value.members.plus(
@@ -105,7 +105,7 @@ class StreamController(private val realtime: Realtime,
                                                                 }
                                                         val data = mapOf(
                                                                 "mode" to "viewer", // TODO: support broadcasts
-                                                                "stats" to relevantStats
+                                                                "stats" to statsToSend
                                                         )
                                                         eventsService.sendEvent(EventBody("webrtc_stats", data = data)).enqueue(object: Callback<Void?> {
                                                             override fun onFailure(call: Call<Void?>?, t: Throwable?) {
