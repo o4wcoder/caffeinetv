@@ -21,7 +21,7 @@ class CaffeineApplication : DaggerApplication() {
             = DaggerCaffeineComponent.builder().create(this)
 
     private fun initializeTimber() {
-        val tree = if (BuildConfig.DEBUG) CrashlyticsTree() else Timber.DebugTree()
+        val tree = if (BuildConfig.DEBUG) Timber.DebugTree() else CrashlyticsTree()
         Timber.plant(tree)
     }
 }
