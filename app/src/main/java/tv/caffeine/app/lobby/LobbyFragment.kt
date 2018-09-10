@@ -30,7 +30,7 @@ class LobbyFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lobby_recycler_view.layoutManager = LinearLayoutManager(context)
-        lobby_recycler_view.adapter = LobbyAdapter(listOf(), mapOf(), mapOf(), followManager)
+        lobby_recycler_view.adapter = LobbyAdapter(listOf(), mapOf(), mapOf(), followManager, lobby_recycler_view.recycledViewPool)
         profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.profile))
         loadLobby()
     }
@@ -39,7 +39,7 @@ class LobbyFragment : DaggerFragment() {
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel::class.java)
         viewModel.lobby.observe(this, Observer {
             val items = LobbyItem.parse(it)
-            lobby_recycler_view.adapter = LobbyAdapter(items, it.tags, it.content, followManager)
+            lobby_recycler_view.adapter = LobbyAdapter(items, it.tags, it.content, followManager, lobby_recycler_view.recycledViewPool)
             lobby_swipe_refresh_layout.isRefreshing = false
         })
         lobby_swipe_refresh_layout.setOnRefreshListener { refreshLobby(viewModel) }

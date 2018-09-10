@@ -163,7 +163,7 @@ class PreviousBroadcastCard(view: View) : BroadcasterCard(view) {
     }
 }
 
-class ListCard(view: View, recycledViewPool: RecyclerView.RecycledViewPool) : LobbyViewHolder(view) {
+class ListCard(view: View, private val recycledViewPool: RecyclerView.RecycledViewPool) : LobbyViewHolder(view) {
     private val recyclerView: RecyclerView = view.findViewById(R.id.card_list_recycler_view)
     private val snapHelper = LinearSnapHelper()
     init {
@@ -173,7 +173,7 @@ class ListCard(view: View, recycledViewPool: RecyclerView.RecycledViewPool) : Lo
     }
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         val cardList = item as LobbyItem.CardList
-        recyclerView.adapter = LobbyAdapter(cardList.cards, tags, content, followManager)
+        recyclerView.adapter = LobbyAdapter(cardList.cards, tags, content, followManager, recycledViewPool)
     }
 }
 

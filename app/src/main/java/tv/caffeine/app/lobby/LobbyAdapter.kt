@@ -15,9 +15,9 @@ import tv.caffeine.app.session.FollowManager
 class LobbyAdapter(private val items: List<LobbyItem>,
                    private val tags: Map<String, Api.v3.Lobby.Tag>,
                    private val content: Map<String, Api.v3.Lobby.Content>,
-                   private val followManager: FollowManager
+                   private val followManager: FollowManager,
+                   private val recycledViewPool: RecyclerView.RecycledViewPool
 ) : RecyclerView.Adapter<LobbyViewHolder>() {
-    private val recycledViewPool = RecyclerView.RecycledViewPool()
 
     override fun getItemCount(): Int = items.count()
 
