@@ -17,6 +17,7 @@ class LobbyAdapter(private val items: List<LobbyItem>,
                    private val content: Map<String, Api.v3.Lobby.Content>,
                    private val followManager: FollowManager
 ) : RecyclerView.Adapter<LobbyViewHolder>() {
+    private val recycledViewPool = RecyclerView.RecycledViewPool()
 
     override fun getItemCount(): Int = items.count()
 
@@ -37,7 +38,7 @@ class LobbyAdapter(private val items: List<LobbyItem>,
             SUBTITLE -> SubtitleCard(view)
             LIVE_BROADCAST_CARD -> LiveBroadcastCard(view)
             PREVIOUS_BROADCAST_CARD -> PreviousBroadcastCard(view)
-            CARD_LIST -> ListCard(view)
+            CARD_LIST -> ListCard(view, recycledViewPool)
             else -> error("Unexpected view type")
         }
     }

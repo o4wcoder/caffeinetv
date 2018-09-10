@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
-import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.Api
 import tv.caffeine.app.session.FollowManager
@@ -69,7 +68,6 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .placeholder(R.drawable.default_lobby_image)
                 .transform(roundedCornersTransformation)
                 .into(previewImageView)
-        Timber.d("Preview image: $previewImageUrl")
         val avatarImageUrl = "https://images.caffeine.tv${singleCard.broadcaster.user.avatarImagePath}"
         val following = followManager.isFollowing(singleCard.broadcaster.user.caid)
         val transformation = if (following) {
@@ -92,7 +90,6 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .placeholder(R.drawable.default_avatar)
                 .transform(transformation)
                 .into(avatarImageView)
-        Timber.d("Avatar image: $avatarImageUrl")
         usernameTextView.text = singleCard.broadcaster.user.username
         if (singleCard.broadcaster.user.isVerified) {
             usernameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)
@@ -166,16 +163,17 @@ class PreviousBroadcastCard(view: View) : BroadcasterCard(view) {
     }
 }
 
-class ListCard(view: View) : LobbyViewHolder(view) {
+class ListCard(view: View, recycledViewPool: RecyclerView.RecycledViewPool) : LobbyViewHolder(view) {
     private val recyclerView: RecyclerView = view.findViewById(R.id.card_list_recycler_view)
     private val snapHelper = LinearSnapHelper()
     init {
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.HORIZONTAL, false)
+        recyclerView.setRecycledViewPool(recycledViewPool)
         snapHelper.attachToRecyclerView(recyclerView)
     }
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
-        val item = item as LobbyItem.CardList
-        recyclerView.adapter = LobbyAdapter(item.cards, tags, content, followManager)
+        val cardList = item as LobbyItem.CardList
+        recyclerView.adapter = LobbyAdapter(cardList.cards, tags, content, followManager)
     }
 }
 
