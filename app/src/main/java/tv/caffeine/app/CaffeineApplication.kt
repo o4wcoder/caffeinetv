@@ -5,23 +5,20 @@ import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
 import tv.caffeine.app.di.DaggerCaffeineComponent
-import tv.caffeine.app.util.CrashlyticsTree
+import javax.inject.Inject
 
 class CaffeineApplication : DaggerApplication() {
+    @Inject lateinit var timberTree: Timber.Tree
+
     override fun onCreate() {
         super.onCreate()
         // This process is dedicated to LeakCanary for heap analysis.
         // You should not init your app in this process.
         if (LeakCanary.isInAnalyzerProcess(this)) return
         LeakCanary.install(this)
-        initializeTimber()
+        Timber.plant(timberTree)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication>
             = DaggerCaffeineComponent.builder().create(this)
-
-    private fun initializeTimber() {
-        val tree = if (BuildConfig.DEBUG) Timber.DebugTree() else CrashlyticsTree()
-        Timber.plant(tree)
-    }
 }

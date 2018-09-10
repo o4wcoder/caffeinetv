@@ -47,9 +47,6 @@ class NetworkModule {
     fun providesGsonConverterFactory(gson: Gson): GsonConverterFactory = GsonConverterFactory.create(gson)
 
     @Provides
-    fun providesHttpLoggingLevel() = HttpLoggingInterceptor.Level.BODY
-
-    @Provides
     fun providesHttpLoggingInterceptor(level: HttpLoggingInterceptor.Level) = HttpLoggingInterceptor().apply { setLevel(level) }
 
     @Provides
