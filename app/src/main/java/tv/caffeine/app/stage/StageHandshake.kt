@@ -11,8 +11,13 @@ class StageHandshake(private val tokenStore: TokenStore) {
     private val gsonForEvents: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     private var lastEvent: Event? = null
 
-    data class Event(val gameId: String, val hostConnectionQuality: String, val sessionId: String, val state: String, val streams: List<Stream>, val title: String)
-    data class Stream(val capabilities: Map<String, Boolean>, val id: String, val label: String, val type: String)
+    data class Event(val gameId: String, val sessionId: String, val state: String, val streams: List<Stream>, val title: String) {
+        var hostConnectionQuality: String = ""
+    }
+
+    data class Stream(val capabilities: Capabilities, val id: String, val label: String, val type: String) {
+        data class Capabilities(val video: Boolean, val audio: Boolean)
+    }
 
     private class EventEnvelope(val v2: Event)
 
