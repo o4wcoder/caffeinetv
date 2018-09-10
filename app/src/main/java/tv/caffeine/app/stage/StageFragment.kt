@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
 import org.webrtc.*
@@ -17,20 +18,19 @@ import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
 
-private const val PRIMARY = "primary"
-private const val SECONDARY = "secondary"
-private val ALL_STREAMS = arrayOf(PRIMARY, SECONDARY)
+private val ALL_STREAMS = arrayOf(StageHandshake.Stream.Type.primary, StageHandshake.Stream.Type.secondary)
 
 class StageFragment : DaggerFragment() {
     lateinit var stageIdentifier : String
     lateinit var broadcaster: String
-    private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
-    private val renderers: MutableMap<String, SurfaceViewRenderer> = mutableMapOf()
+    private val peerConnections: MutableMap<StageHandshake.Stream.Type, PeerConnection> = mutableMapOf()
+    private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
     var stageHandshake: StageHandshake? = null
     var messageHandshake: MessageHandshake? = null
     var streamController: StreamController? = null
-    private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
-    private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
+    private val videoTracks: MutableMap<StageHandshake.Stream.Type, VideoTrack> = mutableMapOf()
+    private val audioTracks: MutableMap<StageHandshake.Stream.Type, AudioTrack> = mutableMapOf()
+    private var streams: Map<StageHandshake.Stream.Type, StageHandshake.Stream> = mapOf()
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -88,15 +88,23 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun initSurfaceViewRenderer() {
-        renderers[PRIMARY] = primary_view_renderer
-        renderers[SECONDARY] = secondary_view_renderer
+        renderers[StageHandshake.Stream.Type.primary] = primary_view_renderer
+        renderers[StageHandshake.Stream.Type.secondary] = secondary_view_renderer
         renderers.forEach { entry ->
             val key = entry.key
             val renderer = entry.value
             renderer.init(eglBase.eglBaseContext, null)
             renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
             renderer.setEnableHardwareScaler(true)
-            videoTracks[key]?.addSink(renderer)
+            configureRenderer(renderer, streams[key], videoTracks[key])
+        }
+    }
+
+    private fun configureRenderer(renderer: SurfaceViewRenderer, stream: StageHandshake.Stream?, videoTrack: VideoTrack?) {
+        val hasVideo = videoTrack != null && stream?.capabilities?.video ?: false
+        renderer.isVisible = hasVideo
+        if (hasVideo) {
+            videoTrack?.addSink(renderer)
         }
     }
 
@@ -105,13 +113,16 @@ class StageFragment : DaggerFragment() {
         streamController = StreamController(realtime, peerConnectionFactory, eventsService, stageIdentifier)
         stageHandshake?.connect(stageIdentifier) { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
+            streams = event.streams.associateBy { stream -> stream.type }
             event.streams.forEach { stream ->
                 streamController?.connect(stream) { peerConnection, videoTrack, audioTrack ->
                     val streamType = stream.type
                     peerConnections[streamType] = peerConnection
-                    renderers[streamType]?.let { videoTrack?.addSink(it) }
                     videoTrack?.let { videoTracks[streamType] = it }
                     audioTrack?.let { audioTracks[streamType] = it }
+                    renderers[streamType]?.let {
+                        configureRenderer(it, stream, videoTrack)
+                    }
                 }
             }
         }

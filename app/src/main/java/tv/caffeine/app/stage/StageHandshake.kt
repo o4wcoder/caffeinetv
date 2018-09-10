@@ -15,7 +15,8 @@ class StageHandshake(private val tokenStore: TokenStore) {
         var hostConnectionQuality: String = ""
     }
 
-    data class Stream(val capabilities: Capabilities, val id: String, val label: String, val type: String) {
+    data class Stream(val capabilities: Capabilities, val id: String, val label: String, val type: Type) {
+        enum class Type { primary, secondary }
         data class Capabilities(val video: Boolean, val audio: Boolean)
     }
 
