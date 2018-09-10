@@ -116,12 +116,14 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
 
 class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
     private val friendsWatchingTextView: TextView = view.findViewById(R.id.friends_watching_text_view)
+    private val friendsWatchingKiltView: View = view.findViewById(R.id.friends_watching_kilt_view)
     private val gameLogoImageView: ImageView = view.findViewById(R.id.game_logo_image_view)
 
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         super.configure(item, tags, content, followManager)
         val liveBroadcastItem = item as LobbyItem.LiveBroadcast
         friendsWatchingTextView.isVisible = item.broadcaster.followingViewersCount > 0
+        friendsWatchingKiltView.isVisible = item.broadcaster.followingViewersCount > 0
         when(item.broadcaster.followingViewersCount) {
             0 -> friendsWatchingTextView.text = null
             1 -> friendsWatchingTextView.text =  itemView.context.getString(R.string.user_watching, item.broadcaster.followingViewers[0].username)

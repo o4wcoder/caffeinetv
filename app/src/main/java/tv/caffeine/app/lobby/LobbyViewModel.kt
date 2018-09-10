@@ -1,6 +1,5 @@
 package tv.caffeine.app.lobby
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import retrofit2.Call
@@ -11,13 +10,7 @@ import tv.caffeine.app.api.Api
 import tv.caffeine.app.api.LobbyService
 
 class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
-    private val lobby: MutableLiveData<Api.v3.Lobby.Result> = MutableLiveData()
-    private var result: Api.v3.Lobby.Result? = null
-
-    fun getLobby(): LiveData<Api.v3.Lobby.Result> {
-        if (result == null) loadLobby()
-        return lobby
-    }
+    val lobby: MutableLiveData<Api.v3.Lobby.Result> = MutableLiveData()
 
     fun refresh() {
         loadLobby()
@@ -31,8 +24,7 @@ class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
 
             override fun onResponse(call: Call<Api.v3.Lobby.Result?>?, response: Response<Api.v3.Lobby.Result?>?) {
                 Timber.d("NEWLOBBY Got the new lobby ${response?.body()}")
-                result = response?.body()
-                lobby.value = result
+                lobby.value = response?.body()
             }
         })
     }
