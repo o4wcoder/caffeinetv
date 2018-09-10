@@ -14,7 +14,7 @@ class StreamController(private val realtime: Realtime,
                        private val peerConnectionFactory: PeerConnectionFactory,
                        private val eventsService: EventsService,
                        private val stageIdentifier: String) {
-    private var heartbeatJob: Job? = null
+    private val heartbeatJobs: MutableList<Job> = mutableListOf()
     private var closed = false
 
     fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
@@ -25,7 +25,10 @@ class StreamController(private val realtime: Realtime,
 
             override fun onResponse(call: Call<CreateViewerResult?>?, response: retrofit2.Response<CreateViewerResult?>?) {
                 Timber.d("Created viewer for stream ID ${stream.id}, ${response?.body()}, ${call?.request()?.headers()}, ${response?.headers()}")
-                if (closed) return
+                if (closed) {
+                    Timber.e(Exception("VIEW"), "Viewer created after closing the stream controller")
+                    return
+                }
                 response?.body()?.let {
                     Timber.d("Got offer ${it.offer}")
                     handleOffer(it.offer, it.id, it.signed_payload, callback)
@@ -36,7 +39,8 @@ class StreamController(private val realtime: Realtime,
 
     fun close() {
         closed = true
-        heartbeatJob?.cancel()
+        Timber.d("Canceling ${heartbeatJobs.count()} heartbeat jobs")
+        heartbeatJobs.forEach { it.cancel() }
     }
 
     fun handleOffer(offer: String, viewerId: String, signedPayload: String, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
@@ -46,6 +50,10 @@ class StreamController(private val realtime: Realtime,
         val observer = object : PeerConnectionObserver(eventsService, viewerId, stageIdentifier) {
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
                 super.onIceCandidate(iceCandidate)
+                if (closed) {
+                    Timber.e(Exception("ICE"), "Ice candidate received after closing the stream controller")
+                    return
+                }
                 if (iceCandidate == null) return
                 val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
                 val body = IceCandidatesBody(arrayOf(candidate), signedPayload)
@@ -85,11 +93,11 @@ class StreamController(private val realtime: Realtime,
                                         val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
                                         val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
                                         callback(peerConnection, videoTrack, audioTrack)
-                                        heartbeatJob = launch {
+                                        heartbeatJobs.add(launch {
                                             val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
-                                            while(true) {
+                                            while(isActive) {
                                                 repeat(5) {
-                                                    if (heartbeatJob?.isCancelled == true) return@launch
+                                                    if (closed) return@launch
                                                     peerConnection.getStats { stats ->
                                                         val statsToSend = stats.statsMap
                                                                 .filter { relevantStats.contains(it.value.type) }
@@ -133,7 +141,7 @@ class StreamController(private val realtime: Realtime,
                                                     }
                                                 })
                                             }
-                                        }
+                                        })
                                     }
                                 })
                             }
