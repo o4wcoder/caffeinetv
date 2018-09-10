@@ -19,6 +19,10 @@ class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
         return lobby
     }
 
+    fun refresh() {
+        loadLobby()
+    }
+
     private fun loadLobby() {
         lobbyService.newLobby().enqueue(object: Callback<Api.v3.Lobby.Result?> {
             override fun onFailure(call: Call<Api.v3.Lobby.Result?>?, t: Throwable?) {

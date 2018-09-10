@@ -57,9 +57,11 @@ class LobbyFragment : DaggerFragment() {
 
     private fun loadLobby() {
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel::class.java)
+        lobby_swipe_refresh_layout.setOnRefreshListener { viewModel.refresh() }
         viewModel.getLobby().observe(this, Observer {
             val items = LobbyItem.parse(it)
             lobby_recycler_view.adapter = LobbyAdapter(items, it.tags, it.content, followManager)
+            lobby_swipe_refresh_layout.isRefreshing = false
         })
     }
 
