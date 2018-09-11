@@ -16,7 +16,15 @@
         <action
             android:id="@+id/action_lobbyFragment_to_profile"
             app:destination="@id/profile" />
+        <action
+            android:id="@+id/action_lobbyFragment_to_exploreFragment"
+            app:destination="@id/exploreFragment" />
     </fragment>
     <include app:graph="@navigation/stage" />
     <include app:graph="@navigation/profile" />
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="tv.caffeine.app.explore.ExploreFragment"
+        android:label="ExploreFragment"
+        tools:layout="@layout/fragment_explore"/>
 </navigation>

@@ -44,6 +44,6 @@ class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float)
     }
 
     override fun key(): String {
-        return "CropCircleTransformation()"
+        return "CropBorderedCircleTransformation()"
     }
 }

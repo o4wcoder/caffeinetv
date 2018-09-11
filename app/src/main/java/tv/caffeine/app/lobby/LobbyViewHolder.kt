@@ -60,15 +60,13 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         val singleCard = item as LobbyItem.SingleCard
         val broadcast = singleCard.broadcaster.broadcast ?: singleCard.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
-        val previewImageUrl = "https://images.caffeine.tv${broadcast.previewImagePath}"
         Picasso.get()
-                .load(previewImageUrl)
+                .load(broadcast.previewImageUrl)
                 .fit()
                 .centerCrop()
                 .placeholder(R.drawable.default_lobby_image)
                 .transform(roundedCornersTransformation)
                 .into(previewImageView)
-        val avatarImageUrl = "https://images.caffeine.tv${singleCard.broadcaster.user.avatarImagePath}"
         val following = followManager.isFollowing(singleCard.broadcaster.user.caid)
         val transformation = if (following) {
             cropBorderedCircleTransformation
@@ -86,7 +84,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
             followButton.setOnClickListener(null)
         }
         Picasso.get()
-                .load(avatarImageUrl)
+                .load(singleCard.broadcaster.user.avatarImageUrl)
                 .placeholder(R.drawable.default_avatar)
                 .transform(transformation)
                 .into(avatarImageView)
@@ -129,8 +127,7 @@ class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
         if (game != null) {
-            val gameLogoImageUrl = "https://images.caffeine.tv${game.iconImagePath}"
-            Picasso.get().load(gameLogoImageUrl).into(gameLogoImageView)
+            Picasso.get().load(game.iconImageUrl).into(gameLogoImageView)
         } else {
             gameLogoImageView.setImageDrawable(null)
         }

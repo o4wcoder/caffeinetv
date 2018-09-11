@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import tv.caffeine.app.ProfileFragment
 import tv.caffeine.app.auth.*
+import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.stage.StageFragment
 
@@ -17,4 +18,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun stageFragment(): StageFragment
     @ContributesAndroidInjector abstract fun mfaCodeFragment(): MfaCodeFragment
     @ContributesAndroidInjector abstract fun profileFragment(): ProfileFragment
+    @ContributesAndroidInjector abstract fun exploreFragment(): ExploreFragment
 }

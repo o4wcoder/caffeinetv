@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_lobby.*
 import tv.caffeine.app.R
-import tv.caffeine.app.di.LobbyViewModelFactory
+import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
 class LobbyFragment : DaggerFragment() {
 
-    @Inject lateinit var viewModelFactory: LobbyViewModelFactory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var followManager: FollowManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +32,7 @@ class LobbyFragment : DaggerFragment() {
         lobby_recycler_view.layoutManager = LinearLayoutManager(context)
         lobby_recycler_view.adapter = LobbyAdapter(listOf(), mapOf(), mapOf(), followManager, lobby_recycler_view.recycledViewPool)
         profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.profile))
+        searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))
         loadLobby()
     }
 

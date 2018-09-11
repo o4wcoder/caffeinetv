@@ -95,6 +95,8 @@ class NetworkModule {
 
     @Provides fun providesUsersService(retrofit: Retrofit) = retrofit.create(UsersService::class.java)
 
+    @Provides fun providesSearchService(retrofit: Retrofit) = retrofit.create(SearchService::class.java)
+
     @Provides fun providesRealtimeService(client: OkHttpClient): Realtime {
 //        val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
         val retrofit = Retrofit.Builder()

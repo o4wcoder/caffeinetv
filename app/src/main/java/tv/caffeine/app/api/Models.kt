@@ -17,7 +17,9 @@ class Api {
                     val name: String,
                     val contentId: String,
                     val previewImagePath: String,
-                    val dateText: String)
+                    val dateText: String) {
+        val previewImageUrl get() = "https://images.caffeine.tv$previewImagePath"
+    }
 
     class User(val caid: String,
                val username: String,
@@ -35,7 +37,9 @@ class Api {
                val countryName: Any?,
                val gender: Any?,
                val isFeatured: Boolean,
-               val isOnline: Boolean)
+               val isOnline: Boolean) {
+        val avatarImageUrl get() = "https://images.caffeine.tv$avatarImagePath"
+    }
 
     class Game(val bannerImagePath: String,
                val description: String,
@@ -54,7 +58,9 @@ class Api {
         class Lobby {
             class Result(val tags: Map<String, Tag>, val content: Map<String, Content>, val header: Any, val sections: Array<Section>)
             class Tag(val id: String, val name: String, val color: String)
-            class Content(val id: String, val type: String, val name: String, val iconImagePath: String, val bannerImagePath: String)
+            class Content(val id: String, val type: String, val name: String, val iconImagePath: String, val bannerImagePath: String) {
+                val iconImageUrl get() = "https://images.caffeine.tv$iconImagePath"
+            }
             class Section(val id: String, val type: String, val name: String, val emptyMessage: String?, val broadcasters: Array<Broadcaster>?, val categories: Array<Category>?)
             class Broadcaster(val id: String, val type: String, val user: User, val tagId: String,
                               val broadcast: Broadcast?,
