@@ -3,6 +3,7 @@ package tv.caffeine.app.di
 import dagger.Module
 import dagger.Provides
 import okhttp3.logging.HttpLoggingInterceptor
+import timber.log.Timber
 import tv.caffeine.app.util.CrashlyticsTree
 import javax.inject.Singleton
 
@@ -13,6 +14,6 @@ class LoggingModule {
 
     @Provides
     @Singleton
-    fun providesTimberTree() : Timber.Tree = CrashlyticsTree()
+    fun providesTimberTree(): Timber.Tree = CrashlyticsTree()
 
 }
