@@ -47,7 +47,20 @@ class StreamController(private val realtime: Realtime,
         val mediaConstraints = MediaConstraints()
         val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, offer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
-        val observer = object : PeerConnectionObserver(eventsService, viewerId, stageIdentifier) {
+        val observer = object : SimplePeerConnectionObserver() {
+            override fun onIceConnectionChange(newState: PeerConnection.IceConnectionState?) {
+                super.onIceConnectionChange(newState)
+                Timber.d("onIceConnectionChange: $newState")
+                if (newState == null) return
+                val data = mapOf(
+                        "connection_state" to newState.name,
+                        "stage_id" to stageIdentifier,
+                        "mode" to "viewer", // TODO: support broadcast
+                        "viewer_id" to viewerId
+                )
+                eventsService.sendEvent(EventBody("ice_connection_state", data = data))
+            }
+
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
                 super.onIceCandidate(iceCandidate)
                 if (closed) {
@@ -145,23 +158,13 @@ class StreamController(private val realtime: Realtime,
     }
 }
 
-open class PeerConnectionObserver(private val eventsService: EventsService,
-                                  private val viewerId: String,
-                                  private val stageIdentifier: String) : PeerConnection.Observer {
+open class SimplePeerConnectionObserver : PeerConnection.Observer {
     override fun onSignalingChange(newState: PeerConnection.SignalingState?) {
         Timber.d("onSignalingChange: $newState")
     }
 
     override fun onIceConnectionChange(newState: PeerConnection.IceConnectionState?) {
         Timber.d("onIceConnectionChange: $newState")
-        if (newState == null) return
-        val data = mapOf(
-                "connection_state" to newState.name,
-                "stage_id" to stageIdentifier,
-                "mode" to "viewer", // TODO: support broadcast
-                "viewer_id" to viewerId
-        )
-        eventsService.sendEvent(EventBody("ice_connection_state", data = data))
     }
 
     override fun onIceConnectionReceivingChange(receiving: Boolean) {
