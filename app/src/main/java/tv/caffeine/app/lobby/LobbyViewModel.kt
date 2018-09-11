@@ -24,7 +24,7 @@ class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
 
             override fun onResponse(call: Call<Api.v3.Lobby.Result?>?, response: Response<Api.v3.Lobby.Result?>?) {
                 Timber.d("NEWLOBBY Got the new lobby ${response?.body()}")
-                lobby.value = response?.body()
+                response?.body()?.let { lobby.value = it }
             }
         })
     }
