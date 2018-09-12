@@ -18,6 +18,9 @@ interface UsersService {
 
     @DELETE("v1/users/{caid1}/unfollow/{caid2}")
     fun unfollow(@Path("caid1") follower: String, @Path("caid2") toUnfollow: String): Call<Void>
+
+    @GET("v1/users/suggestions")
+    fun listSuggestions(): Call<List<SearchUserItem>>
 }
 
 class FollowRecord(val caid: String, val followedAt: String) // followedAt = ISO-8601 date

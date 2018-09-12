@@ -28,6 +28,7 @@ class ExploreFragment : DaggerFragment() {
             Timber.d("Got results $it")
             exploreAdapter.submitList(it.toList())
         })
+        viewModel.queryString = "" // trigger suggestions
         binding.exploreRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.exploreRecyclerView.adapter = exploreAdapter
         binding.viewModel = viewModel

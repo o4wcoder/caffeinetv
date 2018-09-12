@@ -32,6 +32,8 @@
     <string name="user_watching">%s is watching</string>
     <string name="live_indicator">Live</string>
     <string name="follow_button">Follow</string>
+    <string name="find_people">Find people</string>
+    <string name="search">Search</string>
     <plurals name="user_and_friends_watching">
         <item quantity="one">%s and one other are watching</item>
         <item quantity="other">%s and %d others are watching</item>

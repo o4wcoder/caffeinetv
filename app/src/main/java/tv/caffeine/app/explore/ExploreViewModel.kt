@@ -4,20 +4,39 @@ import androidx.lifecycle.MutableLiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import tv.caffeine.app.api.SearchQueryBody
-import tv.caffeine.app.api.SearchService
-import tv.caffeine.app.api.SearchUserItem
-import tv.caffeine.app.api.SearchUsersResult
+import timber.log.Timber
+import tv.caffeine.app.api.*
 import tv.caffeine.app.util.BaseObservableViewModel
 
-class ExploreViewModel(private val searchService: SearchService) : BaseObservableViewModel() {
+class ExploreViewModel(private val searchService: SearchService, private val usersService: UsersService) : BaseObservableViewModel() {
     val data: MutableLiveData<Array<SearchUserItem>> = MutableLiveData()
 
     var queryString: String = ""
         set(value) {
             field = value
-            findUsers(value)
+            usersMatching(value)
         }
+
+    private fun usersMatching(query: String) {
+        if (query.isBlank()) {
+            suggestUsers()
+        } else {
+            findUsers(query)
+        }
+    }
+
+    private fun suggestUsers() {
+        usersService.listSuggestions().enqueue(object: Callback<List<SearchUserItem>?> {
+            override fun onFailure(call: Call<List<SearchUserItem>?>?, t: Throwable?) {
+                Timber.e(t, "Failed to get list of user suggestions")
+            }
+
+            override fun onResponse(call: Call<List<SearchUserItem>?>?, response: Response<List<SearchUserItem>?>?) {
+                Timber.d("Received the user suggestions response $response")
+                response?.body()?.let { data.value = it.toTypedArray() }
+            }
+        })
+    }
 
     private fun findUsers(query: String) {
         searchService.searchUsers(SearchQueryBody(query)).enqueue(object: Callback<SearchUsersResult?> {
