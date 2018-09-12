@@ -2,7 +2,7 @@ package tv.caffeine.app.di
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import tv.caffeine.app.ProfileFragment
+import tv.caffeine.app.profile.ProfileFragment
 import tv.caffeine.app.auth.*
 import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.LobbyFragment

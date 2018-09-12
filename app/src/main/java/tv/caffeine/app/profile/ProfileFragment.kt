@@ -1,4 +1,4 @@
-package tv.caffeine.app
+package tv.caffeine.app.profile
 
 
 import android.content.Intent
@@ -14,6 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
+import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
