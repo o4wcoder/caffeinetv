@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.CropBorderedCircleTransformation
+import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.configure
 
 class ExploreAdapter(private val followManager: FollowManager) : ListAdapter<SearchUserItem, ExploreViewHolder>(object: DiffUtil.ItemCallback<SearchUserItem?>() {
     override fun areItemsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem === newItem
@@ -47,34 +47,8 @@ class ExploreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val cropCircleTransformation = CropCircleTransformation()
 
     fun bind(item: SearchUserItem, followManager: FollowManager) {
-        val following = followManager.isFollowing(item.user.caid)
-        val transformation = if (following) {
-            cropBorderedCircleTransformation
-        } else {
-            cropCircleTransformation
-        }
-        if (followManager.followersLoaded() && !following) {
-            followButton.isVisible = true
-            followButton.setOnClickListener {
-                followButton.isVisible = false
-                followManager.followUser(item.user.caid)
-            }
-        } else {
-            followButton.isVisible = false
-            followButton.setOnClickListener(null)
-        }
-        Picasso.get()
-                .load(item.user.avatarImageUrl)
-                .centerCrop()
-                .resizeDimen(R.dimen.avatar_size, R.dimen.avatar_size)
-                .placeholder(R.drawable.default_avatar)
-                .transform(transformation)
-                .into(avatarImageView)
-        usernameTextView.text = item.user.username
-        if (item.user.isVerified) {
-            usernameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)
-        } else {
-            usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-        }
+        val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.ExploreUsername_Following)
+        val notFollowedTheme = UserTheme(cropCircleTransformation, R.style.ExploreUsername_NotFollowing)
+        item.user.configure(avatarImageView, usernameTextView, followButton, followManager, followedTheme, notFollowedTheme)
     }
 }

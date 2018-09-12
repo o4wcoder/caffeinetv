@@ -54,10 +54,29 @@
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
-    
+
     <style name="BroadcastCardUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:drawablePadding">4dp</item>
+    </style>
+
+    <style name="BroadcastCardUsername.NotFollowing">
+    </style>
+
+    <style name="BroadcastCardUsername.Following">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="ExploreUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:drawablePadding">4dp</item>
+    </style>
+
+    <style name="ExploreUsername.NotFollowing" parent="@style/TextAppearance.MaterialComponents.Body1">
+    </style>
+
+    <style name="ExploreUsername.Following">
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
 </resources>

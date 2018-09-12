@@ -1,6 +1,5 @@
 package tv.caffeine.app.lobby
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -20,6 +19,8 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.Api
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.CropBorderedCircleTransformation
+import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.configure
 
 sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     abstract fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager)
@@ -67,46 +68,15 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .placeholder(R.drawable.default_lobby_image)
                 .transform(roundedCornersTransformation)
                 .into(previewImageView)
-        val following = followManager.isFollowing(singleCard.broadcaster.user.caid)
-        val transformation = if (following) {
-            cropBorderedCircleTransformation
-        } else {
-            cropCircleTransformation
-        }
-        followButton.isVisible = followManager.followersLoaded() && !following
-        if (followManager.followersLoaded() && !following) {
-            followButton.setOnClickListener {
-                followButton.isVisible = false
-                // TODO: trigger lobby reload?
-                followManager.followUser(singleCard.broadcaster.user.caid)
-            }
-        } else {
-            followButton.setOnClickListener(null)
-        }
-        Picasso.get()
-                .load(singleCard.broadcaster.user.avatarImageUrl)
-                .centerCrop()
-                .resizeDimen(R.dimen.avatar_size, R.dimen.avatar_size)
-                .placeholder(R.drawable.default_avatar)
-                .transform(transformation)
-                .into(avatarImageView)
-        usernameTextView.text = singleCard.broadcaster.user.username
-        if (singleCard.broadcaster.user.isVerified) {
-            usernameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)
-        } else {
-            usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-        }
+        val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.BroadcastCardUsername_Following)
+        val notFollowedTheme = UserTheme(cropCircleTransformation, R.style.BroadcastCardUsername_NotFollowing)
+        singleCard.broadcaster.user.configure(avatarImageView, usernameTextView, followButton, followManager, followedTheme, notFollowedTheme)
         broadcastTitleTextView.text = broadcast.name
         val tag = tags[singleCard.broadcaster.tagId]
         tagTextView.isVisible = tag != null
         if (tag != null) {
             tagTextView.text = tag.name
             tagTextView.setTextColor(tag.color.toColorInt())
-        }
-        if (following) {
-            usernameTextView.setTextColor(itemView.resources.getColor(R.color.colorPrimary, null))
-        } else {
-            usernameTextView.setTextColor(Color.WHITE)
         }
     }
 }
