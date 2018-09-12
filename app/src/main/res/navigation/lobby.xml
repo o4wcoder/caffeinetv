@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_lobbyFragment_to_exploreFragment"
             app:destination="@id/exploreFragment" />
+        <action
+            android:id="@+id/action_lobbyFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
     </fragment>
     <include app:graph="@navigation/stage" />
     <include app:graph="@navigation/profile" />
@@ -27,4 +30,9 @@
         android:name="tv.caffeine.app.explore.ExploreFragment"
         android:label="ExploreFragment"
         tools:layout="@layout/fragment_explore"/>
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="tv.caffeine.app.notifications.NotificationsFragment"
+        android:label="notifications_fragment"
+        tools:layout="@layout/notifications_fragment" />
 </navigation>
