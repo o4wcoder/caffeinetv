@@ -20,6 +20,7 @@ class LobbyFragment : DaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var followManager: FollowManager
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -37,7 +38,7 @@ class LobbyFragment : DaggerFragment() {
     }
 
     private fun loadLobby() {
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(LobbyViewModel::class.java)
+        val viewModel = viewModelProvider.get(LobbyViewModel::class.java)
         viewModel.lobby.observe(this, Observer {
             val items = LobbyItem.parse(it)
             lobby_recycler_view.adapter = LobbyAdapter(items, it.tags, it.content, followManager, lobby_recycler_view.recycledViewPool)

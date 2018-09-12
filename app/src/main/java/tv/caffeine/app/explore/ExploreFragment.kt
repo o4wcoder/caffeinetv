@@ -18,12 +18,13 @@ class ExploreFragment : DaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var exploreAdapter: ExploreAdapter
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val binding = FragmentExploreBinding.inflate(inflater, container, false)
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(ExploreViewModel::class.java)
+        val viewModel = viewModelProvider.get(ExploreViewModel::class.java)
         viewModel.data.observe(this, Observer {
             Timber.d("Got results $it")
             exploreAdapter.submitList(it.toList())
