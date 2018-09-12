@@ -53,7 +53,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
 
     private val cropBorderedCircleTransformation = CropBorderedCircleTransformation(
             itemView.resources.getColor(R.color.colorPrimary, null),
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, itemView.resources.displayMetrics))
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, itemView.resources.displayMetrics))
 
     private val cropCircleTransformation = CropCircleTransformation()
 
@@ -85,6 +85,8 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
         }
         Picasso.get()
                 .load(singleCard.broadcaster.user.avatarImageUrl)
+                .centerCrop()
+                .resizeDimen(R.dimen.avatar_size, R.dimen.avatar_size)
                 .placeholder(R.drawable.default_avatar)
                 .transform(transformation)
                 .into(avatarImageView)

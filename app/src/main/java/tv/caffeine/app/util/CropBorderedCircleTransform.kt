@@ -36,7 +36,7 @@ class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float)
         canvas.drawCircle(r, r, r, paint)
 
         // draw border
-        canvas.drawCircle(r, r, r, borderPaint)
+        canvas.drawCircle(r, r, r-borderPaint.strokeWidth/2, borderPaint)
 
         source.recycle()
 
