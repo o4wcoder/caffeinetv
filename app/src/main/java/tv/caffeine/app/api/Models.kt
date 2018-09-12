@@ -2,17 +2,6 @@ package tv.caffeine.app.api
 
 class Api {
 
-    class Model(val id: String, val name: String)
-
-    class LobbyResult(val requestAvatarUpdate: Boolean, val welcomeCard: Boolean, val cards: Array<LobbyCard>)
-
-    class LobbyCard(val id: String,
-                    val broadcast: Broadcast,
-                    val followingViewers: Array<User>,
-                    val followingViewersCount: Int,
-                    val score: Int,
-                    val reason: String)
-
     class Broadcast(val id: String,
                     val name: String,
                     val contentId: String,
