@@ -30,6 +30,8 @@ class Api {
         val avatarImageUrl get() = "https://images.caffeine.tv$avatarImagePath"
     }
 
+    class UserContainer(val user: User)
+
     class Game(val bannerImagePath: String,
                val description: String,
                val executableName: String?,

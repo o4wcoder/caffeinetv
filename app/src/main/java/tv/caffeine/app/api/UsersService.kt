@@ -1,5 +1,6 @@
 package tv.caffeine.app.api
 
+import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -21,6 +22,9 @@ interface UsersService {
 
     @GET("v1/users/suggestions")
     fun listSuggestions(): Call<List<SearchUserItem>>
+
+    @GET("v1/users/{caid}")
+    fun userDetails(@Path("caid") userId: String): Deferred<Api.UserContainer>
 }
 
 class FollowRecord(val caid: String, val followedAt: String) // followedAt = ISO-8601 date

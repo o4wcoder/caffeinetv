@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
+import tv.caffeine.app.api.Api
 import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
@@ -14,6 +15,7 @@ import javax.inject.Singleton
 class FollowManager @Inject constructor(private val usersService: UsersService, private val tokenStore: TokenStore) {
 
     private val followedUsers: MutableMap<String, Set<String>> = mutableMapOf()
+    private val userDetails: MutableMap<String, Api.User> = mutableMapOf()
 
     fun followers() = tokenStore.caid?.let { followedUsers[it] } ?: setOf()
 
@@ -65,6 +67,14 @@ class FollowManager @Inject constructor(private val usersService: UsersService, 
                 }
             }
         })
+    }
+
+    suspend fun userDetails(caid: String): Api.User {
+        userDetails[caid]?.let { return it }
+        val result = usersService.userDetails(caid)
+        val user = result.await().user
+        userDetails[caid] = user
+        return user
     }
 }
 
