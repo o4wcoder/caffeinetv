@@ -13,7 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:drawablePadding="4dp"
+        android:drawablePadding="@dimen/verified_icon_padding"
         android:textAppearance="@style/ExploreUsername.NotFollowing"
         app:layout_constraintBottom_toTopOf="@+id/followed_you_text_view"
         app:layout_constraintEnd_toStartOf="@+id/follow_button"

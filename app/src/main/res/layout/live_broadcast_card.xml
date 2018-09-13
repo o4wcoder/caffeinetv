@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:drawablePadding="4dp"
+        android:drawablePadding="@dimen/verified_icon_padding"
         android:textAppearance="@style/BroadcastCardUsername.NotFollowing"
         tools:drawableEnd="@drawable/verified_large"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
