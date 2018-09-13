@@ -9,10 +9,7 @@
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"
         android:label="fragment_lobby"
-        tools:layout="@layout/fragment_lobby" >
-        <action
-            android:id="@+id/action_lobbyFragment_to_stage"
-            app:destination="@id/stage" />
+        tools:layout="@layout/fragment_lobby">
         <action
             android:id="@+id/action_lobbyFragment_to_profile"
             app:destination="@id/profile" />
@@ -22,17 +19,31 @@
         <action
             android:id="@+id/action_lobbyFragment_to_notificationsFragment"
             app:destination="@id/notificationsFragment" />
+        <action
+            android:id="@+id/action_lobbyFragment_to_stageFragment"
+            app:destination="@id/stageFragment" />
     </fragment>
-    <include app:graph="@navigation/stage" />
     <include app:graph="@navigation/profile" />
     <fragment
         android:id="@+id/exploreFragment"
         android:name="tv.caffeine.app.explore.ExploreFragment"
         android:label="ExploreFragment"
-        tools:layout="@layout/fragment_explore"/>
+        tools:layout="@layout/fragment_explore" />
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="tv.caffeine.app.notifications.NotificationsFragment"
         android:label="notifications_fragment"
         tools:layout="@layout/notifications_fragment" />
+    <fragment
+        android:id="@+id/stageFragment"
+        android:name="tv.caffeine.app.stage.StageFragment"
+        android:label="fragment_stage"
+        tools:layout="@layout/fragment_stage" >
+        <argument
+            android:name="stageIdentifier"
+            app:argType="string" />
+        <argument
+            android:name="broadcaster"
+            app:argType="string" />
+    </fragment>
 </navigation>

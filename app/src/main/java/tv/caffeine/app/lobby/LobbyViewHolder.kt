@@ -1,6 +1,5 @@
 package tv.caffeine.app.lobby
 
-import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.Button
@@ -104,14 +103,8 @@ class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
             gameLogoImageView.setImageDrawable(null)
         }
         itemView.setOnClickListener {
-            // TODO: switch to safeargs when their code gen is fixed
-//            val action = LobbyFragmentDirections.actionLobbyFragmentToStage(item.broadcaster.user.stageId, item.broadcaster.user.username)
-//            Navigation.findNavController(itemView).navigate(action)
-            val args = Bundle().apply {
-                putString("stageIdentifier", item.broadcaster.user.stageId)
-                putString("broadcaster", item.broadcaster.user.username)
-            }
-            Navigation.findNavController(itemView).navigate(R.id.stage, args)
+            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.stageId, item.broadcaster.user.username)
+            Navigation.findNavController(itemView).navigate(action)
         }
     }
 }
