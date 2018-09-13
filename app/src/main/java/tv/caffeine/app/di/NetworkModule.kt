@@ -1,8 +1,6 @@
 package tv.caffeine.app.di
 
-import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -24,19 +22,10 @@ import tv.caffeine.app.auth.TokenStore
 import javax.inject.Named
 import javax.inject.Singleton
 
-const val BASE_URL = "BASE_URL"
+private const val BASE_URL = "BASE_URL"
 
 @Module
 class NetworkModule {
-    @Provides
-    fun providesContext(application: Application): Context = application
-
-    @Provides
-    fun providesCaffeineSharedPreferences(context: Context) = context.getSharedPreferences(CAFFEINE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-
-    @Provides
-    @Named(REFRESH_TOKEN)
-    fun providesRefreshToken(sharedPreferences: SharedPreferences): String? = sharedPreferences.getString(REFRESH_TOKEN, null)
 
     @Provides
     fun providesGson(): Gson = GsonBuilder()
@@ -48,10 +37,6 @@ class NetworkModule {
 
     @Provides
     fun providesHttpLoggingInterceptor(level: HttpLoggingInterceptor.Level) = HttpLoggingInterceptor().apply { setLevel(level) }
-
-    @Provides
-    @Singleton
-    fun providesTokenStore(sharedPreferences: SharedPreferences) = TokenStore(sharedPreferences)
 
     @Provides
     fun providesRefreshTokenService(gsonConverterFactory: GsonConverterFactory, @Named(BASE_URL) baseUrl: String): RefreshTokenService {
