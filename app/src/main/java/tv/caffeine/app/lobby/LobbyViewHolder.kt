@@ -103,7 +103,7 @@ class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
             gameLogoImageView.setImageDrawable(null)
         }
         itemView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.stageId, item.broadcaster.user.username)
+            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).navigate(action)
         }
     }

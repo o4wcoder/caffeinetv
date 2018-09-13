@@ -40,10 +40,13 @@
         android:label="fragment_stage"
         tools:layout="@layout/fragment_stage" >
         <argument
-            android:name="stageIdentifier"
-            app:argType="string" />
-        <argument
             android:name="broadcaster"
             app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="caffeine.tv/{broadcaster}" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="www.caffeine.tv/{broadcaster}" />
     </fragment>
 </navigation>

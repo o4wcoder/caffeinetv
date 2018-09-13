@@ -10,18 +10,21 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
 private val ALL_STREAMS = arrayOf(StageHandshake.Stream.Type.primary, StageHandshake.Stream.Type.secondary)
 
 class StageFragment : DaggerFragment() {
-    lateinit var stageIdentifier : String
     lateinit var broadcaster: String
     private val peerConnections: MutableMap<StageHandshake.Stream.Type, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
@@ -37,20 +40,25 @@ class StageFragment : DaggerFragment() {
     @Inject lateinit var eglBase: EglBase
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var eventsService: EventsService
+    @Inject lateinit var followManager: FollowManager
 
     private val latestMessages: MutableList<MessageHandshake.Message> = mutableListOf()
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
-        stageIdentifier = args.stageIdentifier
         broadcaster = args.broadcaster
-        connectStreams()
+        job = launch {
+            val userDetails = followManager.userDetails(broadcaster)
+            launch(UI) { connectStreams(userDetails.stageId) }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        job?.cancel()
         disconnectStreams()
     }
 
@@ -108,7 +116,7 @@ class StageFragment : DaggerFragment() {
         }
     }
 
-    private fun connectStreams() {
+    private fun connectStreams(stageIdentifier: String) {
         stageHandshake = StageHandshake(tokenStore)
         streamController = StreamController(realtime, peerConnectionFactory, eventsService, stageIdentifier)
         stageHandshake?.connect(stageIdentifier) { event ->
