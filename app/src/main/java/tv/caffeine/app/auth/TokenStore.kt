@@ -61,8 +61,8 @@ class TokenStore(private val sharedPreferences: SharedPreferences) {
 
     fun addHttpHeaders(requestBuilder: Request.Builder) {
         requestBuilder.apply {
-            accessToken?.let { addHeader("Authorization", "Bearer $it") }
-            credential?.let { addHeader("X-Credential", it) }
+            accessToken?.let { header("Authorization", "Bearer $it") }
+            credential?.let { header("X-Credential", it) }
         }
     }
 }

@@ -39,9 +39,11 @@ class NetworkModule {
     fun providesHttpLoggingInterceptor(level: HttpLoggingInterceptor.Level) = HttpLoggingInterceptor().apply { setLevel(level) }
 
     @Provides
-    fun providesRefreshTokenService(gsonConverterFactory: GsonConverterFactory, @Named(BASE_URL) baseUrl: String): RefreshTokenService {
+    fun providesRefreshTokenService(gsonConverterFactory: GsonConverterFactory, @Named(BASE_URL) baseUrl: String, loggingInterceptor: HttpLoggingInterceptor): RefreshTokenService {
+        val okHttpClient = OkHttpClient.Builder().addNetworkInterceptor(loggingInterceptor).build()
         val retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
+                .client(okHttpClient)
                 .addConverterFactory(gsonConverterFactory)
                 .build()
         return retrofit.create(RefreshTokenService::class.java)
@@ -57,7 +59,7 @@ class NetworkModule {
     fun providesOkHttpClient(tokenAuthenticator: TokenAuthenticator, authorizationInterceptor: AuthorizationInterceptor, loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
             .authenticator(tokenAuthenticator)
             .addInterceptor(authorizationInterceptor)
-            .addInterceptor(loggingInterceptor)
+            .addNetworkInterceptor(loggingInterceptor)
             .build()
 
     @Provides
