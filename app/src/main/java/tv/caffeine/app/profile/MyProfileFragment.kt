@@ -20,7 +20,7 @@ import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.databinding.FragmentProfileBinding
+import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ class MyProfileFragment : DaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = FragmentProfileBinding.inflate(inflater, container, false)
+        val binding = FragmentMyProfileBinding.inflate(inflater, container, false)
         binding.signOutButton.setOnClickListener {
             tokenStore.clear()
             findNavController().popBackStack(R.id.landingFragment, false)

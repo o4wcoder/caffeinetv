@@ -3,6 +3,7 @@ package tv.caffeine.app.util
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DimenRes
 import androidx.annotation.StyleRes
 import androidx.core.view.isVisible
 import com.squareup.picasso.Picasso
@@ -13,16 +14,27 @@ import tv.caffeine.app.session.FollowManager
 
 class UserTheme(val transformation: Transformation, @StyleRes val textAppearance: Int)
 
-fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView, followButton: Button, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView,
+                       followButton: Button, followManager: FollowManager,
+                       allowUnfollowing: Boolean = false,
+                       @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
+                       followedTheme: UserTheme, notFollowedTheme: UserTheme) {
     val following = followManager.isFollowing(caid)
     val theme = if (following) followedTheme else notFollowedTheme
     val transformation = theme.transformation
     if (followManager.followersLoaded() && !following) {
         followButton.isVisible = true
+        followButton.setText(R.string.follow_button)
         followButton.setOnClickListener {
-            followButton.isVisible = false
-            // TODO: trigger lobby reload?
+            followButton.isVisible = allowUnfollowing
             followManager.followUser(caid)
+        }
+    } else if (allowUnfollowing && followManager.followersLoaded() && following) {
+        followButton.isVisible = true
+        followButton.setText(R.string.unfollow_button)
+        followButton.setOnClickListener {
+            followButton.isVisible = allowUnfollowing
+            followManager.unfollowUser(caid)
         }
     } else {
         followButton.isVisible = false
@@ -31,7 +43,7 @@ fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView, f
     Picasso.get()
             .load(avatarImageUrl)
             .centerCrop()
-            .resizeDimen(R.dimen.avatar_size, R.dimen.avatar_size)
+            .resizeDimen(avatarImageSize, avatarImageSize)
             .placeholder(R.drawable.default_avatar_round)
             .transform(transformation)
             .into(avatarImageView)

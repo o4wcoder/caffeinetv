@@ -59,7 +59,7 @@ class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         job = launch {
             val user = followManager.userDetails(item.caid)
             launch(UI) {
-                user.configure(avatarImageView, usernameTextView, followButton, followManager, followedTheme, notFollowedTheme)
+                user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
             }
         }
     }

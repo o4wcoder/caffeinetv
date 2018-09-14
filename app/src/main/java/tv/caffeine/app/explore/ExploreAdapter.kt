@@ -49,6 +49,6 @@ class ExploreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(item: SearchUserItem, followManager: FollowManager) {
         val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.ExploreUsername_Following)
         val notFollowedTheme = UserTheme(cropCircleTransformation, R.style.ExploreUsername_NotFollowing)
-        item.user.configure(avatarImageView, usernameTextView, followButton, followManager, followedTheme, notFollowedTheme)
+        item.user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
     }
 }

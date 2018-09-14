@@ -32,7 +32,7 @@ class LobbyFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         lobby_recycler_view.layoutManager = LinearLayoutManager(context)
         lobby_recycler_view.adapter = LobbyAdapter(listOf(), mapOf(), mapOf(), followManager, lobby_recycler_view.recycledViewPool)
-        profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.profile))
+        profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
         searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))
         activityButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.notificationsFragment))
         loadLobby()

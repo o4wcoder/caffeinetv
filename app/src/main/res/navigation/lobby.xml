@@ -11,9 +11,6 @@
         android:label="fragment_lobby"
         tools:layout="@layout/fragment_lobby">
         <action
-            android:id="@+id/action_lobbyFragment_to_profile"
-            app:destination="@id/profile" />
-        <action
             android:id="@+id/action_lobbyFragment_to_exploreFragment"
             app:destination="@id/exploreFragment" />
         <action
@@ -22,8 +19,13 @@
         <action
             android:id="@+id/action_lobbyFragment_to_stageFragment"
             app:destination="@id/stageFragment" />
+        <action
+            android:id="@+id/action_lobbyFragment_to_myProfileFragment"
+            app:destination="@id/myProfileFragment" />
+        <action
+            android:id="@+id/action_lobbyFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
-    <include app:graph="@navigation/profile" />
     <fragment
         android:id="@+id/exploreFragment"
         android:name="tv.caffeine.app.explore.ExploreFragment"
@@ -48,5 +50,19 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="www.caffeine.tv/{broadcaster}" />
+    </fragment>
+    <fragment
+        android:id="@+id/myProfileFragment"
+        android:name="tv.caffeine.app.profile.MyProfileFragment"
+        android:label="MyProfileFragment"
+        tools:layout="@layout/fragment_my_profile"/>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="tv.caffeine.app.profile.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="caid"
+            app:argType="string" />
     </fragment>
 </navigation>

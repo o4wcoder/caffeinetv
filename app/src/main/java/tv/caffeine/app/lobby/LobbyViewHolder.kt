@@ -69,7 +69,10 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .into(previewImageView)
         val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.BroadcastCardUsername_Following)
         val notFollowedTheme = UserTheme(cropCircleTransformation, R.style.BroadcastCardUsername_NotFollowing)
-        singleCard.broadcaster.user.configure(avatarImageView, usernameTextView, followButton, followManager, followedTheme, notFollowedTheme)
+        val isLive = singleCard.broadcaster.broadcast != null
+        singleCard.broadcaster.user.configure(avatarImageView, usernameTextView, followButton, followManager, !isLive, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        avatarImageView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
+        usernameTextView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         broadcastTitleTextView.text = broadcast.name
         val tag = tags[singleCard.broadcaster.tagId]
         tagTextView.isVisible = tag != null
@@ -77,6 +80,11 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
             tagTextView.text = tag.name
             tagTextView.setTextColor(tag.color.toColorInt())
         }
+    }
+
+    fun viewProfile(caid: String) {
+        val action = LobbyFragmentDirections.actionLobbyFragmentToProfileFragment(caid)
+        Navigation.findNavController(itemView).navigate(action)
     }
 }
 
@@ -119,9 +127,7 @@ class PreviousBroadcastCard(view: View) : BroadcasterCard(view) {
         val broadcast = previousBroadcastItem.broadcaster.lastBroadcast ?: error("Unexpected broadcast state")
         nameTextView.text = previousBroadcastItem.broadcaster.user.name
         lastBroadcastTextView.text = broadcast.dateText
-        itemView.setOnClickListener {
-            // TODO: show user's profile
-        }
+        itemView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
     }
 }
 

@@ -32,6 +32,7 @@
     <string name="user_watching">%s is watching</string>
     <string name="live_indicator">Live</string>
     <string name="follow_button">Follow</string>
+    <string name="unfollow_button">Following</string>
     <string name="find_people">Find people</string>
     <string name="search">Search</string>
     <string name="followed_you">followed you</string>
