@@ -15,7 +15,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".profile.ProfileFragment">
+        tools:context=".profile.MyProfileFragment">
 
         <Button
             android:id="@+id/oss_licenses_button"

@@ -24,7 +24,7 @@ import tv.caffeine.app.databinding.FragmentProfileBinding
 import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
-class ProfileFragment : DaggerFragment() {
+class MyProfileFragment : DaggerFragment() {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var followManager: FollowManager
