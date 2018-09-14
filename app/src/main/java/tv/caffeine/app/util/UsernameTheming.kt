@@ -32,7 +32,7 @@ fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView, f
             .load(avatarImageUrl)
             .centerCrop()
             .resizeDimen(R.dimen.avatar_size, R.dimen.avatar_size)
-            .placeholder(R.drawable.default_avatar)
+            .placeholder(R.drawable.default_avatar_round)
             .transform(transformation)
             .into(avatarImageView)
     usernameTextView.text = username

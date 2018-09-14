@@ -60,7 +60,7 @@ class ProfileFragment : DaggerFragment() {
                             .load(self.avatarImageUrl)
                             .centerCrop()
                             .resizeDimen(R.dimen.profile_size, R.dimen.profile_size)
-                            .placeholder(R.drawable.default_avatar)
+                            .placeholder(R.drawable.default_avatar_round)
                             .transform(CropCircleTransformation())
                             .into(binding.avatarImageView)
                     if (self.isVerified) {
