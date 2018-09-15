@@ -12,6 +12,8 @@ class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float)
         this.strokeWidth = strokeWidth
     }
 
+    private val key = "CropBorderedCircleTransformation($color,$strokeWidth)"
+
     override fun transform(source: Bitmap): Bitmap {
         val size = Math.min(source.width, source.height)
 
@@ -43,7 +45,5 @@ class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float)
         return bitmap
     }
 
-    override fun key(): String {
-        return "CropBorderedCircleTransformation()"
-    }
+    override fun key(): String = key
 }

@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#f9f9f9</color>
     <color name="colorAccent">#009fe0</color>
     <color name="caffeineBlue">#009fe0</color>
+    <color name="white">#ffffff</color>
     <color name="statusBar">#f0f0f0</color>
     <color name="navBar">#f0f0f0</color>
     <color name="toolbarIcon">#8b8b8b</color>

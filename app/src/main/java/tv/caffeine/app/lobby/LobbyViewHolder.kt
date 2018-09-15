@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import tv.caffeine.app.R
 import tv.caffeine.app.api.Api
@@ -55,7 +54,9 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
             itemView.resources.getColor(R.color.caffeineBlue, null),
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, itemView.resources.displayMetrics))
 
-    private val cropCircleTransformation = CropCircleTransformation()
+    private val cropCircleTransformation = CropBorderedCircleTransformation(
+            itemView.resources.getColor(R.color.white, null),
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, itemView.resources.displayMetrics))
 
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager) {
         val singleCard = item as LobbyItem.SingleCard
