@@ -33,7 +33,7 @@ class ProfileFragment : DaggerFragment() {
         val binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         val cropBorderedCircleTransformation = CropBorderedCircleTransformation(
-                resources.getColor(R.color.colorPrimary, null),
+                resources.getColor(R.color.caffeineBlue, null),
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
         val cropCircleTransformation = CropCircleTransformation()
         val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.BroadcastCardUsername_Following)

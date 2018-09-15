@@ -41,7 +41,7 @@ class ExploreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val followButton: Button = itemView.findViewById(R.id.follow_button)
 
     private val cropBorderedCircleTransformation = CropBorderedCircleTransformation(
-            itemView.resources.getColor(R.color.colorPrimary, null),
+            itemView.resources.getColor(R.color.caffeineBlue, null),
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, itemView.resources.displayMetrics))
 
     private val cropCircleTransformation = CropCircleTransformation()

@@ -1,13 +1,18 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="materialButtonStyle">@style/Button</item>
+
+        <item name="android:statusBarColor">@color/statusBar</item>
+        <item name="android:navigationBarColor">@color/navBar</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -65,7 +70,7 @@
     </style>
 
     <style name="BroadcastCardUsername.Following">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/caffeineBlue</item>
     </style>
 
     <style name="ExploreUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
@@ -76,7 +81,7 @@
     </style>
 
     <style name="ExploreUsername.Following">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/caffeineBlue</item>
     </style>
 
 </resources>

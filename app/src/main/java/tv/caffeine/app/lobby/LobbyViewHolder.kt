@@ -52,7 +52,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     private val roundedCornersTransformation = RoundedCornersTransformation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f, itemView.resources.displayMetrics).toInt(), 0)
 
     private val cropBorderedCircleTransformation = CropBorderedCircleTransformation(
-            itemView.resources.getColor(R.color.colorPrimary, null),
+            itemView.resources.getColor(R.color.caffeineBlue, null),
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, itemView.resources.displayMetrics))
 
     private val cropCircleTransformation = CropCircleTransformation()
