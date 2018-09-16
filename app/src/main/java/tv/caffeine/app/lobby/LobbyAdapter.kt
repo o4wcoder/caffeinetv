@@ -5,18 +5,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import tv.caffeine.app.R
 import tv.caffeine.app.api.Api
+import tv.caffeine.app.di.ThemeFollowedExplore
+import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.lobby.LobbyItem.Companion.CARD_LIST
 import tv.caffeine.app.lobby.LobbyItem.Companion.HEADER
 import tv.caffeine.app.lobby.LobbyItem.Companion.LIVE_BROADCAST_CARD
 import tv.caffeine.app.lobby.LobbyItem.Companion.PREVIOUS_BROADCAST_CARD
 import tv.caffeine.app.lobby.LobbyItem.Companion.SUBTITLE
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.util.UserTheme
 
 class LobbyAdapter(private val items: List<LobbyItem>,
                    private val tags: Map<String, Api.v3.Lobby.Tag>,
                    private val content: Map<String, Api.v3.Lobby.Content>,
                    private val followManager: FollowManager,
-                   private val recycledViewPool: RecyclerView.RecycledViewPool
+                   private val recycledViewPool: RecyclerView.RecycledViewPool,
+                   @ThemeFollowedExplore private val followedTheme: UserTheme,
+                   @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
 ) : RecyclerView.Adapter<LobbyViewHolder>() {
 
     override fun getItemCount(): Int = items.count()
@@ -45,7 +50,7 @@ class LobbyAdapter(private val items: List<LobbyItem>,
 
     override fun onBindViewHolder(holder: LobbyViewHolder, position: Int) {
         val item = items[position]
-        holder.configure(item, tags, content, followManager)
+        holder.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
     }
 
 }
