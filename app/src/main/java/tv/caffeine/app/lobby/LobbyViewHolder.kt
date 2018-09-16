@@ -26,7 +26,7 @@ sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 class HeaderCard(view: View) : LobbyViewHolder(view) {
     private val headerTextView: TextView = view.findViewById(R.id.header_text_view)
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        val header = item as LobbyItem.Header
+        val header = item as Header
         headerTextView.text = header.text
     }
 }
@@ -34,7 +34,7 @@ class HeaderCard(view: View) : LobbyViewHolder(view) {
 class SubtitleCard(view: View) : LobbyViewHolder(view) {
     private val subtitleTextView: TextView = view.findViewById(R.id.subtitle_text_view)
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        val subtitle = item as LobbyItem.Subtitle
+        val subtitle = item as Subtitle
         subtitleTextView.text = subtitle.text
     }
 }
@@ -50,7 +50,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     private val roundedCornersTransformation = RoundedCornersTransformation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f, itemView.resources.displayMetrics).toInt(), 0)
 
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        val singleCard = item as LobbyItem.SingleCard
+        val singleCard = item as SingleCard
         val broadcast = singleCard.broadcaster.broadcast ?: singleCard.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
         Picasso.get()
                 .load(broadcast.previewImageUrl)
@@ -85,7 +85,7 @@ class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
 
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
-        val liveBroadcastItem = item as LobbyItem.LiveBroadcast
+        val liveBroadcastItem = item as LiveBroadcast
         friendsWatchingTextView.isVisible = item.broadcaster.followingViewersCount > 0
         friendsWatchingKiltView.isVisible = item.broadcaster.followingViewersCount > 0
         when(item.broadcaster.followingViewersCount) {
@@ -113,7 +113,7 @@ class PreviousBroadcastCard(view: View) : BroadcasterCard(view) {
 
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
-        val previousBroadcastItem = item as LobbyItem.PreviousBroadcast
+        val previousBroadcastItem = item as PreviousBroadcast
         val broadcast = previousBroadcastItem.broadcaster.lastBroadcast ?: error("Unexpected broadcast state")
         nameTextView.text = previousBroadcastItem.broadcaster.user.name
         lastBroadcastTextView.text = broadcast.dateText
@@ -130,8 +130,10 @@ class ListCard(view: View, private val recycledViewPool: RecyclerView.RecycledVi
         snapHelper.attachToRecyclerView(recyclerView)
     }
     override fun configure(item: LobbyItem, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        val cardList = item as LobbyItem.CardList
-        recyclerView.adapter = LobbyAdapter(cardList.cards, tags, content, followManager, recycledViewPool, followedTheme, notFollowedTheme)
+        val cardList = item as CardList
+        val lobbyAdapter = LobbyAdapter(followManager, recycledViewPool, followedTheme, notFollowedTheme)
+        recyclerView.adapter = lobbyAdapter
+        lobbyAdapter.submitList(cardList.cards, tags, content)
     }
 }
 

@@ -12,20 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_lobby.*
 import tv.caffeine.app.R
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.util.UserTheme
 import javax.inject.Inject
 
 class LobbyFragment : DaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var followManager: FollowManager
-    @field:[Inject ThemeFollowedExplore] lateinit var followedTheme: UserTheme
-    @field:[Inject ThemeNotFollowedExplore] lateinit var notFollowedTheme: UserTheme
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    @Inject lateinit var lobbyAdapter: LobbyAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,7 +32,8 @@ class LobbyFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lobby_recycler_view.layoutManager = LinearLayoutManager(context)
-        lobby_recycler_view.adapter = LobbyAdapter(listOf(), mapOf(), mapOf(), followManager, lobby_recycler_view.recycledViewPool, followedTheme, notFollowedTheme)
+        lobby_recycler_view.adapter = lobbyAdapter
+        lobby_recycler_view.setRecycledViewPool(lobbyAdapter.recycledViewPool)
         profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
         searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))
         activityButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.notificationsFragment))
@@ -47,7 +44,7 @@ class LobbyFragment : DaggerFragment() {
         val viewModel = viewModelProvider.get(LobbyViewModel::class.java)
         viewModel.lobby.observe(this, Observer {
             val items = LobbyItem.parse(it)
-            lobby_recycler_view.adapter = LobbyAdapter(items, it.tags, it.content, followManager, lobby_recycler_view.recycledViewPool, followedTheme, notFollowedTheme)
+            lobbyAdapter.submitList(items, it.tags, it.content)
             lobby_swipe_refresh_layout.isRefreshing = false
         })
         lobby_swipe_refresh_layout.setOnRefreshListener { refreshLobby(viewModel) }

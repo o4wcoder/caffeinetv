@@ -3,6 +3,7 @@ package tv.caffeine.app.di
 import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
+import androidx.recyclerview.widget.RecyclerView
 import dagger.Module
 import dagger.Provides
 import tv.caffeine.app.R
@@ -14,6 +15,9 @@ import javax.inject.Singleton
 class UIModule {
     @Provides
     fun providesResources(context: Context) = context.resources
+
+    @Provides
+    fun providesRecycledViewPool() = RecyclerView.RecycledViewPool()
 
     @Provides
     @Singleton
