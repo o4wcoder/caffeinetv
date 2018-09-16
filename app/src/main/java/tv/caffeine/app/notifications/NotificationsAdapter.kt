@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -61,6 +62,10 @@ class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             launch(UI) {
                 user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
             }
+        }
+        itemView.setOnClickListener {
+            val action = NotificationsFragmentDirections.actionNotificationsFragmentToProfileFragment(item.caid)
+            Navigation.findNavController(itemView).navigate(action)
         }
     }
 }

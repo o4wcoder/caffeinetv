@@ -30,12 +30,20 @@
         android:id="@+id/exploreFragment"
         android:name="tv.caffeine.app.explore.ExploreFragment"
         android:label="ExploreFragment"
-        tools:layout="@layout/fragment_explore" />
+        tools:layout="@layout/fragment_explore" >
+        <action
+            android:id="@+id/action_exploreFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="tv.caffeine.app.notifications.NotificationsFragment"
         android:label="notifications_fragment"
-        tools:layout="@layout/notifications_fragment" />
+        tools:layout="@layout/notifications_fragment" >
+        <action
+            android:id="@+id/action_notificationsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/stageFragment"
         android:name="tv.caffeine.app.stage.StageFragment"

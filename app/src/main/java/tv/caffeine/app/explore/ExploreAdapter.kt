@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -50,5 +51,9 @@ class ExploreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.ExploreUsername_Following)
         val notFollowedTheme = UserTheme(cropCircleTransformation, R.style.ExploreUsername_NotFollowing)
         item.user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        itemView.setOnClickListener {
+            val action = ExploreFragmentDirections.actionExploreFragmentToProfileFragment(item.user.caid)
+            Navigation.findNavController(itemView).navigate(action)
+        }
     }
 }
