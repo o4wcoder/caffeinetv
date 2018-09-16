@@ -36,8 +36,8 @@ class ProfileFragment : DaggerFragment() {
                 resources.getColor(R.color.caffeineBlue, null),
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
         val cropCircleTransformation = CropCircleTransformation()
-        val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.BroadcastCardUsername_Following)
-        val notFollowedTheme = UserTheme(cropCircleTransformation, R.style.BroadcastCardUsername_NotFollowing)
+        val followedTheme = UserTheme(cropBorderedCircleTransformation, R.style.ExploreUsername_Following)
+        val notFollowedTheme = UserTheme(cropCircleTransformation, R.style.ExploreUsername_NotFollowing)
         val caid = ProfileFragmentArgs.fromBundle(arguments).caid
         job = launch {
             val user = followManager.userDetails(caid)
