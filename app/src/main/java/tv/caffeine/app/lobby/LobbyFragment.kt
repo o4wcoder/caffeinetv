@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_lobby.*
 import tv.caffeine.app.R
@@ -31,7 +30,6 @@ class LobbyFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lobby_recycler_view.layoutManager = LinearLayoutManager(context)
         lobby_recycler_view.adapter = lobbyAdapter
         lobby_recycler_view.setRecycledViewPool(lobbyAdapter.recycledViewPool)
         profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))

@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -125,7 +124,6 @@ class ListCard(view: View, private val recycledViewPool: RecyclerView.RecycledVi
     private val recyclerView: RecyclerView = view.findViewById(R.id.card_list_recycler_view)
     private val snapHelper = LinearSnapHelper()
     init {
-        recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.HORIZONTAL, false)
         recyclerView.setRecycledViewPool(recycledViewPool)
         snapHelper.attachToRecyclerView(recyclerView)
     }

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import timber.log.Timber
 import tv.caffeine.app.databinding.FragmentExploreBinding
@@ -30,7 +29,6 @@ class ExploreFragment : DaggerFragment() {
             exploreAdapter.submitList(it.toList())
         })
         viewModel.queryString = "" // trigger suggestions
-        binding.exploreRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.exploreRecyclerView.adapter = exploreAdapter
         binding.viewModel = viewModel
         return binding.root
