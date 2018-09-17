@@ -24,10 +24,20 @@
         <item name="cornerRadius">16dp</item>
     </style>
 
-    <style name="LobbyFollowButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="cornerRadius">16dp</item>
+    <style name="Button.Follow">
+    </style>
+
+    <style name="Button.Following">
+        <item name="android:backgroundTint">@color/caffeineBlue</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Button.Follow.Lobby">
         <item name="strokeColor">@color/white</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Button.Following.Lobby">
     </style>
 
     <style name="ActionButton" parent="@style/Widget.MaterialComponents.Button">

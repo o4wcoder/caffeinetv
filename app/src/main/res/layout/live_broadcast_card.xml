@@ -112,7 +112,7 @@
 
     <Button
         android:id="@+id/follow_button"
-        style="@style/LobbyFollowButton"
+        style="@style/Button.Follow.Lobby"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
