@@ -22,8 +22,6 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
-private val ALL_STREAMS = arrayOf(StageHandshake.Stream.Type.primary, StageHandshake.Stream.Type.secondary)
-
 class StageFragment : DaggerFragment() {
     lateinit var broadcaster: String
     private val peerConnections: MutableMap<StageHandshake.Stream.Type, PeerConnection> = mutableMapOf()
@@ -163,11 +161,12 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun deinitSurfaceViewRenderers() {
-        ALL_STREAMS.forEach {
-            videoTracks[it]?.removeSink(renderers[it])
+        renderers.forEach { entry ->
+            val key = entry.key
+            val renderer = entry.value
+            videoTracks[key]?.removeSink(renderer)
+            renderer.release()
         }
-        primary_view_renderer.release()
-        secondary_view_renderer.release()
         renderers.clear()
     }
 
