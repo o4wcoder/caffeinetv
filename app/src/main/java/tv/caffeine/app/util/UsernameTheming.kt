@@ -12,7 +12,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.Api
 import tv.caffeine.app.session.FollowManager
 
-class UserTheme(val transformation: Transformation, @StyleRes val textAppearance: Int)
+class UserTheme(val avatarImageTransformation: Transformation, @StyleRes val usernameTextAppearance: Int)
 
 fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView,
                        followButton: Button, followManager: FollowManager,
@@ -21,7 +21,7 @@ fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView,
                        followedTheme: UserTheme, notFollowedTheme: UserTheme) {
     val following = followManager.isFollowing(caid)
     val theme = if (following) followedTheme else notFollowedTheme
-    val transformation = theme.transformation
+    val transformation = theme.avatarImageTransformation
     if (followManager.followersLoaded() && !following) {
         followButton.isVisible = true
         followButton.setText(R.string.follow_button)
@@ -53,5 +53,5 @@ fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView,
     } else {
         usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
     }
-    usernameTextView.setTextAppearance(theme.textAppearance)
+    usernameTextView.setTextAppearance(theme.usernameTextAppearance)
 }
