@@ -2,12 +2,15 @@ package tv.caffeine.app.stage
 
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
 import kotlinx.coroutines.experimental.Job
@@ -16,6 +19,7 @@ import kotlinx.coroutines.experimental.launch
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.auth.TokenStore
@@ -39,9 +43,11 @@ class StageFragment : DaggerFragment() {
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var eventsService: EventsService
     @Inject lateinit var followManager: FollowManager
+    @Inject lateinit var broadcastsService: BroadcastsService
 
     private val latestMessages: MutableList<MessageHandshake.Message> = mutableListOf()
     private var job: Job? = null
+    private var broadcastName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +56,12 @@ class StageFragment : DaggerFragment() {
         broadcaster = args.broadcaster
         job = launch {
             val userDetails = followManager.userDetails(broadcaster)
-            launch(UI) { connectStreams(userDetails.stageId) }
+            val broadcastDetails = broadcastsService.broadcastDetails(userDetails.broadcastId)
+            launch(UI) {
+                connectStreams(userDetails.stageId)
+                broadcastName = broadcastDetails.await().broadcast.name
+                top_stage_toolbar?.title = broadcastName
+            }
         }
     }
 
@@ -69,8 +80,11 @@ class StageFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        top_stage_toolbar?.setupWithNavController(findNavController())
+        top_stage_toolbar?.title = broadcastName
         initSurfaceViewRenderer()
         displayMessages()
+        configureButtons()
     }
 
     override fun onDestroyView() {
@@ -157,7 +171,18 @@ class StageFragment : DaggerFragment() {
                 .joinToString("\n") {
                     "${it.publisher.username}: ${it.body.text}" + if (it.endorsementCount > 0) " <${it.endorsementCount}>" else ""
                 }
-        messagesTextView?.setText(summary)
+        messagesTextView?.text = summary
+    }
+
+    private fun configureButtons() {
+        share_button?.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, it) } ?: getString(R.string.watching_caffeine_live)
+                putExtra(Intent.EXTRA_TEXT, textToShare)
+                type = "text/plain"
+            }
+            startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
+        }
     }
 
     private fun deinitSurfaceViewRenderers() {

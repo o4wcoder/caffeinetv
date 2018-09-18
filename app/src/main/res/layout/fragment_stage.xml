@@ -6,6 +6,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".stage.StageFragment">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/top_stage_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/primary_view_renderer"
         android:layout_width="match_parent"
@@ -15,7 +29,7 @@
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
         app:layout_constraintVertical_bias="0.0" />
 
     <org.webrtc.SurfaceViewRenderer
@@ -35,9 +49,59 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_stage_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/secondary_view_renderer" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/bottom_stage_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/share_button"
+                style="@android:style/Widget.Material.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_share_gray8b_24dp"
+                android:tint="@color/toolbarIcon"/>
+
+            <ImageButton
+                android:id="@+id/chat_button"
+                style="@android:style/Widget.Material.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_chat_bubble_gray8b_24dp"
+                android:tint="@color/toolbarIcon"/>
+
+            <ImageButton
+                android:id="@+id/gift_button"
+                style="@android:style/Widget.Material.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_card_giftcard_gray8b_24dp"
+                android:tint="@color/toolbarIcon"/>
+
+            <ImageButton
+                android:id="@+id/friends_watching_button"
+                style="@android:style/Widget.Material.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_account_circle_gray8b_24dp"
+                android:tint="@color/toolbarIcon"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
