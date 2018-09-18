@@ -24,24 +24,34 @@ private val diffCallback = object : DiffUtil.ItemCallback<SearchUserItem?>() {
     override fun areContentsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem.id == newItem.id
 }
 
-class ExploreAdapter @Inject constructor(
+abstract class UsersAdapter(
         private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
-) : ListAdapter<SearchUserItem, ExploreViewHolder>(diffCallback) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExploreViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.search_user_item, parent, false)
-        return ExploreViewHolder(view)
+        private val followedTheme: UserTheme,
+        private val notFollowedTheme: UserTheme
+) : ListAdapter<SearchUserItem, UserViewHolder>(diffCallback) {
+    abstract val userItemLayout: Int
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(userItemLayout, parent, false)
+        return UserViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ExploreViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item, followManager, followedTheme, notFollowedTheme)
     }
 
 }
 
-class ExploreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class SearchUsersAdapter @Inject constructor(followManager: FollowManager, @ThemeFollowedExplore followedTheme: UserTheme, @ThemeNotFollowedExplore notFollowedTheme: UserTheme) : UsersAdapter(followManager, followedTheme, notFollowedTheme) {
+    override val userItemLayout = R.layout.user_item_search
+}
+
+class ExploreAdapter @Inject constructor(followManager: FollowManager, @ThemeFollowedExplore followedTheme: UserTheme, @ThemeNotFollowedExplore notFollowedTheme: UserTheme) : UsersAdapter(followManager, followedTheme, notFollowedTheme) {
+    override val userItemLayout = R.layout.user_item_explore
+}
+
+class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)

@@ -42,6 +42,10 @@
         <item quantity="one">%s and one other are watching</item>
         <item quantity="other">%s and %d others are watching</item>
     </plurals>
+    <plurals name="number_of_followers">
+        <item quantity="one">One follower</item>
+        <item quantity="other">%s followers</item>
+    </plurals>
     <string name="watching_caffeine_live_with_description">Watching caffeine LIVE "%s". #caffeinetv  @caffeine</string>
     <string name="watching_caffeine_live">Watching caffeine LIVE. #caffeinetv  @caffeine</string>
     <string name="share_chooser_title">Share</string>

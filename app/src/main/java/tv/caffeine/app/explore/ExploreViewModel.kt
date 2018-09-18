@@ -9,7 +9,11 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.util.BaseObservableViewModel
 
 class ExploreViewModel(private val searchService: SearchService, private val usersService: UsersService) : BaseObservableViewModel() {
-    val data: MutableLiveData<Array<SearchUserItem>> = MutableLiveData()
+    val data: MutableLiveData<Result> = MutableLiveData()
+
+    class Result(val state: State, val data: Array<SearchUserItem>)
+
+    enum class State { Explore, Search }
 
     var queryString: String = ""
         set(value) {
@@ -33,7 +37,9 @@ class ExploreViewModel(private val searchService: SearchService, private val use
 
             override fun onResponse(call: Call<List<SearchUserItem>?>?, response: Response<List<SearchUserItem>?>?) {
                 Timber.d("Received the user suggestions response $response")
-                response?.body()?.let { data.value = it.toTypedArray() }
+                response?.body()?.let {
+                    data.value = Result(State.Explore, it.toTypedArray())
+                }
             }
         })
     }
@@ -44,7 +50,9 @@ class ExploreViewModel(private val searchService: SearchService, private val use
             }
 
             override fun onResponse(call: Call<SearchUsersResult?>?, response: Response<SearchUsersResult?>?) {
-                response?.body()?.let { data.value = it.results }
+                response?.body()?.let {
+                    data.value = Result(State.Search, it.results)
+                }
             }
         })
     }
