@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/activity_appbar"
-        app:navGraph="@navigation/lobby" />
+        app:navGraph="@navigation/main_nav_graph" />
 
 
     <com.google.android.material.appbar.AppBarLayout
