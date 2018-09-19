@@ -8,9 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
 import kotlinx.coroutines.experimental.Job
@@ -60,10 +59,16 @@ class StageFragment : DaggerFragment() {
             launch(UI) {
                 connectStreams(userDetails.stageId)
                 broadcastName = broadcastDetails.await().broadcast.name
-                top_stage_toolbar?.title = broadcastName
+                title = broadcastName
             }
         }
     }
+
+    var title: String? = null
+        set(value) {
+            field = value
+            (activity as? AppCompatActivity)?.supportActionBar?.title = value
+        }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -80,8 +85,7 @@ class StageFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        top_stage_toolbar?.setupWithNavController(findNavController())
-        top_stage_toolbar?.title = broadcastName
+        title = broadcastName
         initSurfaceViewRenderer()
         displayMessages()
         configureButtons()

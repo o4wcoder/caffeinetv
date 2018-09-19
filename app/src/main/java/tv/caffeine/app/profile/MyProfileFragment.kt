@@ -34,7 +34,8 @@ class MyProfileFragment : DaggerFragment() {
         val binding = FragmentMyProfileBinding.inflate(inflater, container, false)
         binding.signOutButton.setOnClickListener {
             tokenStore.clear()
-            findNavController().popBackStack(R.id.landingFragment, false)
+            val action = MyProfileFragmentDirections.actionMyProfileFragmentToLandingFragment()
+            findNavController().navigate(action)
             accountsService.signOut().enqueue(object: Callback<Unit?> {
                 override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                     Timber.e(t, "Failed to sign out")

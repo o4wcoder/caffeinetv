@@ -8,9 +8,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_lobby.*
 import tv.caffeine.app.R
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
@@ -21,6 +24,15 @@ class LobbyFragment : DaggerFragment() {
     @Inject lateinit var followManager: FollowManager
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     @Inject lateinit var lobbyAdapter: LobbyAdapter
+    @Inject lateinit var accountsService: AccountsService
+    @Inject lateinit var tokenStore: TokenStore
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (tokenStore.createRefreshTokenBody() == null) {
+            findNavController().navigate(R.id.action_lobbyFragment_to_landingFragment)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

@@ -6,9 +6,55 @@
     app:startDestination="@id/lobbyFragment">
 
     <fragment
+        android:id="@+id/signInFragment"
+        android:name="tv.caffeine.app.auth.SignInFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_forgotFragment"
+            app:destination="@id/forgotFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_mfaCodeFragment"
+            app:destination="@id/mfaCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mfaCodeFragment"
+        android:name="tv.caffeine.app.auth.MfaCodeFragment"
+        android:label="Enter Code"
+        tools:layout="@layout/fragment_mfa_code">
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="tv.caffeine.app.auth.LandingFragment"
+        android:label="fragment_landing"
+        tools:layout="@layout/fragment_landing">
+        <action
+            android:id="@+id/action_landingFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgotFragment"
+        android:name="tv.caffeine.app.auth.ForgotFragment"
+        android:label="Forgot Password"
+        tools:layout="@layout/fragment_forgot" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="tv.caffeine.app.auth.SignUpFragment"
+        android:label="New Account"
+        tools:layout="@layout/fragment_sign_up" />
+    <fragment
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"
-        android:label="fragment_lobby"
+        android:label="Caffeine"
         tools:layout="@layout/fragment_lobby">
         <action
             android:id="@+id/action_lobbyFragment_to_exploreFragment"
@@ -25,12 +71,17 @@
         <action
             android:id="@+id/action_lobbyFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_lobbyFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:popUpTo="@+id/lobby"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
         android:name="tv.caffeine.app.explore.ExploreFragment"
-        android:label="ExploreFragment"
-        tools:layout="@layout/fragment_explore" >
+        android:label="Find People"
+        tools:layout="@layout/fragment_explore">
         <action
             android:id="@+id/action_exploreFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -38,8 +89,8 @@
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="tv.caffeine.app.notifications.NotificationsFragment"
-        android:label="notifications_fragment"
-        tools:layout="@layout/notifications_fragment" >
+        android:label="Activity"
+        tools:layout="@layout/notifications_fragment">
         <action
             android:id="@+id/action_notificationsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -62,12 +113,18 @@
     <fragment
         android:id="@+id/myProfileFragment"
         android:name="tv.caffeine.app.profile.MyProfileFragment"
-        android:label="MyProfileFragment"
-        tools:layout="@layout/fragment_my_profile"/>
+        android:label="My Profile"
+        tools:layout="@layout/fragment_my_profile" >
+        <action
+            android:id="@+id/action_myProfileFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:popUpTo="@+id/lobbyFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="tv.caffeine.app.profile.ProfileFragment"
-        android:label="ProfileFragment"
+        android:label="Profile"
         tools:layout="@layout/fragment_profile">
         <argument
             android:name="caid"

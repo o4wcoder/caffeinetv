@@ -55,9 +55,14 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)
+    private val numberOfFollowersTextView: TextView? = itemView.findViewById(R.id.number_of_followers_text_view)
 
     fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         item.user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        numberOfFollowersTextView?.apply {
+            val followersCount = item.user.followersCount
+            text = itemView.resources.getQuantityString(R.plurals.number_of_followers, followersCount, followersCount)
+        }
         itemView.setOnClickListener {
             val action = ExploreFragmentDirections.actionExploreFragmentToProfileFragment(item.user.caid)
             Navigation.findNavController(itemView).navigate(action)

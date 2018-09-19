@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.UiThread
 import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
@@ -40,26 +41,30 @@ class MfaCodeFragment : DaggerFragment() {
             val password = args.password
             launch(CommonPool) {
                 val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(mfa_code_edit_text.text.toString()))).await()
-                when {
-                    result.isSuccessful -> onSuccess(result.body()!!)
-                    else -> onError(result.errorBody()!!)
+                launch(UI) {
+                    when {
+                        result.isSuccessful -> onSuccess(result.body()!!)
+                        else -> onError(result.errorBody()!!)
+                    }
                 }
             }
         }
     }
 
+    @UiThread
     private fun onSuccess(result: SignInResult) {
         sharedPreferences.edit { putString("REFRESH_TOKEN", result.refreshToken) }
-        findNavController().navigate(R.id.lobby)
+        val navController = findNavController()
+        navController.popBackStack(R.id.landingFragment, true)
+        navController.navigate(R.id.lobbyFragment)
     }
 
+    @UiThread
     private fun onError(errorBody: ResponseBody) {
         val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
-        launch(UI) {
-            error.errors._error?.joinToString("\n")?.let { form_error_text_view.text = it }
-            error.errors.otp?.joinToString("\n")?.let { mfa_code_text_input_layout.error = it }
-        }
+        error.errors._error?.joinToString("\n")?.let { form_error_text_view.text = it }
+        error.errors.otp?.joinToString("\n")?.let { mfa_code_text_input_layout.error = it }
     }
 
 }

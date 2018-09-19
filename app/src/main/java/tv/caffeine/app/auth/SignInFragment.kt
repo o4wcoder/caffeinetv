@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.UiThread
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
@@ -43,13 +44,16 @@ class SignInFragment : DaggerFragment() {
         val signInBody = SignInBody(Account(username, password))
         launch(CommonPool) {
             val request = accountsService.signIn(signInBody).await()
-            when {
-                request.isSuccessful -> onSuccess(request.body()!!)
-                else -> onError(request.errorBody()!!)
+            launch(UI) {
+                when {
+                    request.isSuccessful -> onSuccess(request.body()!!)
+                    else -> onError(request.errorBody()!!)
+                }
             }
         }
     }
 
+    @UiThread
     private fun onSuccess(signInResult: SignInResult) {
         val navController = findNavController()
         when(signInResult.next) {
@@ -61,18 +65,18 @@ class SignInFragment : DaggerFragment() {
             }
             else -> {
                 tokenStore.storeSignInResult(signInResult)
-                navController.navigate(R.id.lobby)
+                navController.popBackStack(R.id.landingFragment, true)
+                navController.navigate(R.id.lobbyFragment)
             }
         }
     }
 
+    @UiThread
     private fun onError(signInError: ResponseBody) {
         val error = gson.fromJson(signInError.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
-        launch(UI) {
-            error.errors._error?.joinToString("\n")?.let { form_error_text_view.text = it }
-            error.errors.username?.joinToString("\n")?.let { username_text_input_layout.error = it }
-            error.errors.password?.joinToString("\n")?.let { password_text_input_layout.error = it }
-        }
+        error.errors._error?.joinToString("\n")?.let { form_error_text_view.text = it }
+        error.errors.username?.joinToString("\n")?.let { username_text_input_layout.error = it }
+        error.errors.password?.joinToString("\n")?.let { password_text_input_layout.error = it }
     }
 }
