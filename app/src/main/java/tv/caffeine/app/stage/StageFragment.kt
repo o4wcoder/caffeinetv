@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
 import kotlinx.coroutines.experimental.Job
@@ -126,7 +126,7 @@ class StageFragment : DaggerFragment() {
 
     private fun configureRenderer(renderer: SurfaceViewRenderer, stream: StageHandshake.Stream?, videoTrack: VideoTrack?) {
         val hasVideo = videoTrack != null && stream?.capabilities?.video ?: false
-        renderer.isVisible = hasVideo
+        renderer.visibility = if (hasVideo) View.VISIBLE else View.INVISIBLE
         if (hasVideo) {
             videoTrack?.addSink(renderer)
         }
@@ -186,6 +186,10 @@ class StageFragment : DaggerFragment() {
                 type = "text/plain"
             }
             startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
+        }
+        friends_watching_button?.setOnClickListener {
+            val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcaster)
+            findNavController().navigate(action)
         }
     }
 

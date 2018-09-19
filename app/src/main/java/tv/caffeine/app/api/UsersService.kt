@@ -27,4 +27,4 @@ interface UsersService {
     fun userDetails(@Path("caid") userId: String): Deferred<Api.UserContainer>
 }
 
-class FollowRecord(val caid: String, val followedAt: String) // followedAt = ISO-8601 date
+class FollowRecord(val caid: String, val followedAt: String?) // followedAt = ISO-8601 date

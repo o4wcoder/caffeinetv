@@ -109,6 +109,9 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="www.caffeine.tv/{broadcaster}" />
+        <action
+            android:id="@+id/action_stageFragment_to_friendsWatchingFragment"
+            app:destination="@id/friendsWatchingFragment" />
     </fragment>
     <fragment
         android:id="@+id/myProfileFragment"
@@ -128,6 +131,15 @@
         tools:layout="@layout/fragment_profile">
         <argument
             android:name="caid"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/friendsWatchingFragment"
+        android:name="tv.caffeine.app.stage.FriendsWatchingFragment"
+        android:label="Friends Watching"
+        tools:layout="@layout/fragment_friends_watching">
+        <argument
+            android:name="broadcaster"
             app:argType="string" />
     </fragment>
 </navigation>

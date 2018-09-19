@@ -8,6 +8,7 @@ import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.notifications.NotificationsFragment
 import tv.caffeine.app.profile.MyProfileFragment
 import tv.caffeine.app.profile.ProfileFragment
+import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.StageFragment
 
 @Module
@@ -23,4 +24,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun profileFragment(): ProfileFragment
     @ContributesAndroidInjector abstract fun exploreFragment(): ExploreFragment
     @ContributesAndroidInjector abstract fun notificationsFragment(): NotificationsFragment
+    @ContributesAndroidInjector abstract fun friendsWatchingFragment(): FriendsWatchingFragment
 }
