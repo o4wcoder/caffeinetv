@@ -1,13 +1,17 @@
 package tv.caffeine.app.session
 
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.api.Api
-import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,6 +20,7 @@ class FollowManager @Inject constructor(private val usersService: UsersService, 
 
     private val followedUsers: MutableMap<String, Set<String>> = mutableMapOf()
     private val userDetails: MutableMap<String, Api.User> = mutableMapOf()
+    private var refreshFollowedUsersJob: Job? = null
 
     fun followers() = tokenStore.caid?.let { followedUsers[it] } ?: setOf()
 
@@ -25,16 +30,19 @@ class FollowManager @Inject constructor(private val usersService: UsersService, 
 
     fun followersLoaded() = tokenStore.caid?.let { followedUsers.containsKey(it) } == true
 
-    fun refreshFollowedUsers(caid: String = tokenStore.caid ?: "") {
-        usersService.listFollowing(caid).enqueue(object: Callback<List<FollowRecord>?> {
-            override fun onFailure(call: Call<List<FollowRecord>?>?, t: Throwable?) {
-                Timber.e(t, "Failed to get the list of followers for $caid")
+    fun refreshFollowedUsers() {
+        refreshFollowedUsersJob?.cancel()
+        refreshFollowedUsersJob = launch {
+            repeat(5) {
+                tokenStore.caid?.let {
+                    val caid = it
+                    val result = usersService.listFollowing(caid).await()
+                    launch(UI) { followedUsers[caid] = (result.map { it.caid }).toSet() }
+                    return@launch
+                }
+                delay(1, TimeUnit.SECONDS)
             }
-
-            override fun onResponse(call: Call<List<FollowRecord>?>?, response: Response<List<FollowRecord>?>?) {
-                response?.body()?.let { followedUsers[caid] = it.map { it.caid }.toSet() }
-            }
-        })
+        }
     }
 
     fun followUser(caid: String) {

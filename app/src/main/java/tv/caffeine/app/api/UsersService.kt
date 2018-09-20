@@ -9,10 +9,10 @@ import retrofit2.http.Path
 
 interface UsersService {
     @GET("v1/users/{caid}/followers")
-    fun listFollowers(@Path("caid") userId: String): Call<List<FollowRecord>>
+    fun listFollowers(@Path("caid") userId: String): Deferred<List<FollowRecord>>
 
     @GET("v1/users/{caid}/following")
-    fun listFollowing(@Path("caid") userId: String): Call<List<FollowRecord>>
+    fun listFollowing(@Path("caid") userId: String): Deferred<List<FollowRecord>>
 
     @POST("v1/users/{caid1}/follow/{caid2}")
     fun follow(@Path("caid1") follower: String, @Path("caid2") toFollow: String): Call<Void>

@@ -2,28 +2,30 @@ package tv.caffeine.app.notifications
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
 
 class NotificationsViewModel(private val usersService: UsersService, private val tokenStore: TokenStore) : ViewModel() {
     val followers: MutableLiveData<List<FollowRecord>> = MutableLiveData()
+    private var job: Job? = null
 
     fun refresh() {
         val caid = tokenStore.caid ?: return
-        usersService.listFollowers(caid).enqueue(object: Callback<List<FollowRecord>?> {
-            override fun onFailure(call: Call<List<FollowRecord>?>?, t: Throwable?) {
-                Timber.e(t, "Failed to load followers")
+        job?.cancel()
+        job = launch {
+            val result = usersService.listFollowers(caid).await()
+            launch(UI) {
+                followers.value = result
             }
+        }
+    }
 
-            override fun onResponse(call: Call<List<FollowRecord>?>?, response: Response<List<FollowRecord>?>?) {
-                Timber.d("Load followers response: $response")
-                response?.body()?.let { followers.value = it }
-            }
-        })
+    override fun onCleared() {
+        super.onCleared()
+        job?.cancel()
     }
 }
