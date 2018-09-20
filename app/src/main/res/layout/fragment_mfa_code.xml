@@ -35,7 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:hint="@string/mfa_code_hint"/>
+            android:hint="@string/mfa_code_hint"
+            android:imeOptions="actionGo"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

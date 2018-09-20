@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.UiThread
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.ui.setOnActionGo
 import javax.inject.Inject
 
 class SignInFragment : DaggerFragment() {
@@ -35,11 +37,14 @@ class SignInFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         forgot_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
         sign_in_button.setOnClickListener {
-            login(username_edit_text.text.toString(), password_edit_text.text.toString())
+            login()
         }
+        password_edit_text.setOnActionGo { login() }
     }
 
-    private fun login(username: String, password: String) {
+    private fun login() {
+        val username = username_edit_text.text.toString()
+        val password = password_edit_text.text.toString()
         form_error_text_view.text = null
         val signInBody = SignInBody(Account(username, password))
         launch(CommonPool) {

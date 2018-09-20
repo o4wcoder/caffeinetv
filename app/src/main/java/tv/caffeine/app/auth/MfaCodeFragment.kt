@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.UiThread
 import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.ui.setOnActionGo
 import javax.inject.Inject
 
 class MfaCodeFragment : DaggerFragment() {
@@ -36,16 +38,21 @@ class MfaCodeFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         submit_mfa_code_button.setOnClickListener {
-            val args = MfaCodeFragmentArgs.fromBundle(arguments)
-            val username = args.username
-            val password = args.password
-            launch(CommonPool) {
-                val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(mfa_code_edit_text.text.toString()))).await()
-                launch(UI) {
-                    when {
-                        result.isSuccessful -> onSuccess(result.body()!!)
-                        else -> onError(result.errorBody()!!)
-                    }
+            submitMfaCode()
+        }
+        mfa_code_edit_text.setOnActionGo { submitMfaCode() }
+    }
+
+    private fun submitMfaCode() {
+        val args = MfaCodeFragmentArgs.fromBundle(arguments)
+        val username = args.username
+        val password = args.password
+        launch(CommonPool) {
+            val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(mfa_code_edit_text.text.toString()))).await()
+            launch(UI) {
+                when {
+                    result.isSuccessful -> onSuccess(result.body()!!)
+                    else -> onError(result.errorBody()!!)
                 }
             }
         }
