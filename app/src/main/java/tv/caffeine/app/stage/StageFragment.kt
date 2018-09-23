@@ -191,6 +191,9 @@ class StageFragment : DaggerFragment() {
             val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcaster)
             findNavController().navigate(action)
         }
+        gift_button?.setOnClickListener {
+            DigitalItemListDialogFragment().show(fragmentManager, "DI")
+        }
     }
 
     private fun deinitSurfaceViewRenderers() {
