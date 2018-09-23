@@ -30,4 +30,7 @@ annotation class ThemeFollowedLobby
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ThemeNotFollowedLobby
 
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class CaffeineApi(val api: Service)
 

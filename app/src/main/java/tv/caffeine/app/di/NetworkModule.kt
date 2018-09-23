@@ -19,10 +19,11 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.AuthorizationInterceptor
 import tv.caffeine.app.auth.TokenAuthenticator
 import tv.caffeine.app.auth.TokenStore
-import javax.inject.Named
 import javax.inject.Singleton
 
-private const val BASE_URL = "BASE_URL"
+enum class Service {
+    MainApi, RefreshToken, Payments, Realtime
+}
 
 @Module
 class NetworkModule {
@@ -39,7 +40,7 @@ class NetworkModule {
     fun providesHttpLoggingInterceptor(level: HttpLoggingInterceptor.Level) = HttpLoggingInterceptor().apply { setLevel(level) }
 
     @Provides
-    fun providesRefreshTokenService(gsonConverterFactory: GsonConverterFactory, @Named(BASE_URL) baseUrl: String, loggingInterceptor: HttpLoggingInterceptor): RefreshTokenService {
+    fun providesRefreshTokenService(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.MainApi) baseUrl: String, loggingInterceptor: HttpLoggingInterceptor): RefreshTokenService {
         val okHttpClient = OkHttpClient.Builder().addNetworkInterceptor(loggingInterceptor).build()
         val retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -63,7 +64,8 @@ class NetworkModule {
             .build()
 
     @Provides
-    fun providesRetrofit(gsonConverterFactory: GsonConverterFactory, @Named(BASE_URL) baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
+    @CaffeineApi(Service.MainApi)
+    fun providesRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.MainApi) baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(gsonConverterFactory)
@@ -71,31 +73,49 @@ class NetworkModule {
             .build()
 
     @Provides
-    @Named(BASE_URL)
+    @CaffeineApi(Service.Payments)
+    fun providesPaymentsRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Payments) baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+
+    @Provides
+    @CaffeineApi(Service.MainApi)
     fun providesBaseUrl() = "https://api.caffeine.tv"
 
-    @Provides fun providesAccountsService(retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
+    @Provides
+    @CaffeineApi(Service.Realtime)
+    fun providesRealtimeBaseUrl() = "https://realtime.caffeine.tv"
 
-    @Provides fun providesLobbyService(retrofit: Retrofit) = retrofit.create(LobbyService::class.java)
+    @Provides
+    @CaffeineApi(Service.Payments)
+    fun providesPaymentsBaseUrl() = "https://payments.caffeine.tv"
 
-    @Provides fun providesEventsService(retrofit: Retrofit) = retrofit.create(EventsService::class.java)
+    @Provides fun providesAccountsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
 
-    @Provides fun providesUsersService(retrofit: Retrofit) = retrofit.create(UsersService::class.java)
+    @Provides fun providesLobbyService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(LobbyService::class.java)
 
-    @Provides fun providesSearchService(retrofit: Retrofit) = retrofit.create(SearchService::class.java)
+    @Provides fun providesEventsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(EventsService::class.java)
 
-    @Provides fun providesBroadcastsService(retrofit: Retrofit) = retrofit.create(BroadcastsService::class.java)
+    @Provides fun providesUsersService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(UsersService::class.java)
 
-    @Provides fun providesRealtimeService(client: OkHttpClient): Realtime {
-//        val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://realtime.caffeine.tv")
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-        return retrofit.create(Realtime::class.java)
-    }
+    @Provides fun providesSearchService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(SearchService::class.java)
+
+    @Provides fun providesBroadcastsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(BroadcastsService::class.java)
+
+    @Provides fun providesPaymentsClientService(@CaffeineApi(Service.Payments) retrofit: Retrofit) = retrofit.create(PaymentsClientService::class.java)
+
+    @Provides
+    @CaffeineApi(Service.Realtime)
+    fun providesRealtimeRetrofit(client: OkHttpClient, @CaffeineApi(Service.Realtime) baseUrl: String) = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @Provides fun providesRealtimeService(@CaffeineApi(Service.Realtime) retrofit: Retrofit) = retrofit.create(Realtime::class.java)
 
     @Provides
     @Singleton
