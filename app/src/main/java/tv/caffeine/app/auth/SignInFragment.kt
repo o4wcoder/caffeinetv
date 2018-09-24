@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import androidx.annotation.UiThread
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_sign_in.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import okhttp3.ResponseBody
 import timber.log.Timber
@@ -47,9 +47,9 @@ class SignInFragment : DaggerFragment() {
         val password = password_edit_text.text.toString()
         form_error_text_view.text = null
         val signInBody = SignInBody(Account(username, password))
-        launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
             val request = accountsService.signIn(signInBody).await()
-            launch(UI) {
+            launch(Dispatchers.Main) {
                 when {
                     request.isSuccessful -> onSuccess(request.body()!!)
                     else -> onError(request.errorBody()!!)

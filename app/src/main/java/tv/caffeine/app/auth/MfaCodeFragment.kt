@@ -6,15 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import androidx.annotation.UiThread
 import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_mfa_code.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import okhttp3.ResponseBody
 import timber.log.Timber
@@ -47,9 +47,9 @@ class MfaCodeFragment : DaggerFragment() {
         val args = MfaCodeFragmentArgs.fromBundle(arguments)
         val username = args.username
         val password = args.password
-        launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
             val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(mfa_code_edit_text.text.toString()))).await()
-            launch(UI) {
+            launch(Dispatchers.Main) {
                 when {
                     result.isSuccessful -> onSuccess(result.body()!!)
                     else -> onError(result.errorBody()!!)

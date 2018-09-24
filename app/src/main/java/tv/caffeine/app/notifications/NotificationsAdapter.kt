@@ -10,8 +10,10 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.api.FollowRecord
@@ -53,9 +55,9 @@ class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     fun bind(item: FollowRecord, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         job?.cancel()
-        job = launch {
+        job = GlobalScope.launch(Dispatchers.Default) {
             val user = followManager.userDetails(item.caid)
-            launch(UI) {
+            launch(Dispatchers.Main) {
                 user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
             }
         }

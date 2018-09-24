@@ -2,8 +2,10 @@ package tv.caffeine.app.notifications
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.api.UsersService
@@ -16,9 +18,9 @@ class NotificationsViewModel(private val usersService: UsersService, private val
     fun refresh() {
         val caid = tokenStore.caid ?: return
         job?.cancel()
-        job = launch {
+        job = GlobalScope.launch(Dispatchers.Default) {
             val result = usersService.listFollowers(caid).await()
-            launch(UI) {
+            launch(Dispatchers.Main) {
                 followers.value = result
             }
         }

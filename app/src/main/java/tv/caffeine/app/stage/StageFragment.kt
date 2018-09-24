@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import org.webrtc.*
 import timber.log.Timber
@@ -55,10 +57,10 @@ class StageFragment : DaggerFragment() {
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
-        job = launch {
+        job = GlobalScope.launch(Dispatchers.Default) {
             val userDetails = followManager.userDetails(broadcaster)
             val broadcastDetails = broadcastsService.broadcastDetails(userDetails.broadcastId)
-            launch(UI) {
+            launch(Dispatchers.Main) {
                 connectStreams(userDetails.stageId)
                 broadcastName = broadcastDetails.await().broadcast.name
                 title = broadcastName

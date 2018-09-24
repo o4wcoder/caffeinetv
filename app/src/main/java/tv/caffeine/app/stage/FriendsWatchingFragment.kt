@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
@@ -27,10 +29,10 @@ class FriendsWatchingFragment : DaggerFragment() {
         super.onCreate(savedInstanceState)
         val args = FriendsWatchingFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
-        job = launch {
+        job = GlobalScope.launch(Dispatchers.Default) {
             val userDetails = followManager.userDetails(broadcaster)
             val friendsWatching = broadcastsService.friendsWatching(userDetails.broadcastId)
-            launch(UI) {
+            launch(Dispatchers.Main) {
                 usersAdapter.submitList(friendsWatching.await())
             }
         }

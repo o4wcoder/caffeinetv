@@ -2,9 +2,7 @@ package tv.caffeine.app.lobby
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,7 +17,7 @@ class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
 
     fun refresh() {
         job?.cancel()
-        job = launch {
+        job = GlobalScope.launch(Dispatchers.Default) {
             while(isActive) {
                 loadLobby()
                 delay(30, TimeUnit.SECONDS)

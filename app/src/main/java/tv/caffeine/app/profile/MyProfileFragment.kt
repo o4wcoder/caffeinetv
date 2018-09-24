@@ -11,7 +11,9 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerFragment
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -50,9 +52,9 @@ class MyProfileFragment : DaggerFragment() {
             startActivity(Intent(context, OssLicensesMenuActivity::class.java))
         }
         tokenStore.caid?.let {
-            launch {
+            GlobalScope.launch(Dispatchers.Default) {
                 val self = followManager.userDetails(it)
-                launch(UI) {
+                launch(Dispatchers.Main) {
                     binding.usernameTextView.text = self.username
                     binding.nameTextView.text = self.name
                     binding.numberFollowingTextView.text = self.followingCount.toString()

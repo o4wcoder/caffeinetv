@@ -1,8 +1,6 @@
 package tv.caffeine.app.stage
 
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.*
 import org.webrtc.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -100,7 +98,7 @@ class StreamController(private val realtime: Realtime,
                             val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
                             val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
                             callback(peerConnection, videoTrack, audioTrack)
-                            heartbeatJobs.add(launch {
+                            heartbeatJobs.add(GlobalScope.launch(Dispatchers.Default) {
                                 val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
                                 while (isActive) {
                                     repeat(5) {

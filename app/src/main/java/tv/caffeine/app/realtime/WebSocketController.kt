@@ -3,9 +3,7 @@ package tv.caffeine.app.realtime
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.timeunit.TimeUnit
 import okhttp3.*
 import timber.log.Timber
@@ -38,7 +36,7 @@ class WebSocketController(private val tag: String) {
         override fun onOpen(webSocket: WebSocket?, response: Response?) {
             log("Opened, response = $response")
             webSocket?.send(headers)
-            keepAlive = launch {
+            keepAlive = GlobalScope.launch(Dispatchers.Default) {
                 while(true) {
                     delay(30, TimeUnit.SECONDS)
                     log("About to send a heartbeat")

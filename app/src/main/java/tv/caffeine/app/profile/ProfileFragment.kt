@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
@@ -34,9 +36,9 @@ class ProfileFragment : DaggerFragment() {
         val binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         val caid = ProfileFragmentArgs.fromBundle(arguments).caid
-        job = launch {
+        job = GlobalScope.launch(Dispatchers.Default) {
             val user = followManager.userDetails(caid)
-            launch(UI) {
+            launch(Dispatchers.Main) {
                 user.configure(binding.avatarImageView, binding.usernameTextView, binding.followButton,
                         followManager, true, R.dimen.profile_size, followedTheme, notFollowedTheme)
                 binding.nameTextView.text = user.name
