@@ -3,6 +3,7 @@ package tv.caffeine.app.auth
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import okhttp3.Request
+import okhttp3.Response
 import tv.caffeine.app.api.CaffeineCredentials
 import tv.caffeine.app.api.RefreshTokenBody
 import tv.caffeine.app.api.RefreshTokenResult
@@ -65,4 +66,6 @@ class TokenStore(private val sharedPreferences: SharedPreferences) {
             credential?.let { header("X-Credential", it) }
         }
     }
+
+    fun alreadyContainsAuthorization(response: Response) = accessToken != null && response.request().header("Authorization") == "Bearer $accessToken"
 }

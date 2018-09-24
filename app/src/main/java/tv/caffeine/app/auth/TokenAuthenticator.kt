@@ -8,7 +8,7 @@ import tv.caffeine.app.api.RefreshTokenService
 
 class TokenAuthenticator(private val refreshTokenService: RefreshTokenService, private val tokenStore: TokenStore) : Authenticator {
     override fun authenticate(route: Route?, response: Response?): Request? {
-        if (response == null) return null
+        if (response == null || !shouldAttemptAuthentication(response)) return null
         val refreshTokenBody = tokenStore.createRefreshTokenBody() ?: return null
 
         val result = refreshTokenService.refreshTokenSync(refreshTokenBody).execute()
@@ -21,4 +21,13 @@ class TokenAuthenticator(private val refreshTokenService: RefreshTokenService, p
                 .build()
     }
 
+    private fun shouldAttemptAuthentication(response: Response): Boolean {
+        return !tokenStore.alreadyContainsAuthorization(response) && response.responseCount() <= 3
+    }
+
+}
+
+fun Response.responseCount(): Int {
+    val response = priorResponse()
+    return if (response == null) 1 else 1 + response.responseCount()
 }
