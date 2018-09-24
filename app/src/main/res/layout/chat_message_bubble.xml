@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="?attr/selectableItemBackground"
+        android:paddingLeft="@dimen/list_item_spacing"
+        android:paddingTop="@dimen/list_item_spacing_half"
+        android:paddingRight="@dimen/list_item_spacing"
+        android:paddingBottom="@dimen/list_item_spacing_half"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large">
+
+        <TextView
+            android:id="@+id/speech_bubble_text_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/chat_bubble"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textAppearance="@style/ChatMessageText"
+            app:layout_constraintBottom_toTopOf="@+id/username_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Hi! How are you?" />
+
+        <ImageView
+            android:id="@+id/avatar_image_view"
+            android:layout_width="@dimen/chat_avatar_size"
+            android:layout_height="@dimen/chat_avatar_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/username_text_view"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/username_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+            tools:text="Caffeine" />
+
+        <TextView
+            android:id="@+id/endorsement_count_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gold_coin"
+            android:gravity="center_horizontal"
+            android:padding="4dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="3" />
+
+        <ImageView
+            android:id="@+id/digital_item_image_view"
+            android:layout_width="@dimen/digital_item_size"
+            android:layout_height="@dimen/digital_item_size"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/speech_bubble_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/logo" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="@dimen/chat_bubble_triangle_size"
+            android:layout_height="@dimen/chat_bubble_triangle_size"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="4dp"
+            android:tint="@color/caffeineBlue"
+            app:layout_constraintEnd_toStartOf="@+id/avatar_image_view"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/speech_bubble_text_view"
+            app:srcCompat="@drawable/chat_bubble_triangle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -12,8 +12,11 @@ class MessageHandshake(private val tokenStore: TokenStore) {
     private val webSocketController = WebSocketController("msg")
     private val gson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
-    class Message(val publisher: Api.User, val id: String, val type: String, val body: Body, val endorsementCount: Int = 0)
-    class Body(val text: String)
+    data class Message(val publisher: Api.User, val id: String, val type: String, val body: Body, val endorsementCount: Int = 0)
+    data class Body(val text: String, val digitalItem: ReceivedDigitalItem?)
+    data class ReceivedDigitalItem(val id: String, val count: Int, val creditsPerItem: Int, val staticImagePath: String, val sceneKitPath: String, val webAssetPath: String) {
+        val staticImageUrl get() = "https://assets.caffeine.tv$staticImagePath"
+    }
 
     fun connect(stageIdentifier: String, callback: (Message) -> Unit) {
         val url = "wss://realtime.caffeine.tv/v2/reaper/stages/$stageIdentifier/messages"

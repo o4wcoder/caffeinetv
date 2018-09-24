@@ -15,30 +15,32 @@ import tv.caffeine.app.session.FollowManager
 class UserTheme(val avatarImageTransformation: Transformation, @StyleRes val usernameTextAppearance: Int)
 
 fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView,
-                       followButton: Button, followManager: FollowManager,
+                       followButton: Button?, followManager: FollowManager,
                        allowUnfollowing: Boolean = false,
                        @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
                        followedTheme: UserTheme, notFollowedTheme: UserTheme) {
     val following = followManager.isFollowing(caid)
     val theme = if (following) followedTheme else notFollowedTheme
     val transformation = theme.avatarImageTransformation
-    if (followManager.followersLoaded() && !following) {
-        followButton.isVisible = true
-        followButton.setText(R.string.follow_button)
-        followButton.setOnClickListener {
-            followButton.isVisible = allowUnfollowing
-            followManager.followUser(caid)
+    followButton?.let { followButton ->
+        if (followManager.followersLoaded() && !following) {
+            followButton.isVisible = true
+            followButton.setText(R.string.follow_button)
+            followButton.setOnClickListener {
+                followButton.isVisible = allowUnfollowing
+                followManager.followUser(caid)
+            }
+        } else if (allowUnfollowing && followManager.followersLoaded() && following) {
+            followButton.isVisible = true
+            followButton.setText(R.string.unfollow_button)
+            followButton.setOnClickListener {
+                followButton.isVisible = allowUnfollowing
+                followManager.unfollowUser(caid)
+            }
+        } else {
+            followButton.isVisible = false
+            followButton.setOnClickListener(null)
         }
-    } else if (allowUnfollowing && followManager.followersLoaded() && following) {
-        followButton.isVisible = true
-        followButton.setText(R.string.unfollow_button)
-        followButton.setOnClickListener {
-            followButton.isVisible = allowUnfollowing
-            followManager.unfollowUser(caid)
-        }
-    } else {
-        followButton.isVisible = false
-        followButton.setOnClickListener(null)
     }
     Picasso.get()
             .load(avatarImageUrl)

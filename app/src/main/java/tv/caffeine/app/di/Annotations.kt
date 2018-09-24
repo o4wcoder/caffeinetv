@@ -32,5 +32,13 @@ annotation class ThemeNotFollowedLobby
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
+annotation class ThemeFollowedChat
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ThemeNotFollowedChat
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
 annotation class CaffeineApi(val api: Service)
 

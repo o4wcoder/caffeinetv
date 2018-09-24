@@ -44,6 +44,8 @@ class StageFragment : DaggerFragment() {
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var broadcastsService: BroadcastsService
 
+    @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
+
     private val latestMessages: MutableList<MessageHandshake.Message> = mutableListOf()
     private var job: Job? = null
     private var broadcastName: String? = null
@@ -86,6 +88,7 @@ class StageFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         title = broadcastName
+        messages_recycler_view?.adapter = chatMessageAdapter
         initSurfaceViewRenderer()
         displayMessages()
         configureButtons()
@@ -171,11 +174,12 @@ class StageFragment : DaggerFragment() {
 
     private fun displayMessages() {
         val summary = latestMessages
-                .takeLast(5)
+                .takeLast(4)
                 .joinToString("\n") {
                     "${it.publisher.username}: ${it.body.text}" + if (it.endorsementCount > 0) " <${it.endorsementCount}>" else ""
                 }
-        messagesTextView?.text = summary
+        Timber.d("Chat messages: $summary")
+        chatMessageAdapter.submitList(latestMessages.takeLast(4))
     }
 
     private fun configureButtons() {

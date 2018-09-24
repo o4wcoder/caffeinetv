@@ -10,7 +10,7 @@ class Api {
         val previewImageUrl get() = "https://images.caffeine.tv$previewImagePath"
     }
 
-    class User(val caid: String,
+    data class User(val caid: String,
                val username: String,
                val name: String?,
                val avatarImagePath: String,
