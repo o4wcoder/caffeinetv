@@ -14,10 +14,10 @@ import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
 import tv.caffeine.app.notifications.NotificationsAdapter
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.DaggerBottomSheetDialogFragment
+import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import javax.inject.Inject
 
-class FriendsWatchingFragment : DaggerBottomSheetDialogFragment() {
+class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var broadcastsService: BroadcastsService
     @Inject lateinit var usersAdapter: NotificationsAdapter
@@ -49,6 +49,5 @@ class FriendsWatchingFragment : DaggerBottomSheetDialogFragment() {
         binding.usersRecyclerView.adapter = usersAdapter
         return binding.root
     }
-
 
 }

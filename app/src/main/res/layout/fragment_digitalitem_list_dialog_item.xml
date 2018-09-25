@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
+        android:background="#222222"
         android:paddingLeft="@dimen/list_item_spacing"
         android:paddingTop="@dimen/list_item_spacing_half"
         android:paddingRight="@dimen/list_item_spacing"

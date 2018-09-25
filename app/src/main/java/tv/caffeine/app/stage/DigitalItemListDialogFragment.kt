@@ -4,26 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_digitalitem_list_dialog.*
-import tv.caffeine.app.R
 import tv.caffeine.app.api.DigitalItem
+import tv.caffeine.app.databinding.FragmentDigitalitemListDialogBinding
 import tv.caffeine.app.databinding.FragmentDigitalitemListDialogItemBinding
-import tv.caffeine.app.di.ViewModelFactory
-import tv.caffeine.app.ui.DaggerBottomSheetDialogFragment
-import javax.inject.Inject
+import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 
-class DigitalItemListDialogFragment : DaggerBottomSheetDialogFragment() {
+class DigitalItemListDialogFragment : CaffeineBottomSheetDialogFragment() {
 
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val adapter = DigitalItemAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,27 +29,21 @@ class DigitalItemListDialogFragment : DaggerBottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_digitalitem_list_dialog, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        list.adapter = adapter
+        val binding = FragmentDigitalitemListDialogBinding.inflate(inflater, container, false)
+        binding.list.adapter = adapter
+        return binding.root
     }
 
     private inner class ViewHolder internal constructor(val binding: FragmentDigitalitemListDialogItemBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        internal val nameTextView: TextView = binding.nameTextView
-        internal val costTextView: TextView = binding.goldCostTextView
-        internal val previewImage: ImageView = binding.previewImageView
-
         fun bind(digitalItem: DigitalItem) {
             binding.digitalItem = digitalItem
-            nameTextView.text = digitalItem.name
-            costTextView.text = digitalItem.goldCost.toString()
+            binding.nameTextView.text = digitalItem.name
+            binding.goldCostTextView.text = digitalItem.goldCost.toString()
             Picasso.get()
                     .load(digitalItem.staticImageUrl)
-                    .into(previewImage)
+                    .into(binding.previewImageView)
         }
     }
 
