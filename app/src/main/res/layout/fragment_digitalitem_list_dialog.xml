@@ -5,6 +5,16 @@
 
     <data>
 
+        <import type="java.lang.Integer"/>
+
+        <variable
+            name="walletViewModel"
+            type="tv.caffeine.app.profile.WalletViewModel"/>
+
+        <variable
+            name="username"
+            type="java.lang.String"/>
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,7 +50,7 @@
                     android:id="@+id/di_catalog_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Send to caffeine"
+                    android:text="@{@string/send_gold_to_user(username)}"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +74,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_marginEnd="8dp"
+                    android:text="@{Integer.toString(walletViewModel.walletBalance)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBaseline_toBaselineOf="@+id/di_catalog_title"
                     tools:text="700" />

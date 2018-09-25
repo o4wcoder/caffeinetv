@@ -112,6 +112,9 @@
         <action
             android:id="@+id/action_stageFragment_to_friendsWatchingFragment"
             app:destination="@id/friendsWatchingFragment" />
+        <action
+            android:id="@+id/action_stageFragment_to_digitalItemListDialogFragment"
+            app:destination="@id/digitalItemListDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/myProfileFragment"
@@ -138,6 +141,15 @@
         android:name="tv.caffeine.app.stage.FriendsWatchingFragment"
         android:label="Friends Watching"
         tools:layout="@layout/fragment_friends_watching">
+        <argument
+            android:name="broadcaster"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/digitalItemListDialogFragment"
+        android:name="tv.caffeine.app.stage.DigitalItemListDialogFragment"
+        android:label="DigitalItemListDialogFragment"
+        tools:layout="@layout/fragment_digitalitem_list_dialog">
         <argument
             android:name="broadcaster"
             app:argType="string" />

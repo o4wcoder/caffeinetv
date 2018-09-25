@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso
 import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.databinding.FragmentDigitalitemListDialogBinding
 import tv.caffeine.app.databinding.FragmentDigitalitemListDialogItemBinding
+import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 
 class DigitalItemListDialogFragment : CaffeineBottomSheetDialogFragment() {
@@ -30,7 +31,10 @@ class DigitalItemListDialogFragment : CaffeineBottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = FragmentDigitalitemListDialogBinding.inflate(inflater, container, false)
+        binding.walletViewModel = viewModelProvider.get(WalletViewModel::class.java)
+        binding.username = DigitalItemListDialogFragmentArgs.fromBundle(arguments).broadcaster
         binding.list.adapter = adapter
+        binding.setLifecycleOwner(this)
         return binding.root
     }
 

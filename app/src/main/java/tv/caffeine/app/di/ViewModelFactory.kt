@@ -10,6 +10,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
+import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import javax.inject.Inject
 
@@ -27,6 +28,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(searchService, usersService)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(usersService, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(paymentsClientService)
+            modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(paymentsClientService)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

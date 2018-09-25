@@ -50,4 +50,6 @@
     <string name="watching_caffeine_live">Watching caffeine LIVE. #caffeinetv  @caffeine</string>
     <string name="share_chooser_title">Share</string>
     <string name="buy_gold_button">Buy Gold</string>
+    <string name="send_gold_to_user">Send to %s</string>
+    <string name="friends_watching_title">Friends watching</string>
 </resources>
