@@ -7,7 +7,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import kotlinx.android.synthetic.main.activity_main.*
 
-private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment)
+private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment)
 
 class MainActivity : AppCompatActivity() {
 

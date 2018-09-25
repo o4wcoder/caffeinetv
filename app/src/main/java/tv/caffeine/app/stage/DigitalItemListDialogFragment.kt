@@ -1,33 +1,26 @@
 package tv.caffeine.app.stage
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.squareup.picasso.Picasso
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.fragment_digitalitem_list_dialog.*
 import tv.caffeine.app.R
 import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.databinding.FragmentDigitalitemListDialogItemBinding
 import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.ui.DaggerBottomSheetDialogFragment
 import javax.inject.Inject
 
-class DigitalItemListDialogFragment : BottomSheetDialogFragment(), HasSupportFragmentInjector {
-    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+class DigitalItemListDialogFragment : DaggerBottomSheetDialogFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -50,13 +43,6 @@ class DigitalItemListDialogFragment : BottomSheetDialogFragment(), HasSupportFra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         list.adapter = adapter
     }
-
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
     private inner class ViewHolder internal constructor(val binding: FragmentDigitalitemListDialogItemBinding)
         : RecyclerView.ViewHolder(binding.root) {

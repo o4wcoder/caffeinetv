@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
@@ -15,14 +14,15 @@ import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
 import tv.caffeine.app.notifications.NotificationsAdapter
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.DaggerBottomSheetDialogFragment
 import javax.inject.Inject
 
-class FriendsWatchingFragment : DaggerFragment() {
+class FriendsWatchingFragment : DaggerBottomSheetDialogFragment() {
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var broadcastsService: BroadcastsService
     @Inject lateinit var usersAdapter: NotificationsAdapter
 
-    lateinit var broadcaster: String
+    private lateinit var broadcaster: String
     private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

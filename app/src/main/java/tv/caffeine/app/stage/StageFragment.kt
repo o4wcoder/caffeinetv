@@ -9,14 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.launch
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -28,7 +24,7 @@ import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
 class StageFragment : DaggerFragment() {
-    lateinit var broadcaster: String
+    private lateinit var broadcaster: String
     private val peerConnections: MutableMap<StageHandshake.Stream.Type, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
     var stageHandshake: StageHandshake? = null
@@ -50,6 +46,7 @@ class StageFragment : DaggerFragment() {
 
     private val latestMessages: MutableList<MessageHandshake.Message> = mutableListOf()
     private var job: Job? = null
+    private var hideActionBarJob: Job? = null
     private var broadcastName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,6 +95,7 @@ class StageFragment : DaggerFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        hideActionBarJob?.cancel()
         deinitSurfaceViewRenderers()
     }
 
@@ -194,8 +192,10 @@ class StageFragment : DaggerFragment() {
             startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
         }
         friends_watching_button?.setOnClickListener {
+            val fragment = FriendsWatchingFragment()
             val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcaster)
-            findNavController().navigate(action)
+            fragment.arguments = action.arguments
+            fragment.show(fragmentManager, "FW")
         }
         gift_button?.setOnClickListener {
             DigitalItemListDialogFragment().show(fragmentManager, "DI")
