@@ -6,7 +6,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import tv.caffeine.app.stage.MessageHandshake
 
 interface Realtime {
     @POST("v2/broadcasts/streams/{streamId}/viewers")
@@ -40,4 +39,4 @@ class IndividualIceCandidate(val candidate: String, val sdpMid: String, val sdpM
 
 class HeartbeatBody(val signed_payload: String)
 
-class Reaction(val type: String, val publisher: String, val body: MessageHandshake.Body)
+class Reaction(val type: String, val publisher: String, val body: Api.Body)

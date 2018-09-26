@@ -15,18 +15,12 @@ class MessageHandshake @Inject constructor(
     private val webSocketController = WebSocketController("msg")
     private val gson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
-    data class Message(val publisher: Api.User, val id: String, val type: String, val body: Body, val endorsementCount: Int = 0)
-    data class Body(val text: String, val digitalItem: ReceivedDigitalItem?)
-    data class ReceivedDigitalItem(val id: String, val count: Int, val creditsPerItem: Int, val staticImagePath: String, val sceneKitPath: String, val webAssetPath: String) {
-        val staticImageUrl get() = "https://assets.caffeine.tv$staticImagePath"
-    }
-
-    fun connect(stageIdentifier: String, callback: (Message) -> Unit) {
+    fun connect(stageIdentifier: String, callback: (Api.Message) -> Unit) {
         val url = "wss://realtime.caffeine.tv/v2/reaper/stages/$stageIdentifier/messages"
         val headers = tokenStore.webSocketHeader()
         webSocketController.open(url, headers) {
             Timber.d("Received message $it")
-            val message = gson.fromJson(it, Message::class.java)
+            val message = gson.fromJson(it, Api.Message::class.java)
             callback(message)
         }
     }

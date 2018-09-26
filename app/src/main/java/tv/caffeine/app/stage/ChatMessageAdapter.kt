@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import tv.caffeine.app.R
+import tv.caffeine.app.api.Api
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
 import tv.caffeine.app.di.ThemeFollowedChat
 import tv.caffeine.app.di.ThemeNotFollowedChat
@@ -16,17 +17,17 @@ import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
 
-private val diffCallback = object : DiffUtil.ItemCallback<MessageHandshake.Message?>() {
-    override fun areItemsTheSame(oldItem: MessageHandshake.Message, newItem: MessageHandshake.Message) = oldItem.id == newItem.id
+private val diffCallback = object : DiffUtil.ItemCallback<Api.Message?>() {
+    override fun areItemsTheSame(oldItem: Api.Message, newItem: Api.Message) = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: MessageHandshake.Message, newItem: MessageHandshake.Message) = oldItem == newItem
+    override fun areContentsTheSame(oldItem: Api.Message, newItem: Api.Message) = oldItem == newItem
 }
 
 class ChatMessageAdapter @Inject constructor(
         private val followManager: FollowManager,
         @ThemeFollowedChat private val followedTheme: UserTheme,
         @ThemeNotFollowedChat private val notFollowedTheme: UserTheme
-): ListAdapter<MessageHandshake.Message, MessageViewHolder>(diffCallback) {
+): ListAdapter<Api.Message, MessageViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val binding = ChatMessageBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -42,7 +43,7 @@ class ChatMessageAdapter @Inject constructor(
 
 class MessageViewHolder(val binding: ChatMessageBubbleBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(message: MessageHandshake.Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    fun bind(message: Api.Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
         binding.speechBubbleTextView.text = message.body.text
         binding.endorsementCountTextView.text = if (message.endorsementCount > 0) message.endorsementCount.toString() else null

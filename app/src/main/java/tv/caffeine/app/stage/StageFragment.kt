@@ -51,7 +51,7 @@ class StageFragment : DaggerFragment() {
 
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
 
-    private val latestMessages: MutableList<MessageHandshake.Message> = mutableListOf()
+    private val latestMessages: MutableList<Api.Message> = mutableListOf()
     private var job: Job? = null
     private var hideActionBarJob: Job? = null
     private var broadcastName: String? = null
@@ -211,7 +211,7 @@ class StageFragment : DaggerFragment() {
                         val signedUserDetails = usersService.signedUserDetails(caid)
                         val publisher = signedUserDetails.await().token
                         val stageId = userDetails.stageId
-                        val message = Reaction("reaction", publisher, MessageHandshake.Body(text, null))
+                        val message = Reaction("reaction", publisher, Api.Body(text, null))
                         val deferred = realtime.sendMessage(stageId, message)
                         val result = deferred.await()
                         Timber.d("Sent message $text with result $result")
