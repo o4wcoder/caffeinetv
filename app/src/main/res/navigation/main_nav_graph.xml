@@ -147,9 +147,9 @@
     </fragment>
     <fragment
         android:id="@+id/digitalItemListDialogFragment"
-        android:name="tv.caffeine.app.stage.DigitalItemListDialogFragment"
+        android:name="tv.caffeine.app.stage.DICatalogFragment"
         android:label="DigitalItemListDialogFragment"
-        tools:layout="@layout/fragment_digitalitem_list_dialog">
+        tools:layout="@layout/fragment_di_catalog">
         <argument
             android:name="broadcaster"
             app:argType="string" />

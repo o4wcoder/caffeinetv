@@ -8,7 +8,7 @@ import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.notifications.NotificationsFragment
 import tv.caffeine.app.profile.MyProfileFragment
 import tv.caffeine.app.profile.ProfileFragment
-import tv.caffeine.app.stage.DigitalItemListDialogFragment
+import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.StageFragment
 
@@ -26,5 +26,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun exploreFragment(): ExploreFragment
     @ContributesAndroidInjector abstract fun notificationsFragment(): NotificationsFragment
     @ContributesAndroidInjector abstract fun friendsWatchingFragment(): FriendsWatchingFragment
-    @ContributesAndroidInjector abstract fun digitalItemListDialogFragment(): DigitalItemListDialogFragment
+    @ContributesAndroidInjector abstract fun digitalItemListDialogFragment(): DICatalogFragment
 }

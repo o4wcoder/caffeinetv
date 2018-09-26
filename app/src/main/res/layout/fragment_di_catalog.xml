@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:minHeight="300dp"
-        tools:context=".stage.DigitalItemListDialogFragment">
+        tools:context=".stage.DICatalogFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/di_catalog_toolbar"
@@ -55,7 +55,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Send to caffeine"/>
 
                 <ImageView
                     android:id="@+id/gold_coin_image_view"
@@ -98,8 +99,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:context="tv.caffeine.app.stage.DigitalItemListDialogFragment"
-            tools:listitem="@layout/fragment_digitalitem_list_dialog_item" />
+            tools:context="tv.caffeine.app.stage.DICatalogFragment"
+            tools:listitem="@layout/di_catalog_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -227,7 +227,7 @@ class StageFragment : DaggerFragment() {
             fragment.show(fragmentManager, "FW")
         }
         gift_button?.setOnClickListener {
-            val fragment = DigitalItemListDialogFragment()
+            val fragment = DICatalogFragment()
             val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "DI")
