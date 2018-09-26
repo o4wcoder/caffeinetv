@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".stage.StageFragment">
 
     <org.webrtc.SurfaceViewRenderer
@@ -12,45 +12,47 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:keepScreenOn="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintBottom_toTopOf="@+id/primary_view_renderer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:layout_constraintVertical_weight="1" />
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/primary_view_renderer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintBottom_toTopOf="@+id/messages_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secondary_view_renderer" />
+        app:layout_constraintTop_toBottomOf="@+id/secondary_view_renderer"
+        app:layout_constraintVertical_weight="1" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_recycler_view"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="256dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        android:minHeight="320dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_stage_toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_stage_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/primary_view_renderer" />
+        app:layout_constraintTop_toBottomOf="@+id/primary_view_renderer"
+        app:spanCount="2" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bottom_stage_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messages_recycler_view">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <ImageButton
                 android:id="@+id/share_button"
@@ -60,9 +62,9 @@
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_share_gray8b_24dp"
                 android:tint="@color/toolbarIcon"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/chat_button"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
