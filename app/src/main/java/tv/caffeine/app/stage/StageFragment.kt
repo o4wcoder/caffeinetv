@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
 import kotlinx.coroutines.experimental.Dispatchers
@@ -198,7 +197,6 @@ class StageFragment : DaggerFragment() {
             startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
         }
         chat_button?.setOnClickListener {
-            chat_message_edit_text?.isVisible = true
             chat_message_edit_text?.requestFocus()
             chat_message_edit_text?.showKeyboard()
             chat_message_edit_text?.setOnAction(EditorInfo.IME_ACTION_SEND) {
@@ -216,7 +214,6 @@ class StageFragment : DaggerFragment() {
                         val result = deferred.await()
                         Timber.d("Sent message $text with result $result")
                     }
-                    editText.isVisible = false
                 }
             }
         }
