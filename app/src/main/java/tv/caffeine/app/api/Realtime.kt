@@ -1,10 +1,12 @@
 package tv.caffeine.app.api
 
+import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import tv.caffeine.app.stage.MessageHandshake
 
 interface Realtime {
     @POST("v2/broadcasts/streams/{streamId}/viewers")
@@ -21,6 +23,9 @@ interface Realtime {
 
     @POST("v2/broadcasts/viewers/{viewerId}/heartbeat")
     fun sendHeartbeat(@Path("viewerId") viewerId: String, @Body heartbeatBody: HeartbeatBody): Call<Void>
+
+    @POST("v2/reaper/stages/{stageId}/messages")
+    fun sendMessage(@Path("stageId") stageId: String, @Body reaction: Reaction): Deferred<Any>
 }
 
 class CreateViewerResult(val id: String, val offer: String, val signed_payload: String)
@@ -34,3 +39,5 @@ class AnswerBody(val answer: String, val signed_payload: String)
 class IndividualIceCandidate(val candidate: String, val sdpMid: String, val sdpMLineIndex: Int)
 
 class HeartbeatBody(val signed_payload: String)
+
+class Reaction(val type: String, val publisher: String, val body: MessageHandshake.Body)

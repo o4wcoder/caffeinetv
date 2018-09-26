@@ -63,3 +63,5 @@ class Api {
     }
 
 }
+
+class SignedUserToken(val token: String)

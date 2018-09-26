@@ -41,6 +41,20 @@
         app:layout_constraintTop_toBottomOf="@+id/primary_view_renderer"
         app:spanCount="2" />
 
+    <EditText
+        android:id="@+id/chat_message_edit_text"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="textShortMessage"
+        android:singleLine="true"
+        android:imeOptions="actionSend"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/messages_recycler_view"
+        tools:visibility="visible"/>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bottom_stage_toolbar"
         android:layout_width="0dp"

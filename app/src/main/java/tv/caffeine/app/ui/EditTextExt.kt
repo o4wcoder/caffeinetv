@@ -18,3 +18,22 @@ inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
         }
     }
 }
+
+inline fun EditText.showKeyboard() {
+    context.getSystemService<InputMethodManager>()
+            ?.showSoftInput(this, 0)
+}
+
+inline fun EditText.setOnAction(action: Int, crossinline block: () -> Unit) {
+    setOnEditorActionListener { _, actionId, _ ->
+        return@setOnEditorActionListener when(actionId) {
+            action -> {
+                block()
+                context.getSystemService<InputMethodManager>()
+                        ?.hideSoftInputFromWindow(windowToken, 0)
+                true
+            }
+            else -> false
+        }
+    }
+}

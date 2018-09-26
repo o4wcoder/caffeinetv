@@ -8,19 +8,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.Main
+import kotlinx.coroutines.experimental.launch
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.BroadcastsService
-import tv.caffeine.app.api.EventsService
-import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.setOnAction
+import tv.caffeine.app.ui.showKeyboard
 import javax.inject.Inject
 
 class StageFragment : DaggerFragment() {
@@ -28,7 +34,7 @@ class StageFragment : DaggerFragment() {
     private val peerConnections: MutableMap<StageHandshake.Stream.Type, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
     var stageHandshake: StageHandshake? = null
-    var messageHandshake: MessageHandshake? = null
+    @Inject lateinit var messageHandshake: MessageHandshake
     var streamController: StreamController? = null
     private val videoTracks: MutableMap<StageHandshake.Stream.Type, VideoTrack> = mutableMapOf()
     private val audioTracks: MutableMap<StageHandshake.Stream.Type, AudioTrack> = mutableMapOf()
@@ -41,6 +47,7 @@ class StageFragment : DaggerFragment() {
     @Inject lateinit var eventsService: EventsService
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var broadcastsService: BroadcastsService
+    @Inject lateinit var usersService: UsersService
 
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
 
@@ -153,8 +160,7 @@ class StageFragment : DaggerFragment() {
                 }
             }
         }
-        messageHandshake = MessageHandshake(tokenStore)
-        messageHandshake?.connect(stageIdentifier) { message ->
+        messageHandshake.connect(stageIdentifier) { message ->
             val oldInstance = latestMessages.find { it.id == message.id }
             if (oldInstance != null) {
                 latestMessages.remove(oldInstance)
@@ -168,7 +174,7 @@ class StageFragment : DaggerFragment() {
     private fun disconnectStreams() {
         stageHandshake?.close()
         streamController?.close()
-        messageHandshake?.close()
+        messageHandshake.close()
         peerConnections.values.onEach { it.dispose() }
     }
 
@@ -190,6 +196,29 @@ class StageFragment : DaggerFragment() {
                 type = "text/plain"
             }
             startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
+        }
+        chat_button?.setOnClickListener {
+            chat_message_edit_text?.isVisible = true
+            chat_message_edit_text?.requestFocus()
+            chat_message_edit_text?.showKeyboard()
+            chat_message_edit_text?.setOnAction(EditorInfo.IME_ACTION_SEND) {
+                chat_message_edit_text?.let { editText ->
+                    Toast.makeText(context, editText.text, Toast.LENGTH_SHORT).show()
+                    val text = editText.text.toString()
+                    GlobalScope.launch {
+                        val userDetails = followManager.userDetails(broadcaster)
+                        val caid = tokenStore.caid ?: error("Not logged in")
+                        val signedUserDetails = usersService.signedUserDetails(caid)
+                        val publisher = signedUserDetails.await().token
+                        val stageId = userDetails.stageId
+                        val message = Reaction("reaction", publisher, MessageHandshake.Body(text, null))
+                        val deferred = realtime.sendMessage(stageId, message)
+                        val result = deferred.await()
+                        Timber.d("Sent message $text with result $result")
+                    }
+                    editText.isVisible = false
+                }
+            }
         }
         friends_watching_button?.setOnClickListener {
             val fragment = FriendsWatchingFragment()

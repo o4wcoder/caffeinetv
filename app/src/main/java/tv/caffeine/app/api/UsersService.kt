@@ -25,6 +25,9 @@ interface UsersService {
 
     @GET("v1/users/{caid}")
     fun userDetails(@Path("caid") userId: String): Deferred<Api.UserContainer>
+
+    @GET("v1/users/{caid}/signed")
+    fun signedUserDetails(@Path("caid") userId: String): Deferred<SignedUserToken>
 }
 
 class FollowRecord(val caid: String, val followedAt: String?) // followedAt = ISO-8601 date
