@@ -20,9 +20,6 @@
     <style name="AppTheme" parent="BaseAppTheme">
     </style>
 
-    <style name="StageTheme" parent="Theme.MaterialComponents">
-    </style>
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
