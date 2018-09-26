@@ -117,4 +117,10 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="StageToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
 </resources>
