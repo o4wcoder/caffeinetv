@@ -258,9 +258,9 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun sendMessage() {
-        if (chat_message_edit_text == null) return
-        val text = chat_message_edit_text.text.toString()
-        chat_message_edit_text.text = null
+        val editText = chat_message_edit_text ?: return
+        val text = editText.text.toString()
+        editText.text = null
         GlobalScope.launch {
             val userDetails = followManager.userDetails(broadcaster)
             val caid = tokenStore.caid ?: error("Not logged in")
