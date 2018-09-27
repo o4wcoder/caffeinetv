@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_stage.*
@@ -32,9 +31,9 @@ class StageFragment : DaggerFragment() {
     private lateinit var broadcaster: String
     private val peerConnections: MutableMap<StageHandshake.Stream.Type, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
-    var stageHandshake: StageHandshake? = null
+    private var stageHandshake: StageHandshake? = null
     @Inject lateinit var messageHandshake: MessageHandshake
-    var streamController: StreamController? = null
+    private var streamController: StreamController? = null
     private val videoTracks: MutableMap<StageHandshake.Stream.Type, VideoTrack> = mutableMapOf()
     private val audioTracks: MutableMap<StageHandshake.Stream.Type, AudioTrack> = mutableMapOf()
     private var streams: Map<StageHandshake.Stream.Type, StageHandshake.Stream> = mapOf()
@@ -200,21 +199,7 @@ class StageFragment : DaggerFragment() {
             chat_message_edit_text?.requestFocus()
             chat_message_edit_text?.showKeyboard()
             chat_message_edit_text?.setOnAction(EditorInfo.IME_ACTION_SEND) {
-                chat_message_edit_text?.let { editText ->
-                    Toast.makeText(context, editText.text, Toast.LENGTH_SHORT).show()
-                    val text = editText.text.toString()
-                    GlobalScope.launch {
-                        val userDetails = followManager.userDetails(broadcaster)
-                        val caid = tokenStore.caid ?: error("Not logged in")
-                        val signedUserDetails = usersService.signedUserDetails(caid)
-                        val publisher = signedUserDetails.await().token
-                        val stageId = userDetails.stageId
-                        val message = Reaction("reaction", publisher, Api.Body(text, null))
-                        val deferred = realtime.sendMessage(stageId, message)
-                        val result = deferred.await()
-                        Timber.d("Sent message $text with result $result")
-                    }
-                }
+                sendMessage()
             }
         }
         friends_watching_button?.setOnClickListener {
@@ -228,6 +213,23 @@ class StageFragment : DaggerFragment() {
             val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "DI")
+        }
+    }
+
+    private fun sendMessage() {
+        if (chat_message_edit_text == null) return
+        val text = chat_message_edit_text.text.toString()
+        chat_message_edit_text.text = null
+        GlobalScope.launch {
+            val userDetails = followManager.userDetails(broadcaster)
+            val caid = tokenStore.caid ?: error("Not logged in")
+            val signedUserDetails = usersService.signedUserDetails(caid)
+            val publisher = signedUserDetails.await().token
+            val stageId = userDetails.stageId
+            val message = Reaction("reaction", publisher, Api.Body(text, null))
+            val deferred = realtime.sendMessage(stageId, message)
+            val result = deferred.await()
+            Timber.d("Sent message $text with result $result")
         }
     }
 
