@@ -153,6 +153,7 @@ class StageFragment : DaggerFragment() {
             val newStreams = event.streams.associateBy { stream -> stream.id }
             Timber.d("StreamState - New streams: $newStreams")
             val oldStreams = streams
+            streams = newStreams
             Timber.d("StreamState - Old streams: $oldStreams")
             val removedStreamIds = oldStreams.keys.subtract(newStreams.keys)
             removedStreamIds.forEach { streamId ->
@@ -183,7 +184,6 @@ class StageFragment : DaggerFragment() {
                             configureRenderer(it, stream, videoTracks[stream.id])
                         }
                     }
-            streams = newStreams
             newStreams.values.filter { it.id in addedStreamIds }.forEach { stream ->
                 Timber.d("StreamState - Configuring new stream ${stream.id}, ${stream.type}, ${stream.label}")
                 streamController?.connect(stream) { peerConnection, videoTrack, audioTrack ->
@@ -282,7 +282,6 @@ class StageFragment : DaggerFragment() {
             renderer.release()
         }
         renderers.clear()
-        videoTracks.clear()
     }
 
     private fun setMediaTracksEnabled(enabled: Boolean) {
