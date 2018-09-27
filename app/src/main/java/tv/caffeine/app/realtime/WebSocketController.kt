@@ -26,6 +26,7 @@ class WebSocketController(private val tag: String) {
 
     fun close() {
         webSocket?.close(STATUS_CODE_NORMAL_CLOSURE, null)
+        webSocket = null
     }
 
     private class Listener(private val tag: String, private val headers: String, val callback: (String) -> Unit): WebSocketListener() {

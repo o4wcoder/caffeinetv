@@ -7,7 +7,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.realtime.WebSocketController
 
 class StageHandshake(private val tokenStore: TokenStore) {
-    private val webSocketController = WebSocketController("stg")
+    private var webSocketController: WebSocketController? = null
     private val gsonForEvents: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     private var lastEvent: Event? = null
 
@@ -25,7 +25,8 @@ class StageHandshake(private val tokenStore: TokenStore) {
     fun connect(stageIdentifier: String, callback: (Event) -> Unit) {
         val url = "wss://realtime.caffeine.tv/v2/stages/$stageIdentifier/details"
         val headers = tokenStore.webSocketHeader()
-        webSocketController.open(url, headers) {
+        webSocketController = WebSocketController("stg")
+        webSocketController?.open(url, headers) {
             val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
             val event = eventEnvelope.v2
             if (event == lastEvent) return@open
@@ -35,7 +36,8 @@ class StageHandshake(private val tokenStore: TokenStore) {
     }
 
     fun close() {
-        webSocketController.close()
+        webSocketController?.close()
+        webSocketController = null
     }
 
 }
