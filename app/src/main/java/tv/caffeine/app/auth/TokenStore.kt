@@ -67,5 +67,4 @@ class TokenStore(private val sharedPreferences: SharedPreferences) {
         }
     }
 
-    fun alreadyContainsAuthorization(response: Response) = accessToken != null && response.request().header("Authorization") == "Bearer $accessToken"
 }
