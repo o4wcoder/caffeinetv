@@ -29,14 +29,15 @@ import javax.inject.Inject
 
 class StageFragment : DaggerFragment() {
     private lateinit var broadcaster: String
-    private val peerConnections: MutableMap<StageHandshake.Stream.Type, PeerConnection> = mutableMapOf()
+    private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
+    private val sinks: MutableMap<String, StageHandshake.Stream.Type> = mutableMapOf()
     private var stageHandshake: StageHandshake? = null
     @Inject lateinit var messageHandshake: MessageHandshake
     private var streamController: StreamController? = null
-    private val videoTracks: MutableMap<StageHandshake.Stream.Type, VideoTrack> = mutableMapOf()
-    private val audioTracks: MutableMap<StageHandshake.Stream.Type, AudioTrack> = mutableMapOf()
-    private var streams: Map<StageHandshake.Stream.Type, StageHandshake.Stream> = mapOf()
+    private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
+    private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
+    private var streams: Map<String, StageHandshake.Stream> = mapOf()
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -128,7 +129,9 @@ class StageFragment : DaggerFragment() {
             renderer.init(eglBase.eglBaseContext, null)
             renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
             renderer.setEnableHardwareScaler(true)
-            configureRenderer(renderer, streams[key], videoTracks[key])
+            streams.values.firstOrNull { it.type == key }?.let { stream ->
+                configureRenderer(renderer, stream, videoTracks[stream.id])
+            }
         }
     }
 
@@ -137,6 +140,8 @@ class StageFragment : DaggerFragment() {
         renderer.visibility = if (hasVideo) View.VISIBLE else View.INVISIBLE
         if (hasVideo) {
             videoTrack?.addSink(renderer)
+        } else {
+            videoTrack?.removeSink(renderer)
         }
     }
 
@@ -145,13 +150,49 @@ class StageFragment : DaggerFragment() {
         streamController = StreamController(realtime, peerConnectionFactory, eventsService, stageIdentifier)
         stageHandshake?.connect(stageIdentifier) { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
-            streams = event.streams.associateBy { stream -> stream.type }
-            event.streams.forEach { stream ->
+            val newStreams = event.streams.associateBy { stream -> stream.id }
+            Timber.d("StreamState - New streams: $newStreams")
+            val oldStreams = streams
+            Timber.d("StreamState - Old streams: $oldStreams")
+            val removedStreamIds = oldStreams.keys.subtract(newStreams.keys)
+            removedStreamIds.forEach { streamId ->
+                val stream = oldStreams[streamId]
+                Timber.d("StreamState - Removed stream $streamId, ${stream?.type}, ${stream?.label}")
+                peerConnections.remove(streamId)?.close()
+                videoTracks.remove(streamId)?.apply {
+                    removeSink(renderers[sinks[streamId]])
+//                    dispose()
+                }
+                audioTracks.remove(streamId)//?.dispose()
+                sinks.remove(streamId)
+            }
+            val addedStreamIds = newStreams.keys.subtract(oldStreams.keys)
+            val updatedStreamIds = newStreams.keys.intersect(oldStreams.keys)
+            newStreams.values.filter { it.id in updatedStreamIds }.forEach { Timber.d("Updated stream ${it.id}, ${it.type}, ${it.label}") }
+            newStreams.values
+                    .filter { newStream ->
+                        oldStreams[newStream.id]?.let { oldStream ->
+                            oldStream.type != newStream.type
+                        } ?: false
+                    }
+                    .forEach { stream ->
+                        Timber.d("StreamState - Switching stream ${stream.id}, ${stream.label} from ${oldStreams[stream.id]?.type} to ${stream.type}")
+                        videoTracks[stream.id]?.removeSink(renderers[sinks[stream.id]])
+                        sinks[stream.id] = stream.type
+                        renderers[stream.type]?.let {
+                            configureRenderer(it, stream, videoTracks[stream.id])
+                        }
+                    }
+            streams = newStreams
+            newStreams.values.filter { it.id in addedStreamIds }.forEach { stream ->
+                Timber.d("StreamState - Configuring new stream ${stream.id}, ${stream.type}, ${stream.label}")
                 streamController?.connect(stream) { peerConnection, videoTrack, audioTrack ->
+                    val streamId = stream.id
                     val streamType = stream.type
-                    peerConnections[streamType] = peerConnection
-                    videoTrack?.let { videoTracks[streamType] = it }
-                    audioTrack?.let { audioTracks[streamType] = it }
+                    peerConnections[streamId] = peerConnection
+                    videoTrack?.let { videoTracks[streamId] = it }
+                    audioTrack?.let { audioTracks[streamId] = it }
+                    sinks[streamId] = streamType
                     renderers[streamType]?.let {
                         configureRenderer(it, stream, videoTrack)
                     }
@@ -234,13 +275,14 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun deinitSurfaceViewRenderers() {
-        renderers.forEach { entry ->
-            val key = entry.key
-            val renderer = entry.value
-            videoTracks[key]?.removeSink(renderer)
+        for (renderer in renderers.values) {
+            for (videoTrack in videoTracks.values) {
+                videoTrack.removeSink(renderer)
+            }
             renderer.release()
         }
         renderers.clear()
+        videoTracks.clear()
     }
 
     private fun setMediaTracksEnabled(enabled: Boolean) {
