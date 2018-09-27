@@ -2,11 +2,11 @@ package tv.caffeine.app.stage
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.android.Main
+import kotlinx.coroutines.launch
 import tv.caffeine.app.api.DigitalItemsPayload
 import tv.caffeine.app.api.GetDigitalItemsBody
 import tv.caffeine.app.api.PaymentsClientService

@@ -51,13 +51,14 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
         }
     }
 
-    val diffCallback = object : DiffUtil.ItemCallback<DigitalItem?>() {
-        override fun areItemsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem == newItem
-    }
+    private inner class DigitalItemAdapter internal constructor() : ListAdapter<DigitalItem, ViewHolder>(
+            object : DiffUtil.ItemCallback<DigitalItem>() {
+                override fun areItemsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem.id == newItem.id
 
-    private inner class DigitalItemAdapter internal constructor() : ListAdapter<DigitalItem, ViewHolder>(diffCallback) {
+                override fun areContentsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem == newItem
+            }
+    ) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding = DiCatalogItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

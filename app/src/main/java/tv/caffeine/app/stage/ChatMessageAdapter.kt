@@ -17,17 +17,17 @@ import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
 
-private val diffCallback = object : DiffUtil.ItemCallback<Api.Message?>() {
-    override fun areItemsTheSame(oldItem: Api.Message, newItem: Api.Message) = oldItem.id == newItem.id
-
-    override fun areContentsTheSame(oldItem: Api.Message, newItem: Api.Message) = oldItem == newItem
-}
-
 class ChatMessageAdapter @Inject constructor(
         private val followManager: FollowManager,
         @ThemeFollowedChat private val followedTheme: UserTheme,
         @ThemeNotFollowedChat private val notFollowedTheme: UserTheme
-): ListAdapter<Api.Message, MessageViewHolder>(diffCallback) {
+): ListAdapter<Api.Message, MessageViewHolder>(
+        object : DiffUtil.ItemCallback<Api.Message>() {
+            override fun areItemsTheSame(oldItem: Api.Message, newItem: Api.Message) = oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Api.Message, newItem: Api.Message) = oldItem == newItem
+        }
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val binding = ChatMessageBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false)

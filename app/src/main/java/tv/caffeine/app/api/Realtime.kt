@@ -1,6 +1,6 @@
 package tv.caffeine.app.api
 
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST

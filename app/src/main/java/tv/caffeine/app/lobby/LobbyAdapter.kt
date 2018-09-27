@@ -13,18 +13,18 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import javax.inject.Inject
 
-private val diffCallback = object : DiffUtil.ItemCallback<LobbyItem?>() {
-    override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem)
-            = oldItem.itemType == newItem.itemType && oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem == newItem
-}
-
 class LobbyAdapter @Inject constructor(
         private val followManager: FollowManager,
         internal val recycledViewPool: RecyclerView.RecycledViewPool,
         @ThemeFollowedLobby private val followedTheme: UserTheme,
         @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme
-) : ListAdapter<LobbyItem, LobbyViewHolder>(diffCallback) {
+) : ListAdapter<LobbyItem, LobbyViewHolder>(
+        object : DiffUtil.ItemCallback<LobbyItem>() {
+            override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem)
+                    = oldItem.itemType == newItem.itemType && oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem == newItem
+        }
+) {
     private var tags: Map<String, Api.v3.Lobby.Tag> = mapOf()
     private var content: Map<String, Api.v3.Lobby.Content> = mapOf()
 

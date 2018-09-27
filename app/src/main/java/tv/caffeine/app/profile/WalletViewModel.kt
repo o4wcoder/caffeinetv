@@ -2,8 +2,8 @@ package tv.caffeine.app.profile
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.Main
+import kotlinx.coroutines.*
+import kotlinx.coroutines.android.Main
 import timber.log.Timber
 import tv.caffeine.app.api.GetWalletBody
 import tv.caffeine.app.api.PaymentsClientService

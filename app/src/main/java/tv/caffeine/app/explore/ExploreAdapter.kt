@@ -19,16 +19,16 @@ import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
 
-private val diffCallback = object : DiffUtil.ItemCallback<SearchUserItem?>() {
-    override fun areItemsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem === newItem
-    override fun areContentsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem.id == newItem.id
-}
-
 abstract class UsersAdapter(
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
         private val notFollowedTheme: UserTheme
-) : ListAdapter<SearchUserItem, UserViewHolder>(diffCallback) {
+) : ListAdapter<SearchUserItem, UserViewHolder>(
+        object : DiffUtil.ItemCallback<SearchUserItem?>() {
+            override fun areItemsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem === newItem
+            override fun areContentsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem.id == newItem.id
+        }
+) {
     abstract val userItemLayout: Int
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {

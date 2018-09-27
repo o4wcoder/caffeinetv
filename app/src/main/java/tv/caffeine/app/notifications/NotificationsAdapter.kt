@@ -10,11 +10,11 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.android.Main
+import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
@@ -24,16 +24,16 @@ import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
 
-private val diffCallback = object : DiffUtil.ItemCallback<FollowRecord?>() {
-    override fun areItemsTheSame(oldItem: FollowRecord, newItem: FollowRecord) = oldItem === newItem
-    override fun areContentsTheSame(oldItem: FollowRecord, newItem: FollowRecord) = oldItem.caid == newItem.caid
-}
-
 class NotificationsAdapter @Inject constructor(
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
         @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
-) : ListAdapter<FollowRecord, NotificationViewHolder>(diffCallback) {
+) : ListAdapter<FollowRecord, NotificationViewHolder>(
+        object : DiffUtil.ItemCallback<FollowRecord?>() {
+            override fun areItemsTheSame(oldItem: FollowRecord, newItem: FollowRecord) = oldItem === newItem
+            override fun areContentsTheSame(oldItem: FollowRecord, newItem: FollowRecord) = oldItem.caid == newItem.caid
+        }
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.notification_new_follower, parent, false)
         return NotificationViewHolder(view)

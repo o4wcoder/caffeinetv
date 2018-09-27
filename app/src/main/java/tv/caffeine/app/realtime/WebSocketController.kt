@@ -3,8 +3,8 @@ package tv.caffeine.app.realtime
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.timeunit.TimeUnit
+import kotlinx.coroutines.*
+import kotlinx.coroutines.timeunit.TimeUnit
 import okhttp3.*
 import timber.log.Timber
 

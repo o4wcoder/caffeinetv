@@ -11,10 +11,10 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_sign_in.*
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.android.Main
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R

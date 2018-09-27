@@ -11,10 +11,10 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerFragment
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.android.Main
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
