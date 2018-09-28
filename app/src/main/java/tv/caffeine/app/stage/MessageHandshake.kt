@@ -7,11 +7,8 @@ import timber.log.Timber
 import tv.caffeine.app.api.Api
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.realtime.WebSocketController
-import javax.inject.Inject
 
-class MessageHandshake @Inject constructor(
-        private val tokenStore: TokenStore
-) {
+class MessageHandshake(private val tokenStore: TokenStore) {
     private var webSocketController: WebSocketController? = null
     private val gson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 

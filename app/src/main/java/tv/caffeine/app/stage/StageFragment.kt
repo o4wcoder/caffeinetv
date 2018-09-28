@@ -33,7 +33,7 @@ class StageFragment : DaggerFragment() {
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
     private val sinks: MutableMap<String, StageHandshake.Stream.Type> = mutableMapOf()
     private var stageHandshake: StageHandshake? = null
-    @Inject lateinit var messageHandshake: MessageHandshake
+    private var messageHandshake: MessageHandshake? = null
     private var streamController: StreamController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
@@ -199,7 +199,8 @@ class StageFragment : DaggerFragment() {
                 }
             }
         }
-        messageHandshake.connect(stageIdentifier) { message ->
+        messageHandshake = MessageHandshake(tokenStore)
+        messageHandshake?.connect(stageIdentifier) { message ->
             val oldInstance = latestMessages.find { it.id == message.id }
             if (oldInstance != null) {
                 latestMessages.remove(oldInstance)
@@ -212,8 +213,11 @@ class StageFragment : DaggerFragment() {
 
     private fun disconnectStreams() {
         stageHandshake?.close()
+        stageHandshake = null
         streamController?.close()
-        messageHandshake.close()
+        streamController = null
+        messageHandshake?.close()
+        messageHandshake = null
         peerConnections.values.onEach { it.dispose() }
     }
 
