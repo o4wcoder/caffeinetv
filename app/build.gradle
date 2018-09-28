@@ -60,7 +60,7 @@ dependencies {
 
     // Data binding
     implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
     kapt "com.android.databinding:compiler:$android_plugin_version"
 
     // Networking
