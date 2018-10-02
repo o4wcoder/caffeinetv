@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.BaseObservableViewModel
 
@@ -37,7 +38,7 @@ class ProfileViewModel(val followManager: FollowManager) : BaseObservableViewMod
                 isFollowed.value = followManager.isFollowing(caid)
                 isVerified.value = userDetails.isVerified
                 avatarImageUrl.value = userDetails.avatarImageUrl
-                if (userDetails.isOnline) {
+                if (broadcast.state == Broadcast.State.ONLINE) {
                     stageImageUrl.value = broadcast.previewImageUrl
                 }
             }
