@@ -96,7 +96,7 @@ class StageFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         title = broadcastName
-        binding.messagesRecyclerView.adapter = chatMessageAdapter
+        binding.messagesRecyclerView?.adapter = chatMessageAdapter
         initSurfaceViewRenderer()
         displayMessages()
         configureButtons()
@@ -235,7 +235,7 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun configureButtons() {
-        binding.shareButton.setOnClickListener {
+        binding.shareButton?.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, it) } ?: getString(R.string.watching_caffeine_live)
                 putExtra(Intent.EXTRA_TEXT, textToShare)
@@ -243,20 +243,20 @@ class StageFragment : DaggerFragment() {
             }
             startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
         }
-        binding.chatButton.setOnClickListener {
-            binding.chatMessageEditText.requestFocus()
-            binding.chatMessageEditText.showKeyboard()
-            binding.chatMessageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) {
+        binding.chatButton?.setOnClickListener {
+            binding.chatMessageEditText?.requestFocus()
+            binding.chatMessageEditText?.showKeyboard()
+            binding.chatMessageEditText?.setOnAction(EditorInfo.IME_ACTION_SEND) {
                 sendMessage()
             }
         }
-        binding.friendsWatchingButton.setOnClickListener {
+        binding.friendsWatchingButton?.setOnClickListener {
             val fragment = FriendsWatchingFragment()
             val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcaster)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "FW")
         }
-        binding.giftButton.setOnClickListener {
+        binding.giftButton?.setOnClickListener {
             val fragment = DICatalogFragment()
             val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster)
             fragment.arguments = action.arguments
