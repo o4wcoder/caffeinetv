@@ -13,7 +13,6 @@ import dagger.android.support.DaggerFragment
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.android.Main
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback

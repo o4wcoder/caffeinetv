@@ -13,7 +13,6 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_sign_in.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.android.Main
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import timber.log.Timber

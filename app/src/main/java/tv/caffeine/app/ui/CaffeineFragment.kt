@@ -6,7 +6,6 @@ import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.android.Main
 import tv.caffeine.app.di.ViewModelFactory
 import javax.inject.Inject
 
