@@ -10,7 +10,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_sign_in.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,6 +17,7 @@ import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.databinding.FragmentSignInBinding
 import tv.caffeine.app.ui.setOnActionGo
 import javax.inject.Inject
 
@@ -25,26 +25,28 @@ class SignInFragment : DaggerFragment() {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var gson: Gson
     @Inject lateinit var tokenStore: TokenStore
+    private lateinit var binding: FragmentSignInBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_in, container, false)
+        binding = FragmentSignInBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        forgot_button.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
-        sign_in_button.setOnClickListener {
+        binding.forgotButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
+        binding.signInButton.setOnClickListener {
             login()
         }
-        password_edit_text.setOnActionGo { login() }
+        binding.passwordEditText.setOnActionGo { login() }
     }
 
     private fun login() {
-        val username = username_edit_text.text.toString()
-        val password = password_edit_text.text.toString()
-        form_error_text_view.text = null
+        val username = binding.usernameEditText.text.toString()
+        val password = binding.passwordEditText.text.toString()
+        binding.formErrorTextView.text = null
         val signInBody = SignInBody(Account(username, password))
         GlobalScope.launch(Dispatchers.Default) {
             val request = accountsService.signIn(signInBody).await()
@@ -62,8 +64,8 @@ class SignInFragment : DaggerFragment() {
         val navController = findNavController()
         when(signInResult.next) {
             "mfa_otp_required" -> {
-                val username = username_edit_text.text.toString()
-                val password = password_edit_text.text.toString()
+                val username = binding.usernameEditText.text.toString()
+                val password = binding.passwordEditText.text.toString()
                 val action = SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password)
                 navController.navigate(action)
             }
@@ -79,8 +81,8 @@ class SignInFragment : DaggerFragment() {
     private fun onError(signInError: ResponseBody) {
         val error = gson.fromJson(signInError.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
-        error.errors._error?.joinToString("\n")?.let { form_error_text_view.text = it }
-        error.errors.username?.joinToString("\n")?.let { username_text_input_layout.error = it }
-        error.errors.password?.joinToString("\n")?.let { password_text_input_layout.error = it }
+        error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }
+        error.errors.username?.joinToString("\n")?.let { binding.usernameTextInputLayout.error = it }
+        error.errors.password?.joinToString("\n")?.let { binding.passwordTextInputLayout.error = it }
     }
 }

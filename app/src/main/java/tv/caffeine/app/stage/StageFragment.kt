@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_stage.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -22,6 +21,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.ui.showKeyboard
@@ -55,6 +55,8 @@ class StageFragment : DaggerFragment() {
     private var hideActionBarJob: Job? = null
     private var broadcastName: String? = null
 
+    lateinit var binding: FragmentStageBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
@@ -86,14 +88,15 @@ class StageFragment : DaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stage, container, false)
+        binding = FragmentStageBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         title = broadcastName
-        messages_recycler_view?.adapter = chatMessageAdapter
+        binding.messagesRecyclerView.adapter = chatMessageAdapter
         initSurfaceViewRenderer()
         displayMessages()
         configureButtons()
@@ -121,8 +124,8 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun initSurfaceViewRenderer() {
-        renderers[StageHandshake.Stream.Type.primary] = primary_view_renderer
-        renderers[StageHandshake.Stream.Type.secondary] = secondary_view_renderer
+        renderers[StageHandshake.Stream.Type.primary] = binding.primaryViewRenderer
+        renderers[StageHandshake.Stream.Type.secondary] = binding.secondaryViewRenderer
         renderers.forEach { entry ->
             val key = entry.key
             val renderer = entry.value
@@ -232,7 +235,7 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun configureButtons() {
-        share_button?.setOnClickListener {
+        binding.shareButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, it) } ?: getString(R.string.watching_caffeine_live)
                 putExtra(Intent.EXTRA_TEXT, textToShare)
@@ -240,20 +243,20 @@ class StageFragment : DaggerFragment() {
             }
             startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
         }
-        chat_button?.setOnClickListener {
-            chat_message_edit_text?.requestFocus()
-            chat_message_edit_text?.showKeyboard()
-            chat_message_edit_text?.setOnAction(EditorInfo.IME_ACTION_SEND) {
+        binding.chatButton.setOnClickListener {
+            binding.chatMessageEditText.requestFocus()
+            binding.chatMessageEditText.showKeyboard()
+            binding.chatMessageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) {
                 sendMessage()
             }
         }
-        friends_watching_button?.setOnClickListener {
+        binding.friendsWatchingButton.setOnClickListener {
             val fragment = FriendsWatchingFragment()
             val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcaster)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "FW")
         }
-        gift_button?.setOnClickListener {
+        binding.giftButton.setOnClickListener {
             val fragment = DICatalogFragment()
             val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster)
             fragment.arguments = action.arguments
@@ -262,7 +265,7 @@ class StageFragment : DaggerFragment() {
     }
 
     private fun sendMessage() {
-        val editText = chat_message_edit_text ?: return
+        val editText = binding.chatMessageEditText ?: return
         val text = editText.text.toString()
         editText.text = null
         GlobalScope.launch {

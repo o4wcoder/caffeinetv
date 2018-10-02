@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_sign_up.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,6 +16,7 @@ import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.SignUpAccount
 import tv.caffeine.app.api.SignUpBody
 import tv.caffeine.app.api.SignUpResult
+import tv.caffeine.app.databinding.FragmentSignUpBinding
 import javax.inject.Inject
 
 
@@ -24,26 +24,28 @@ class SignUpFragment : DaggerFragment() {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
+    private lateinit var binding: tv.caffeine.app.databinding.FragmentSignUpBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
+        binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sign_up_button.setOnClickListener { signUp() }
+        binding.signUpButton.setOnClickListener { signUp() }
     }
 
     private fun signUp() {
-        val username = username_edit_text.text.toString()
-        val password = password_edit_text.text.toString()
-        val email = email_edit_text.text.toString()
-        val dob = dob_edit_text.text.toString()
+        val username = binding.usernameEditText.text.toString()
+        val password = binding.passwordEditText.text.toString()
+        val email = binding.emailEditText.text.toString()
+        val dob = binding.dobEditText.text.toString()
         val countryCode = "US"
         val iid: String? = null
-        val agreedToTos = agree_to_legal_checkbox.isChecked
+        val agreedToTos = binding.agreeToLegalCheckbox.isChecked
         val account = SignUpAccount(username, password, email, dob, countryCode)
         val signUpBody = SignUpBody(account, iid, agreedToTos)
         accountsService.signUp(signUpBody).enqueue(object : Callback<SignUpResult?> {

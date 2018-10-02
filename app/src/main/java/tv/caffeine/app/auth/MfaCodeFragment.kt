@@ -11,7 +11,6 @@ import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_mfa_code.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,6 +18,7 @@ import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.databinding.FragmentMfaCodeBinding
 import tv.caffeine.app.ui.setOnActionGo
 import javax.inject.Inject
 
@@ -27,19 +27,21 @@ class MfaCodeFragment : DaggerFragment() {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var sharedPreferences: SharedPreferences
     @Inject lateinit var gson: Gson
+    private lateinit var binding: FragmentMfaCodeBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mfa_code, container, false)
+        binding = FragmentMfaCodeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        submit_mfa_code_button.setOnClickListener {
+        binding.submitMfaCodeButton.setOnClickListener {
             submitMfaCode()
         }
-        mfa_code_edit_text.setOnActionGo { submitMfaCode() }
+        binding.mfaCodeEditText.setOnActionGo { submitMfaCode() }
     }
 
     private fun submitMfaCode() {
@@ -47,7 +49,7 @@ class MfaCodeFragment : DaggerFragment() {
         val username = args.username
         val password = args.password
         GlobalScope.launch(Dispatchers.Default) {
-            val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(mfa_code_edit_text.text.toString()))).await()
+            val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(binding.mfaCodeEditText.text.toString()))).await()
             launch(Dispatchers.Main) {
                 when {
                     result.isSuccessful -> onSuccess(result.body()!!)
@@ -69,8 +71,8 @@ class MfaCodeFragment : DaggerFragment() {
     private fun onError(errorBody: ResponseBody) {
         val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
-        error.errors._error?.joinToString("\n")?.let { form_error_text_view.text = it }
-        error.errors.otp?.joinToString("\n")?.let { mfa_code_text_input_layout.error = it }
+        error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }
+        error.errors.otp?.joinToString("\n")?.let { binding.mfaCodeTextInputLayout.error = it }
     }
 
 }

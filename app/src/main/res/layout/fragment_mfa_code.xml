@@ -1,49 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:layout_margin="16dp"
-    tools:context=".auth.MfaCodeFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        android:contentDescription="@string/caffeine_logo_content_description" />
+    <data>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/ScreenTitle"
-        android:text="@string/mfa_code_title"/>
+    </data>
 
-    <TextView
-        android:id="@+id/form_error_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/mfa_code_text_input_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/OutlinedBox">
-        <EditText
-            android:id="@+id/mfa_code_edit_text"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_margin="16dp"
+        tools:context=".auth.MfaCodeFragment">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:contentDescription="@string/caffeine_logo_content_description" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ScreenTitle"
+            android:text="@string/mfa_code_title" />
+
+        <TextView
+            android:id="@+id/form_error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mfa_code_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="@string/mfa_code_hint"
-            android:imeOptions="actionGo"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            style="@style/OutlinedBox">
 
-    <Button
-        android:id="@+id/submit_mfa_code_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/ActionButton"
-        android:text="@string/submit_mfa_code"/>
+            <EditText
+                android:id="@+id/mfa_code_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/mfa_code_hint"
+                android:imeOptions="actionGo" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/submit_mfa_code_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ActionButton"
+            android:text="@string/submit_mfa_code" />
+
+    </LinearLayout>
+</layout>
