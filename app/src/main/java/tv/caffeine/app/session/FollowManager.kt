@@ -7,6 +7,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.api.Api
+import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
 import java.util.concurrent.TimeUnit
@@ -14,7 +15,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FollowManager @Inject constructor(private val usersService: UsersService, private val tokenStore: TokenStore) {
+class FollowManager @Inject constructor(
+        private val usersService: UsersService,
+        private val broadcastsService: BroadcastsService,
+        private val tokenStore: TokenStore
+) {
 
     private val followedUsers: MutableMap<String, Set<String>> = mutableMapOf()
     private val userDetails: MutableMap<String, Api.User> = mutableMapOf()
@@ -81,6 +86,10 @@ class FollowManager @Inject constructor(private val usersService: UsersService, 
         val user = result.await().user
         userDetails[caid] = user
         return user
+    }
+
+    suspend fun broadcastDetails(user: Api.User): Api.Broadcast {
+        return broadcastsService.broadcastDetails(user.broadcastId).await().broadcast
     }
 }
 

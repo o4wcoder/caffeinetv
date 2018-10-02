@@ -3,6 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="profileViewModel"
+            type="tv.caffeine.app.profile.ProfileViewModel"/>
+
+    </data>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -18,10 +26,15 @@
                 android:layout_width="@dimen/profile_size"
                 android:layout_height="@dimen/profile_size"
                 android:layout_marginTop="8dp"
+                android:src="@drawable/default_avatar_round"
+                android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
+                android:padding="2dp"
+                app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars" />
+                tools:background="@drawable/circle_white_with_blue_rim"
+                tools:src="@drawable/default_avatar_round" />
 
             <TextView
                 android:id="@+id/username_text_view"
@@ -29,6 +42,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:drawablePadding="@dimen/verified_icon_padding"
+                android:text="@{profileViewModel.username}"
+                android:textAppearance="@style/ExploreUsername"
+                android:textColor="@{profileViewModel.isFollowed ? @color/caffeineBlue : @color/textRegular}"
+                android:drawableEnd="@{profileViewModel.isVerified ? @drawable/verified_large : @drawable/ic_person_black_24dp}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_text_view"
@@ -39,6 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="@{profileViewModel.name}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
@@ -49,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="0"
+                android:text="@{profileViewModel.followingCount}"
                 app:layout_constraintEnd_toEndOf="@+id/number_following_title_text_view"
                 app:layout_constraintStart_toStartOf="@+id/number_following_title_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/follow_button"
@@ -60,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="0"
+                android:text="@{profileViewModel.followersCount}"
                 app:layout_constraintEnd_toEndOf="@+id/number_of_followers_title_text_view"
                 app:layout_constraintStart_toStartOf="@+id/number_of_followers_title_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/follow_button"
@@ -101,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:scaleType="centerCrop"
+                app:imageUrl="@{profileViewModel.stageImageUrl}"
                 app:layout_constraintTop_toBottomOf="@+id/number_following_title_text_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -113,6 +132,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
+                android:text="@{profileViewModel.bio}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/stage_image_view"

@@ -10,7 +10,9 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
+import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.WalletViewModel
+import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.stage.DICatalogViewModel
 import javax.inject.Inject
 
@@ -19,7 +21,8 @@ class ViewModelFactory @Inject constructor(
         private val searchService: SearchService,
         private val usersService: UsersService,
         private val paymentsClientService: PaymentsClientService,
-        private val tokenStore: TokenStore
+        private val tokenStore: TokenStore,
+        private val followManager: FollowManager
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
@@ -29,6 +32,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(usersService, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(paymentsClientService)
             modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(paymentsClientService)
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> ProfileViewModel(followManager)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }
