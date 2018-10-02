@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/subtitle_text_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textAppearance="@style/LobbySubtitle"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    tools:text="Follow more people to see what they are watching or broadcasting." />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.lobby.Subtitle"/>
+
+    </data>
+
+    <TextView
+        android:id="@+id/subtitle_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/LobbySubtitle"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="@{viewModel.text}"
+        tools:text="Follow more people to see what they are watching or broadcasting." />
+</layout>

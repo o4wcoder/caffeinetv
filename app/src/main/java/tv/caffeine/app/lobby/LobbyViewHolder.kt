@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
+import tv.caffeine.app.databinding.*
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
@@ -22,19 +23,15 @@ sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     abstract fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
 }
 
-class HeaderCard(view: View) : LobbyViewHolder(view) {
-    private val headerTextView: TextView = view.findViewById(R.id.header_text_view)
+class HeaderCard(val binding: LobbyHeaderBinding) : LobbyViewHolder(binding.root) {
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        val header = item as Header
-        headerTextView.text = header.text
+        binding.viewModel = item as Header
     }
 }
 
-class SubtitleCard(view: View) : LobbyViewHolder(view) {
-    private val subtitleTextView: TextView = view.findViewById(R.id.subtitle_text_view)
+class SubtitleCard(val binding: LobbySubtitleBinding) : LobbyViewHolder(binding.root) {
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        val subtitle = item as Subtitle
-        subtitleTextView.text = subtitle.text
+        binding.viewModel = item as Subtitle
     }
 }
 
@@ -77,27 +74,23 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     }
 }
 
-class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
-    private val friendsWatchingTextView: TextView = view.findViewById(R.id.friends_watching_text_view)
-    private val friendsWatchingKiltView: View = view.findViewById(R.id.friends_watching_kilt_view)
-    private val gameLogoImageView: ImageView = view.findViewById(R.id.game_logo_image_view)
-
+class LiveBroadcastCard(val binding: LiveBroadcastCardBinding) : BroadcasterCard(binding.root) {
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
         val liveBroadcastItem = item as LiveBroadcast
-        friendsWatchingTextView.isVisible = item.broadcaster.followingViewersCount > 0
-        friendsWatchingKiltView.isVisible = item.broadcaster.followingViewersCount > 0
-        when(item.broadcaster.followingViewersCount) {
-            0 -> friendsWatchingTextView.text = null
-            1 -> friendsWatchingTextView.text =  itemView.context.getString(R.string.user_watching, item.broadcaster.followingViewers[0].username)
-            else -> friendsWatchingTextView.text = itemView.context.resources.getQuantityString(R.plurals.user_and_friends_watching, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewersCount - 1)
+        binding.friendsWatchingTextView.isVisible = item.broadcaster.followingViewersCount > 0
+        binding.friendsWatchingKiltView.isVisible = item.broadcaster.followingViewersCount > 0
+        binding.friendsWatchingTextView.text = when(item.broadcaster.followingViewersCount) {
+            0 -> null
+            1 -> itemView.context.getString(R.string.user_watching, item.broadcaster.followingViewers[0].username)
+            else -> itemView.context.resources.getQuantityString(R.plurals.user_and_friends_watching, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewersCount - 1)
         }
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
         if (game != null) {
-            Picasso.get().load(game.iconImageUrl).into(gameLogoImageView)
+            Picasso.get().load(game.iconImageUrl).into(binding.gameLogoImageView)
         } else {
-            gameLogoImageView.setImageDrawable(null)
+            binding.gameLogoImageView.setImageDrawable(null)
         }
         itemView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
@@ -106,31 +99,28 @@ class LiveBroadcastCard(view: View) : BroadcasterCard(view) {
     }
 }
 
-class PreviousBroadcastCard(view: View) : BroadcasterCard(view) {
-    private val nameTextView: TextView = view.findViewById(R.id.name_text_view)
-    private val lastBroadcastTextView: TextView = view.findViewById(R.id.last_broadcast_text_view)
-
+class PreviousBroadcastCard(val binding: PreviousBroadcastCardBinding) : BroadcasterCard(binding.root) {
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
         val previousBroadcastItem = item as PreviousBroadcast
         val broadcast = previousBroadcastItem.broadcaster.lastBroadcast ?: error("Unexpected broadcast state")
-        nameTextView.text = previousBroadcastItem.broadcaster.user.name
-        lastBroadcastTextView.text = broadcast.dateText
+        binding.viewModel = item
+        binding.nameTextView.text = previousBroadcastItem.broadcaster.user.name
+        binding.lastBroadcastTextView.text = broadcast.dateText
         itemView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
     }
 }
 
-class ListCard(view: View, private val recycledViewPool: RecyclerView.RecycledViewPool) : LobbyViewHolder(view) {
-    private val recyclerView: RecyclerView = view.findViewById(R.id.card_list_recycler_view)
+class ListCard(val binding: CardListBinding, private val recycledViewPool: RecyclerView.RecycledViewPool) : LobbyViewHolder(binding.root) {
     private val snapHelper = LinearSnapHelper()
     init {
-        recyclerView.setRecycledViewPool(recycledViewPool)
-        snapHelper.attachToRecyclerView(recyclerView)
+        binding.cardListRecyclerView.setRecycledViewPool(recycledViewPool)
+        snapHelper.attachToRecyclerView(binding.cardListRecyclerView)
     }
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         val cardList = item as CardList
         val lobbyAdapter = LobbyAdapter(followManager, recycledViewPool, followedTheme, notFollowedTheme)
-        recyclerView.adapter = lobbyAdapter
+        binding.cardListRecyclerView.adapter = lobbyAdapter
         lobbyAdapter.submitList(cardList.cards, tags, content)
     }
 }

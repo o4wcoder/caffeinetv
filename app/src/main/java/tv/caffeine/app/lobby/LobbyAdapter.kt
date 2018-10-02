@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
+import tv.caffeine.app.databinding.*
 import tv.caffeine.app.di.ThemeFollowedLobby
 import tv.caffeine.app.di.ThemeNotFollowedLobby
 import tv.caffeine.app.session.FollowManager
@@ -37,21 +37,14 @@ class LobbyAdapter @Inject constructor(
     override fun getItemViewType(position: Int): Int = getItem(position).itemType.ordinal
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LobbyViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         val itemType = LobbyItem.Type.values()[viewType]
-        val layout = when(itemType) {
-            LobbyItem.Type.HEADER -> R.layout.lobby_header
-            LobbyItem.Type.SUBTITLE -> R.layout.lobby_subtitle
-            LobbyItem.Type.LIVE_BROADCAST_CARD -> R.layout.live_broadcast_card
-            LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> R.layout.previous_broadcast_card
-            LobbyItem.Type.CARD_LIST -> R.layout.card_list
-        }
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return when(itemType) {
-            LobbyItem.Type.HEADER -> HeaderCard(view)
-            LobbyItem.Type.SUBTITLE -> SubtitleCard(view)
-            LobbyItem.Type.LIVE_BROADCAST_CARD -> LiveBroadcastCard(view)
-            LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> PreviousBroadcastCard(view)
-            LobbyItem.Type.CARD_LIST -> ListCard(view, recycledViewPool)
+            LobbyItem.Type.HEADER -> HeaderCard(LobbyHeaderBinding.inflate(inflater, parent, false))
+            LobbyItem.Type.SUBTITLE -> SubtitleCard(LobbySubtitleBinding.inflate(inflater, parent, false))
+            LobbyItem.Type.LIVE_BROADCAST_CARD -> LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false))
+            LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> PreviousBroadcastCard(PreviousBroadcastCardBinding.inflate(inflater, parent, false))
+            LobbyItem.Type.CARD_LIST -> ListCard(CardListBinding.inflate(inflater, parent, false), recycledViewPool)
         }
     }
 
