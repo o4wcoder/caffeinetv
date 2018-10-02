@@ -43,7 +43,7 @@ class FollowManager @Inject constructor(
                     launch(Dispatchers.Main) { followedUsers[caid] = (result.map { it.caid }).toSet() }
                     return@launch
                 }
-                delay(1, TimeUnit.SECONDS)
+                delay(TimeUnit.SECONDS.toMillis(1))
             }
         }
     }

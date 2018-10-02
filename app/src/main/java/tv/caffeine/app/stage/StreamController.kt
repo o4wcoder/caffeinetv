@@ -7,6 +7,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.api.*
+import java.util.concurrent.TimeUnit
 
 class StreamController(private val realtime: Realtime,
                        private val peerConnectionFactory: PeerConnectionFactory,
@@ -133,7 +134,7 @@ class StreamController(private val realtime: Realtime,
                                                 }
                                             })
                                         }
-                                        delay(3, java.util.concurrent.TimeUnit.SECONDS)
+                                        delay(TimeUnit.SECONDS.toMillis(3))
                                     }
                                     val heartbeatBody = HeartbeatBody(signedPayload)
                                     realtime.sendHeartbeat(viewerId, heartbeatBody).enqueue(object : Callback<Void?> {

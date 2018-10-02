@@ -20,7 +20,7 @@ class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
         job = GlobalScope.launch(Dispatchers.Default) {
             while(isActive) {
                 loadLobby()
-                delay(30, TimeUnit.SECONDS)
+                delay(TimeUnit.SECONDS.toMillis(30))
             }
         }
     }

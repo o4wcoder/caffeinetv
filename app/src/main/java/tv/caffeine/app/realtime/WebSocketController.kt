@@ -4,9 +4,9 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.*
-import kotlinx.coroutines.timeunit.TimeUnit
 import okhttp3.*
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 private const val STATUS_CODE_NORMAL_CLOSURE = 1000
 
@@ -45,7 +45,7 @@ class WebSocketController(private val tag: String): WebSocketListener() {
         keepAlive?.cancel()
         keepAlive = GlobalScope.launch(Dispatchers.Default) {
             while(isActive) {
-                delay(15, TimeUnit.SECONDS)
+                delay(TimeUnit.SECONDS.toMillis(15))
                 log("About to send a heartbeat")
                 webSocket?.send(HEALZ)
             }
