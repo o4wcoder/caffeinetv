@@ -37,8 +37,7 @@ class FollowManager @Inject constructor(
         refreshFollowedUsersJob?.cancel()
         refreshFollowedUsersJob = GlobalScope.launch(Dispatchers.Default) {
             repeat(5) {
-                tokenStore.caid?.let {
-                    val caid = it
+                tokenStore.caid?.let { caid ->
                     val result = usersService.listFollowing(caid).await()
                     launch(Dispatchers.Main) { followedUsers[caid] = (result.map { it.caid }).toSet() }
                     return@launch
