@@ -9,16 +9,16 @@ import androidx.core.view.isVisible
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import tv.caffeine.app.R
-import tv.caffeine.app.api.Api
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
 
 class UserTheme(val avatarImageTransformation: Transformation, @StyleRes val usernameTextAppearance: Int)
 
-fun Api.User.configure(avatarImageView: ImageView, usernameTextView: TextView,
-                       followButton: Button?, followManager: FollowManager,
-                       allowUnfollowing: Boolean = false,
-                       @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
-                       followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+fun User.configure(avatarImageView: ImageView, usernameTextView: TextView,
+                                             followButton: Button?, followManager: FollowManager,
+                                             allowUnfollowing: Boolean = false,
+                                             @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
+                                             followedTheme: UserTheme, notFollowedTheme: UserTheme) {
     val following = followManager.isFollowing(caid)
     val theme = if (following) followedTheme else notFollowedTheme
     val transformation = theme.avatarImageTransformation

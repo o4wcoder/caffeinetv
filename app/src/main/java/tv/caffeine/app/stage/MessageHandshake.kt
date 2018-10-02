@@ -4,7 +4,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import timber.log.Timber
-import tv.caffeine.app.api.Api
+import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.realtime.WebSocketController
 
@@ -12,14 +12,14 @@ class MessageHandshake(private val tokenStore: TokenStore) {
     private var webSocketController: WebSocketController? = null
     private val gson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
-    fun connect(stageIdentifier: String, callback: (Api.Message) -> Unit) {
+    fun connect(stageIdentifier: String, callback: (Message) -> Unit) {
         val url = "wss://realtime.caffeine.tv/v2/reaper/stages/$stageIdentifier/messages"
         val headers = tokenStore.webSocketHeader()
         webSocketController?.close()
         webSocketController = WebSocketController("msg")
         webSocketController?.open(url, headers) {
             Timber.d("Received message $it")
-            val message = gson.fromJson(it, Api.Message::class.java)
+            val message = gson.fromJson(it, Message::class.java)
             callback(message)
         }
     }

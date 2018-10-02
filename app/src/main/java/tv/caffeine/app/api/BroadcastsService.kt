@@ -3,6 +3,7 @@ package tv.caffeine.app.api
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Path
+import tv.caffeine.app.api.model.Broadcast
 
 interface BroadcastsService {
     @GET("v1/broadcasts/{broadcastId}")
@@ -12,4 +13,4 @@ interface BroadcastsService {
     fun friendsWatching(@Path("broadcastId") broadcastId: String): Deferred<List<FollowRecord>>
 }
 
-class BroadcastEnvelope(val broadcast: Api.Broadcast)
+class BroadcastEnvelope(val broadcast: Broadcast)

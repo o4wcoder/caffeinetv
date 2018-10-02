@@ -1,14 +1,14 @@
 package tv.caffeine.app.session
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.android.Main
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
-import tv.caffeine.app.api.Api
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.Broadcast
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class FollowManager @Inject constructor(
 ) {
 
     private val followedUsers: MutableMap<String, Set<String>> = mutableMapOf()
-    private val userDetails: MutableMap<String, Api.User> = mutableMapOf()
+    private val userDetails: MutableMap<String, User> = mutableMapOf()
     private var refreshFollowedUsersJob: Job? = null
 
     fun followers() = tokenStore.caid?.let { followedUsers[it] } ?: setOf()
@@ -80,7 +80,7 @@ class FollowManager @Inject constructor(
         })
     }
 
-    suspend fun userDetails(caid: String): Api.User {
+    suspend fun userDetails(caid: String): User {
         userDetails[caid]?.let { return it }
         val result = usersService.userDetails(caid)
         val user = result.await().user
@@ -88,7 +88,7 @@ class FollowManager @Inject constructor(
         return user
     }
 
-    suspend fun broadcastDetails(user: Api.User): Api.Broadcast {
+    suspend fun broadcastDetails(user: User): Broadcast {
         return broadcastsService.broadcastDetails(user.broadcastId).await().broadcast
     }
 }

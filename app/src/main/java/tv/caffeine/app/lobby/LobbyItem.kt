@@ -1,6 +1,6 @@
 package tv.caffeine.app.lobby
 
-import tv.caffeine.app.api.Api
+import tv.caffeine.app.api.model.Lobby
 
 interface LobbyItem {
     val id: String
@@ -12,7 +12,7 @@ interface LobbyItem {
 
     companion object {
 
-        fun parse(result: Api.v3.Lobby.Result): List<LobbyItem> {
+        fun parse(result: Lobby.Result): List<LobbyItem> {
             return result.sections.flatMap { section ->
                 mutableListOf<LobbyItem>(Header(section.id, section.name)).apply {
                     section.emptyMessage?.let { add(Subtitle(section.id + ".msg", it)) }
@@ -25,7 +25,7 @@ interface LobbyItem {
             }
         }
 
-        private fun convert(broadcaster: Api.v3.Lobby.Broadcaster): SingleCard =
+        private fun convert(broadcaster: Lobby.Broadcaster): SingleCard =
                 if (broadcaster.broadcast != null) {
                     LiveBroadcast(broadcaster.id, broadcaster)
                 } else {
@@ -42,12 +42,12 @@ data class Subtitle(override val id: String, val text: String) : LobbyItem {
     override val itemType = LobbyItem.Type.SUBTITLE
 }
 abstract class SingleCard : LobbyItem {
-    abstract val broadcaster: Api.v3.Lobby.Broadcaster
+    abstract val broadcaster: Lobby.Broadcaster
 }
-data class LiveBroadcast(override val id: String, override val broadcaster: Api.v3.Lobby.Broadcaster) : SingleCard() {
+data class LiveBroadcast(override val id: String, override val broadcaster: Lobby.Broadcaster) : SingleCard() {
     override val itemType = LobbyItem.Type.LIVE_BROADCAST_CARD
 }
-data class PreviousBroadcast(override val id: String, override val broadcaster: Api.v3.Lobby.Broadcaster) : SingleCard() {
+data class PreviousBroadcast(override val id: String, override val broadcaster: Lobby.Broadcaster) : SingleCard() {
     override val itemType = LobbyItem.Type.PREVIOUS_BROADCAST_CARD
 }
 data class CardList(override val id: String, val cards: List<SingleCard>) : LobbyItem {

@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.android.Main
 import kotlinx.coroutines.launch
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.BaseObservableViewModel

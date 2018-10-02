@@ -16,8 +16,8 @@ import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.api.*
-import tv.caffeine.app.auth.AuthorizationInterceptor
-import tv.caffeine.app.auth.TokenAuthenticator
+import tv.caffeine.app.net.AuthorizationInterceptor
+import tv.caffeine.app.net.TokenAuthenticator
 import tv.caffeine.app.auth.TokenStore
 import javax.inject.Singleton
 

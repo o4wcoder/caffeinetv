@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import tv.caffeine.app.R
-import tv.caffeine.app.api.Api
+import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.di.ThemeFollowedLobby
 import tv.caffeine.app.di.ThemeNotFollowedLobby
 import tv.caffeine.app.session.FollowManager
@@ -25,10 +25,10 @@ class LobbyAdapter @Inject constructor(
             override fun areContentsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem == newItem
         }
 ) {
-    private var tags: Map<String, Api.v3.Lobby.Tag> = mapOf()
-    private var content: Map<String, Api.v3.Lobby.Content> = mapOf()
+    private var tags: Map<String, Lobby.Tag> = mapOf()
+    private var content: Map<String, Lobby.Content> = mapOf()
 
-    fun submitList(list: List<LobbyItem>, tags: Map<String, Api.v3.Lobby.Tag>, content: Map<String, Api.v3.Lobby.Content>) {
+    fun submitList(list: List<LobbyItem>, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>) {
         this.tags = tags
         this.content = content
         super.submitList(list)
