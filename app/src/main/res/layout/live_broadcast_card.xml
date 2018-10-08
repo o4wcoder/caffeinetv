@@ -15,7 +15,10 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp">
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
 
         <TextView
             android:id="@+id/friends_watching_text_view"
@@ -24,7 +27,10 @@
             android:background="@drawable/friends_watching_background"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
-            android:padding="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
             app:layout_constraintStart_toStartOf="@+id/preview_image_view"
@@ -35,7 +41,7 @@
         <View
             android:id="@+id/friends_watching_kilt_view"
             android:layout_width="0dp"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/lobby_card_rounding_radius"
             android:background="@color/caffeineBlue"
             app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
             app:layout_constraintStart_toStartOf="@+id/preview_image_view"
@@ -45,8 +51,6 @@
             android:id="@+id/preview_image_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:foreground="@drawable/gradient_overlay"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H, 16:9"
@@ -61,14 +65,15 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="@+id/preview_image_view"
-            app:layout_constraintTop_toBottomOf="@+id/tag_text_view" />
+            app:layout_constraintTop_toBottomOf="@+id/tag_text_view"
+            tools:src="@drawable/default_avatar_round"/>
 
         <TextView
             android:id="@+id/username_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="9dp"
             android:drawablePadding="@dimen/verified_icon_padding"
             android:textAppearance="@style/BroadcastCardUsername.NotFollowing"
             app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
@@ -104,7 +109,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             tools:text="FEATURED"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+            android:textAppearance="@style/LobbyCardTag"
             tools:textColor="@color/colorAccent"
             app:layout_constraintStart_toStartOf="@id/preview_image_view"
             app:layout_constraintTop_toTopOf="@id/preview_image_view" />

@@ -31,7 +31,7 @@ class UIModule {
     @WhiteCircleTransformation
     fun providesCircleWithWhiteBorderTransformation(resources: Resources)
             = CropBorderedCircleTransformation(resources.getColor(R.color.white, null),
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, resources.displayMetrics))
 
     @Provides
     @Singleton

@@ -26,10 +26,13 @@
     </style>
 
     <style name="Button" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="cornerRadius">16dp</item>
+        <item name="cornerRadius">18dp</item>
     </style>
 
     <style name="Button.Follow">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:inset">0dp</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
 
     <style name="Button.Following">
@@ -60,19 +63,36 @@
     <style name="OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
     <style name="LobbyHeader" parent="@style/TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">27sp</item>
+        <item name="android:letterSpacing">-0.01</item>
     </style>
 
-    <style name="LobbySubtitle" parent="@style/TextAppearance.MaterialComponents.Headline6">
+    <style name="LobbySubtitle" parent="@style/TextAppearance.MaterialComponents.Headline5">
         <item name="android:textColor">#aaaaaa</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="LobbyCardTag" parent="@style/TextAppearance.MaterialComponents.Overline">
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="LobbyLastBroadcastText" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">10sp</item>
     </style>
 
     <style name="LiveIndicator">
-        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:background">@drawable/live_indicator</item>
-        <item name="android:paddingStart">10dp</item>
-        <item name="android:paddingEnd">10dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:letterSpacing">0.05</item>
     </style>
 
     <style name="BroadcastCardUsername" parent="@style/TextAppearance.MaterialComponents.Body1">

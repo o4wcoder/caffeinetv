@@ -30,7 +30,7 @@
     <string name="oss_licenses_button">Open Source Software Licenses</string>
     <string name="sign_out_button">Sign Out</string>
     <string name="user_watching">%s is watching</string>
-    <string name="live_indicator">Live</string>
+    <string name="live_indicator">LIVE</string>
     <string name="follow_button">Follow</string>
     <string name="unfollow_button">Following</string>
     <string name="find_people">Find people</string>

@@ -1,12 +1,12 @@
 package tv.caffeine.app.lobby
 
-import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +43,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     private val tagTextView: TextView = view.findViewById(R.id.tag_text_view)
     private val followButton: Button = view.findViewById(R.id.follow_button)
 
-    private val roundedCornersTransformation = RoundedCornersTransformation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f, itemView.resources.displayMetrics).toInt(), 0)
+    private val roundedCornersTransformation = RoundedCornersTransformation(itemView.resources.getDimension(R.dimen.lobby_card_rounding_radius).toInt(), 0)
 
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         val singleCard = item as SingleCard
@@ -116,6 +116,10 @@ class ListCard(val binding: CardListBinding, private val recycledViewPool: Recyc
     init {
         binding.cardListRecyclerView.setRecycledViewPool(recycledViewPool)
         snapHelper.attachToRecyclerView(binding.cardListRecyclerView)
+        itemView.updateLayoutParams<RecyclerView.LayoutParams> {
+            marginStart = 0
+            marginEnd = 0
+        }
     }
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         val cardList = item as CardList
