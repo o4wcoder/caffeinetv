@@ -282,7 +282,7 @@ class StageFragment : DaggerFragment(), CoroutineScope {
             val signedUserDetails = usersService.signedUserDetails(caid)
             val publisher = signedUserDetails.await().token
             val stageId = userDetails.stageId
-            val message = Reaction("reaction", publisher, Message.Body(text, null))
+            val message = Reaction("reaction", publisher, Message.Body(text))
             val deferred = realtime.sendMessage(stageId, message)
             val result = deferred.await()
             Timber.d("Sent message $text with result $result")
