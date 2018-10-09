@@ -1,23 +1,27 @@
 package tv.caffeine.app.lobby
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
-import tv.caffeine.app.api.LobbyService
 import tv.caffeine.app.api.model.Lobby
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
-class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
-    val lobby: MutableLiveData<Lobby.Result> = MutableLiveData()
-    private var job: Job? = null
+class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel(), CoroutineScope {
+    val lobby: LiveData<Lobby.Result> get() = _lobby
+
+    private val _lobby = MutableLiveData<Lobby.Result>()
+
+    private var job = Job()
+    private var refreshJob: Job? = null
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
 
     fun refresh() {
-        job?.cancel()
-        job = GlobalScope.launch(Dispatchers.Default) {
+        refreshJob?.cancel()
+        refreshJob = launch(context = coroutineContext) {
             while(isActive) {
                 loadLobby()
                 delay(TimeUnit.SECONDS.toMillis(30))
@@ -25,21 +29,13 @@ class LobbyViewModel(private val lobbyService: LobbyService) : ViewModel() {
         }
     }
 
-    private fun loadLobby() {
-        lobbyService.newLobby().enqueue(object: Callback<Lobby.Result?> {
-            override fun onFailure(call: Call<Lobby.Result?>?, t: Throwable?) {
-                Timber.e(t, "NEWLOBBY Failed to get the new lobby")
-            }
-
-            override fun onResponse(call: Call<Lobby.Result?>?, response: Response<Lobby.Result?>?) {
-                Timber.d("NEWLOBBY Got the new lobby ${response?.body()}")
-                response?.body()?.let { lobby.value = it }
-            }
-        })
+    private suspend fun loadLobby() = coroutineScope {
+        val result = loadLobbyUseCase()
+        _lobby.value = result
     }
 
     override fun onCleared() {
         super.onCleared()
-        job?.cancel()
+        job.cancel()
     }
 }
