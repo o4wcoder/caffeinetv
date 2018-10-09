@@ -3,13 +3,26 @@ package tv.caffeine.app.stage
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.realtime.WebSocketController
+import kotlin.coroutines.CoroutineContext
 
-class StageHandshake(private val tokenStore: TokenStore) {
+class StageHandshake(private val tokenStore: TokenStore, private val stageIdentifier: String): CoroutineScope {
     private var webSocketController: WebSocketController? = null
     private val gsonForEvents: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     private var lastEvent: Event? = null
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    val channel = Channel<Event>()
 
     data class Event(val gameId: String, val sessionId: String, val state: String, val streams: List<Stream>, val title: String) {
         var hostConnectionQuality: String = ""
@@ -22,16 +35,22 @@ class StageHandshake(private val tokenStore: TokenStore) {
 
     private class EventEnvelope(val v2: Event)
 
-    fun connect(stageIdentifier: String, callback: (Event) -> Unit) {
+    init {
+        connect()
+    }
+
+    private fun connect() {
         val url = "wss://realtime.caffeine.tv/v2/stages/$stageIdentifier/details"
         val headers = tokenStore.webSocketHeader()
-        webSocketController = WebSocketController("stg")
-        webSocketController?.open(url, headers) {
-            val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
-            val event = eventEnvelope.v2
-            if (event == lastEvent) return@open
-            lastEvent = event
-            callback(event)
+        webSocketController = WebSocketController("stg", url, headers)
+        launch {
+            webSocketController?.channel?.consumeEach {
+                val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
+                val event = eventEnvelope.v2
+                if (event == lastEvent) return@consumeEach
+                lastEvent = event
+                channel.send(event)
+            }
         }
     }
 

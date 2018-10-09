@@ -11,10 +11,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import dagger.android.support.DaggerFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.consumeEach
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -26,8 +24,9 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.ui.showKeyboard
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class StageFragment : DaggerFragment() {
+class StageFragment : DaggerFragment(), CoroutineScope {
     private lateinit var broadcaster: String
     private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
@@ -50,8 +49,11 @@ class StageFragment : DaggerFragment() {
 
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
 
+    private var job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
     private val latestMessages: MutableList<Message> = mutableListOf()
-    private var job: Job? = null
     private var hideActionBarJob: Job? = null
     private var broadcastName: String? = null
 
@@ -62,13 +64,16 @@ class StageFragment : DaggerFragment() {
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
-        job = GlobalScope.launch(Dispatchers.Default) {
+        launch {
             val userDetails = followManager.userDetails(broadcaster)
             val broadcastDetails = broadcastsService.broadcastDetails(userDetails.broadcastId)
             launch(Dispatchers.Main) {
                 connectStreams(userDetails.stageId)
                 broadcastName = broadcastDetails.await().broadcast.name
                 title = broadcastName
+            }
+            launch(Dispatchers.Main) {
+                connectMessages(userDetails.stageId)
             }
         }
     }
@@ -81,7 +86,7 @@ class StageFragment : DaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        job?.cancel()
+        job.cancel()
         disconnectStreams()
     }
 
@@ -148,10 +153,10 @@ class StageFragment : DaggerFragment() {
         }
     }
 
-    private fun connectStreams(stageIdentifier: String) {
-        stageHandshake = StageHandshake(tokenStore)
+    private suspend fun connectStreams(stageIdentifier: String) {
+        stageHandshake = StageHandshake(tokenStore, stageIdentifier)
         streamController = StreamController(realtime, peerConnectionFactory, eventsService, stageIdentifier)
-        stageHandshake?.connect(stageIdentifier) { event ->
+        stageHandshake?.channel?.consumeEach { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
             val newStreams = event.streams.associateBy { stream -> stream.id }
             Timber.d("StreamState - New streams: $newStreams")
@@ -202,8 +207,11 @@ class StageFragment : DaggerFragment() {
                 }
             }
         }
-        messageHandshake = MessageHandshake(tokenStore)
-        messageHandshake?.connect(stageIdentifier) { message ->
+    }
+
+    private suspend fun connectMessages(stageIdentifier: String) {
+        messageHandshake = MessageHandshake(tokenStore, stageIdentifier)
+        messageHandshake?.channel?.consumeEach { message ->
             val oldInstance = latestMessages.find { it.id == message.id }
             if (oldInstance != null) {
                 latestMessages.remove(oldInstance)

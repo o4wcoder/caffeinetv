@@ -4,46 +4,51 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import okhttp3.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 private const val STATUS_CODE_NORMAL_CLOSURE = 1000
 
 private const val HEALZ = "\"HEALZ\""
 private const val THANKS = "\"THANKS\""
 
-class WebSocketController(private val tag: String): WebSocketListener() {
+class WebSocketController(private val tag: String, private val url: String, private val headers: String): WebSocketListener(), CoroutineScope {
 
     private var webSocket: WebSocket? = null
 
     private val gsonForHandshake: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     private var messageNumber: Int = 0
-    private var keepAlive: Job? = null
-    private var callback: ((String) -> Unit)? = null
-    private var headers: String = ""
 
-    fun open(url: String, headers: String, callback: (String) -> Unit) {
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    val channel = Channel<String>()
+
+    init {
+        open()
+    }
+
+    fun open() {
         val okHttpClient = OkHttpClient.Builder().build()
         val request = Request.Builder().url(url).build()
-        this.headers = headers
-        this.callback = callback
         webSocket = okHttpClient.newWebSocket(request, this)
     }
 
     fun close() {
         webSocket?.close(STATUS_CODE_NORMAL_CLOSURE, null)
         webSocket = null
-        keepAlive?.cancel()
-        keepAlive = null
-        callback = null
+        channel.close()
+        job.cancel()
     }
 
     override fun onOpen(webSocket: WebSocket?, response: Response?) {
         log("Opened, response = $response")
         webSocket?.send(headers)
-        keepAlive?.cancel()
-        keepAlive = GlobalScope.launch(Dispatchers.Default) {
+        launch {
             while(isActive) {
                 delay(TimeUnit.SECONDS.toMillis(15))
                 log("About to send a heartbeat")
@@ -57,7 +62,9 @@ class WebSocketController(private val tag: String): WebSocketListener() {
         if (text == THANKS) return
         when (messageNumber++) {
             0 -> text?.let { gsonForHandshake.fromJson(it, HandshakeMessage::class.java) }
-            else -> text?.let { callback?.invoke(it) }
+            else -> text?.let {
+                launch { channel.send(it) }
+            }
         }
     }
 
