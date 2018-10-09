@@ -6,5 +6,5 @@ import tv.caffeine.app.api.model.Lobby
 
 interface LobbyService {
     @GET("v3/lobby")
-    fun loadLobby(): Deferred<Lobby.Result>
+    fun loadLobby(): Deferred<Lobby>
 }

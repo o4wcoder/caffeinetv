@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel(), CoroutineScope {
-    val lobby: LiveData<Lobby.Result> get() = _lobby
+    val lobby: LiveData<Lobby> get() = _lobby
 
-    private val _lobby = MutableLiveData<Lobby.Result>()
+    private val _lobby = MutableLiveData<Lobby>()
 
     private var job = Job()
     private var refreshJob: Job? = null

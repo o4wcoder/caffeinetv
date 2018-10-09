@@ -1,7 +1,6 @@
 package tv.caffeine.app.api.model
 
-class Lobby {
-    class Result(val tags: Map<String, Tag>, val content: Map<String, Content>, val header: Any, val sections: Array<Section>)
+class Lobby(val tags: Map<String, Tag>, val content: Map<String, Content>, val header: Any, val sections: Array<Section>) {
     class Tag(val id: String, val name: String, val color: String)
     class Content(val id: String, val type: String, val name: String, val iconImagePath: String, val bannerImagePath: String) {
         val iconImageUrl get() = "https://images.caffeine.tv$iconImagePath"

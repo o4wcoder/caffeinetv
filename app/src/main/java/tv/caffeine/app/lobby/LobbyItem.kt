@@ -12,7 +12,7 @@ interface LobbyItem {
 
     companion object {
 
-        fun parse(result: Lobby.Result): List<LobbyItem> {
+        fun parse(result: Lobby): List<LobbyItem> {
             return result.sections.flatMap { section ->
                 mutableListOf<LobbyItem>(Header(section.id, section.name)).apply {
                     section.emptyMessage?.let { add(Subtitle(section.id + ".msg", it)) }
