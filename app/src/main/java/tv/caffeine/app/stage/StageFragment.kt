@@ -11,8 +11,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import dagger.android.support.DaggerFragment
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -276,7 +279,7 @@ class StageFragment : DaggerFragment(), CoroutineScope {
         val editText = binding.chatMessageEditText ?: return
         val text = editText.text.toString()
         editText.text = null
-        GlobalScope.launch {
+        launch {
             val userDetails = followManager.userDetails(broadcaster)
             val caid = tokenStore.caid ?: error("Not logged in")
             val signedUserDetails = usersService.signedUserDetails(caid)
