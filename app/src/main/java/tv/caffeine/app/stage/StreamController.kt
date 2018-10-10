@@ -9,10 +9,12 @@ import timber.log.Timber
 import tv.caffeine.app.api.*
 import java.util.concurrent.TimeUnit
 
-class StreamController(private val realtime: Realtime,
-                       private val peerConnectionFactory: PeerConnectionFactory,
-                       private val eventsService: EventsService,
-                       private val stageIdentifier: String) {
+class StreamController(
+        private val realtime: Realtime,
+        private val peerConnectionFactory: PeerConnectionFactory,
+        private val eventsService: EventsService,
+        private val stageIdentifier: String
+) {
     private val heartbeatJobs: MutableList<Job> = mutableListOf()
     private var closed = false
 
