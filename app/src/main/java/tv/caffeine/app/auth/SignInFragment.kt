@@ -9,19 +9,19 @@ import androidx.annotation.UiThread
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.databinding.FragmentSignInBinding
+import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
 import javax.inject.Inject
 
-class SignInFragment : DaggerFragment() {
+class SignInFragment : CaffeineFragment() {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var gson: Gson
     @Inject lateinit var tokenStore: TokenStore
@@ -48,9 +48,9 @@ class SignInFragment : DaggerFragment() {
         val password = binding.passwordEditText.text.toString()
         binding.formErrorTextView.text = null
         val signInBody = SignInBody(Account(username, password))
-        GlobalScope.launch(Dispatchers.Default) {
+        launch {
             val request = accountsService.signIn(signInBody).await()
-            launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 when {
                     request.isSuccessful -> onSuccess(request.body()!!)
                     else -> onError(request.errorBody()!!)

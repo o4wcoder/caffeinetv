@@ -8,13 +8,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import tv.caffeine.app.di.ViewModelFactory
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-open class CaffeineFragment : DaggerFragment() {
+open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     @Inject lateinit var viewModelFactory: ViewModelFactory
     protected val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     protected lateinit var job: Job
-    protected val fragmentScope get() = CoroutineScope(Dispatchers.Main + job)
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -2,26 +2,30 @@ package tv.caffeine.app.stage
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import tv.caffeine.app.api.DigitalItemsPayload
 import tv.caffeine.app.api.GetDigitalItemsBody
 import tv.caffeine.app.api.PaymentsClientService
+import kotlin.coroutines.CoroutineContext
 
-class DICatalogViewModel(private val paymentsClientService: PaymentsClientService): ViewModel() {
+class DICatalogViewModel(private val paymentsClientService: PaymentsClientService): ViewModel(), CoroutineScope {
     val items = MutableLiveData<DigitalItemsPayload>()
-    private var job: Job? = null
+    private var job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 
     fun refresh() {
-        job?.cancel()
-        job = GlobalScope.launch(Dispatchers.Default) {
+        launch {
             val deferred = paymentsClientService.getDigitalItems(GetDigitalItemsBody())
             val digitalItems = deferred.await()
-            launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 items.value = digitalItems.payload
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job.cancel()
     }
 }

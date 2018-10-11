@@ -1,32 +1,28 @@
 package tv.caffeine.app.notifications
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.ui.CaffeineViewModel
 
-class NotificationsViewModel(private val usersService: UsersService, private val tokenStore: TokenStore) : ViewModel() {
+class NotificationsViewModel(private val usersService: UsersService, private val tokenStore: TokenStore) : CaffeineViewModel() {
     val followers: MutableLiveData<List<FollowRecord>> = MutableLiveData()
-    private var job: Job? = null
 
-    fun refresh() {
+    init {
+        load()
+    }
+
+    private fun load() {
         val caid = tokenStore.caid ?: return
-        job?.cancel()
-        job = GlobalScope.launch(Dispatchers.Default) {
+        launch {
             val result = usersService.listFollowers(caid).await()
-            launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 followers.value = result
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
     }
 }

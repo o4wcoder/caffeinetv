@@ -10,10 +10,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import tv.caffeine.app.R
 import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
@@ -22,6 +19,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class NotificationsAdapter @Inject constructor(
         private val followManager: FollowManager,
@@ -32,10 +30,14 @@ class NotificationsAdapter @Inject constructor(
             override fun areItemsTheSame(oldItem: FollowRecord, newItem: FollowRecord) = oldItem === newItem
             override fun areContentsTheSame(oldItem: FollowRecord, newItem: FollowRecord) = oldItem.caid == newItem.caid
         }
-) {
+), CoroutineScope {
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.notification_new_follower, parent, false)
-        return NotificationViewHolder(view)
+        return NotificationViewHolder(view, this)
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
@@ -43,20 +45,25 @@ class NotificationsAdapter @Inject constructor(
         holder.bind(item, followManager, followedTheme, notFollowedTheme)
     }
 
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        job.cancel()
+    }
 }
 
-class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class NotificationViewHolder(itemView: View, val scope: CoroutineScope) : RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)
 
-    private var job: Job? = null
+    var job: Job? = null
 
     fun bind(item: FollowRecord, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         job?.cancel()
-        job = GlobalScope.launch(Dispatchers.Default) {
+        clear()
+        job = scope.launch {
             val user = followManager.userDetails(item.caid)
-            launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
             }
         }
@@ -64,5 +71,13 @@ class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             val action = NotificationsFragmentDirections.actionNotificationsFragmentToProfileFragment(item.caid)
             Navigation.findNavController(itemView).navigate(action)
         }
+    }
+
+    fun clear() {
+        avatarImageView.setImageResource(R.drawable.default_avatar_round)
+        usernameTextView.text = null
+        followButton.setText(R.string.follow_button)
+        followButton.setOnClickListener(null)
+        itemView.setOnClickListener(null)
     }
 }

@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
 import tv.caffeine.app.notifications.NotificationsAdapter
@@ -22,24 +21,18 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
     @Inject lateinit var usersAdapter: NotificationsAdapter
 
     private lateinit var broadcaster: String
-    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = FriendsWatchingFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
-        job = GlobalScope.launch(Dispatchers.Default) {
+        launch(Dispatchers.Default) {
             val userDetails = followManager.userDetails(broadcaster)
             val friendsWatching = broadcastsService.friendsWatching(userDetails.broadcastId)
-            launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 usersAdapter.submitList(friendsWatching.await())
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job?.cancel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

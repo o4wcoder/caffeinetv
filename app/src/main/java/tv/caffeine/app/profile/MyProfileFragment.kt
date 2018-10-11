@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.squareup.picasso.Picasso
-import dagger.android.support.DaggerFragment
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,9 +22,10 @@ import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
-class MyProfileFragment : DaggerFragment() {
+class MyProfileFragment : CaffeineFragment() {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var followManager: FollowManager
@@ -51,9 +51,9 @@ class MyProfileFragment : DaggerFragment() {
             startActivity(Intent(context, OssLicensesMenuActivity::class.java))
         }
         tokenStore.caid?.let {
-            GlobalScope.launch(Dispatchers.Default) {
+            launch {
                 val self = followManager.userDetails(it)
-                launch(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     binding.usernameTextView.text = self.username
                     binding.nameTextView.text = self.name
                     binding.numberFollowingTextView.text = self.followingCount.toString()

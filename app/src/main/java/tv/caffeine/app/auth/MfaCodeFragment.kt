@@ -10,19 +10,19 @@ import androidx.annotation.UiThread
 import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.databinding.FragmentMfaCodeBinding
+import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
 import javax.inject.Inject
 
-class MfaCodeFragment : DaggerFragment() {
+class MfaCodeFragment : CaffeineFragment() {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var sharedPreferences: SharedPreferences
@@ -48,9 +48,9 @@ class MfaCodeFragment : DaggerFragment() {
         val args = MfaCodeFragmentArgs.fromBundle(arguments)
         val username = args.username
         val password = args.password
-        GlobalScope.launch(Dispatchers.Default) {
+        launch {
             val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(binding.mfaCodeEditText.text.toString()))).await()
-            launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 when {
                     result.isSuccessful -> onSuccess(result.body()!!)
                     else -> onError(result.errorBody()!!)

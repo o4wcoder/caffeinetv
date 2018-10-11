@@ -2,35 +2,26 @@ package tv.caffeine.app.session
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.ui.CaffeineViewModel
 
-class FollowersViewModel(private val caid: String, private val usersService: UsersService) : ViewModel() {
-    private val followers: MutableLiveData<List<String>> = MutableLiveData()
-    private var list: List<String>? = null
-    private var job: Job? = null
+class FollowersViewModel(private val caid: String, private val usersService: UsersService) : CaffeineViewModel() {
+    private val _followers: MutableLiveData<List<String>> = MutableLiveData()
+    val followers: LiveData<List<String>> get() = _followers
 
-    fun getFollowers(): LiveData<List<String>> {
-        if (list == null) loadFollowers()
-        return followers
+    init {
+        load()
     }
 
-    private fun loadFollowers() {
-        job?.cancel()
-        job = GlobalScope.launch(Dispatchers.Default) {
+    private fun load() {
+        launch {
             val result = usersService.listFollowers(caid).await()
-            launch(Dispatchers.Main) {
-                followers.value = result.map { it.caid }
+            withContext(Dispatchers.Main) {
+                _followers.value = result.map { it.caid }
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
     }
 }

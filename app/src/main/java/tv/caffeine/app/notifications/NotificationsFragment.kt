@@ -28,7 +28,6 @@ class NotificationsFragment : DaggerFragment() {
         viewModel.followers.observe(this, Observer {
             notificationsAdapter.submitList(it)
         })
-        viewModel.refresh()
         return binding.root
     }
 

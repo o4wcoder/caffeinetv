@@ -10,10 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
-import dagger.android.support.DaggerFragment
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import org.webrtc.*
@@ -24,12 +21,12 @@ import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.ui.showKeyboard
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class StageFragment : DaggerFragment(), CoroutineScope {
+class StageFragment : CaffeineFragment() {
     private lateinit var broadcaster: String
     private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
@@ -52,12 +49,7 @@ class StageFragment : DaggerFragment(), CoroutineScope {
 
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
 
-    private var job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
     private val latestMessages: MutableList<Message> = mutableListOf()
-    private var hideActionBarJob: Job? = null
     private var broadcastName: String? = null
 
     lateinit var binding: FragmentStageBinding
@@ -89,7 +81,6 @@ class StageFragment : DaggerFragment(), CoroutineScope {
 
     override fun onDestroy() {
         super.onDestroy()
-        job.cancel()
         disconnectStreams()
     }
 
@@ -112,7 +103,6 @@ class StageFragment : DaggerFragment(), CoroutineScope {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        hideActionBarJob?.cancel()
         deinitSurfaceViewRenderers()
     }
 
