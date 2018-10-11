@@ -52,4 +52,5 @@
     <string name="buy_gold_button">Buy Gold</string>
     <string name="send_gold_to_user">Send to %s</string>
     <string name="friends_watching_title">Friends watching</string>
+    <string name="settings_button">Settings</string>
 </resources>

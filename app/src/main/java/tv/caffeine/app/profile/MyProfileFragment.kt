@@ -1,13 +1,11 @@
 package tv.caffeine.app.profile
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.coroutines.Dispatchers
@@ -47,8 +45,9 @@ class MyProfileFragment : CaffeineFragment() {
                 }
             })
         }
-        binding.ossLicensesButton.setOnClickListener {
-            startActivity(Intent(context, OssLicensesMenuActivity::class.java))
+        binding.settingsButton.setOnClickListener {
+            val action = MyProfileFragmentDirections.actionMyProfileFragmentToSettingsFragment()
+            findNavController().navigate(action)
         }
         tokenStore.caid?.let {
             launch {

@@ -126,6 +126,9 @@
             app:destination="@id/landingFragment"
             app:popUpTo="@+id/lobbyFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_myProfileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -154,4 +157,8 @@
             android:name="broadcaster"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="tv.caffeine.app.settings.SettingsFragment"
+        android:label="Settings" />
 </navigation>

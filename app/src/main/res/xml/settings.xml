@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Authentication">
+
+        <PreferenceScreen
+            android:key="2fa"
+            android:title="Two-Step Authentication"/>
+
+        <PreferenceScreen
+            android:title="Email"/>
+
+        <PreferenceScreen
+            android:title="Change Password"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Notifications">
+
+        <PreferenceScreen
+            android:title="Push Notifications"
+            android:summary="5"/>
+
+        <PreferenceScreen
+            android:title="Email Notifications"
+            android:summary="5"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="User Management">
+
+        <PreferenceScreen
+            android:title="Ignored Users"/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Information">
+
+        <Preference
+            android:title="Terms of Service">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.caffeine.tv/tos.html"/>
+        </Preference>
+
+        <Preference
+            android:title="Privacy Policy">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.caffeine.tv/privacy.html"/>
+        </Preference>
+
+        <Preference
+            android:title="Community Guidelines">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.caffeine.tv/guidelines.html"/>
+        </Preference>
+
+        <Preference
+            android:title="Open Source Software Licenses">
+
+            <intent
+                android:targetClass="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+                android:targetPackage="@string/application_id"/>
+
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Contact">
+
+        <Preference
+            android:title="Email Caffeine">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="mailto:contact@caffeine.tv?subject=Howdy">
+                <extra android:name="android.intent.extra.TEXT"
+                    android:value="Dear Caffeine"/>
+            </intent>
+
+        </Preference>
+
+        <Preference
+            android:title="@caffeine on Twitter">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.twitter.com/caffeine"/>
+
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Social Accounts">
+
+        <PreferenceScreen
+            android:title="Connect Twitter Account"/>
+
+        <PreferenceScreen
+            android:title="Connect Facebook Account"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Destructive">
+
+        <PreferenceScreen
+            android:title="Delete Caffeine Account"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
