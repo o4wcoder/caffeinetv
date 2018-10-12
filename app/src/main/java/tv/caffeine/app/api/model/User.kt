@@ -21,3 +21,9 @@ data class User(val caid: String,
 }
 
 class UserContainer(val user: User)
+
+sealed class CaidRecord(val caid: String) {
+    class FriendWatching(caid: String) : CaidRecord(caid)
+    class FollowRecord(caid: String, val followedAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
+    class IgnoreRecord(caid: String, val ignoredAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
+}

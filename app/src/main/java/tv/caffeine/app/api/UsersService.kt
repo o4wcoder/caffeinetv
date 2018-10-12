@@ -6,15 +6,16 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.SignedUserToken
 import tv.caffeine.app.api.model.UserContainer
 
 interface UsersService {
     @GET("v1/users/{caid}/followers")
-    fun listFollowers(@Path("caid") userId: String): Deferred<List<FollowRecord>>
+    fun listFollowers(@Path("caid") userId: String): Deferred<List<CaidRecord.FollowRecord>>
 
     @GET("v1/users/{caid}/following")
-    fun listFollowing(@Path("caid") userId: String): Deferred<List<FollowRecord>>
+    fun listFollowing(@Path("caid") userId: String): Deferred<List<CaidRecord.FollowRecord>>
 
     @POST("v1/users/{caid1}/follow/{caid2}")
     fun follow(@Path("caid1") follower: String, @Path("caid2") toFollow: String): Call<Void>
@@ -30,6 +31,9 @@ interface UsersService {
 
     @GET("v1/users/{caid}/signed")
     fun signedUserDetails(@Path("caid") userId: String): Deferred<SignedUserToken>
+
+    @GET("v1/users/{caid}/ignores")
+    fun listIgnoredUsers(@Path("caid") userId: String): Deferred<List<CaidRecord.IgnoreRecord>>
 }
 
-class FollowRecord(val caid: String, val followedAt: String?) // followedAt = ISO-8601 date
+

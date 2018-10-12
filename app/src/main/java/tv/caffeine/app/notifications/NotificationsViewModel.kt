@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tv.caffeine.app.api.FollowRecord
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.ui.CaffeineViewModel
 
 class NotificationsViewModel(private val usersService: UsersService, private val tokenStore: TokenStore) : CaffeineViewModel() {
-    val followers: MutableLiveData<List<FollowRecord>> = MutableLiveData()
+    val followers: MutableLiveData<List<CaidRecord.FollowRecord>> = MutableLiveData()
 
     init {
         load()

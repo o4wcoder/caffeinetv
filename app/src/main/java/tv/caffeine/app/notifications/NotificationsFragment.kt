@@ -18,15 +18,15 @@ class NotificationsFragment : DaggerFragment() {
     @Inject lateinit var followManager: FollowManager
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private lateinit var viewModel: NotificationsViewModel
-    @Inject lateinit var notificationsAdapter: NotificationsAdapter
+    @Inject lateinit var caidListAdapter: CaidListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = NotificationsFragmentBinding.inflate(layoutInflater, container, false)
-        binding.notificationsRecyclerView.adapter = notificationsAdapter
+        binding.notificationsRecyclerView.adapter = caidListAdapter
         viewModel = viewModelProvider.get(NotificationsViewModel::class.java)
         viewModel.followers.observe(this, Observer {
-            notificationsAdapter.submitList(it)
+            caidListAdapter.submitList(it)
         })
         return binding.root
     }
