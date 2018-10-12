@@ -1,6 +1,6 @@
 # Mitsurugi (Android)
 
-<img alt="Mitsurugi" src="logo.jpg" width="356">
+<img alt="Mitsurugi" src="logo.png" width="356">
 
 ### About
 
