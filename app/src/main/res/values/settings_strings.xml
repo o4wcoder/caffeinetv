@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="caffeine_on_twitter">@caffeine on Twitter</string>
+    <string name="two_step_authentication">Two-Step Authentication</string>
+    <string name="change_password">Change Password</string>
+    <string name="category_authentication">Authentication</string>
+    <string name="category_notifications">Notifications</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="people_you_follow_are_live">People you Follow are LIVE</string>
+    <string name="people_you_follow_are_watching">People you Follow are Watching</string>
+    <string name="new_followers">New Followers</string>
+    <string name="friends_new_to_caffeine">Friends New to Caffeine</string>
+    <string name="email_notifications">Email Notifications</string>
+    <string name="weekly_suggestions">Weekly Suggestions</string>
+    <string name="community_updates">Community Updates</string>
+    <string name="broadcast_report">Broadcast Report</string>
+    <string name="ignored_users">Ignored Users</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="community_guidelines">Community Guidelines</string>
+    <string name="oss_licenses">Open Source Software Licenses</string>
+    <string name="email_caffeine">Email Caffeine</string>
+    <string name="category_social_accounts">Social Accounts</string>
+    <string name="connect_twitter_account">Connect Twitter Account</string>
+    <string name="connect_facebook_account">Connect Facebook Account</string>
+    <string name="delete_caffeine_account">Delete Caffeine Account</string>
+    <string name="email">Email</string>
+    <string name="category_user_management">User Management</string>
+    <string name="category_information">Information</string>
+    <string name="category_contact_us">Contact Us</string>
+    <string name="category_delete_account">Delete Account</string>
+</resources>

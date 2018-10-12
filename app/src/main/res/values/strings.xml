@@ -1,15 +1,10 @@
 <resources>
-    <string name="app_name">Caffeine</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="landing_signup_prompt">Sign up and make friends around live entertainment.</string>
     <string name="sign_in_with_facebook">Sign In with Facebook</string>
     <string name="sign_in_with_twitter">Sign In with Twitter</string>
     <string name="new_account">New Account</string>
     <string name="sign_in_with_email">Sign In</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_in_hint_username">Username</string>
     <string name="sign_in_hint_password">Password</string>
     <string name="sign_in_button">Sign In</string>
@@ -27,7 +22,6 @@
     <string name="mfa_code_title">MFA Code</string>
     <string name="mfa_code_hint">MFA Code</string>
     <string name="submit_mfa_code">Submit</string>
-    <string name="oss_licenses_button">Open Source Software Licenses</string>
     <string name="sign_out_button">Sign Out</string>
     <string name="user_watching">%s is watching</string>
     <string name="live_indicator">LIVE</string>
