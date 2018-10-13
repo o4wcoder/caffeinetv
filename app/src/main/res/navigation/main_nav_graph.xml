@@ -160,5 +160,18 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="tv.caffeine.app.settings.SettingsFragment"
-        android:label="Settings" />
+        android:label="Settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_legalDocsFragment"
+            app:destination="@id/legalDocsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/legalDocsFragment"
+        android:name="tv.caffeine.app.settings.LegalDocsFragment"
+        android:label="Legal Documents"
+        tools:layout="@layout/fragment_legal_docs">
+        <argument
+            android:name="document"
+            app:argType="integer" />
+    </fragment>
 </navigation>

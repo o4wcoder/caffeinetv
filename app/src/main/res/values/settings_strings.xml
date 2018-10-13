@@ -29,4 +29,7 @@
     <string name="category_information">Information</string>
     <string name="category_contact_us">Contact Us</string>
     <string name="category_delete_account">Delete Account</string>
+    <string name="url_tos">https://www.caffeine.tv/tos.html</string>
+    <string name="url_privacy">https://www.caffeine.tv/privacy.html</string>
+    <string name="url_guidelines">https://www.caffeine.tv/guidelines.html</string>
 </resources>
