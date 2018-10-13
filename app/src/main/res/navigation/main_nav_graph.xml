@@ -90,7 +90,7 @@
         android:id="@+id/notificationsFragment"
         android:name="tv.caffeine.app.notifications.NotificationsFragment"
         android:label="Activity"
-        tools:layout="@layout/notifications_fragment">
+        tools:layout="@layout/user_list_fragment">
         <action
             android:id="@+id/action_notificationsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />

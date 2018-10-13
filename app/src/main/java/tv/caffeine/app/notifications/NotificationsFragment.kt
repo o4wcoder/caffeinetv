@@ -5,25 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import dagger.android.support.DaggerFragment
-import tv.caffeine.app.databinding.NotificationsFragmentBinding
-import tv.caffeine.app.di.ViewModelFactory
-import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.databinding.UserListFragmentBinding
+import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.users.CaidListAdapter
 import javax.inject.Inject
 
-class NotificationsFragment : DaggerFragment() {
+class NotificationsFragment : CaffeineFragment() {
 
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-    @Inject lateinit var followManager: FollowManager
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private lateinit var viewModel: NotificationsViewModel
     @Inject lateinit var caidListAdapter: CaidListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = NotificationsFragmentBinding.inflate(layoutInflater, container, false)
-        binding.notificationsRecyclerView.adapter = caidListAdapter
+        val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+        binding.userListRecyclerView.adapter = caidListAdapter
         viewModel = viewModelProvider.get(NotificationsViewModel::class.java)
         viewModel.followers.observe(this, Observer {
             caidListAdapter.submitList(it)

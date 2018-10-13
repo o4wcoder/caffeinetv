@@ -1,4 +1,4 @@
-package tv.caffeine.app.notifications
+package tv.caffeine.app.users
 
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +16,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
+import tv.caffeine.app.notifications.NotificationsFragmentDirections
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
