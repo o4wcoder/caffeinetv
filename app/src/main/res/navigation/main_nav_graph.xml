@@ -135,6 +135,9 @@
         <action
             android:id="@+id/action_myProfileFragment_to_followingFragment"
             app:destination="@id/followingFragment" />
+        <action
+            android:id="@+id/action_myProfileFragment_to_goldAndCreditsFragment"
+            app:destination="@id/goldAndCreditsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -209,4 +212,8 @@
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment" />
+    <fragment
+        android:id="@+id/goldAndCreditsFragment"
+        android:name="tv.caffeine.app.settings.GoldAndCreditsFragment"
+        android:label="Gold And Credits" />
 </navigation>

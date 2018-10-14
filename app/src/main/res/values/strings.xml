@@ -47,4 +47,8 @@
     <string name="send_gold_to_user">Send to %s</string>
     <string name="friends_watching_title">Friends watching</string>
     <string name="settings_button">Settings</string>
+    <string name="add_your_full_name">Add your full name</string>
+    <string name="gold_and_credits_button">Gold &amp; Credits</string>
+    <string name="info_button">Info</string>
+    <string name="transaction_history">Transaction History</string>
 </resources>

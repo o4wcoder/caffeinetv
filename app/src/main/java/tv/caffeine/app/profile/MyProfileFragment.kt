@@ -28,9 +28,16 @@ class MyProfileFragment : CaffeineFragment() {
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var followManager: FollowManager
 
+    private lateinit var binding: FragmentMyProfileBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = FragmentMyProfileBinding.inflate(inflater, container, false)
+        binding = FragmentMyProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.signOutButton.setOnClickListener {
             tokenStore.clear()
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToLandingFragment()
@@ -49,12 +56,16 @@ class MyProfileFragment : CaffeineFragment() {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToSettingsFragment()
             findNavController().navigate(action)
         }
+        binding.goldAndCreditsButton.setOnClickListener {
+            val action = MyProfileFragmentDirections.actionMyProfileFragmentToGoldAndCreditsFragment()
+            findNavController().navigate(action)
+        }
         tokenStore.caid?.let {
             launch {
                 val self = followManager.userDetails(it)
                 withContext(Dispatchers.Main) {
                     binding.usernameTextView.text = self.username
-                    binding.nameTextView.text = self.name
+                    binding.nameEditText.setText(self.name)
                     binding.numberFollowingTextView.text = self.followingCount.toString()
                     binding.numberOfFollowersTextView.text = self.followersCount.toString()
                     Picasso.get()
@@ -80,7 +91,6 @@ class MyProfileFragment : CaffeineFragment() {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment()
             findNavController().navigate(action)
         }
-        return binding.root
     }
 
 }
