@@ -87,8 +87,9 @@ class FollowManager @Inject constructor(
         return user
     }
 
-    suspend fun broadcastDetails(user: User): Broadcast {
-        return broadcastsService.broadcastDetails(user.broadcastId).await().broadcast
+    suspend fun broadcastDetails(user: User): Broadcast? {
+        val broadcastId = user.broadcastId ?: return null
+        return broadcastsService.broadcastDetails(broadcastId).await().broadcast
     }
 }
 

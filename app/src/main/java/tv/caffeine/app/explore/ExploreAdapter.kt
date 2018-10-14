@@ -10,6 +10,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.di.ThemeFollowedExplore
@@ -64,7 +65,7 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             text = itemView.resources.getQuantityString(R.plurals.number_of_followers, followersCount, followersCount)
         }
         itemView.setOnClickListener {
-            val action = ExploreFragmentDirections.actionExploreFragmentToProfileFragment(item.user.caid)
+            val action = LobbyDirections.actionGlobalProfileFragment(item.user.caid)
             Navigation.findNavController(itemView).navigate(action)
         }
     }

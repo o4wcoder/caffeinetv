@@ -34,7 +34,7 @@ class ProfileViewModel(val followManager: FollowManager) : CaffeineViewModel() {
                 isFollowed.value = followManager.isFollowing(caid)
                 isVerified.value = userDetails.isVerified
                 avatarImageUrl.value = userDetails.avatarImageUrl
-                if (broadcast.state == Broadcast.State.ONLINE) {
+                if (broadcast?.state == Broadcast.State.ONLINE) {
                     stageImageUrl.value = broadcast.previewImageUrl
                 }
             }

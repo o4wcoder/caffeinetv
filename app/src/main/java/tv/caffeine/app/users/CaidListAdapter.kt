@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
+import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
-import tv.caffeine.app.notifications.NotificationsFragmentDirections
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
@@ -38,7 +38,7 @@ class CaidListAdapter @Inject constructor(
         get() = Dispatchers.Main + job
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CaidViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.notification_new_follower, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
         return CaidViewHolder(view, this)
     }
 
@@ -57,7 +57,6 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)
-    private val followedYouTextView: TextView = itemView.findViewById(R.id.followed_you_text_view)
 
     var job: Job? = null
 
@@ -67,26 +66,26 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
         job = scope.launch {
             val user = followManager.userDetails(item.caid)
             withContext(Dispatchers.Main) {
-                followedYouTextView.isVisible = item is CaidRecord.FollowRecord
                 followButton.isVisible = item !is CaidRecord.IgnoreRecord
                 val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton
                 user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
             }
         }
         itemView.setOnClickListener {
-            val action = NotificationsFragmentDirections.actionNotificationsFragmentToProfileFragment(item.caid)
+            val action = LobbyDirections.actionGlobalProfileFragment(item.caid)
             Navigation.findNavController(itemView).navigate(action)
         }
     }
 
     private fun clear() {
-        followedYouTextView.isVisible = false
         avatarImageView.setImageResource(R.drawable.default_avatar_round)
         usernameTextView.text = null
         usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-        followButton.isVisible = false
-        followButton.setText(R.string.follow_button)
-        followButton.setOnClickListener(null)
+        followButton.apply {
+            isVisible = false
+            setText(R.string.follow_button)
+            setOnClickListener(null)
+        }
         itemView.setOnClickListener(null)
     }
 }

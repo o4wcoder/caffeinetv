@@ -3,10 +3,12 @@ package tv.caffeine.app.stage
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
@@ -45,6 +47,9 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding) : RecyclerView.Vi
 
     fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        val caid = message.publisher.caid
+        binding.avatarImageView.setOnClickListener { viewProfile(caid) }
+        binding.usernameTextView.setOnClickListener { viewProfile(caid) }
         binding.speechBubbleTextView.text = message.body.text
         binding.endorsementCountTextView.text = if (message.endorsementCount > 0) message.endorsementCount.toString() else null
         binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
@@ -53,6 +58,11 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding) : RecyclerView.Vi
                     .load(digitalItem.staticImageUrl)
                     .into(binding.digitalItemImageView)
         } ?: binding.digitalItemImageView.setImageDrawable(null)
+    }
+
+    private fun viewProfile(caid: String) {
+        val action = LobbyDirections.actionGlobalProfileFragment(caid)
+        itemView.findNavController().navigate(action)
     }
 
 }

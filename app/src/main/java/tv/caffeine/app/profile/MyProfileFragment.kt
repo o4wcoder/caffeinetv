@@ -72,6 +72,14 @@ class MyProfileFragment : CaffeineFragment() {
                 }
             }
         }
+        binding.numberFollowingTextView.setOnClickListener {
+            val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment()
+            findNavController().navigate(action)
+        }
+        binding.numberOfFollowersTextView.setOnClickListener {
+            val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment()
+            findNavController().navigate(action)
+        }
         return binding.root
     }
 

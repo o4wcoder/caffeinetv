@@ -129,6 +129,12 @@
         <action
             android:id="@+id/action_myProfileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_myProfileFragment_to_followersFragment"
+            app:destination="@id/followersFragment" />
+        <action
+            android:id="@+id/action_myProfileFragment_to_followingFragment"
+            app:destination="@id/followingFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -167,6 +173,9 @@
         <action
             android:id="@+id/action_settingsFragment_self"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_ignoredUsersFragment"
+            app:destination="@id/ignoredUsersFragment" />
     </fragment>
     <fragment
         android:id="@+id/legalDocsFragment"
@@ -177,4 +186,27 @@
             android:name="document"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/ignoredUsersFragment"
+        android:name="tv.caffeine.app.users.IgnoredUsersFragment"
+        android:label="Ignored Users" />
+    <fragment
+        android:id="@+id/followersFragment"
+        android:name="tv.caffeine.app.users.FollowersFragment"
+        android:label="Followers">
+        <action
+            android:id="@+id/action_followersFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="tv.caffeine.app.users.FollowingFragment"
+        android:label="Following">
+        <action
+            android:id="@+id/action_followingFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment" />
 </navigation>

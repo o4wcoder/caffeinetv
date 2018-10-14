@@ -10,9 +10,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
-import tv.caffeine.app.users.CaidListAdapter
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
+import tv.caffeine.app.users.CaidListAdapter
 import javax.inject.Inject
 
 class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
@@ -28,7 +28,8 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
         broadcaster = args.broadcaster
         launch(Dispatchers.Default) {
             val userDetails = followManager.userDetails(broadcaster)
-            val friendsWatching = broadcastsService.friendsWatching(userDetails.broadcastId)
+            val broadcastId = userDetails.broadcastId ?: return@launch
+            val friendsWatching = broadcastsService.friendsWatching(broadcastId)
             withContext(Dispatchers.Main) {
                 usersAdapter.submitList(friendsWatching.await())
             }

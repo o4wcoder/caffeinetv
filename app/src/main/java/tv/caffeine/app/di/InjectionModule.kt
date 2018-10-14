@@ -11,6 +11,8 @@ import tv.caffeine.app.profile.ProfileFragment
 import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.StageFragment
+import tv.caffeine.app.users.FollowersFragment
+import tv.caffeine.app.users.FollowingFragment
 import tv.caffeine.app.users.IgnoredUsersFragment
 
 @Module
@@ -29,4 +31,6 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun friendsWatchingFragment(): FriendsWatchingFragment
     @ContributesAndroidInjector abstract fun digitalItemListDialogFragment(): DICatalogFragment
     @ContributesAndroidInjector abstract fun ignoredUsersFragment(): IgnoredUsersFragment
+    @ContributesAndroidInjector abstract fun followersFragment(): FollowersFragment
+    @ContributesAndroidInjector abstract fun followingFragment(): FollowingFragment
 }

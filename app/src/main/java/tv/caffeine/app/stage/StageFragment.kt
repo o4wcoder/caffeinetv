@@ -61,10 +61,10 @@ class StageFragment : CaffeineFragment() {
         broadcaster = args.broadcaster
         launch {
             val userDetails = followManager.userDetails(broadcaster)
-            val broadcastDetails = broadcastsService.broadcastDetails(userDetails.broadcastId)
+            val broadcastDetails = userDetails.broadcastId?.let { broadcastsService.broadcastDetails(it) }
             launch(Dispatchers.Main) {
                 connectStreams(userDetails.stageId)
-                broadcastName = broadcastDetails.await().broadcast.name
+                broadcastName = broadcastDetails?.await()?.broadcast?.name
                 title = broadcastName
             }
             launch(Dispatchers.Main) {

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.*
@@ -69,7 +70,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     }
 
     fun viewProfile(caid: String) {
-        val action = LobbyFragmentDirections.actionLobbyFragmentToProfileFragment(caid)
+        val action = LobbyDirections.actionGlobalProfileFragment(caid)
         Navigation.findNavController(itemView).navigate(action)
     }
 }
