@@ -14,6 +14,7 @@ import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.stage.DICatalogViewModel
+import tv.caffeine.app.users.IgnoredUsersViewModel
 import javax.inject.Inject
 
 class ViewModelFactory @Inject constructor(
@@ -33,6 +34,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(paymentsClientService)
             modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(paymentsClientService)
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> ProfileViewModel(followManager)
+            modelClass.isAssignableFrom(IgnoredUsersViewModel::class.java) -> IgnoredUsersViewModel(tokenStore, usersService)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

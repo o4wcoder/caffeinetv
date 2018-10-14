@@ -4,13 +4,15 @@
     <PreferenceCategory android:title="@string/category_authentication">
 
         <PreferenceScreen
-            android:key="2fa"
+            android:key="manage_2fa"
             android:title="@string/two_step_authentication"/>
 
         <PreferenceScreen
+            android:key="change_email"
             android:title="@string/email"/>
 
         <PreferenceScreen
+            android:key="change_password"
             android:title="@string/change_password"/>
 
     </PreferenceCategory>
@@ -70,6 +72,7 @@
                 android:title="@string/community_updates"/>
 
             <CheckBoxPreference
+                android:key="broadcast_report"
                 android:title="@string/broadcast_report"/>
 
         </PreferenceScreen>
@@ -79,6 +82,7 @@
     <PreferenceCategory android:title="@string/category_user_management">
 
         <PreferenceScreen
+            android:key="ignored_users"
             android:title="@string/ignored_users"/>
 
     </PreferenceCategory>
@@ -137,9 +141,11 @@
     <PreferenceCategory android:title="@string/category_social_accounts">
 
         <PreferenceScreen
+            android:key="manage_twitter_account"
             android:title="@string/connect_twitter_account"/>
 
         <PreferenceScreen
+            android:key="manage_facebook_account"
             android:title="@string/connect_facebook_account"/>
 
     </PreferenceCategory>
@@ -147,6 +153,7 @@
     <PreferenceCategory android:title="@string/category_delete_account">
 
         <PreferenceScreen
+            android:key="delete_caffeine_account"
             android:title="@string/delete_caffeine_account"/>
 
     </PreferenceCategory>

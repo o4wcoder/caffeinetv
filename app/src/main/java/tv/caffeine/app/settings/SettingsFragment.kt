@@ -21,21 +21,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun configureLegalDocs() {
         findPreference("tos")?.setOnPreferenceClickListener {
             openLegalDoc(LegalDoc.TOS)
-            return@setOnPreferenceClickListener true
         }
         findPreference("privacy")?.setOnPreferenceClickListener {
             openLegalDoc(LegalDoc.PrivacyPolicy)
-            return@setOnPreferenceClickListener true
         }
         findPreference("guidelines")?.setOnPreferenceClickListener {
             openLegalDoc(LegalDoc.CommunityGuidelines)
-            return@setOnPreferenceClickListener true
+        }
+        findPreference("ignored_users")?.setOnPreferenceClickListener {
+            openIgnoredUsers()
         }
     }
 
-    private fun openLegalDoc(legalDoc: LegalDoc) {
+    private fun openLegalDoc(legalDoc: LegalDoc): Boolean {
         val action = SettingsFragmentDirections.actionSettingsFragmentToLegalDocsFragment(legalDoc.ordinal)
         findNavController().navigate(action)
+        return true
+    }
+
+    private fun openIgnoredUsers(): Boolean {
+        findNavController().navigate(R.id.action_settingsFragment_to_ignoredUsersFragment)
+        return true
     }
 
     override fun onNavigateToScreen(preferenceScreen: PreferenceScreen?) {

@@ -68,7 +68,9 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
             val user = followManager.userDetails(item.caid)
             withContext(Dispatchers.Main) {
                 followedYouTextView.isVisible = item is CaidRecord.FollowRecord
-                user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+                followButton.isVisible = item !is CaidRecord.IgnoreRecord
+                val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton
+                user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
             }
         }
         itemView.setOnClickListener {
@@ -82,6 +84,7 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
         avatarImageView.setImageResource(R.drawable.default_avatar_round)
         usernameTextView.text = null
         usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+        followButton.isVisible = false
         followButton.setText(R.string.follow_button)
         followButton.setOnClickListener(null)
         itemView.setOnClickListener(null)
