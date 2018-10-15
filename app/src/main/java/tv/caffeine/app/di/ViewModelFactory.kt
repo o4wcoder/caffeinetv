@@ -13,6 +13,7 @@ import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.SettingsViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
@@ -39,6 +40,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(IgnoredUsersViewModel::class.java) -> IgnoredUsersViewModel(tokenStore, usersService)
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(tokenStore, usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(tokenStore, usersService)
+            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

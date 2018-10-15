@@ -10,6 +10,7 @@ data class User(val caid: String,
                 val broadcastId: String?,
                 val stageId: String,
                 val abilities: Map<String, Boolean>,
+                val connectedAccounts: Map<String, ConnectedAccount>,
                 val age: Any?,
                 val bio: String,
                 val countryCode: Any?,
@@ -27,3 +28,5 @@ sealed class CaidRecord(val caid: String) {
     class FollowRecord(caid: String, val followedAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
     class IgnoreRecord(caid: String, val ignoredAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
 }
+
+class ConnectedAccount(val uid: String, val provider: String, val displayName: String)

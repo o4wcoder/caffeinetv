@@ -22,7 +22,9 @@
     <string name="email_caffeine">Email Caffeine</string>
     <string name="category_social_accounts">Social Accounts</string>
     <string name="connect_twitter_account">Connect Twitter Account</string>
+    <string name="disconnect_twitter_account">Disconnect Twitter Account</string>
     <string name="connect_facebook_account">Connect Facebook Account</string>
+    <string name="disconnect_facebook_account">Disconnect Facebook Account</string>
     <string name="delete_caffeine_account">Delete Caffeine Account</string>
     <string name="email">Email</string>
     <string name="category_user_management">User Management</string>
