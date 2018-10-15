@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import com.google.firebase.analytics.FirebaseAnalytics
 import tv.caffeine.app.databinding.ActivityMainBinding
 
 private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment)
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(this, navController)
         navController.addOnNavigatedListener { _, destination ->
             binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
+            FirebaseAnalytics.getInstance(this).setCurrentScreen(this, destination.label.toString(), null)
         }
     }
 
