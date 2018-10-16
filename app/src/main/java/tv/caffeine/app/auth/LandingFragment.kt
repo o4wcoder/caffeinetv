@@ -46,18 +46,20 @@ class LandingFragment : CaffeineFragment() {
         binding.newAccountButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signUpFragment))
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         callbackManager = CallbackManager.Factory.create()
-        binding.facebookSignInButton.registerCallback(callbackManager, object: FacebookCallback<LoginResult?> {
-            override fun onSuccess(result: LoginResult?) {
-                processFacebookLogin(result)
-            }
+        binding.facebookSignInButton.registerCallback(callbackManager, facebookCallback)
+    }
 
-            override fun onCancel() {
-            }
+    private val facebookCallback = object : FacebookCallback<LoginResult?> {
+        override fun onSuccess(result: LoginResult?) {
+            processFacebookLogin(result)
+        }
 
-            override fun onError(error: FacebookException?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        })
+        override fun onCancel() {
+        }
+
+        override fun onError(error: FacebookException?) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
     }
 
     private fun processFacebookLogin(result: LoginResult?) {
