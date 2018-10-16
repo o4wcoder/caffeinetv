@@ -11,9 +11,6 @@ interface AccountsService {
     @POST("v1/account/signin")
     fun signIn(@Body signInBody: SignInBody): Deferred<Response<SignInResult>>
 
-    @POST("v1/account/signin")
-    fun submitMfaCode(@Body mfaCodeBody: MfaCodeBody): Deferred<Response<SignInResult>>
-
     @POST("v1/account/token")
     fun refreshToken(@Body refreshTokenBody: RefreshTokenBody): Call<RefreshTokenResult>
 
@@ -24,13 +21,12 @@ interface AccountsService {
     fun signOut(): Call<Unit>
 
     @POST("v1/account")
-    fun signUp(@Body signUpBody: SignUpBody): Call<SignUpResult>
+    fun signUp(@Body signUpBody: SignUpBody): Deferred<Response<SignUpResult>>
 }
 
-class SignInBody(val account: Account)
-class Account(val username: String, val password: String)
+class SignInBody(val account: Account, val mfa: MfaCode? = null)
+class Account(val username: String? = null, val password: String? = null, val caid: String? = null, val loginToken: String? = null)
 
-class MfaCodeBody(val account: Account, val mfa: MfaCode)
 class MfaCode(val otp: String)
 
 class SignInResult(val accessToken: String, val caid: String, val credentials: CaffeineCredentials, val refreshToken: String, val next: String?, val mfaOtpMethod: String?)

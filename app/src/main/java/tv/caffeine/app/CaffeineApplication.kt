@@ -1,5 +1,6 @@
 package tv.caffeine.app
 
+import com.facebook.FacebookSdk
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
@@ -17,6 +18,7 @@ class CaffeineApplication : DaggerApplication() {
         if (LeakCanary.isInAnalyzerProcess(this)) return
         LeakCanary.install(this)
         Timber.plant(timberTree)
+        FacebookSdk.sdkInitialize(applicationContext)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication>

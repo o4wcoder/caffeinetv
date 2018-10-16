@@ -24,10 +24,20 @@
         tools:layout="@layout/fragment_mfa_code">
         <argument
             android:name="username"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
         <argument
             android:name="password"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="caid"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="loginToken"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
@@ -40,6 +50,9 @@
         <action
             android:id="@+id/action_landingFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_mfaCodeFragment"
+            app:destination="@id/mfaCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/forgotFragment"
@@ -50,7 +63,13 @@
         android:id="@+id/signUpFragment"
         android:name="tv.caffeine.app.auth.SignUpFragment"
         android:label="New Account"
-        tools:layout="@layout/fragment_sign_up" />
+        tools:layout="@layout/fragment_sign_up" >
+        <argument
+            android:name="oauthCallbackResult"
+            app:argType="tv.caffeine.app.api.OAuthCallbackResult"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"

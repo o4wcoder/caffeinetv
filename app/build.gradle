@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
@@ -33,6 +34,10 @@ android {
     dataBinding {
         enabled = true
     }
+}
+
+androidExtensions {
+    experimental = true
 }
 
 ext {
@@ -95,6 +100,9 @@ dependencies {
 
     // Legal, etc.
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.1'
+
+    // Social
+    implementation 'com.facebook.android:facebook-android-sdk:4.6.0'
 
     // Tests
     testImplementation 'junit:junit:4.12'

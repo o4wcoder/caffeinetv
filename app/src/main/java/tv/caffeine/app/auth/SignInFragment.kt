@@ -12,7 +12,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
+import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
@@ -37,23 +37,23 @@ class SignInFragment : CaffeineFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.forgotButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
-        binding.signInButton.setOnClickListener {
-            login()
-        }
+        binding.signInButton.setOnClickListener { login() }
         binding.passwordEditText.setOnActionGo { login() }
     }
 
     private fun login() {
+        dismissKeyboard()
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         binding.formErrorTextView.text = null
         val signInBody = SignInBody(Account(username, password))
         launch {
-            val request = accountsService.signIn(signInBody).await()
+            val response = accountsService.signIn(signInBody).await()
             withContext(Dispatchers.Main) {
+                val signInResult = response.body()
                 when {
-                    request.isSuccessful -> onSuccess(request.body()!!)
-                    else -> onError(request.errorBody()!!)
+                    response.isSuccessful && signInResult != null -> onSuccess(signInResult)
+                    else -> onError(response)
                 }
             }
         }
@@ -66,7 +66,7 @@ class SignInFragment : CaffeineFragment() {
             "mfa_otp_required" -> {
                 val username = binding.usernameEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
-                val action = SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password)
+                val action = SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)
                 navController.navigate(action)
             }
             else -> {
@@ -78,7 +78,8 @@ class SignInFragment : CaffeineFragment() {
     }
 
     @UiThread
-    private fun onError(signInError: ResponseBody) {
+    private fun onError(response: Response<SignInResult>) {
+        val signInError = response.errorBody() ?: return
         val error = gson.fromJson(signInError.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
         error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }

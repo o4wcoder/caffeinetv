@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">Caffeine</string>
     <string name="application_id">tv.caffeine.app</string>
+    <string name="facebook_app_id">278354532550167</string>
+    <string name="fb_login_protocol_scheme">fb278354532550167</string>
 </resources>

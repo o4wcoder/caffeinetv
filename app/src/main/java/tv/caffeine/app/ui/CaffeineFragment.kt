@@ -1,6 +1,8 @@
 package tv.caffeine.app.ui
 
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.CoroutineScope
@@ -26,5 +28,9 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
+    }
+
+    fun dismissKeyboard() {
+        context?.getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }

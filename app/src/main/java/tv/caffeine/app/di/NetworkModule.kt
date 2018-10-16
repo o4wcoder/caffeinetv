@@ -16,9 +16,9 @@ import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.api.*
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
-import tv.caffeine.app.auth.TokenStore
 import javax.inject.Singleton
 
 enum class Service {
@@ -106,6 +106,8 @@ class NetworkModule {
     @Provides fun providesBroadcastsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(BroadcastsService::class.java)
 
     @Provides fun providesPaymentsClientService(@CaffeineApi(Service.Payments) retrofit: Retrofit) = retrofit.create(PaymentsClientService::class.java)
+
+    @Provides fun providesOAuthService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(OAuthService::class.java)
 
     @Provides
     @CaffeineApi(Service.Realtime)

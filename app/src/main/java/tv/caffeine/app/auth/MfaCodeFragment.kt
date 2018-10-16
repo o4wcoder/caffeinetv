@@ -1,19 +1,17 @@
 package tv.caffeine.app.auth
 
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
-import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
+import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
@@ -25,9 +23,9 @@ import javax.inject.Inject
 class MfaCodeFragment : CaffeineFragment() {
 
     @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var sharedPreferences: SharedPreferences
     @Inject lateinit var gson: Gson
     private lateinit var binding: FragmentMfaCodeBinding
+    @Inject lateinit var tokenStore: TokenStore
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -38,22 +36,26 @@ class MfaCodeFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.submitMfaCodeButton.setOnClickListener {
-            submitMfaCode()
-        }
+        binding.submitMfaCodeButton.setOnClickListener { submitMfaCode() }
         binding.mfaCodeEditText.setOnActionGo { submitMfaCode() }
     }
 
     private fun submitMfaCode() {
+        dismissKeyboard()
         val args = MfaCodeFragmentArgs.fromBundle(arguments)
         val username = args.username
         val password = args.password
+        val caid = args.caid
+        val loginToken = args.loginToken
         launch {
-            val result = accountsService.submitMfaCode(MfaCodeBody(Account(username, password), MfaCode(binding.mfaCodeEditText.text.toString()))).await()
+            val mfaCode = MfaCode(binding.mfaCodeEditText.text.toString())
+            val signInBody = SignInBody(Account(username, password, caid, loginToken), mfaCode)
+            val response = accountsService.signIn(signInBody).await()
             withContext(Dispatchers.Main) {
+                val signInResult = response.body()
                 when {
-                    result.isSuccessful -> onSuccess(result.body()!!)
-                    else -> onError(result.errorBody()!!)
+                    response.isSuccessful && signInResult != null -> onSuccess(signInResult)
+                    else -> onError(response)
                 }
             }
         }
@@ -61,14 +63,15 @@ class MfaCodeFragment : CaffeineFragment() {
 
     @UiThread
     private fun onSuccess(result: SignInResult) {
-        sharedPreferences.edit { putString("REFRESH_TOKEN", result.refreshToken) }
+        tokenStore.storeSignInResult(result)
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
         navController.navigate(R.id.lobbyFragment)
     }
 
     @UiThread
-    private fun onError(errorBody: ResponseBody) {
+    private fun onError(response: Response<SignInResult>) {
+        val errorBody = response.errorBody() ?: return
         val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
         error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }

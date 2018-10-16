@@ -24,7 +24,13 @@
             android:layout_height="wrap_content"
             android:text="@string/landing_signup_prompt" />
 
-        <Button
+        <TextView
+            android:id="@+id/form_error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebook_sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/sign_in_with_facebook" />

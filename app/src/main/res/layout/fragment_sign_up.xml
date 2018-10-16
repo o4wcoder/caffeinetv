@@ -26,6 +26,11 @@
             style="@style/ScreenTitle"
             android:text="@string/sign_up_title" />
 
+        <TextView
+            android:id="@+id/form_error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
