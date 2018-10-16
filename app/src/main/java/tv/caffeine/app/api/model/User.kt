@@ -23,10 +23,14 @@ data class User(val caid: String,
 
 class UserContainer(val user: User)
 
+enum class IdentityProvider {
+    facebook, twitter
+}
+
 sealed class CaidRecord(val caid: String) {
     class FriendWatching(caid: String) : CaidRecord(caid)
     class FollowRecord(caid: String, val followedAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
     class IgnoreRecord(caid: String, val ignoredAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
 }
 
-class ConnectedAccount(val uid: String, val provider: String, val displayName: String)
+class ConnectedAccount(val uid: String, val provider: IdentityProvider, val displayName: String)
