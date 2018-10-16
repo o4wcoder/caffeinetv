@@ -6,28 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.support.DaggerFragment
 import timber.log.Timber
 import tv.caffeine.app.databinding.FragmentExploreBinding
-import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
-class ExploreFragment : DaggerFragment() {
+class ExploreFragment : CaffeineFragment() {
 
-    @Inject lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel by lazy { viewModelProvider.get(ExploreViewModel::class.java) }
     @Inject lateinit var exploreAdapter: ExploreAdapter
     @Inject lateinit var searchUsersAdapter: SearchUsersAdapter
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private lateinit var binding: FragmentExploreBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val binding = FragmentExploreBinding.inflate(inflater, container, false)
-        val viewModel = viewModelProvider.get(ExploreViewModel::class.java)
-        viewModel.data.observe(this, Observer { result ->
+        binding = FragmentExploreBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.data.observe(viewLifecycleOwner, Observer { result ->
             Timber.d("Got results ${result.data}")
             val adapter: UsersAdapter
             when(result.state) {
@@ -46,7 +47,6 @@ class ExploreFragment : DaggerFragment() {
         viewModel.queryString = "" // trigger suggestions
         binding.exploreRecyclerView.adapter = searchUsersAdapter
         binding.viewModel = viewModel
-        return binding.root
     }
 
 }

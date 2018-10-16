@@ -18,56 +18,55 @@ import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 
     private val adapter = DigitalItemAdapter()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val viewModel = viewModelProvider.get(DICatalogViewModel::class.java)
-        viewModel.items.observe(this, Observer {
-            adapter.submitList(it.digitalItems.state)
-        })
-        viewModel.refresh()
-    }
+    private val viewModel by lazy { viewModelProvider.get(DICatalogViewModel::class.java) }
+    private lateinit var binding: FragmentDiCatalogBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = FragmentDiCatalogBinding.inflate(inflater, container, false)
+        binding = FragmentDiCatalogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.walletViewModel = viewModelProvider.get(WalletViewModel::class.java)
         binding.username = DICatalogFragmentArgs.fromBundle(arguments).broadcaster
         binding.list.adapter = adapter
         binding.setLifecycleOwner(this)
-        return binding.root
+        viewModel.items.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it.digitalItems.state)
+        })
     }
 
-    private inner class ViewHolder internal constructor(val binding: DiCatalogItemBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+}
 
-        fun bind(digitalItem: DigitalItem) {
-            binding.digitalItem = digitalItem
-            binding.nameTextView.text = digitalItem.name
-            binding.goldCostTextView.text = digitalItem.goldCost.toString()
-            Picasso.get()
-                    .load(digitalItem.staticImageUrl)
-                    .into(binding.previewImageView)
+private class DigitalItemViewHolder internal constructor(val binding: DiCatalogItemBinding)
+    : RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(digitalItem: DigitalItem) {
+        binding.digitalItem = digitalItem
+        binding.nameTextView.text = digitalItem.name
+        binding.goldCostTextView.text = digitalItem.goldCost.toString()
+        Picasso.get()
+                .load(digitalItem.staticImageUrl)
+                .into(binding.previewImageView)
+    }
+}
+
+
+private class DigitalItemAdapter internal constructor() : ListAdapter<DigitalItem, DigitalItemViewHolder>(
+        object : DiffUtil.ItemCallback<DigitalItem>() {
+            override fun areItemsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem == newItem
         }
+) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigitalItemViewHolder {
+        val binding = DiCatalogItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return DigitalItemViewHolder(binding)
     }
 
-
-    private inner class DigitalItemAdapter internal constructor() : ListAdapter<DigitalItem, ViewHolder>(
-            object : DiffUtil.ItemCallback<DigitalItem>() {
-                override fun areItemsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem.id == newItem.id
-
-                override fun areContentsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem == newItem
-            }
-    ) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = DiCatalogItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(getItem(position))
-        }
+    override fun onBindViewHolder(holder: DigitalItemViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
-
 }

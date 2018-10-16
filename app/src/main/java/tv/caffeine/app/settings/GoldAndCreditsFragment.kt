@@ -11,6 +11,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 
 class GoldAndCreditsFragment : CaffeineFragment() {
     private lateinit var binding: FragmentGoldAndCreditsBinding
+    private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentGoldAndCreditsBinding.inflate(inflater, container, false)
@@ -19,8 +20,7 @@ class GoldAndCreditsFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val walletViewModel = viewModelProvider.get(WalletViewModel::class.java)
-        walletViewModel.walletBalance.observe(this, Observer {
+        walletViewModel.walletBalance.observe(viewLifecycleOwner, Observer {
             binding.goldBalanceTextView.text = it.toString()
         })
     }

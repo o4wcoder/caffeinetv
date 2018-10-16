@@ -62,7 +62,7 @@ class MyProfileFragment : CaffeineFragment() {
         }
         tokenStore.caid?.let {
             launch {
-                val self = followManager.userDetails(it)
+                val self = followManager.userDetails(it) ?: return@launch
                 withContext(Dispatchers.Main) {
                     binding.usernameTextView.text = self.username
                     binding.nameEditText.setText(self.name)

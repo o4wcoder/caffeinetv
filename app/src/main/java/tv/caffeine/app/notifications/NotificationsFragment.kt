@@ -14,16 +14,20 @@ class NotificationsFragment : CaffeineFragment() {
 
     private lateinit var viewModel: NotificationsViewModel
     @Inject lateinit var caidListAdapter: CaidListAdapter
+    private lateinit var binding: UserListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+        binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.userListRecyclerView.adapter = caidListAdapter
         viewModel = viewModelProvider.get(NotificationsViewModel::class.java)
-        viewModel.followers.observe(this, Observer {
+        viewModel.followers.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)
         })
-        return binding.root
     }
 
 }

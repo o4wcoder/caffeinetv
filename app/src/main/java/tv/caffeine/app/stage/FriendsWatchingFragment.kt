@@ -27,7 +27,7 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
         val args = FriendsWatchingFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
         launch(Dispatchers.Default) {
-            val userDetails = followManager.userDetails(broadcaster)
+            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val broadcastId = userDetails.broadcastId ?: return@launch
             val friendsWatching = broadcastsService.friendsWatching(broadcastId)
             withContext(Dispatchers.Main) {

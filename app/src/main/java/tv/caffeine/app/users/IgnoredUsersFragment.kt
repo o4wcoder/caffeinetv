@@ -20,19 +20,21 @@ import javax.inject.Inject
 
 class IgnoredUsersFragment : CaffeineFragment() {
 
-    private lateinit var viewModel: IgnoredUsersViewModel
-    @Inject
-    lateinit var caidListAdapter: CaidListAdapter
+    private val viewModel by lazy { viewModelProvider.get(IgnoredUsersViewModel::class.java) }
+    @Inject lateinit var caidListAdapter: CaidListAdapter
+    private lateinit var binding: UserListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+        binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.userListRecyclerView.adapter = caidListAdapter
-        viewModel = viewModelProvider.get(IgnoredUsersViewModel::class.java)
-        viewModel.ignoredUsers.observe(this, Observer {
+        viewModel.ignoredUsers.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)
         })
-        return binding.root
     }
 
 }

@@ -79,12 +79,17 @@ class FollowManager @Inject constructor(
         })
     }
 
-    suspend fun userDetails(caid: String): User {
+    suspend fun userDetails(caid: String): User? {
         userDetails[caid]?.let { return it }
         val result = usersService.userDetails(caid)
-        val user = result.await().user
-        userDetails[caid] = user
-        return user
+        try {
+            val user = result.await().user
+            userDetails[caid] = user
+            return user
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to load user details")
+        }
+        return null
     }
 
     suspend fun broadcastDetails(user: User): Broadcast? {

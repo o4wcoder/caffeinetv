@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
+import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CaidRecord
@@ -33,9 +34,13 @@ class CaidListAdapter @Inject constructor(
             override fun areContentsTheSame(oldItem: CaidRecord, newItem: CaidRecord) = oldItem.caid == newItem.caid
         }
 ), CoroutineScope {
+
     private val job = Job()
+    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        Timber.e(throwable, "Coroutine exception")
+    }
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+        get() = Dispatchers.Main + job + exceptionHandler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CaidViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
@@ -64,7 +69,7 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
         job?.cancel()
         clear()
         job = scope.launch {
-            val user = followManager.userDetails(item.caid)
+            val user = followManager.userDetails(item.caid) ?: return@launch
             withContext(Dispatchers.Main) {
                 followButton.isVisible = item !is CaidRecord.IgnoreRecord
                 val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton

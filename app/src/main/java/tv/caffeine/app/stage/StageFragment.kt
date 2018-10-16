@@ -60,7 +60,7 @@ class StageFragment : CaffeineFragment() {
         val args = StageFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
         launch {
-            val userDetails = followManager.userDetails(broadcaster)
+            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val broadcastDetails = userDetails.broadcastId?.let { broadcastsService.broadcastDetails(it) }
             launch(Dispatchers.Main) {
                 connectStreams(userDetails.stageId)
@@ -270,7 +270,7 @@ class StageFragment : CaffeineFragment() {
         val text = editText.text.toString()
         editText.text = null
         launch {
-            val userDetails = followManager.userDetails(broadcaster)
+            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val caid = tokenStore.caid ?: error("Not logged in")
             val signedUserDetails = usersService.signedUserDetails(caid)
             val publisher = signedUserDetails.await().token

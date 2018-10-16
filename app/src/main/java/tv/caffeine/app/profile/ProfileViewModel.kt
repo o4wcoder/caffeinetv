@@ -23,7 +23,7 @@ class ProfileViewModel(val followManager: FollowManager) : CaffeineViewModel() {
 
     fun load(caid: String) {
         launch {
-            val userDetails = followManager.userDetails(caid)
+            val userDetails = followManager.userDetails(caid) ?: return@launch
             val broadcast = followManager.broadcastDetails(userDetails)
             withContext(Dispatchers.Main) {
                 username.value = userDetails.username

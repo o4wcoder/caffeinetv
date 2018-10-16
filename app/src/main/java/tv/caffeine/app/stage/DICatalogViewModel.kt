@@ -14,7 +14,11 @@ class DICatalogViewModel(private val paymentsClientService: PaymentsClientServic
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
 
-    fun refresh() {
+    init {
+        load()
+    }
+
+    private fun load() {
         launch {
             val deferred = paymentsClientService.getDigitalItems(GetDigitalItemsBody())
             val digitalItems = deferred.await()

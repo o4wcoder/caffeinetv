@@ -20,16 +20,14 @@ import javax.inject.Inject
 
 class FollowingFragment : CaffeineFragment() {
 
-    private lateinit var viewModel: FollowingViewModel
-    @Inject
-    lateinit var caidListAdapter: CaidListAdapter
+    private val viewModel by lazy { viewModelProvider.get(FollowingViewModel::class.java) }
+    @Inject lateinit var caidListAdapter: CaidListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
         binding.userListRecyclerView.adapter = caidListAdapter
-        viewModel = viewModelProvider.get(FollowingViewModel::class.java)
-        viewModel.following.observe(this, Observer {
+        viewModel.following.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)
         })
         return binding.root

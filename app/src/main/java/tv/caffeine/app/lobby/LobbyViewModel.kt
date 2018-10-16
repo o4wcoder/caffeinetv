@@ -19,6 +19,10 @@ class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
+    init {
+        refresh()
+    }
+
     fun refresh() {
         refreshJob?.cancel()
         refreshJob = launch(context = coroutineContext) {
