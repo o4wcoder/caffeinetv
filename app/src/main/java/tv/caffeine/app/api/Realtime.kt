@@ -10,7 +10,7 @@ import tv.caffeine.app.api.model.Message
 
 interface Realtime {
     @POST("v2/broadcasts/streams/{streamId}/viewers")
-    fun createViewer(@Path("streamId") streamId: String): Call<CreateViewerResult>
+    fun createViewer(@Path("streamId") streamId: String, @Body body: CreateViewerBody = CreateViewerBody(true)): Call<CreateViewerResult>
 
     @POST("v2/broadcasts/streams")
     fun initializeStream(@Body initBody: StreamInitBody): Call<StreamInitResult>
@@ -27,6 +27,8 @@ interface Realtime {
     @POST("v2/reaper/stages/{stageId}/messages")
     fun sendMessage(@Path("stageId") stageId: String, @Body reaction: Reaction): Deferred<Any>
 }
+
+class CreateViewerBody(val constrained_baseline: Boolean)
 
 class CreateViewerResult(val id: String, val offer: String, val signed_payload: String)
 
