@@ -88,7 +88,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     }
 
     private fun openLegalDoc(legalDoc: LegalDoc): Boolean {
-        val action = SettingsFragmentDirections.actionSettingsFragmentToLegalDocsFragment(legalDoc.ordinal)
+        val action = SettingsFragmentDirections.actionSettingsFragmentToLegalDocsFragment(legalDoc)
         findNavController().navigate(action)
         return true
     }

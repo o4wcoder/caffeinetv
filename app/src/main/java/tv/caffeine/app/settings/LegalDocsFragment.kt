@@ -2,6 +2,7 @@ package tv.caffeine.app.settings
 
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,11 @@ import android.webkit.WebView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import kotlinx.android.parcel.Parcelize
 import tv.caffeine.app.R
 
-enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int) {
+@Parcelize
+enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int): Parcelable {
     TOS(R.string.terms_of_service, R.string.url_tos),
     PrivacyPolicy(R.string.privacy_policy, R.string.url_privacy),
     CommunityGuidelines(R.string.community_guidelines, R.string.url_guidelines)
@@ -23,8 +26,7 @@ class LegalDocsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val documentId = LegalDocsFragmentArgs.fromBundle(arguments).document
-        legalDoc = LegalDoc.values()[documentId]
+        legalDoc = LegalDocsFragmentArgs.fromBundle(arguments).document
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

@@ -206,7 +206,7 @@
         tools:layout="@layout/fragment_legal_docs">
         <argument
             android:name="document"
-            app:argType="integer" />
+            app:argType="tv.caffeine.app.settings.LegalDoc" />
     </fragment>
     <fragment
         android:id="@+id/ignoredUsersFragment"
