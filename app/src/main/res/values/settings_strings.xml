@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="caffeine_on_twitter">@caffeine on Twitter</string>
+    <string name="caffeine_on_twitter">\@caffeine on Twitter</string>
     <string name="two_step_authentication">Two-Step Authentication</string>
     <string name="change_password">Change Password</string>
     <string name="category_authentication">Authentication</string>
