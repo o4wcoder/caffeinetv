@@ -25,19 +25,19 @@
             android:summary="5">
 
             <CheckBoxPreference
-                android:key="broadcast_live_ios_push"
+                android:key="broadcast_live_android_push"
                 android:title="@string/people_you_follow_are_live"/>
 
             <CheckBoxPreference
-                android:key="watching_broadcast_ios_push"
+                android:key="watching_broadcast_android_push"
                 android:title="@string/people_you_follow_are_watching"/>
 
             <CheckBoxPreference
-                android:key="new_follower_ios_push"
+                android:key="new_follower_android_push"
                 android:title="@string/new_followers"/>
 
             <CheckBoxPreference
-                android:key="friend_joins_ios_push"
+                android:key="friend_joins_android_push"
                 android:title="@string/friends_new_to_caffeine"/>
 
         </PreferenceScreen>

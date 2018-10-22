@@ -7,7 +7,7 @@ import tv.caffeine.app.auth.TokenStore
 class AuthorizationInterceptor(private val tokenStore: TokenStore) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder().run {
-            addHeader("X-Client-Type", "ios")
+            addHeader("X-Client-Type", "android")
             tokenStore.addHttpHeaders(this)
             build()
         }
