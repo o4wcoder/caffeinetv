@@ -3,9 +3,10 @@ package tv.caffeine.app.api
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
+import tv.caffeine.app.di.ApiConfig
 
 interface EventsService {
-    @POST("v1/events")
+    @POST(ApiConfig.EVENTS_SERVICE_EVENTS_PATH)
     fun sendEvent(@Body eventBody: EventBody): Call<Void>
 }
 
