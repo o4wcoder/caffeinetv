@@ -22,7 +22,7 @@ import tv.caffeine.app.net.TokenAuthenticator
 import javax.inject.Singleton
 
 enum class Service {
-    MainApi, RefreshToken, Payments, Realtime
+    MainApi, RefreshToken, Payments, Realtime, Events
 }
 
 @Module
@@ -82,6 +82,15 @@ class NetworkModule {
             .build()
 
     @Provides
+    @CaffeineApi(Service.Events)
+    fun providesEventsRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Events) baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+
+    @Provides
     @CaffeineApi(Service.MainApi)
     fun providesBaseUrl() = "https://api.caffeine.tv"
 
@@ -93,11 +102,15 @@ class NetworkModule {
     @CaffeineApi(Service.Payments)
     fun providesPaymentsBaseUrl() = "https://payments.caffeine.tv"
 
+    @Provides
+    @CaffeineApi(Service.Events)
+    fun providesEventsBaseUrl() = "https://events.caffeine.tv"
+
     @Provides fun providesAccountsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
 
     @Provides fun providesLobbyService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(LobbyService::class.java)
 
-    @Provides fun providesEventsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(EventsService::class.java)
+    @Provides fun providesEventsService(@CaffeineApi(Service.Events) retrofit: Retrofit) = retrofit.create(EventsService::class.java)
 
     @Provides fun providesUsersService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(UsersService::class.java)
 

@@ -113,7 +113,7 @@ class StreamController(
                                                         it.value.members.plus(
                                                                 mapOf(
                                                                         "id" to it.value.id,
-                                                                        "timestamp" to (it.value.timestampUs / 1000.0).toInt().toString(),
+                                                                        "timestamp" to (it.value.timestampUs / 1000.0),
                                                                         "type" to it.value.type,
                                                                         "kind" to it.value.id.substringBefore("_")
                                                                 )
@@ -121,6 +121,8 @@ class StreamController(
                                                     }
                                             val data = mapOf(
                                                     "mode" to "viewer", // TODO: support broadcasts
+                                                    "stage_id" to stageIdentifier,
+                                                    "viewer_id" to viewerId,
                                                     "stats" to statsToSend
                                             )
                                             eventsService.sendEvent(EventBody("webrtc_stats", data = data)).enqueue(object : Callback<Void?> {
