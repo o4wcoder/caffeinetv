@@ -87,33 +87,17 @@
         <action
             android:id="@+id/action_lobbyFragment_to_myProfileFragment"
             app:destination="@id/myProfileFragment" />
-        <action
-            android:id="@+id/action_lobbyFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_lobbyFragment_to_landingFragment"
-            app:destination="@id/landingFragment"
-            app:popUpTo="@+id/lobby"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
         android:name="tv.caffeine.app.explore.ExploreFragment"
         android:label="Find People"
-        tools:layout="@layout/fragment_explore">
-        <action
-            android:id="@+id/action_exploreFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_explore"/>
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="tv.caffeine.app.notifications.NotificationsFragment"
         android:label="Activity"
-        tools:layout="@layout/user_list_fragment">
-        <action
-            android:id="@+id/action_notificationsFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-    </fragment>
+        tools:layout="@layout/user_list_fragment"/>
     <fragment
         android:id="@+id/stageFragment"
         android:name="tv.caffeine.app.stage.StageFragment"
@@ -140,11 +124,6 @@
         android:name="tv.caffeine.app.profile.MyProfileFragment"
         android:label="My Profile"
         tools:layout="@layout/fragment_my_profile" >
-        <action
-            android:id="@+id/action_myProfileFragment_to_landingFragment"
-            app:destination="@id/landingFragment"
-            app:popUpTo="@+id/lobbyFragment"
-            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_myProfileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
@@ -202,7 +181,7 @@
     <fragment
         android:id="@+id/legalDocsFragment"
         android:name="tv.caffeine.app.settings.LegalDocsFragment"
-        android:label="Legal Documents"
+        android:label="@string/legal_documents"
         tools:layout="@layout/fragment_legal_docs">
         <argument
             android:name="document"
@@ -215,19 +194,11 @@
     <fragment
         android:id="@+id/followersFragment"
         android:name="tv.caffeine.app.users.FollowersFragment"
-        android:label="Followers">
-        <action
-            android:id="@+id/action_followersFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-    </fragment>
+        android:label="Followers"/>
     <fragment
         android:id="@+id/followingFragment"
         android:name="tv.caffeine.app.users.FollowingFragment"
-        android:label="Following">
-        <action
-            android:id="@+id/action_followingFragment_to_profileFragment2"
-            app:destination="@id/profileFragment" />
-    </fragment>
+        android:label="Following"/>
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment" />
@@ -235,4 +206,8 @@
         android:id="@+id/goldAndCreditsFragment"
         android:name="tv.caffeine.app.settings.GoldAndCreditsFragment"
         android:label="Gold And Credits" />
+    <action
+        android:id="@+id/action_global_landingFragment"
+        app:destination="@id/landingFragment"
+        app:popUpToInclusive="true" />
 </navigation>

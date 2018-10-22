@@ -40,8 +40,7 @@ class MyProfileFragment : CaffeineFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.signOutButton.setOnClickListener {
             tokenStore.clear()
-            val action = MyProfileFragmentDirections.actionMyProfileFragmentToLandingFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_global_landingFragment)
             accountsService.signOut().enqueue(object: Callback<Unit?> {
                 override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                     Timber.e(t, "Failed to sign out")

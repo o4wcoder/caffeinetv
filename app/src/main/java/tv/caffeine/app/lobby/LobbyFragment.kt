@@ -26,7 +26,7 @@ class LobbyFragment : CaffeineFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (tokenStore.createRefreshTokenBody() == null) {
-            findNavController().navigate(R.id.action_lobbyFragment_to_landingFragment)
+            findNavController().navigate(R.id.action_global_landingFragment)
         }
     }
 
