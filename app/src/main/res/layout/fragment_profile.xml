@@ -45,7 +45,7 @@
                 android:text="@{profileViewModel.username}"
                 android:textAppearance="@style/ExploreUsername"
                 android:textColor="@{profileViewModel.isFollowed ? @color/caffeineBlue : @color/textRegular}"
-                android:drawableEnd="@{profileViewModel.isVerified ? @drawable/verified_large : @drawable/ic_person_black_24dp}"
+                android:drawableEnd="@{profileViewModel.isVerified ? @drawable/verified_large : null}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_text_view"

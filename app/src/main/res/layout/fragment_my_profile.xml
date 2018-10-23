@@ -83,6 +83,7 @@
             android:layout_marginTop="8dp"
             android:drawablePadding="@dimen/verified_icon_padding"
             android:text="@{viewModel.username}"
+            android:drawableEnd="@{viewModel.isVerified ? @drawable/verified_large : null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name_edit_text"
