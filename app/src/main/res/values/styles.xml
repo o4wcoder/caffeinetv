@@ -143,4 +143,6 @@
         <item name="windowActionBarOverlay">true</item>
     </style>
 
+    <style name="FollowerCount" parent="@style/TextAppearance.MaterialComponents.Headline2" />
+
 </resources>
