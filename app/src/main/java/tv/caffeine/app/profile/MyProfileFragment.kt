@@ -6,11 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,14 +25,18 @@ class MyProfileFragment : CaffeineFragment() {
 
     private lateinit var binding: FragmentMyProfileBinding
 
+    private val viewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentMyProfileBinding.inflate(inflater, container, false)
+        binding.setLifecycleOwner(viewLifecycleOwner)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.viewModel = viewModel
         binding.signOutButton.setOnClickListener {
             tokenStore.clear()
             findNavController().navigate(R.id.action_global_landingFragment)
@@ -58,29 +57,6 @@ class MyProfileFragment : CaffeineFragment() {
         binding.goldAndCreditsButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToGoldAndCreditsFragment()
             findNavController().navigate(action)
-        }
-        tokenStore.caid?.let {
-            launch {
-                val self = followManager.userDetails(it) ?: return@launch
-                withContext(Dispatchers.Main) {
-                    binding.usernameTextView.text = self.username
-                    binding.nameEditText.setText(self.name)
-                    binding.numberFollowingTextView.text = self.followingCount.toString()
-                    binding.numberOfFollowersTextView.text = self.followersCount.toString()
-                    Picasso.get()
-                            .load(self.avatarImageUrl)
-                            .centerCrop()
-                            .resizeDimen(R.dimen.profile_size, R.dimen.profile_size)
-                            .placeholder(R.drawable.default_avatar_round)
-                            .transform(CropCircleTransformation())
-                            .into(binding.avatarImageView)
-                    if (self.isVerified) {
-                        binding.usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)
-                    } else {
-                        binding.usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-                    }
-                }
-            }
         }
         binding.numberFollowingTextView.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment()

@@ -2,6 +2,7 @@ package tv.caffeine.app.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.SearchService
 import tv.caffeine.app.api.UsersService
@@ -10,6 +11,7 @@ import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.lobby.LoadLobbyUseCase
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
+import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.session.FollowManager
@@ -25,6 +27,7 @@ class ViewModelFactory @Inject constructor(
         private val searchService: SearchService,
         private val usersService: UsersService,
         private val paymentsClientService: PaymentsClientService,
+        private val accountsService: AccountsService,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager
 ) : ViewModelProvider.Factory {
@@ -41,6 +44,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(tokenStore, usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(tokenStore, usersService)
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
+            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(accountsService, tokenStore, followManager)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }
