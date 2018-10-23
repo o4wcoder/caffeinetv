@@ -35,14 +35,14 @@
             android:id="@+id/mfa_code_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/mfa_code_hint"
             style="@style/OutlinedBox">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/mfa_code_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:hint="@string/mfa_code_hint"
                 android:imeOptions="actionGo" />
         </com.google.android.material.textfield.TextInputLayout>
 

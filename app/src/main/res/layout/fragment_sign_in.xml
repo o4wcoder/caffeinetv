@@ -35,13 +35,13 @@
             android:id="@+id/username_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/sign_in_hint_username"
             style="@style/OutlinedBox">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/username_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_username"
                 android:inputType="text"
                 android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -50,13 +50,13 @@
             android:id="@+id/password_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/sign_in_hint_password"
             style="@style/OutlinedBox">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_password"
                 android:inputType="textPassword"
                 android:imeOptions="actionGo" />
         </com.google.android.material.textfield.TextInputLayout>

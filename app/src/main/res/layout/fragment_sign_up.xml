@@ -34,27 +34,27 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/sign_in_hint_username"
             style="@style/OutlinedBox">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/username_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="@string/sign_in_hint_username"
                 android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/sign_in_hint_email"
             style="@style/OutlinedBox">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_email"
                 android:inputType="textEmailAddress"
                 android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -62,13 +62,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/sign_in_hint_password"
             style="@style/OutlinedBox">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_password"
                 android:inputType="textPassword"
                 android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -76,13 +76,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/sign_in_hint_dob"
             style="@style/OutlinedBox">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dob_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_dob"
                 android:inputType="date"
                 android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
