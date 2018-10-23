@@ -24,7 +24,7 @@
     <string name="submit_mfa_code">Submit</string>
     <string name="sign_out_button">Sign Out</string>
     <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s <img src="checkmark"/> is watching]]></string>
-    <string name="verified_user_watching"><![CDATA[<img src="%2$s"> %1$s <img src="checkmark"/> is watching]]></string>
+    <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> is watching]]></string>
     <string name="live_indicator">LIVE</string>
     <string name="follow_button">Follow</string>
     <string name="unfollow_button">Following</string>
@@ -38,8 +38,8 @@
         <item quantity="other"><![CDATA[<img src="%2$s"> %1$s and %3$s others are watching]]></item>
     </plurals>
     <plurals name="verified_user_and_friends_watching">
-        <item quantity="one"><![CDATA[<img src="%2$s"> %1$s <img src="checkmark"/> and one other are watching]]></item>
-        <item quantity="other"><![CDATA[<img src="%2$s"> %1$s <img src="checkmark"/> and %3$s others are watching]]></item>
+        <item quantity="one"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> and one other are watching]]></item>
+        <item quantity="other"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> and %3$s others are watching]]></item>
     </plurals>
     <plurals name="number_of_followers">
         <item quantity="one">One follower</item>
