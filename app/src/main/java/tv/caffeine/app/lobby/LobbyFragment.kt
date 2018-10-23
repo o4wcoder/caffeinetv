@@ -35,7 +35,10 @@ class LobbyFragment : CaffeineFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        binding = FragmentLobbyBinding.inflate(inflater, container, false)
+        binding = FragmentLobbyBinding.inflate(inflater, container, false).apply {
+            setLifecycleOwner(viewLifecycleOwner)
+            viewModel = this.viewModel
+        }
         return binding.root
     }
 
@@ -49,11 +52,9 @@ class LobbyFragment : CaffeineFragment() {
         binding.searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))
         binding.activityButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.notificationsFragment))
         binding.lobbySwipeRefreshLayout.setOnRefreshListener { refreshLobby() }
-        binding.setLifecycleOwner(viewLifecycleOwner)
         viewModel.lobby.observe(viewLifecycleOwner, Observer {
             val items = LobbyItem.parse(it)
             lobbyAdapter.submitList(items, it.tags, it.content)
-            binding.lobbySwipeRefreshLayout.isRefreshing = false
         })
     }
 
