@@ -10,12 +10,8 @@ import kotlin.coroutines.CoroutineContext
 
 class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel(), CoroutineScope {
     val lobby: LiveData<Lobby> get() = _lobby
-    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _lobby = MutableLiveData<Lobby>()
-    private val _isLoading = MutableLiveData<Boolean>().apply {
-        value = false
-    }
 
     private var job = Job()
     private var refreshJob: Job? = null
@@ -38,10 +34,8 @@ class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel
     }
 
     private suspend fun loadLobby() = coroutineScope {
-        _isLoading.value = true
         val result = loadLobbyUseCase()
         _lobby.value = result
-        _isLoading.value = false
     }
 
     override fun onCleared() {

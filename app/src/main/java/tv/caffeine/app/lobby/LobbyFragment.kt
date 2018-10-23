@@ -55,6 +55,7 @@ class LobbyFragment : CaffeineFragment() {
         viewModel.lobby.observe(viewLifecycleOwner, Observer {
             val items = LobbyItem.parse(it)
             lobbyAdapter.submitList(items, it.tags, it.content)
+            binding.lobbySwipeRefreshLayout.isRefreshing = false
         })
     }
 
