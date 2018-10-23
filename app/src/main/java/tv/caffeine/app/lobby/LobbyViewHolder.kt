@@ -1,6 +1,9 @@
 package tv.caffeine.app.lobby
 
 import android.graphics.Rect
+import android.os.Build
+import android.text.Html
+import android.text.Spannable
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -18,6 +21,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.*
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.UserAvatarImageGetter
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 
@@ -99,11 +103,15 @@ class LiveBroadcastWithFriendsCard(val binding: LiveBroadcastWithFriendsCardBind
         super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
         val liveBroadcastItem = item as LiveBroadcastWithFriends
         binding.previewImageView.clipToOutline = true
-        binding.friendsWatchingTextView.text = when(item.broadcaster.followingViewersCount) {
+        val singleFriendWatchingResId = if (item.broadcaster.user.isVerified) R.string.verified_user_watching else R.string.user_watching
+        val multipleFriendsWatchingResId = if (item.broadcaster.user.isVerified) R.plurals.verified_user_and_friends_watching else R.plurals.user_and_friends_watching
+        val rawText = when(item.broadcaster.followingViewersCount) {
             0 -> null
-            1 -> itemView.context.getString(R.string.user_watching, item.broadcaster.followingViewers[0].username)
-            else -> itemView.context.resources.getQuantityString(R.plurals.user_and_friends_watching, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewersCount - 1)
+            1 -> itemView.context.getString(singleFriendWatchingResId, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl)
+            else -> itemView.context.resources.getQuantityString(multipleFriendsWatchingResId, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl, item.broadcaster.followingViewersCount - 1)
         }
+        val imageGetter = UserAvatarImageGetter(binding.friendsWatchingTextView)
+        binding.friendsWatchingTextView.text = (if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) Html.fromHtml(rawText, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) else Html.fromHtml(rawText, imageGetter, null)) as Spannable
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
         if (game != null) {
