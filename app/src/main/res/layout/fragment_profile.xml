@@ -37,6 +37,17 @@
                 tools:src="@drawable/default_avatar_round" />
 
             <TextView
+                android:id="@+id/name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{profileViewModel.name}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
+                tools:text="Winnie the Pooh" />
+
+            <TextView
                 android:id="@+id/username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,16 +62,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/name_text_view"
                 tools:text="Caffeine" />
 
-            <TextView
-                android:id="@+id/name_text_view"
+            <Button
+                android:id="@+id/follow_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@{profileViewModel.name}"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/follow_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
-                tools:text="Winnie the Pooh" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/username_text_view"/>
 
             <TextView
                 android:id="@+id/number_following_text_view"
@@ -104,15 +113,6 @@
                 app:layout_constraintStart_toEndOf="@+id/number_following_title_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/number_of_followers_text_view" />
 
-            <Button
-                android:id="@+id/follow_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/follow_button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/username_text_view"/>
-
             <ImageView
                 android:id="@+id/stage_image_view"
                 android:layout_width="wrap_content"
@@ -124,7 +124,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintDimensionRatio="4:3"
-                tools:layout_editor_absoluteX="0dp"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <TextView
