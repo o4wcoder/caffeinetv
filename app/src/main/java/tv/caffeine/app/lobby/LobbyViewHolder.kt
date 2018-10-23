@@ -1,5 +1,6 @@
 package tv.caffeine.app.lobby
 
+import android.graphics.Rect
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -75,12 +76,29 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     }
 }
 
-class LiveBroadcastCard(val binding: LiveBroadcastCardBinding) : BroadcasterCard(binding.root) {
+open class LiveBroadcastCard(val binding: LiveBroadcastCardBinding) : BroadcasterCard(binding.root) {
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
         val liveBroadcastItem = item as LiveBroadcast
-        binding.friendsWatchingTextView.isVisible = item.broadcaster.followingViewersCount > 0
-        binding.friendsWatchingKiltView.isVisible = item.broadcaster.followingViewersCount > 0
+        val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
+        val game = content[broadcast.contentId]
+        if (game != null) {
+            Picasso.get().load(game.iconImageUrl).into(binding.gameLogoImageView)
+        } else {
+            binding.gameLogoImageView.setImageDrawable(null)
+        }
+        itemView.setOnClickListener {
+            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
+            Navigation.findNavController(itemView).navigate(action)
+        }
+    }
+}
+
+class LiveBroadcastWithFriendsCard(val binding: LiveBroadcastWithFriendsCardBinding) : BroadcasterCard(binding.root) {
+    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+        super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
+        val liveBroadcastItem = item as LiveBroadcastWithFriends
+        binding.previewImageView.clipToOutline = true
         binding.friendsWatchingTextView.text = when(item.broadcaster.followingViewersCount) {
             0 -> null
             1 -> itemView.context.getString(R.string.user_watching, item.broadcaster.followingViewers[0].username)
@@ -114,8 +132,22 @@ class PreviousBroadcastCard(val binding: PreviousBroadcastCardBinding) : Broadca
 
 class ListCard(val binding: CardListBinding, private val recycledViewPool: RecyclerView.RecycledViewPool) : LobbyViewHolder(binding.root) {
     private val snapHelper = LinearSnapHelper()
+    private val edgeOffset = binding.root.resources.getDimension(R.dimen.lobby_card_side_margin).toInt()
+    private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
     init {
-        binding.cardListRecyclerView.setRecycledViewPool(recycledViewPool)
+        binding.cardListRecyclerView.run {
+            addItemDecoration(object: RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                    val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
+                    when(itemPosition) {
+                        0 -> outRect.set(edgeOffset, 0, insetOffset, 0)
+                        (adapter?.itemCount ?: 0) - 1 -> outRect.set(insetOffset, 0, edgeOffset, 0)
+                        else -> outRect.set(insetOffset, 0, insetOffset, 0)
+                    }
+                }
+            })
+            setRecycledViewPool(recycledViewPool)
+        }
         snapHelper.attachToRecyclerView(binding.cardListRecyclerView)
         itemView.updateLayoutParams<RecyclerView.LayoutParams> {
             marginStart = 0

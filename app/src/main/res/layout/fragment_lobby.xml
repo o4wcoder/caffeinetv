@@ -104,9 +104,6 @@
                 android:id="@+id/lobby_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:clipToPadding="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/previous_broadcast_card"/>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

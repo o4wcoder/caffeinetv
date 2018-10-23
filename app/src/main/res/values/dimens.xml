@@ -10,4 +10,12 @@
     <dimen name="digital_item_size">36dp</dimen>
     <dimen name="chat_bubble_triangle_size">8dp</dimen>
     <dimen name="lobby_card_rounding_radius">15dp</dimen>
+    <dimen name="lobby_card_side_margin">18dp</dimen>
+    <dimen name="lobby_card_narrow_margin">4dp</dimen>
+    <dimen name="lobby_list_top_bottom_margin">18dp</dimen>
+    <dimen name="lobby_card_vertical_spacing">8dp</dimen>
+    <dimen name="lobby_header_top_margin">12dp</dimen>
+    <dimen name="lobby_header_bottom_margin">0dp</dimen>
+    <dimen name="lobby_subtitle_top_margin">0dp</dimen>
+    <dimen name="lobby_subtitle_bottom_margin">0dp</dimen>
 </resources>

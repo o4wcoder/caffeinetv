@@ -7,7 +7,7 @@ interface LobbyItem {
     val itemType: Type
 
     enum class Type {
-        HEADER, SUBTITLE, LIVE_BROADCAST_CARD, PREVIOUS_BROADCAST_CARD, CARD_LIST
+        HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD, PREVIOUS_BROADCAST_CARD, CARD_LIST
     }
 
     companion object {
@@ -26,10 +26,12 @@ interface LobbyItem {
         }
 
         private fun convert(broadcaster: Lobby.Broadcaster): SingleCard =
-                if (broadcaster.broadcast != null) {
+                if (broadcaster.broadcast == null) {
+                    PreviousBroadcast(broadcaster.id, broadcaster)
+                } else if (broadcaster.followingViewersCount == 0) {
                     LiveBroadcast(broadcaster.id, broadcaster)
                 } else {
-                    PreviousBroadcast(broadcaster.id, broadcaster)
+                    LiveBroadcastWithFriends(broadcaster.id, broadcaster)
                 }
     }
 
@@ -46,6 +48,9 @@ abstract class SingleCard : LobbyItem {
 }
 data class LiveBroadcast(override val id: String, override val broadcaster: Lobby.Broadcaster) : SingleCard() {
     override val itemType = LobbyItem.Type.LIVE_BROADCAST_CARD
+}
+data class LiveBroadcastWithFriends(override val id: String, override val broadcaster: Lobby.Broadcaster) : SingleCard() {
+    override val itemType = LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD
 }
 data class PreviousBroadcast(override val id: String, override val broadcaster: Lobby.Broadcaster) : SingleCard() {
     override val itemType = LobbyItem.Type.PREVIOUS_BROADCAST_CARD

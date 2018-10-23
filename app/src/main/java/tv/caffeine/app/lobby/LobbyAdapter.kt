@@ -43,6 +43,7 @@ class LobbyAdapter @Inject constructor(
             LobbyItem.Type.HEADER -> HeaderCard(LobbyHeaderBinding.inflate(inflater, parent, false))
             LobbyItem.Type.SUBTITLE -> SubtitleCard(LobbySubtitleBinding.inflate(inflater, parent, false))
             LobbyItem.Type.LIVE_BROADCAST_CARD -> LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false))
+            LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD -> LiveBroadcastWithFriendsCard(LiveBroadcastWithFriendsCardBinding.inflate(inflater, parent, false))
             LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> PreviousBroadcastCard(PreviousBroadcastCardBinding.inflate(inflater, parent, false))
             LobbyItem.Type.CARD_LIST -> ListCard(CardListBinding.inflate(inflater, parent, false), recycledViewPool)
         }
