@@ -102,7 +102,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.1'
 
     // Social
-    implementation 'com.facebook.android:facebook-android-sdk:4.6.0'
+    implementation 'com.facebook.android:facebook-android-sdk:4.38.0'
 
     // Tests
     testImplementation 'junit:junit:4.12'
