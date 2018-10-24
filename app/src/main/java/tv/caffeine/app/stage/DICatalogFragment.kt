@@ -31,7 +31,7 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
         binding.walletViewModel = viewModelProvider.get(WalletViewModel::class.java)
         binding.username = DICatalogFragmentArgs.fromBundle(arguments).broadcaster
         binding.list.adapter = adapter
-        binding.setLifecycleOwner(this)
+        binding.setLifecycleOwner(viewLifecycleOwner)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it.digitalItems.state)
         })
