@@ -145,6 +145,12 @@
         <argument
             android:name="caid"
             app:argType="string" />
+        <action
+            android:id="@+id/action_profileFragment_to_followersFragment"
+            app:destination="@id/followersFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_followingFragment"
+            app:destination="@id/followingFragment" />
     </fragment>
     <fragment
         android:id="@+id/friendsWatchingFragment"
@@ -194,11 +200,19 @@
     <fragment
         android:id="@+id/followersFragment"
         android:name="tv.caffeine.app.users.FollowersFragment"
-        android:label="Followers"/>
+        android:label="Followers">
+        <argument
+            android:name="caid"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/followingFragment"
         android:name="tv.caffeine.app.users.FollowingFragment"
-        android:label="Following"/>
+        android:label="Following">
+        <argument
+            android:name="caid"
+            app:argType="string" />
+    </fragment>
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment" />

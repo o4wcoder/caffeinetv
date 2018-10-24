@@ -52,14 +52,20 @@ class MyProfileFragment : CaffeineFragment() {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToGoldAndCreditsFragment()
             findNavController().navigate(action)
         }
-        binding.numberFollowingTextView.setOnClickListener {
-            val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment()
-            findNavController().navigate(action)
-        }
-        binding.numberOfFollowersTextView.setOnClickListener {
-            val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment()
-            findNavController().navigate(action)
-        }
+        binding.numberFollowingTextView.setOnClickListener { showFollowingList() }
+        binding.numberOfFollowersTextView.setOnClickListener { showFollowersList() }
+    }
+
+    private fun showFollowingList() {
+        val caid = tokenStore.caid ?: return
+        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment(caid)
+        findNavController().navigate(action)
+    }
+
+    private fun showFollowersList() {
+        val caid = tokenStore.caid ?: return
+        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment(caid)
+        findNavController().navigate(action)
     }
 
     private fun signOut() {

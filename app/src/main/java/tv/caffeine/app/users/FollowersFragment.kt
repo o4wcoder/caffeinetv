@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
@@ -26,7 +25,9 @@ class FollowersFragment : CaffeineFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+        binding.setLifecycleOwner(viewLifecycleOwner)
         binding.userListRecyclerView.adapter = caidListAdapter
+        viewModel.caid = FollowersFragmentArgs.fromBundle(arguments).caid
         viewModel.followers.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)
         })
@@ -35,18 +36,18 @@ class FollowersFragment : CaffeineFragment() {
 
 }
 
-class FollowersViewModel(private val tokenStore: TokenStore, private val usersService: UsersService) : CaffeineViewModel() {
+class FollowersViewModel(private val usersService: UsersService) : CaffeineViewModel() {
 
     val followers: LiveData<List<CaidRecord.FollowRecord>> get() = _followers
-
     private val _followers = MutableLiveData<List<CaidRecord.FollowRecord>>()
 
-    init {
-        load()
-    }
+    var caid: String = ""
+        set(value) {
+            field = value
+            load()
+        }
 
     private fun load() {
-        val caid = tokenStore.caid ?: return
         launch {
             val list = usersService.listFollowers(caid).await()
             withContext(Dispatchers.Main) {
