@@ -247,9 +247,9 @@ class StageFragment : CaffeineFragment() {
         binding.chatButton?.setOnClickListener {
             binding.chatMessageEditText?.requestFocus()
             binding.chatMessageEditText?.showKeyboard()
-            binding.chatMessageEditText?.setOnAction(EditorInfo.IME_ACTION_SEND) {
-                sendMessage()
-            }
+        }
+        binding.chatMessageEditText?.setOnAction(EditorInfo.IME_ACTION_SEND) {
+            sendMessage()
         }
         binding.friendsWatchingButton?.setOnClickListener {
             val fragment = FriendsWatchingFragment()
