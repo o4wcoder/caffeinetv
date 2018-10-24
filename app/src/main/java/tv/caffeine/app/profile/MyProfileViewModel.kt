@@ -5,12 +5,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.UserUpdateBody
+import tv.caffeine.app.api.model.UserUpdateDetails
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 
 class MyProfileViewModel(
         val accountsService: AccountsService,
+        val usersService: UsersService,
         val tokenStore: TokenStore,
         val followManager: FollowManager
 ) : CaffeineViewModel() {
@@ -43,6 +47,14 @@ class MyProfileViewModel(
                     // not shown on My Profile
                     bio.value = self.bio
                 }
+            }
+        }
+    }
+
+    fun updateName(name: String) {
+        tokenStore.caid?.let { caid ->
+            launch {
+                usersService.updateUser(caid, UserUpdateBody(UserUpdateDetails(name, null, null))).await()
             }
         }
     }

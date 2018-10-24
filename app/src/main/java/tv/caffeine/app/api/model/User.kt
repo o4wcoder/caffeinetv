@@ -23,6 +23,9 @@ data class User(val caid: String,
 
 class UserContainer(val user: User)
 
+class UserUpdateBody(val user: UserUpdateDetails)
+class UserUpdateDetails(val name: String?, val bio: String?, val twitterAutoPostOnline: Boolean?)
+
 enum class IdentityProvider {
     facebook, twitter
 }

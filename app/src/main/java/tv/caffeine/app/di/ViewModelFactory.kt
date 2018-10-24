@@ -44,7 +44,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(tokenStore, usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(tokenStore, usersService)
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
-            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(accountsService, tokenStore, followManager)
+            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(accountsService, usersService, tokenStore, followManager)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }
