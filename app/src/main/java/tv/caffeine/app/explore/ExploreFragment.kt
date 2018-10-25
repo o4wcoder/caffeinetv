@@ -44,7 +44,6 @@ class ExploreFragment : CaffeineFragment() {
                 binding.exploreRecyclerView.adapter = adapter
             }
         })
-        viewModel.queryString = "" // trigger suggestions
         binding.exploreRecyclerView.adapter = searchUsersAdapter
         binding.viewModel = viewModel
     }
