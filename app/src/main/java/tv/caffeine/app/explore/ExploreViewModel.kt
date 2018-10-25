@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.SearchQueryBody
 import tv.caffeine.app.api.SearchService
-import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
@@ -20,11 +19,6 @@ class ExploreViewModel(
         private val gson: Gson
 ) : CaffeineViewModel() {
     val data: MutableLiveData<CaffeineResult<Findings>> = MutableLiveData()
-
-    sealed class Findings(val data: Array<SearchUserItem>) {
-        class Explore(data: Array<SearchUserItem>) : Findings(data)
-        class Search(data: Array<SearchUserItem>) : Findings(data)
-    }
 
     var queryString: String = ""
         set(value) {

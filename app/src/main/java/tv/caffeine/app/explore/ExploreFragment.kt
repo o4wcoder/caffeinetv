@@ -31,11 +31,11 @@ class ExploreFragment : CaffeineFragment() {
             handle(result, view) { findings ->
                 val adapter: UsersAdapter
                 when (findings) {
-                    is ExploreViewModel.Findings.Explore -> {
+                    is Findings.Explore -> {
                         adapter = exploreAdapter
                         binding.exploreRecyclerView.layoutManager = GridLayoutManager(context, 3)
                     }
-                    is ExploreViewModel.Findings.Search -> {
+                    is Findings.Search -> {
                         adapter = searchUsersAdapter
                         binding.exploreRecyclerView.layoutManager = LinearLayoutManager(context)
                     }
