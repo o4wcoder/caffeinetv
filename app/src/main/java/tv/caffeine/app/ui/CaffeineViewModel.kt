@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
 open class CaffeineViewModel : ViewModel(), CoroutineScope {
     private val job = Job()
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+        get() = job + Dispatchers.Main
 
     override fun onCleared() {
         super.onCleared()

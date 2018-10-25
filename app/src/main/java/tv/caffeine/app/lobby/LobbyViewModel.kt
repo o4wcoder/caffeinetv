@@ -2,23 +2,18 @@ package tv.caffeine.app.lobby
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Lobby
+import tv.caffeine.app.ui.CaffeineViewModel
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
-class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel(), CoroutineScope {
+class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : CaffeineViewModel() {
     val lobby: LiveData<CaffeineResult<Lobby>> get() = _lobby
 
     private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
 
-    private var job = Job()
     private var refreshJob: Job? = null
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
 
     init {
         refresh()
@@ -38,8 +33,4 @@ class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel
         _lobby.value = runCatching { loadLobbyUseCase() }.fold({ it }, { CaffeineResult.Failure(it) })
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
 }
