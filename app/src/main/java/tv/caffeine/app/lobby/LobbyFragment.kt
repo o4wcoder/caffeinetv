@@ -10,7 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentLobbyBinding
 import tv.caffeine.app.session.FollowManager
@@ -52,10 +55,20 @@ class LobbyFragment : CaffeineFragment() {
         binding.searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))
         binding.activityButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.notificationsFragment))
         binding.lobbySwipeRefreshLayout.setOnRefreshListener { refreshLobby() }
-        viewModel.lobby.observe(viewLifecycleOwner, Observer {
-            val items = LobbyItem.parse(it)
-            lobbyAdapter.submitList(items, it.tags, it.content)
+        viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false
+            when(result) {
+                is CaffeineResult.Success -> {
+                    val lobby = result.value
+                    val items = LobbyItem.parse(lobby)
+                    lobbyAdapter.submitList(items, lobby.tags, lobby.content)
+                }
+                is CaffeineResult.Failure -> {
+                    val e = result.exception
+                    Timber.e(e, "Failure in the LobbyFragment")
+                    Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
+                }
+            }
         })
     }
 

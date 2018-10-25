@@ -4,14 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Lobby
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel(), CoroutineScope {
-    val lobby: LiveData<Lobby> get() = _lobby
+    val lobby: LiveData<CaffeineResult<Lobby>> get() = _lobby
 
-    private val _lobby = MutableLiveData<Lobby>()
+    private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
 
     private var job = Job()
     private var refreshJob: Job? = null
@@ -34,8 +35,7 @@ class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel
     }
 
     private suspend fun loadLobby() = coroutineScope {
-        val result = loadLobbyUseCase()
-        _lobby.value = result
+        _lobby.value = runCatching { loadLobbyUseCase() }.fold({ CaffeineResult.Success(it) }, { CaffeineResult.Failure(it) })
     }
 
     override fun onCleared() {
