@@ -2,6 +2,7 @@ package tv.caffeine.app.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.SearchService
@@ -29,13 +30,14 @@ class ViewModelFactory @Inject constructor(
         private val paymentsClientService: PaymentsClientService,
         private val accountsService: AccountsService,
         private val tokenStore: TokenStore,
-        private val followManager: FollowManager
+        private val followManager: FollowManager,
+        private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return when {
             modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(loadLobbyUseCase)
-            modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(searchService, usersService)
+            modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(searchService, usersService, gson)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(usersService, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(paymentsClientService)
             modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(paymentsClientService)

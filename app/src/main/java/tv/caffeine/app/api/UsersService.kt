@@ -20,7 +20,7 @@ interface UsersService {
     fun unfollow(@Path("caid1") follower: String, @Path("caid2") toUnfollow: String): Call<Void>
 
     @GET("v1/users/suggestions")
-    fun listSuggestions(): Call<List<SearchUserItem>>
+    fun listSuggestions(): Deferred<Response<List<SearchUserItem>>>
 
     @GET("v1/users/{caid}")
     fun userDetails(@Path("caid") userId: String): Deferred<UserContainer>

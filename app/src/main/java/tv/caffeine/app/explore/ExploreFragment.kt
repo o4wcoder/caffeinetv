@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import timber.log.Timber
 import tv.caffeine.app.databinding.FragmentExploreBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
@@ -29,20 +28,21 @@ class ExploreFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.data.observe(viewLifecycleOwner, Observer { result ->
-            Timber.d("Got results ${result.data}")
-            val adapter: UsersAdapter
-            when(result) {
-                is ExploreViewModel.Findings.Explore -> {
-                    adapter = exploreAdapter
-                    binding.exploreRecyclerView.layoutManager = GridLayoutManager(context, 3)
+            handle(result, view) { findings ->
+                val adapter: UsersAdapter
+                when (findings) {
+                    is ExploreViewModel.Findings.Explore -> {
+                        adapter = exploreAdapter
+                        binding.exploreRecyclerView.layoutManager = GridLayoutManager(context, 3)
+                    }
+                    is ExploreViewModel.Findings.Search -> {
+                        adapter = searchUsersAdapter
+                        binding.exploreRecyclerView.layoutManager = LinearLayoutManager(context)
+                    }
                 }
-                is ExploreViewModel.Findings.Search -> {
-                    adapter = searchUsersAdapter
-                    binding.exploreRecyclerView.layoutManager = LinearLayoutManager(context)
-                }
+                adapter.submitList(findings.data.toList())
+                binding.exploreRecyclerView.adapter = adapter
             }
-            adapter.submitList(result.data.toList())
-            binding.exploreRecyclerView.adapter = adapter
         })
         viewModel.queryString = "" // trigger suggestions
         binding.exploreRecyclerView.adapter = searchUsersAdapter
