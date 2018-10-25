@@ -21,7 +21,7 @@ class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : CaffeineV
 
     fun refresh() {
         refreshJob?.cancel()
-        refreshJob = launch(context = coroutineContext) {
+        refreshJob = launch {
             while(isActive) {
                 loadLobby()
                 delay(TimeUnit.SECONDS.toMillis(30))
