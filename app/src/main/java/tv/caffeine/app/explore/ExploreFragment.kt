@@ -31,12 +31,12 @@ class ExploreFragment : CaffeineFragment() {
         viewModel.data.observe(viewLifecycleOwner, Observer { result ->
             Timber.d("Got results ${result.data}")
             val adapter: UsersAdapter
-            when(result.state) {
-                ExploreViewModel.State.Explore -> {
+            when(result) {
+                is ExploreViewModel.Findings.Explore -> {
                     adapter = exploreAdapter
                     binding.exploreRecyclerView.layoutManager = GridLayoutManager(context, 3)
                 }
-                ExploreViewModel.State.Search -> {
+                is ExploreViewModel.Findings.Search -> {
                     adapter = searchUsersAdapter
                     binding.exploreRecyclerView.layoutManager = LinearLayoutManager(context)
                 }

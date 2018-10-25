@@ -6,14 +6,18 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.api.*
-import tv.caffeine.app.util.BaseObservableViewModel
+import tv.caffeine.app.ui.CaffeineViewModel
 
-class ExploreViewModel(private val searchService: SearchService, private val usersService: UsersService) : BaseObservableViewModel() {
-    val data: MutableLiveData<Result> = MutableLiveData()
+class ExploreViewModel(
+        private val searchService: SearchService,
+        private val usersService: UsersService
+) : CaffeineViewModel() {
+    val data: MutableLiveData<Findings> = MutableLiveData()
 
-    class Result(val state: State, val data: Array<SearchUserItem>)
-
-    enum class State { Explore, Search }
+    sealed class Findings(val data: Array<SearchUserItem>) {
+        class Explore(data: Array<SearchUserItem>) : Findings(data)
+        class Search(data: Array<SearchUserItem>) : Findings(data)
+    }
 
     var queryString: String = ""
         set(value) {
@@ -38,7 +42,7 @@ class ExploreViewModel(private val searchService: SearchService, private val use
             override fun onResponse(call: Call<List<SearchUserItem>?>?, response: Response<List<SearchUserItem>?>?) {
                 Timber.d("Received the user suggestions response $response")
                 response?.body()?.let {
-                    data.value = Result(State.Explore, it.toTypedArray())
+                    data.value = Findings.Explore(it.toTypedArray())
                 }
             }
         })
@@ -51,7 +55,7 @@ class ExploreViewModel(private val searchService: SearchService, private val use
 
             override fun onResponse(call: Call<SearchUsersResult?>?, response: Response<SearchUsersResult?>?) {
                 response?.body()?.let {
-                    data.value = Result(State.Search, it.results)
+                    data.value = Findings.Search(it.results)
                 }
             }
         })
