@@ -8,12 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentLobbyBinding
 import tv.caffeine.app.session.FollowManager
@@ -27,13 +23,6 @@ class LobbyFragment : CaffeineFragment() {
     @Inject lateinit var tokenStore: TokenStore
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
     private lateinit var binding: FragmentLobbyBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (tokenStore.createRefreshTokenBody() == null) {
-            findNavController().navigate(R.id.action_global_landingFragment)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -57,17 +46,9 @@ class LobbyFragment : CaffeineFragment() {
         binding.lobbySwipeRefreshLayout.setOnRefreshListener { refreshLobby() }
         viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false
-            when(result) {
-                is CaffeineResult.Success -> {
-                    val lobby = result.value
-                    val items = LobbyItem.parse(lobby)
-                    lobbyAdapter.submitList(items, lobby.tags, lobby.content)
-                }
-                is CaffeineResult.Failure -> {
-                    val e = result.exception
-                    Timber.e(e, "Failure in the LobbyFragment")
-                    Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
-                }
+            handle(result, view) { lobby ->
+                val items = LobbyItem.parse(lobby)
+                lobbyAdapter.submitList(items, lobby.tags, lobby.content)
             }
         })
     }

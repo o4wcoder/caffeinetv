@@ -38,7 +38,9 @@ class CaffeineCredentials(val accessToken: String, val caid: String, val credent
 
 class ApiErrorResult(val errors: ApiError)
 
-class ApiError(val _error: Array<String>?, val username: Array<String>?, val password: Array<String>?, val email: Array<String>?, val otp: Array<String>?)
+fun ApiErrorResult.isTokenExpirationError() = !errors._token.isNullOrEmpty()
+
+class ApiError(val _error: Array<String>?, val username: Array<String>?, val password: Array<String>?, val email: Array<String>?, val otp: Array<String>?, val _token: Array<String>?)
 
 class ForgotPasswordBody(val email: String)
 

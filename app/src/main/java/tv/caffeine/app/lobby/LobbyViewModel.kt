@@ -35,7 +35,7 @@ class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : ViewModel
     }
 
     private suspend fun loadLobby() = coroutineScope {
-        _lobby.value = runCatching { loadLobbyUseCase() }.fold({ CaffeineResult.Success(it) }, { CaffeineResult.Failure(it) })
+        _lobby.value = runCatching { loadLobbyUseCase() }.fold({ it }, { CaffeineResult.Failure(it) })
     }
 
     override fun onCleared() {

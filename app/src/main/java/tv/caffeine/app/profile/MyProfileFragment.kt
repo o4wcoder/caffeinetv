@@ -70,6 +70,7 @@ class MyProfileFragment : CaffeineFragment() {
 
     private fun signOut() {
         tokenStore.clear()
+        findNavController().popBackStack()
         findNavController().navigate(R.id.action_global_landingFragment)
         accountsService.signOut().enqueue(object : Callback<Unit?> {
             override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
