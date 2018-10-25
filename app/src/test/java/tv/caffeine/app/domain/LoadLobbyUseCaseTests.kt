@@ -1,10 +1,14 @@
 package tv.caffeine.app.domain
 
+import com.google.gson.Gson
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
+import retrofit2.Response
 import tv.caffeine.app.api.LobbyService
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.lobby.LoadLobbyUseCase
 
@@ -14,11 +18,15 @@ class LoadLobbyUseCaseTests {
 
     @Test
     fun lobbyLoadsFromLobbyService() {
-        val mockLobbyService = object : LobbyService {
-            override fun loadLobby() = async { Lobby(tags, content, Any(), arrayOf()) }
+        val fakeLobbyService = object : LobbyService {
+            override fun loadLobby(): Deferred<Response<Lobby>> = async { Response.success(Lobby(tags, content, Any(), arrayOf())) }
         }
-        val useCase = LoadLobbyUseCase(mockLobbyService)
-        val lobby = runBlocking { useCase() }
-        Assert.assertTrue(lobby.content == content)
+        val gson = Gson()
+        val useCase = LoadLobbyUseCase(fakeLobbyService, gson)
+        val result = runBlocking { useCase() }
+        when (result) {
+            is CaffeineResult.Success -> Assert.assertTrue(result.value.content == content)
+            else -> Assert.fail("Was expecting lobby to load")
+        }
     }
 }
