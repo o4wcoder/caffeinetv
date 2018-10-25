@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
 import tv.caffeine.app.api.LobbyService
@@ -17,8 +18,10 @@ class LoadLobbyUseCaseTests {
     private val tags = mapOf<String, Lobby.Tag>()
     private val content = mapOf<String, Lobby.Content>()
 
-    @Test
-    fun lobbyLoadsFromLobbyService() {
+    private lateinit var subject: LoadLobbyUseCase
+
+    @Before
+    fun setup() {
         val mockLobbyResponse = mock<Deferred<Response<Lobby>>> {
             onBlocking { await() } doReturn Response.success(Lobby(tags, content, Any(), arrayOf()))
         }
@@ -26,10 +29,14 @@ class LoadLobbyUseCaseTests {
             on { loadLobby() } doReturn mockLobbyResponse
         }
         val gson = Gson()
-        val useCase = LoadLobbyUseCase(fakeLobbyService, gson)
-        val result = runBlocking { useCase() }
+        subject = LoadLobbyUseCase(fakeLobbyService, gson)
+    }
+
+    @Test
+    fun lobbyLoadsFromLobbyService() {
+        val result = runBlocking { subject() }
         when (result) {
-            is CaffeineResult.Success -> Assert.assertTrue(result.value.content == content)
+            is CaffeineResult.Success -> Assert.assertTrue(result.value.content === content)
             else -> Assert.fail("Was expecting lobby to load")
         }
     }
