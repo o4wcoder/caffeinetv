@@ -1,10 +1,13 @@
 package tv.caffeine.app.api
 
+import android.content.res.Resources
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import tv.caffeine.app.R
+import java.text.NumberFormat
+import java.util.*
 
 interface PaymentsClientService {
     @POST("store/get-digital-items")
@@ -82,6 +85,11 @@ val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
     is TransactionHistoryItem.ReceiveDigitalItem -> "https://assets.caffeine.tv${assets.staticImagePath}"
     else -> null
 
+}
+
+fun TransactionHistoryItem.costString(resources: Resources) = when(this) {
+    is TransactionHistoryItem.Bundle -> resources.getString(R.string.transaction_item_purchased, value.toString(), NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }.format(cost/100f))
+    else -> cost.toString()
 }
 
 val TransactionHistoryItem.titleResId: Int get() = when(this) {

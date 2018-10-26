@@ -14,6 +14,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 import tv.caffeine.app.R
 import tv.caffeine.app.api.TransactionHistoryItem
+import tv.caffeine.app.api.costString
 import tv.caffeine.app.api.digitalItemStaticImageUrl
 import tv.caffeine.app.api.titleResId
 import tv.caffeine.app.databinding.TransactionHistoryItemBinding
@@ -74,7 +75,7 @@ class TransactionHistoryViewHolder(
         val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
         binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
         binding.digitalItemImageUrl = item.digitalItemStaticImageUrl
-        binding.itemCost = item.cost.toString()
+        binding.itemCost = item.costString(itemView.resources)
         binding.transactionTitle.setText(item.titleResId)
         val userCaid = when(item) {
             is TransactionHistoryItem.SendDigitalItem -> item.recipient

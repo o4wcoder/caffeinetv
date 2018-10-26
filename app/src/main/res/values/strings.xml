@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="landing_signup_prompt">Sign up and make friends around live entertainment.</string>
     <string name="sign_in_with_facebook">Sign In with Facebook</string>
     <string name="sign_in_with_twitter">Sign In with Twitter</string>
@@ -66,4 +66,5 @@
     <string name="transaction_title_cashout_failed">Cash Out Failed</string>
     <string name="transaction_title_adjustment_credit">Credited</string>
     <string name="transaction_title_adjustment_debit">Debited</string>
+    <string name="transaction_item_purchased"><xliff:g id="coin_count" example="42">%1$s</xliff:g> for <xliff:g id="currency_amount" example="$42.00">%2$s</xliff:g></string>
 </resources>
