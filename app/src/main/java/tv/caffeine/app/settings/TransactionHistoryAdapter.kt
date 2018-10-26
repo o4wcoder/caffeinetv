@@ -7,6 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import tv.caffeine.app.R
 import tv.caffeine.app.api.TransactionHistoryItem
 import tv.caffeine.app.api.digitalItemStaticImageUrl
@@ -65,8 +70,14 @@ class TransactionHistoryViewHolder(
     fun bind(item: TransactionHistoryItem) {
         job?.cancel()
         clear()
+        val instant = Instant.ofEpochSecond(item.createdAt.toLong())
+        val zoneId = ZoneId.systemDefault()
+//        val zoneOffset = ZoneOffset.of(zoneId.id)
+        val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
+//        val dateTime = LocalDateTime.ofEpochSecond(item.createdAt.toLong(), 0, zoneOffset)
+        binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
         binding.digitalItemImageUrl = item.digitalItemStaticImageUrl
-        binding.itemCost = item.cost?.toString()
+        binding.itemCost = item.cost.toString()
         binding.transactionTitle.setText(item.titleResId)
         val userCaid = when(item) {
             is TransactionHistoryItem.SendDigitalItem -> item.recipient
