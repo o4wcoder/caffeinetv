@@ -78,8 +78,8 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
 class DigitalItemAssets(val iosSceneKitPath: String, val webAssetPath: String, val staticImagePath: String)
 
 val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
-    is TransactionHistoryItem.SendDigitalItem -> assets.let { "https://assets.caffeine.tv${it.staticImagePath}" }
-    is TransactionHistoryItem.ReceiveDigitalItem -> assets.let { "https://assets.caffeine.tv${it.staticImagePath}" }
+    is TransactionHistoryItem.SendDigitalItem -> "https://assets.caffeine.tv${assets.staticImagePath}"
+    is TransactionHistoryItem.ReceiveDigitalItem -> "https://assets.caffeine.tv${assets.staticImagePath}"
     else -> null
 
 }

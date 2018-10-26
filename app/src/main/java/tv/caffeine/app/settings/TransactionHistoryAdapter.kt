@@ -70,11 +70,8 @@ class TransactionHistoryViewHolder(
     fun bind(item: TransactionHistoryItem) {
         job?.cancel()
         clear()
-        val instant = Instant.ofEpochSecond(item.createdAt.toLong())
         val zoneId = ZoneId.systemDefault()
-//        val zoneOffset = ZoneOffset.of(zoneId.id)
         val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
-//        val dateTime = LocalDateTime.ofEpochSecond(item.createdAt.toLong(), 0, zoneOffset)
         binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
         binding.digitalItemImageUrl = item.digitalItemStaticImageUrl
         binding.itemCost = item.cost.toString()
@@ -86,6 +83,7 @@ class TransactionHistoryViewHolder(
         }
         binding.usernameTextView.isVisible = userCaid != null
         binding.avatarImageView.isVisible = userCaid != null
+        binding.digitalItemImageView.isVisible = item.digitalItemStaticImageUrl != null
         job = scope.launch {
             userCaid?.let { caid ->
                 val user = followManager.userDetails(caid) ?: return@launch
@@ -104,6 +102,5 @@ class TransactionHistoryViewHolder(
         binding.usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
         binding.avatarImageView.isVisible = false
         binding.usernameTextView.isVisible = false
-        binding.digitalItemImageView.isVisible = false
     }
 }

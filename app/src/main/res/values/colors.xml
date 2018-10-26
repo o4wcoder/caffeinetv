@@ -9,5 +9,5 @@
     <color name="statusBar">#f0f0f0</color>
     <color name="navBar">#f0f0f0</color>
     <color name="toolbarIcon">#8b8b8b</color>
-    <color name="gold_coin">#ffff00</color>
+    <color name="gold_coin">#ffaa00</color>
 </resources>
