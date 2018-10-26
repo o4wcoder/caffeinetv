@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/caffeinetv/android.svg?token=qBfqv76hyjADhUsCTEp6&branch=master)](https://travis-ci.com/caffeinetv/android)
+
 # Mitsurugi (Android)
 
 <img alt="Mitsurugi" src="logo.png" width="356">
