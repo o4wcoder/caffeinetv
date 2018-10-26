@@ -16,6 +16,8 @@ import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.SettingsViewModel
+import tv.caffeine.app.settings.TransactionHistoryUseCase
+import tv.caffeine.app.settings.TransactionHistoryViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
@@ -29,7 +31,8 @@ class ViewModelFactory @Inject constructor(
         private val paymentsClientService: PaymentsClientService,
         private val accountsService: AccountsService,
         private val tokenStore: TokenStore,
-        private val followManager: FollowManager
+        private val followManager: FollowManager,
+        private val transactionHistoryUseCase: TransactionHistoryUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
@@ -45,6 +48,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(usersService)
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(accountsService, usersService, tokenStore, followManager)
+            modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(transactionHistoryUseCase)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

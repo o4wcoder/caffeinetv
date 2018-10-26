@@ -219,9 +219,17 @@
     <fragment
         android:id="@+id/goldAndCreditsFragment"
         android:name="tv.caffeine.app.settings.GoldAndCreditsFragment"
-        android:label="Gold And Credits" />
+        android:label="Gold And Credits" >
+        <action
+            android:id="@+id/action_goldAndCreditsFragment_to_transactionHistoryFragment"
+            app:destination="@id/transactionHistoryFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_landingFragment"
         app:destination="@id/landingFragment"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/transactionHistoryFragment"
+        android:name="tv.caffeine.app.settings.TransactionHistoryFragment"
+        android:label="TransactionHistoryFragment" />
 </navigation>

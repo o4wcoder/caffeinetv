@@ -57,4 +57,13 @@
     <string name="info_button">Info</string>
     <string name="transaction_history">Transaction History</string>
     <string name="legal_documents">Legal Documents</string>
+
+    <string name="transaction_title_send">Sent</string>
+    <string name="transaction_title_receive">Received</string>
+    <string name="transaction_title_bundle">Purchased</string>
+    <string name="transaction_title_cashout_pending">Cash Out Pending</string>
+    <string name="transaction_title_cashout_success">Cash Out Success</string>
+    <string name="transaction_title_cashout_failed">Cash Out Failed</string>
+    <string name="transaction_title_adjustment_credit">Credited</string>
+    <string name="transaction_title_adjustment_debit">Debited</string>
 </resources>
