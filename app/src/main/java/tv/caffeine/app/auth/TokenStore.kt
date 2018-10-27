@@ -8,20 +8,22 @@ import tv.caffeine.app.api.RefreshTokenBody
 import tv.caffeine.app.api.RefreshTokenResult
 import tv.caffeine.app.api.SignInResult
 
+private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
+
 class TokenStore(private val sharedPreferences: SharedPreferences) {
     private var refreshToken: String?
-        get() = sharedPreferences.getString("REFRESH_TOKEN", null)
+        get() = sharedPreferences.getString(REFRESH_TOKEN_KEY, null)
         set(value) = sharedPreferences.edit {
             if (value == null) {
-                remove("REFRESH_TOKEN")
+                remove(REFRESH_TOKEN_KEY)
             } else {
-                putString("REFRESH_TOKEN", value)
+                putString(REFRESH_TOKEN_KEY, value)
             }
         }
     private var accessToken: String? = null
     private var credential: String? = null
     var caid: String? = null
-    private set
+        private set
 
     fun storeSignInResult(signInResult: SignInResult) {
         refreshToken = signInResult.refreshToken
