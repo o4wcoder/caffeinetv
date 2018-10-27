@@ -12,7 +12,9 @@ import tv.caffeine.app.ui.CaffeineViewModel
 class WalletViewModel(
         private val paymentsClientService: PaymentsClientService
 ): CaffeineViewModel() {
-    val walletBalance = MutableLiveData<Int>()
+    val walletBalance = MutableLiveData<String>()
+    val creditsBalance = MutableLiveData<String>()
+    val cumulativeCreditsBalance = MutableLiveData<String>()
 
     init {
         load()
@@ -24,7 +26,9 @@ class WalletViewModel(
             val wallet = deferred.await().payload
             Timber.d("Wallet: ${wallet.gold}")
             withContext(Dispatchers.Main) {
-                walletBalance.value = wallet.gold
+                walletBalance.value = wallet.gold.toString()
+                creditsBalance.value = wallet.credits.toString()
+                cumulativeCreditsBalance.value = wallet.cumulativeCredits.toString()
             }
         }
     }

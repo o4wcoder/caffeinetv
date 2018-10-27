@@ -10,4 +10,5 @@
     <color name="navBar">#f0f0f0</color>
     <color name="toolbarIcon">#8b8b8b</color>
     <color name="gold_coin">#ffaa00</color>
+    <color name="purple_coin">#aa33aa</color>
 </resources>

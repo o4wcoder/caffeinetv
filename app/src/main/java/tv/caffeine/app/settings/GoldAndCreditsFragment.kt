@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
 import tv.caffeine.app.profile.WalletViewModel
@@ -18,6 +17,7 @@ class GoldAndCreditsFragment : CaffeineFragment() {
         binding = FragmentGoldAndCreditsBinding.inflate(inflater, container, false).apply {
             setLifecycleOwner(viewLifecycleOwner)
         }
+        binding.walletViewModel = walletViewModel
         return binding.root
     }
 
@@ -27,8 +27,5 @@ class GoldAndCreditsFragment : CaffeineFragment() {
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToTransactionHistoryFragment()
             findNavController().navigate(action)
         }
-        walletViewModel.walletBalance.observe(viewLifecycleOwner, Observer {
-            binding.goldBalanceTextView.text = it.toString()
-        })
     }
 }

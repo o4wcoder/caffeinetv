@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval" android:innerRadius="@dimen/coin_size">
 
-    <solid android:color="@color/gold_coin"/>
+    <solid android:color="@color/purple_coin"/>
 
 </shape>

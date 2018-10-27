@@ -49,6 +49,7 @@
     <string name="watching_caffeine_live">Watching caffeine LIVE. #caffeinetv  @caffeine</string>
     <string name="share_chooser_title">Share</string>
     <string name="buy_gold_button">Buy Gold</string>
+    <string name="buy_gold_with_credits_button">Buy Gold with Credits</string>
     <string name="send_gold_to_user">Send to %s</string>
     <string name="friends_watching_title">Friends watching</string>
     <string name="settings_button">Settings</string>
@@ -67,4 +68,6 @@
     <string name="transaction_title_adjustment_credit">Credited</string>
     <string name="transaction_title_adjustment_debit">Debited</string>
     <string name="transaction_item_purchased"><xliff:g id="coin_count" example="42">%1$s</xliff:g> for <xliff:g id="currency_amount" example="$42.00">%2$s</xliff:g></string>
+    <string name="credits_available">Available</string>
+    <string name="credits_lifetime">Lifetime</string>
 </resources>
