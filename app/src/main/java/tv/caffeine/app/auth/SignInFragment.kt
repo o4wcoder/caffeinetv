@@ -42,7 +42,6 @@ class SignInFragment : CaffeineFragment() {
     }
 
     private fun login() {
-        dismissKeyboard()
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         binding.formErrorTextView.text = null

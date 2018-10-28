@@ -2,8 +2,6 @@ package tv.caffeine.app.ui
 
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -40,10 +38,6 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
-    }
-
-    fun dismissKeyboard() {
-        context?.getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     inline fun <T> handle(result: CaffeineResult<T>, view: View, crossinline block: (value: T) -> Unit) {

@@ -2,7 +2,9 @@ package tv.caffeine.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.activity_main)
         setupActionBarWithNavController(this, navController)
         navController.addOnNavigatedListener { _, destination ->
+            dismissKeyboard()
             binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
             FirebaseAnalytics.getInstance(this).setCurrentScreen(this, destination.label.toString(), null)
         }
@@ -37,5 +40,10 @@ class MainActivity : AppCompatActivity() {
                 ?.let {  landingFragment ->
                     landingFragment.onActivityResult(requestCode, resultCode, data)
                 }
+    }
+
+    private fun dismissKeyboard() {
+        val currentFocus =  currentFocus ?: return
+        getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(currentFocus.windowToken, 0)
     }
 }

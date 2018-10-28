@@ -41,7 +41,6 @@ class SignUpFragment : CaffeineFragment() {
     }
 
     private fun signUp() {
-        dismissKeyboard()
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         val email = binding.emailEditText.text.toString()

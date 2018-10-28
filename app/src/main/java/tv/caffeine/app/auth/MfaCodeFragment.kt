@@ -41,7 +41,6 @@ class MfaCodeFragment : CaffeineFragment() {
     }
 
     private fun submitMfaCode() {
-        dismissKeyboard()
         val args = MfaCodeFragmentArgs.fromBundle(arguments)
         val username = args.username
         val password = args.password
