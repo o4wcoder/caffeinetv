@@ -59,6 +59,8 @@
     <string name="transaction_history">Transaction History</string>
     <string name="legal_documents">Legal Documents</string>
 
+    <string name="edit_bio_prompt">Add a description of yourself</string>
+
     <string name="transaction_title_send">Sent</string>
     <string name="transaction_title_receive">Received</string>
     <string name="transaction_title_bundle">Purchased</string>
@@ -67,7 +69,7 @@
     <string name="transaction_title_cashout_failed">Cash Out Failed</string>
     <string name="transaction_title_adjustment_credit">Credited</string>
     <string name="transaction_title_adjustment_debit">Debited</string>
-    <string name="transaction_item_purchased"><xliff:g id="coin_count" example="42">%1$s</xliff:g> for <xliff:g id="currency_amount" example="$42.00">%2$s</xliff:g></string>
+    <string name="transaction_item_purchased"><xliff:g example="42" id="coin_count">%1$s</xliff:g> for <xliff:g example="$42.00" id="currency_amount">%2$s</xliff:g></string>
     <string name="credits_available">Available</string>
     <string name="credits_lifetime">Lifetime</string>
 </resources>

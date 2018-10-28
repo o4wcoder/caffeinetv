@@ -136,6 +136,9 @@
         <action
             android:id="@+id/action_myProfileFragment_to_goldAndCreditsFragment"
             app:destination="@id/goldAndCreditsFragment" />
+        <action
+            android:id="@+id/action_myProfileFragment_to_editBioFragment"
+            app:destination="@id/editBioFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -232,4 +235,8 @@
         android:id="@+id/transactionHistoryFragment"
         android:name="tv.caffeine.app.settings.TransactionHistoryFragment"
         android:label="TransactionHistoryFragment" />
+    <fragment
+        android:id="@+id/editBioFragment"
+        android:name="tv.caffeine.app.profile.EditBioFragment"
+        android:label="EditBioFragment" />
 </navigation>

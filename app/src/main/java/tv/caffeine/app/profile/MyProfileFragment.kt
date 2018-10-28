@@ -40,6 +40,10 @@ class MyProfileFragment : CaffeineFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
         binding.signOutButton.setOnClickListener { signOut() }
+        binding.infoButton.setOnClickListener {
+            val action = MyProfileFragmentDirections.actionMyProfileFragmentToEditBioFragment()
+            findNavController().navigate(action)
+        }
         binding.nameEditText.setOnAction(EditorInfo.IME_ACTION_SEND) {
             val updatedName = binding.nameEditText.text.toString()
             viewModel.updateName(updatedName)

@@ -2,7 +2,7 @@ package tv.caffeine.app.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import tv.caffeine.app.api.AccountsService
+import com.google.gson.Gson
 import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
@@ -29,15 +29,15 @@ class ViewModelFactory @Inject constructor(
         private val findBroadcastersUseCase: FindBroadcastersUseCase,
         private val usersService: UsersService,
         private val paymentsClientService: PaymentsClientService,
-        private val accountsService: AccountsService,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
-        private val transactionHistoryUseCase: TransactionHistoryUseCase
+        private val transactionHistoryUseCase: TransactionHistoryUseCase,
+        private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return when {
-            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(loadLobbyUseCase)
+            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(loadLobbyUseCase) as T
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(usersService, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(paymentsClientService)
@@ -47,7 +47,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(usersService)
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
-            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(accountsService, usersService, tokenStore, followManager)
+            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(usersService, tokenStore, followManager, gson)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(transactionHistoryUseCase)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T

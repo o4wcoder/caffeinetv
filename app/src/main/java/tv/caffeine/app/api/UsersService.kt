@@ -35,5 +35,5 @@ interface UsersService {
     fun disconnectIdentity(@Path("caid") userId: String, @Path("connectedAccount") identityProvider: IdentityProvider): Deferred<Response<Any>>
 
     @PATCH("v1/users/{caid}")
-    fun updateUser(@Path("caid") userId: String, @Body user: UserUpdateBody): Deferred<Response<Any>>
+    fun updateUser(@Path("caid") userId: String, @Body user: UserUpdateBody): Deferred<Response<UserContainer>>
 }
