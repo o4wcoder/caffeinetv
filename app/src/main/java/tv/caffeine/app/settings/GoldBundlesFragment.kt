@@ -23,13 +23,6 @@ class GoldBundlesFragment : CaffeineFragment() {
         }
     })
 
-    private fun purchaseGoldBundle(goldBundle: GoldBundle) {
-        val activity = activity ?: return
-        val sku = goldBundle.skuDetails?.sku ?: return
-        val params = BillingFlowParams.newBuilder().setSku(sku).setType(BillingClient.SkuType.INAPP).build()
-        billingClient.launchBillingFlow(activity, params)
-    }
-
     private lateinit var billingClient: BillingClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +30,14 @@ class GoldBundlesFragment : CaffeineFragment() {
         val activity = activity ?: return
         billingClient = BillingClientFactory.createBillingClient(activity, PurchasesUpdatedListener { responseCode, purchases ->
             Timber.d("Connected")
+            if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
+                purchases.forEach {
+                    // TODO post to server
+                    Timber.d("Purchased ${it.sku}: ${it.orderId}, ${it.purchaseToken}")
+                }
+            } else {
+                Timber.d("Failed to make a purchase $responseCode")
+            }
         })
         billingClient.startConnection(object: BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
@@ -78,6 +79,13 @@ class GoldBundlesFragment : CaffeineFragment() {
                 }
             }
         })
+    }
+
+    private fun purchaseGoldBundle(goldBundle: GoldBundle) {
+        val activity = activity ?: return
+        val sku = goldBundle.skuDetails?.sku ?: return
+        val params = BillingFlowParams.newBuilder().setSku(sku).setType(BillingClient.SkuType.INAPP).build()
+        billingClient.launchBillingFlow(activity, params)
     }
 
 }
