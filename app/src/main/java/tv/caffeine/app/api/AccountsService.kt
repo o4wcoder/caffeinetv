@@ -45,13 +45,13 @@ class ApiErrorResult(val errors: ApiError)
 fun ApiErrorResult.isTokenExpirationError() = !errors._token.isNullOrEmpty()
 
 class ApiError(
-        val _error: Array<String>?,
-        val username: Array<String>?,
-        val password: Array<String>?,
-        val currentPassword: Array<String>?,
-        val email: Array<String>?,
-        val otp: Array<String>?,
-        val _token: Array<String>?
+        val _error: Array<String>? = null,
+        val username: Array<String>? = null,
+        val password: Array<String>? = null,
+        val currentPassword: Array<String>? = null,
+        val email: Array<String>? = null,
+        val otp: Array<String>? = null,
+        val _token: Array<String>? = null
 )
 
 class ForgotPasswordBody(val email: String)

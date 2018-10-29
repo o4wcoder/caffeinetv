@@ -58,6 +58,10 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
             findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdateEmailFragment())
             true
         }
+        findPreference("change_password")?.setOnPreferenceClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdatePasswordFragment())
+            true
+        }
     }
 
     private fun configureLegalDocs() {

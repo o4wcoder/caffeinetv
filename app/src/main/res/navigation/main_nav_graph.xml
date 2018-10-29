@@ -195,6 +195,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_updateEmailFragment"
             app:destination="@id/updateEmailFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_updatePasswordFragment"
+            app:destination="@id/updatePasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/legalDocsFragment"
@@ -262,4 +265,8 @@
         android:id="@+id/updateEmailFragment"
         android:name="tv.caffeine.app.profile.UpdateEmailFragment"
         android:label="@string/update_email_title" />
+    <fragment
+        android:id="@+id/updatePasswordFragment"
+        android:name="tv.caffeine.app.profile.UpdatePasswordFragment"
+        android:label="@string/update_password_title" />
 </navigation>

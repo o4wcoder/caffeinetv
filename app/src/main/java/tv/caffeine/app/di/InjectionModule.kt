@@ -6,10 +6,7 @@ import tv.caffeine.app.auth.*
 import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.notifications.NotificationsFragment
-import tv.caffeine.app.profile.EditBioFragment
-import tv.caffeine.app.profile.MyProfileFragment
-import tv.caffeine.app.profile.ProfileFragment
-import tv.caffeine.app.profile.UpdateEmailFragment
+import tv.caffeine.app.profile.*
 import tv.caffeine.app.settings.GoldAndCreditsFragment
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.settings.SettingsFragment
@@ -45,4 +42,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun editBioFragment(): EditBioFragment
     @ContributesAndroidInjector abstract fun goldBundlesFragment(): GoldBundlesFragment
     @ContributesAndroidInjector abstract fun updateEmailFragment(): UpdateEmailFragment
+    @ContributesAndroidInjector abstract fun updatePasswordFragment(): UpdatePasswordFragment
 }
