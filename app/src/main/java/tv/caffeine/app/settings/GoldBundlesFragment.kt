@@ -6,21 +6,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.*
 import timber.log.Timber
+import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.databinding.FragmentGoldBundlesBinding
 import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.ui.CaffeineFragment
-import javax.inject.Inject
 
 class GoldBundlesFragment : CaffeineFragment() {
 
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel by lazy { viewModelProvider.get(GoldBundlesViewModel::class.java) }
-    @Inject lateinit var goldBundlesAdapter: GoldBundlesAdapter
+    private val goldBundlesAdapter = GoldBundlesAdapter(object : GoldBundleClickListener {
+        override fun onClick(goldBundle: GoldBundle) {
+            purchaseGoldBundle(goldBundle)
+        }
+    })
+
+    private fun purchaseGoldBundle(goldBundle: GoldBundle) {
+        val activity = activity ?: return
+        val sku = goldBundle.skuDetails?.sku ?: return
+        val params = BillingFlowParams.newBuilder().setSku(sku).setType(BillingClient.SkuType.INAPP).build()
+        billingClient.launchBillingFlow(activity, params)
+    }
+
     private lateinit var billingClient: BillingClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
