@@ -245,5 +245,8 @@
     <fragment
         android:id="@+id/goldBundlesFragment"
         android:name="tv.caffeine.app.settings.GoldBundlesFragment"
-        android:label="GoldBundlesFragment" />
+        android:label="GoldBundlesFragment" >
+        <argument android:name="buyGoldOption"
+            app:argType="tv.caffeine.app.settings.BuyGoldOption" />
+    </fragment>
 </navigation>
