@@ -15,9 +15,7 @@ import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.settings.SettingsViewModel
-import tv.caffeine.app.settings.TransactionHistoryUseCase
-import tv.caffeine.app.settings.TransactionHistoryViewModel
+import tv.caffeine.app.settings.*
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
@@ -32,6 +30,7 @@ class ViewModelFactory @Inject constructor(
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
         private val transactionHistoryUseCase: TransactionHistoryUseCase,
+        private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -49,6 +48,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(usersService, tokenStore, followManager, gson)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(transactionHistoryUseCase)
+            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(loadGoldBundlesUseCase)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

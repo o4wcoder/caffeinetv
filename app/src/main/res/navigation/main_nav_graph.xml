@@ -226,6 +226,9 @@
         <action
             android:id="@+id/action_goldAndCreditsFragment_to_transactionHistoryFragment"
             app:destination="@id/transactionHistoryFragment" />
+        <action
+            android:id="@+id/action_goldAndCreditsFragment_to_goldBundlesFragment"
+            app:destination="@id/goldBundlesFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_landingFragment"
@@ -239,4 +242,8 @@
         android:id="@+id/editBioFragment"
         android:name="tv.caffeine.app.profile.EditBioFragment"
         android:label="EditBioFragment" />
+    <fragment
+        android:id="@+id/goldBundlesFragment"
+        android:name="tv.caffeine.app.settings.GoldBundlesFragment"
+        android:label="GoldBundlesFragment" />
 </navigation>

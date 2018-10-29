@@ -27,5 +27,9 @@ class GoldAndCreditsFragment : CaffeineFragment() {
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToTransactionHistoryFragment()
             findNavController().navigate(action)
         }
+        binding.buyGoldButton.setOnClickListener {
+            val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToGoldBundlesFragment()
+            findNavController().navigate(action)
+        }
     }
 }

@@ -18,6 +18,9 @@ interface PaymentsClientService {
 
     @POST("store/get-transactions")
     fun getTransactionHistory(@Body body: GetTransactionHistoryBody): Deferred<Response<PaymentsEnvelope<TransactionHistoryPayload>>>
+
+    @POST("store/get-gold-bundles")
+    fun getGoldBundles(@Body body: GetGoldBundlesBody): Deferred<Response<PaymentsEnvelope<GoldBundlesPayload>>>
 }
 
 class GetDigitalItemsBody
@@ -25,6 +28,8 @@ class GetDigitalItemsBody
 class GetWalletBody
 
 class GetTransactionHistoryBody
+
+class GetGoldBundlesBody
 
 class PaymentsEnvelope<T>(val cursor: String, val retryIn: Int, val payload: T)
 
@@ -106,3 +111,27 @@ val TransactionHistoryItem.titleResId: Int get() = when(this) {
         TransactionHistoryItem.Adjustment.Kind.debit -> R.string.transaction_title_adjustment_debit
     }
 }
+
+class GoldBundlesPayload(val maintenance: MaintenanceInfo, val goldBundles: PaymentsCollection<GoldBundle>, val limits: PurchaseLimitsEnvelope)
+
+class MaintenanceInfo
+
+data class GoldBundle(
+        val id: String,
+        val amount: Int,
+        val score: Int,
+        val usingCredits: PurchaseOption.PurchaseWithCredits?,
+        val usingStoreKit: PurchaseOption.PurchaseUsingStoreKit?,
+        val usingStripe: PurchaseOption.PurchaseUsingStripe?
+)
+
+sealed class PurchaseOption {
+    data class PurchaseWithCredits(val id: String, val cost: Int) : PurchaseOption()
+    data class PurchaseUsingStoreKit(val productId: String, val canPurchase: Boolean) : PurchaseOption()
+    data class PurchaseUsingStripe(val id: String, val cost: Int, val canPurchase: Boolean) : PurchaseOption()
+}
+
+class PurchaseLimitsEnvelope(val goldBundles: PurchaseLimits)
+class PurchaseLimits(val canPurchaseAtLeastOne: Boolean, val displayMessage: DisplayMessage)
+
+class DisplayMessage(val body: String)
