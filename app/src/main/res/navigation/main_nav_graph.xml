@@ -145,6 +145,12 @@
         android:name="tv.caffeine.app.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="caffeine.tv/{caid}/profile" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="www.caffeine.tv/{caid}/profile" />
         <argument
             android:name="caid"
             app:argType="string" />
