@@ -63,7 +63,7 @@ class SignInFragment : CaffeineFragment() {
     private fun onSuccess(signInResult: SignInResult) {
         val navController = findNavController()
         when(signInResult.next) {
-            "mfa_otp_required" -> {
+            NextAccountAction.mfa_otp_required -> {
                 val username = binding.usernameEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
                 val action = SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)

@@ -72,7 +72,7 @@ class LandingFragment : CaffeineFragment() {
                 continueToSignUp(oauthCallbackResult)
             } else if (oauthCallbackResult.next != null) {
                 when(oauthCallbackResult.next) {
-                    "mfa_otp_required" -> continueToMfaCode(oauthCallbackResult)
+                    NextAccountAction.mfa_otp_required -> continueToMfaCode(oauthCallbackResult)
                     else -> attemptSignIn(oauthCallbackResult)
                 }
             }

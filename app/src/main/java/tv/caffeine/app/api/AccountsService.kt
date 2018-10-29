@@ -29,10 +29,10 @@ class Account(val username: String? = null, val password: String? = null, val ca
 
 class MfaCode(val otp: String)
 
-class SignInResult(val accessToken: String, val caid: String, val credentials: CaffeineCredentials, val refreshToken: String, val next: String?, val mfaOtpMethod: String?)
+class SignInResult(val accessToken: String, val caid: String, val credentials: CaffeineCredentials, val refreshToken: String, val next: NextAccountAction?, val mfaOtpMethod: String?)
 
 class RefreshTokenBody(val refreshToken: String)
-class RefreshTokenResult(val credentials: CaffeineCredentials, val next: String)
+class RefreshTokenResult(val credentials: CaffeineCredentials, val next: NextAccountAction)
 
 class CaffeineCredentials(val accessToken: String, val caid: String, val credential: String, val refreshToken: String)
 
@@ -46,4 +46,8 @@ class ForgotPasswordBody(val email: String)
 
 class SignUpBody(val account: SignUpAccount, val iid: String?, val tos: Boolean)
 class SignUpAccount(val username: String, val password: String, val email: String, val dob: String, val countryCode: String)
-class SignUpResult(val credentials: CaffeineCredentials, val next: String)
+class SignUpResult(val credentials: CaffeineCredentials, val next: NextAccountAction)
+
+enum class NextAccountAction {
+    email_verification, mfa_otp_required
+}
