@@ -43,20 +43,24 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     inline fun <T> handle(result: CaffeineResult<T>, view: View, crossinline block: (value: T) -> Unit) {
         when (result) {
             is CaffeineResult.Success -> block(result.value)
-            is CaffeineResult.Error -> {
-                if (result.error.isTokenExpirationError()) {
-                    findNavController().popBackStack()
-                    findNavController().navigate(R.id.action_global_landingFragment)
-                } else {
-                    Snackbar.make(view, "Error ${result.error}", Snackbar.LENGTH_SHORT).show()
-                }
-            }
-            is CaffeineResult.Failure -> {
-                val e = result.exception
-                Timber.e(e, "Failure in the LobbyFragment")
-                Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
-            }
+            is CaffeineResult.Error -> handleError(result, view)
+            is CaffeineResult.Failure -> handleFailure(result, view)
         }
+    }
+
+    fun <T> handleError(result: CaffeineResult.Error<T>, view: View) {
+        if (result.error.isTokenExpirationError()) {
+            findNavController().popBackStack()
+            findNavController().navigate(R.id.action_global_landingFragment)
+        } else {
+            Snackbar.make(view, "Error ${result.error}", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    fun <T> handleFailure(result: CaffeineResult.Failure<T>, view: View) {
+        val e = result.exception
+        Timber.e(e, "Failure in the LobbyFragment")
+        Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
     }
 
 }

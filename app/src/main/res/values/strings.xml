@@ -23,6 +23,10 @@
     <string name="mfa_code_hint">MFA Code</string>
     <string name="submit_mfa_code">Submit</string>
     <string name="sign_out_button">Sign Out</string>
+
+    <string name="hint_current_password">Current Password</string>
+    <string name="update_button">Update</string>
+
     <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s <img src="checkmark"/> is watching]]></string>
     <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> is watching]]></string>
     <string name="live_indicator">LIVE</string>

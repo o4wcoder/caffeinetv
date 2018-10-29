@@ -11,9 +11,7 @@ import tv.caffeine.app.explore.FindBroadcastersUseCase
 import tv.caffeine.app.lobby.LoadLobbyUseCase
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
-import tv.caffeine.app.profile.MyProfileViewModel
-import tv.caffeine.app.profile.ProfileViewModel
-import tv.caffeine.app.profile.WalletViewModel
+import tv.caffeine.app.profile.*
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.*
 import tv.caffeine.app.stage.DICatalogViewModel
@@ -31,6 +29,7 @@ class ViewModelFactory @Inject constructor(
         private val followManager: FollowManager,
         private val transactionHistoryUseCase: TransactionHistoryUseCase,
         private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
+        private val updateEmailUseCase: UpdateEmailUseCase,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -49,6 +48,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(usersService, tokenStore, followManager, gson)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(transactionHistoryUseCase)
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(loadGoldBundlesUseCase)
+            modelClass.isAssignableFrom(UpdateEmailViewModel::class.java) -> UpdateEmailViewModel(updateEmailUseCase)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

@@ -192,6 +192,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_ignoredUsersFragment"
             app:destination="@id/ignoredUsersFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_updateEmailFragment"
+            app:destination="@id/updateEmailFragment" />
     </fragment>
     <fragment
         android:id="@+id/legalDocsFragment"
@@ -255,4 +258,8 @@
         <argument android:name="buyGoldOption"
             app:argType="tv.caffeine.app.settings.BuyGoldOption" />
     </fragment>
+    <fragment
+        android:id="@+id/updateEmailFragment"
+        android:name="tv.caffeine.app.profile.UpdateEmailFragment"
+        android:label="UpdateEmailFragment" />
 </navigation>

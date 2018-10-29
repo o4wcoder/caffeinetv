@@ -42,6 +42,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
         findPreference(rootKey)?.title?.let { title ->
             (activity as? AppCompatActivity)?.supportActionBar?.title = title
         }
+        configureAuthSettings()
         configureLegalDocs()
         configureIgnoredUsers()
         configureSocialAccounts()
@@ -50,6 +51,13 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
+    }
+
+    private fun configureAuthSettings() {
+        findPreference("change_email")?.setOnPreferenceClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdateEmailFragment())
+            true
+        }
     }
 
     private fun configureLegalDocs() {
