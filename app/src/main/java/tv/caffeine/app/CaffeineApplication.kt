@@ -6,6 +6,7 @@ import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
+import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.di.DaggerCaffeineComponent
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class CaffeineApplication : DaggerApplication() {
         AndroidThreeTen.init(this)
         Timber.plant(timberTree)
         FacebookSdk.sdkInitialize(applicationContext)
+        BillingClientFactory.loadBillingStore(this)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication>

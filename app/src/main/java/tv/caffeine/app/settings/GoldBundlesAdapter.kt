@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.databinding.GoldBundleItemBinding
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 
 class GoldBundlesAdapter @Inject constructor() : ListAdapter<GoldBundle, GoldBundleViewHolder>(object: DiffUtil.ItemCallback<GoldBundle?>() {
@@ -28,6 +30,8 @@ class GoldBundleViewHolder(private val binding: GoldBundleItemBinding) : Recycle
 
     fun bind(goldBundle: GoldBundle) {
         binding.goldCostTextView.text = goldBundle.amount.toString()
-        binding.dollarCostTextView.text = goldBundle.usingCredits?.cost?.toString()
+        binding.dollarCostTextView.text = goldBundle.skuDetails?.let {
+            NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(it.priceCurrencyCode) }.format(it.priceAmountMicros/1000000f)
+        }
     }
 }

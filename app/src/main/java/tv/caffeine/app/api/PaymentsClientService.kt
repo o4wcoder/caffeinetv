@@ -1,6 +1,7 @@
 package tv.caffeine.app.api
 
 import android.content.res.Resources
+import com.android.billingclient.api.SkuDetails
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.Body
@@ -21,6 +22,9 @@ interface PaymentsClientService {
 
     @POST("store/get-gold-bundles")
     fun getGoldBundles(@Body body: GetGoldBundlesBody): Deferred<Response<PaymentsEnvelope<GoldBundlesPayload>>>
+
+    @POST("store/buy-gold-using-credits")
+    fun buyGoldUsingCredits(@Body body: BuyGoldUsingCreditsBody): Deferred<Response<PaymentsEnvelope<GoldBundlesPayload>>>
 }
 
 class GetDigitalItemsBody
@@ -30,6 +34,8 @@ class GetWalletBody
 class GetTransactionHistoryBody
 
 class GetGoldBundlesBody
+
+class BuyGoldUsingCreditsBody
 
 class PaymentsEnvelope<T>(val cursor: String, val retryIn: Int, val payload: T)
 
@@ -122,7 +128,8 @@ data class GoldBundle(
         val score: Int,
         val usingCredits: PurchaseOption.PurchaseWithCredits?,
         val usingStoreKit: PurchaseOption.PurchaseUsingStoreKit?,
-        val usingStripe: PurchaseOption.PurchaseUsingStripe?
+        val usingStripe: PurchaseOption.PurchaseUsingStripe?,
+        var skuDetails: SkuDetails?
 )
 
 sealed class PurchaseOption {
