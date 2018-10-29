@@ -118,6 +118,8 @@ class NetworkModule {
 
     @Provides fun providesBroadcastsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(BroadcastsService::class.java)
 
+    @Provides fun providesDevicesService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(DevicesService::class.java)
+
     @Provides fun providesPaymentsClientService(@CaffeineApi(Service.Payments) retrofit: Retrofit) = retrofit.create(PaymentsClientService::class.java)
 
     @Provides fun providesOAuthService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(OAuthService::class.java)

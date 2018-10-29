@@ -10,6 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.iid.FirebaseInstanceId
+import timber.log.Timber
 import tv.caffeine.app.auth.LandingFragment
 import tv.caffeine.app.databinding.ActivityMainBinding
 
@@ -27,6 +29,16 @@ class MainActivity : AppCompatActivity() {
             dismissKeyboard()
             binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
             FirebaseAnalytics.getInstance(this).setCurrentScreen(this, destination.label.toString(), null)
+        }
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Timber.d("FCM registration token retrieved")
+                task.result?.let { result ->
+                    Timber.d("${result.id}, ${result.token}")
+                }
+            } else {
+                Timber.e(Exception(), "Couldn't get the FCM registration token")
+            }
         }
     }
 

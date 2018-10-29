@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
+import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.notifications.NotificationAuthWatcher
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -24,6 +26,10 @@ class DataModule {
     @Provides
     @Singleton
     fun providesTokenStore(sharedPreferences: SharedPreferences) = TokenStore(sharedPreferences)
+
+    @Provides
+    @Singleton
+    fun providesAuthWatcher(notificationAuthWatcher: NotificationAuthWatcher): AuthWatcher = notificationAuthWatcher
 
     @Provides
     @Named(REFRESH_TOKEN)

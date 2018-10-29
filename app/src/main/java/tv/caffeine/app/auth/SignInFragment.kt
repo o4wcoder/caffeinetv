@@ -26,6 +26,7 @@ class SignInFragment : CaffeineFragment() {
     @Inject lateinit var gson: Gson
     @Inject lateinit var tokenStore: TokenStore
     private lateinit var binding: FragmentSignInBinding
+    @Inject lateinit var authWatcher: AuthWatcher
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -72,6 +73,7 @@ class SignInFragment : CaffeineFragment() {
                 tokenStore.storeSignInResult(signInResult)
                 navController.popBackStack(R.id.landingFragment, true)
                 navController.navigate(R.id.lobbyFragment)
+                authWatcher.onSignIn()
             }
         }
     }

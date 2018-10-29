@@ -26,6 +26,7 @@ class MfaCodeFragment : CaffeineFragment() {
     @Inject lateinit var gson: Gson
     private lateinit var binding: FragmentMfaCodeBinding
     @Inject lateinit var tokenStore: TokenStore
+    @Inject lateinit var authWatcher: AuthWatcher
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -66,6 +67,7 @@ class MfaCodeFragment : CaffeineFragment() {
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
         navController.navigate(R.id.lobbyFragment)
+        authWatcher.onSignIn()
     }
 
     @UiThread

@@ -94,6 +94,9 @@ dependencies {
     // WebRTC
     implementation 'org.webrtc:google-webrtc:1.0.24277'
 
+    // Push notifications
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
     // Crash Reporting, Logging, Performance
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
     implementation 'com.google.firebase:firebase-core:16.0.4'
