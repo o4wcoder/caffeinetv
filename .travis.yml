@@ -11,7 +11,7 @@ android:
   - extra-google-m2repository
   - extra-android-m2repository
   - addon-google_apis-google-28
-script: "./gradlew testDebugUnitTest"
+script: "./gradlew testDebugUnitTest -PdisablePreDex --stacktrace"
 notifications:
   slack:
     secure: HG5LqHv7N93K6kQC3OYRQif81tOw+YSSuEbJgq1BAQJTbeaFEyPCcMIk5eDgbIRGqnNmo5AhoZ6HmIXINOXWCfHGHV5T5OgaJB3JQtjB8Ot+D1quxDkpduO+rx5mVMq8+4iL63kA3bbfCG03dEnpwRPDUCXnbRIwEHQZwXFRlJp2XBz4lnq0t1V5r+pHK5rOvj8dRj0p78BVn6W8tMNJY/ovjQNYR6pPr5+2m/fUAy8JSz4/iC9+12uZihNpFDe36cB8zEf4x6sH6c0NwTk+i7qB7lWE81dbOkDzxKtUpX3dMAQBvmrQIYqZlq/GQY4s9w4/1Zo8rB5+HY5tU5UPdMt+8uwQmrxNAkJnl5qWWrc0irFHNK3bGjR15FOvoFe0yV0svBIjnPDHPCcwZdA+0r5nd6kBwvNqiGKYrRgH43Vc7Wo7mwMwVRSurMUDv49GWJreaCnvMmTB0GhVV7jdjHCd1lB97s+LCcPVqNpDlwZ3yu32iWa9Ygo8w6MBmyIH6/UiyoQo5kVmzEm/YftWFDsnEAU0ZMDofmC2WqB+ZtDY+X6Xnq1fonRXCFAkU820OtAfN7znElTAWAgSNhPDHcydPT8jpUO5RcjZJwcIPyebpAajViI8CTvV0S9h5GNnI+SVDW/0JpuFI/isOAbhiOew8Yg8aVvZwMVThasGMTQ=
