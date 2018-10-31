@@ -2,7 +2,6 @@ package tv.caffeine.app.settings
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -22,7 +21,7 @@ import tv.caffeine.app.databinding.TransactionHistoryItemBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.UserAvatarImageGetter
+import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
@@ -77,10 +76,7 @@ class TransactionHistoryViewHolder(
         val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
         binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
         binding.digitalItemImageUrl = item.digitalItemStaticImageUrl
-        val rawString = item.costString(itemView.resources)
-        val imageGetter = UserAvatarImageGetter(binding.goldCostTextView)
-        val html = HtmlCompat.fromHtml(rawString, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
-        binding.goldCostTextView.text = html
+        binding.goldCostTextView.htmlText = item.costString(itemView.resources)
         binding.transactionTitle.setText(item.titleResId)
         val userCaid = when(item) {
             is TransactionHistoryItem.SendDigitalItem -> item.recipient

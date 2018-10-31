@@ -3,7 +3,9 @@ package tv.caffeine.app.ui
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import androidx.core.content.getSystemService
+import androidx.core.text.HtmlCompat
 
 inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -37,3 +39,12 @@ inline fun EditText.setOnAction(action: Int, crossinline block: () -> Unit) {
         }
     }
 }
+
+var TextView.htmlText: String?
+    get() = null
+    set(value) {
+        text = value?.let { string ->
+            val imageGetter = UserAvatarImageGetter(this)
+            HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
+        }
+    }

@@ -17,6 +17,7 @@ import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.UserAvatarImageGetter
+import tv.caffeine.app.ui.htmlText
 import java.text.NumberFormat
 
 class GoldBundlesFragment : CaffeineFragment() {
@@ -80,13 +81,10 @@ class GoldBundlesFragment : CaffeineFragment() {
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             val goldCount = NumberFormat.getIntegerInstance().format(wallet.gold)
             val creditBalance = NumberFormat.getIntegerInstance().format(wallet.credits)
-            val rawString = when(buyGoldOption) {
+            binding.currentBalanceTextView.htmlText = when(buyGoldOption) {
                 BuyGoldOption.UsingCredits -> getString(R.string.you_have_gold_and_credits_balance, goldCount, creditBalance)
                 BuyGoldOption.UsingPlayStore -> getString(R.string.you_have_gold_balance, goldCount)
             }
-            val imageGetter = UserAvatarImageGetter(binding.currentBalanceTextView)
-            val html = HtmlCompat.fromHtml(rawString, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
-            binding.currentBalanceTextView.text = html
         })
         val handler = Handler()
         viewModel.goldBundles.observe(viewLifecycleOwner, Observer { result ->

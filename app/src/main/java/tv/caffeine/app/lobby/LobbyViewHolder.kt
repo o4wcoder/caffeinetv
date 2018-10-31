@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
-import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.Navigation
@@ -19,7 +18,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.*
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.UserAvatarImageGetter
+import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 
@@ -103,13 +102,11 @@ class LiveBroadcastWithFriendsCard(val binding: LiveBroadcastWithFriendsCardBind
         binding.previewImageView.clipToOutline = true
         val singleFriendWatchingResId = if (item.broadcaster.user.isVerified) R.string.verified_user_watching else R.string.user_watching
         val multipleFriendsWatchingResId = if (item.broadcaster.user.isVerified) R.plurals.verified_user_and_friends_watching else R.plurals.user_and_friends_watching
-        val rawText = when(item.broadcaster.followingViewersCount) {
+        binding.friendsWatchingTextView.htmlText = when(item.broadcaster.followingViewersCount) {
             0 -> null
             1 -> itemView.context.getString(singleFriendWatchingResId, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl)
             else -> itemView.context.resources.getQuantityString(multipleFriendsWatchingResId, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl, item.broadcaster.followingViewersCount - 1)
         }
-        val imageGetter = UserAvatarImageGetter(binding.friendsWatchingTextView)
-        binding.friendsWatchingTextView.text = rawText?.let { HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) }
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
         if (game != null) {
