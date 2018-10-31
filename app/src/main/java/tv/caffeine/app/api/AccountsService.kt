@@ -1,12 +1,10 @@
 package tv.caffeine.app.api
 
 import kotlinx.coroutines.Deferred
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.PATCH
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface AccountsService {
     @POST("v1/account/signin")
@@ -26,6 +24,10 @@ interface AccountsService {
 
     @PATCH("v1/account")
     fun updateAccount(@Body body: UpdateAccountBody): Deferred<Response<AccountUpdateResult>>
+
+    @Multipart
+    @PUT("v1/upload/avatar")
+    fun uploadAvatar(@Part("avatar\"; filename=\"avatar.png") image: RequestBody): Deferred<Response<UploadAvatarResult>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
@@ -63,6 +65,9 @@ class SignUpResult(val credentials: CaffeineCredentials, val next: NextAccountAc
 class UpdateAccountBody(val account: AccountUpdateRequest)
 class AccountUpdateRequest(val currentPassword: String, val password: String? = null, val email: String? = null)
 class AccountUpdateResult(val credentials: CaffeineCredentials, val next: NextAccountAction?)
+
+class UploadAvatarResult(val avatarImagePath: String)
+val UploadAvatarResult.avatarImageUrl: String get() = "https://images.caffeine.tv$avatarImagePath"
 
 enum class NextAccountAction {
     email_verification, mfa_otp_required

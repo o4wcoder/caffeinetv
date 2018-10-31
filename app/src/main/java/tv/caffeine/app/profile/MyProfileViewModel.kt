@@ -3,6 +3,7 @@ package tv.caffeine.app.profile
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.UsersService
@@ -27,18 +28,26 @@ class MyProfileViewModel(
 
     val avatarImageUrl = MutableLiveData<String>()
 
+    private var loadJob: Job? = null
+
     init {
         load()
     }
 
-    private fun load() {
+    fun reload() = load(forceLoad = true)
+
+    private fun load(forceLoad: Boolean = false) {
         val caid = tokenStore.caid?: return
-        launch {
-            getUserProfile(caid)?.let { updateViewModel(it) }
+        loadJob?.cancel()
+        loadJob = launch {
+            val userProfile = if (forceLoad) loadUserProfile(caid) else getUserProfile(caid)
+            userProfile?.let { updateViewModel(it) }
         }
     }
 
     private suspend fun getUserProfile(caid: String) = followManager.userDetails(caid)
+
+    private suspend fun loadUserProfile(caid: String) = followManager.loadUserDetails(caid)
 
     private suspend fun updateViewModel(user: User) = withContext(Dispatchers.Main) {
         username.value = user.username

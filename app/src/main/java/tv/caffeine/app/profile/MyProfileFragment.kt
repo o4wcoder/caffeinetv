@@ -1,29 +1,44 @@
 package tv.caffeine.app.profile
 
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+
+private const val REQUEST_GET_PHOTO = 1
 
 class MyProfileFragment : CaffeineFragment() {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var followManager: FollowManager
+    @Inject lateinit var gson: Gson
 
     private lateinit var binding: FragmentMyProfileBinding
 
@@ -58,6 +73,40 @@ class MyProfileFragment : CaffeineFragment() {
         }
         binding.numberFollowingTextView.setOnClickListener { showFollowingList() }
         binding.numberOfFollowersTextView.setOnClickListener { showFollowersList() }
+        binding.avatarImageView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK).apply {
+                type = "image/*"
+            }
+            startActivityForResult(intent, REQUEST_GET_PHOTO)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode != REQUEST_GET_PHOTO) {
+            return super.onActivityResult(requestCode, resultCode, data)
+        }
+        if (resultCode != Activity.RESULT_OK) return
+        val uri = data?.data ?: return
+        launch(Dispatchers.IO) {
+            val inputStream = context?.contentResolver?.openInputStream(uri) ?: return@launch
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream.close()
+            val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+            val width = (1024 * aspectRatio).toInt()
+            val height = 1024
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+            val stream = ByteArrayOutputStream()
+            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+            val body = RequestBody.create(MediaType.get("image/png"), stream.toByteArray())
+            stream.close()
+            val result = accountsService.uploadAvatar(body).awaitAndParseErrors(gson)
+            val view = view ?: return@launch
+            withContext(Dispatchers.Main) {
+                handle(result, view) {
+                    viewModel.reload()
+                }
+            }
+        }
     }
 
     private fun showFollowingList() {

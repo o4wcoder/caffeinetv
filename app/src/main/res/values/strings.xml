@@ -96,4 +96,5 @@
     <string name="update_password_title">Update Password</string>
     <string name="error_passwords_dont_match">Passwords don\'t match</string>
     <string name="unknown_error">Unknown Error</string>
+    <string name="my_profile_photo_hint">Profile photo</string>
 </resources>

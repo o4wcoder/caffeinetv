@@ -81,6 +81,10 @@ class FollowManager @Inject constructor(
 
     suspend fun userDetails(caid: String): User? {
         userDetails[caid]?.let { return it }
+        return loadUserDetails(caid)
+    }
+
+    suspend fun loadUserDetails(caid: String): User? {
         val result = usersService.userDetails(caid)
         try {
             val user = result.await().user
