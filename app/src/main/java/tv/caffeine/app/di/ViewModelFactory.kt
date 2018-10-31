@@ -29,6 +29,7 @@ class ViewModelFactory @Inject constructor(
         private val followManager: FollowManager,
         private val transactionHistoryUseCase: TransactionHistoryUseCase,
         private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
+        private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
         private val updateEmailUseCase: UpdateEmailUseCase,
         private val updatePasswordUseCase: UpdatePasswordUseCase,
         private val gson: Gson
@@ -48,7 +49,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(usersService, tokenStore, followManager, gson)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(transactionHistoryUseCase)
-            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(loadGoldBundlesUseCase)
+            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(updateEmailUseCase, updatePasswordUseCase)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T

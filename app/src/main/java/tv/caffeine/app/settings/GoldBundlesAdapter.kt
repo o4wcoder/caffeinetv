@@ -41,7 +41,7 @@ class GoldBundleViewHolder(
         binding.goldCostTextView.text = goldBundle.amount.toString()
         binding.dollarCostTextView.text = goldBundle.skuDetails?.let {
             NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(it.priceCurrencyCode) }.format(it.priceAmountMicros/1000000f)
-        }
+        } ?: goldBundle.amount.toString()
         itemView.setOnClickListener { itemClickListener.onClick(goldBundle) }
     }
 }

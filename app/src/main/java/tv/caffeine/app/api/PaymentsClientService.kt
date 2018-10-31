@@ -35,7 +35,7 @@ class GetTransactionHistoryBody
 
 class GetGoldBundlesBody
 
-class BuyGoldUsingCreditsBody
+class BuyGoldUsingCreditsBody(val id: String)
 
 class PaymentsEnvelope<T>(val cursor: String, val retryIn: Int, val payload: T)
 
@@ -98,8 +98,10 @@ val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
 
 }
 
-fun TransactionHistoryItem.costString(resources: Resources) = when(this) {
-    is TransactionHistoryItem.Bundle -> resources.getString(R.string.transaction_item_purchased, value.toString(), NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }.format(cost/100f))
+fun TransactionHistoryItem.costString(resources: Resources) = when {
+    this is TransactionHistoryItem.Bundle && costCurrencyCode != "CREDITS" -> resources.getString(R.string.transaction_item_purchased, value.toString(), NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }.format(cost/100f))
+    this is TransactionHistoryItem.Bundle && costCurrencyCode == "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, value.toString(), cost.toString())
+    this is TransactionHistoryItem.Adjustment -> quantity.toString()
     else -> cost.toString()
 }
 

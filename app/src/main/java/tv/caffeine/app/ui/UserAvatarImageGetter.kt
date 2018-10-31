@@ -6,16 +6,27 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import tv.caffeine.app.R
 
+private class ImageSpec(@DrawableRes val drawable: Int, val width: Int, val height: Int)
+
+private val inlineImages: Map<String, ImageSpec> = mapOf(
+        "checkmark" to ImageSpec(R.drawable.verified_small_white, R.dimen.chat_avatar_size, R.dimen.chat_avatar_size),
+        "goldcoin" to ImageSpec(R.drawable.gold_coin, R.dimen.coin_size, R.dimen.coin_size),
+        "purplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.coin_size, R.dimen.coin_size)
+)
+
 class UserAvatarImageGetter(private val textView: TextView) : Html.ImageGetter {
     override fun getDrawable(source: String?): Drawable? {
-        if (source == "checkmark") return ContextCompat.getDrawable(textView.context, R.drawable.verified_small_white).apply {
-            this?.setBounds(0, 0, textView.resources.getDimensionPixelSize(R.dimen.chat_avatar_size), textView.resources.getDimensionPixelSize(R.dimen.chat_avatar_size))
+        inlineImages[source]?.let {
+            return ContextCompat.getDrawable(textView.context, it.drawable).apply {
+                this?.setBounds(0, 0, textView.resources.getDimensionPixelSize(it.width), textView.resources.getDimensionPixelSize(it.height))
+            }
         }
         return BitmapDrawablePlaceholder(textView).apply {
             Picasso.get()

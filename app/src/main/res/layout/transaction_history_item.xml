@@ -8,9 +8,6 @@
         <variable
             name="digitalItemImageUrl"
             type="java.lang.String"/>
-        <variable
-            name="itemCost"
-            type="java.lang.String"/>
 
     </data>
 
@@ -75,23 +72,12 @@
             app:layout_constraintTop_toTopOf="@+id/username_text_view"
             tools:src="@drawable/ic_notifications_black_24dp" />
 
-        <ImageView
-            android:id="@+id/gold_coin_image_view"
-            android:layout_width="@dimen/coin_size"
-            android:layout_height="@dimen/coin_size"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/digital_item_image_view"
-            app:layout_constraintTop_toTopOf="@+id/username_text_view"
-            app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
-            app:srcCompat="@drawable/gold_coin" />
-
         <TextView
             android:id="@+id/gold_cost_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:text="@{itemCost}"
-            app:layout_constraintStart_toEndOf="@+id/gold_coin_image_view"
+            app:layout_constraintStart_toEndOf="@+id/digital_item_image_view"
             app:layout_constraintTop_toTopOf="@+id/username_text_view"
             app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
             tools:text="700" />

@@ -1,14 +1,12 @@
 package tv.caffeine.app.lobby
 
 import android.graphics.Rect
-import android.os.Build
-import android.text.Html
-import android.text.Spannable
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
+import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.Navigation
@@ -111,7 +109,7 @@ class LiveBroadcastWithFriendsCard(val binding: LiveBroadcastWithFriendsCardBind
             else -> itemView.context.resources.getQuantityString(multipleFriendsWatchingResId, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl, item.broadcaster.followingViewersCount - 1)
         }
         val imageGetter = UserAvatarImageGetter(binding.friendsWatchingTextView)
-        binding.friendsWatchingTextView.text = (if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) Html.fromHtml(rawText, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) else Html.fromHtml(rawText, imageGetter, null)) as Spannable
+        binding.friendsWatchingTextView.text = rawText?.let { HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) }
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
         if (game != null) {
