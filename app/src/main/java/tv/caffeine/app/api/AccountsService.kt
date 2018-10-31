@@ -16,7 +16,7 @@ interface AccountsService {
     fun refreshToken(@Body refreshTokenBody: RefreshTokenBody): Call<RefreshTokenResult>
 
     @POST("v1/account/forgot-password")
-    fun forgotPassword(@Body forgotPasswordBody: ForgotPasswordBody): Call<Void>
+    fun forgotPassword(@Body forgotPasswordBody: ForgotPasswordBody): Deferred<Response<Void>>
 
     @DELETE("v1/account/token")
     fun signOut(): Call<Unit>

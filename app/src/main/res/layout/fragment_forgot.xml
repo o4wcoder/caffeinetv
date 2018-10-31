@@ -32,7 +32,13 @@
             android:gravity="center"
             android:text="@string/forgot_password_subtitle" />
 
+        <TextView
+            android:id="@+id/form_error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/sign_in_hint_email"

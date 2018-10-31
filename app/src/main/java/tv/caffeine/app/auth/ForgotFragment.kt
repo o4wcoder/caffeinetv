@@ -5,20 +5,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dagger.android.support.DaggerFragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import androidx.annotation.UiThread
+import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.ApiErrorResult
 import tv.caffeine.app.api.ForgotPasswordBody
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentForgotBinding
+import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
-class ForgotFragment : DaggerFragment() {
+class ForgotFragment : CaffeineFragment() {
     @Inject lateinit var accountsService: AccountsService
 
     private lateinit var binding: FragmentForgotBinding
+
+    @Inject lateinit var gson: Gson
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -29,19 +35,36 @@ class ForgotFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.sendEmailButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString()
-            accountsService.forgotPassword(ForgotPasswordBody(email)).enqueue(object: Callback<Void?> {
-                override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                    Timber.e(t, "Failed to handle forgot password")
-                }
+        binding.sendEmailButton.setOnClickListener { sendForgotPasswordEmail() }
+    }
 
-                override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
-                    Timber.d("Handled forgot password $response")
-                }
-            })
+    private fun sendForgotPasswordEmail() {
+        clearErrorMessages()
+        launch {
+            val email = binding.emailEditText.text.toString()
+            val result = accountsService.forgotPassword(ForgotPasswordBody(email)).awaitAndParseErrors(gson)
+            when (result) {
+                is CaffeineResult.Success -> findNavController().navigateUp()
+                is CaffeineResult.Error -> onError(result.error)
+                is CaffeineResult.Failure -> onFailure(result.exception)
+            }
         }
     }
 
+    private fun clearErrorMessages() {
+        binding.formErrorTextView.text = null
+        binding.emailTextInputLayout.error = null
+    }
+
+    @UiThread
+    private fun onError(error: ApiErrorResult) {
+        error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }
+        error.errors.email?.joinToString("\n")?.let { binding.emailTextInputLayout.error = it }
+    }
+
+    @UiThread
+    private fun onFailure(t: Throwable) {
+        Timber.e(t, "Something went wrong trying to request forgot password email") // TODO: handle error
+    }
 
 }
