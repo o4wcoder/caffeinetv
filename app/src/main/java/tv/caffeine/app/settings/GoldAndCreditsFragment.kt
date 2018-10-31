@@ -5,11 +5,13 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.parcel.Parcelize
 import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.ui.CaffeineFragment
+import java.text.NumberFormat
 
 @Parcelize
 enum class BuyGoldOption: Parcelable {
@@ -30,6 +32,12 @@ class GoldAndCreditsFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val numberFormat = NumberFormat.getIntegerInstance()
+        walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
+            binding.goldBalanceTextView.text = numberFormat.format(wallet.gold)
+            binding.creditBalanceTextView.text = numberFormat.format(wallet.credits)
+            binding.cumulativeCreditBalanceTextView.text = numberFormat.format(wallet.cumulativeCredits)
+        })
         binding.transactionHistoryButton.setOnClickListener {
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToTransactionHistoryFragment()
             findNavController().navigate(action)

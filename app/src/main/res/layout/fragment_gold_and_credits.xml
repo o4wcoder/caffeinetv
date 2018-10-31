@@ -31,11 +31,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:drawableStart="@drawable/gold_coin"
-            android:text="@{walletViewModel.walletBalance}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/transaction_history_button"
+            app:autoSizeTextType="uniform"
             tools:text="42" />
 
         <Button
@@ -54,8 +54,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:drawableStart="@drawable/purple_coin"
-            android:text="@{walletViewModel.creditsBalance}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
+            app:autoSizeTextType="uniform"
             app:layout_constraintEnd_toStartOf="@+id/cumulative_credit_balance_text_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/buy_gold_button"
@@ -77,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:drawableStart="@drawable/purple_coin"
-            android:text="@{walletViewModel.cumulativeCreditsBalance}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
+            app:autoSizeTextType="uniform"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/credit_balance_text_view"
             app:layout_constraintTop_toBottomOf="@+id/buy_gold_button"

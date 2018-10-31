@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="walletViewModel"
-            type="tv.caffeine.app.profile.WalletViewModel"/>
-
-        <variable
             name="username"
             type="java.lang.String"/>
 
@@ -56,24 +52,12 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Send to caffeine"/>
 
-                <ImageView
-                    android:id="@+id/gold_coin_image_view"
-                    android:layout_width="@dimen/coin_size"
-                    android:layout_height="@dimen/coin_size"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/gold_cost_text_view"
-                    app:layout_constraintEnd_toStartOf="@+id/gold_cost_text_view"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintTop_toTopOf="@+id/gold_cost_text_view"
-                    app:srcCompat="@drawable/gold_coin" />
-
                 <TextView
-                    android:id="@+id/gold_cost_text_view"
+                    android:id="@+id/wallet_balance_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_marginEnd="8dp"
-                    android:text="@{walletViewModel.walletBalance}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBaseline_toBaselineOf="@+id/di_catalog_title"
                     tools:text="700" />

@@ -13,9 +13,6 @@ import tv.caffeine.app.ui.CaffeineViewModel
 class WalletViewModel(
         private val paymentsClientService: PaymentsClientService
 ): CaffeineViewModel() {
-    val walletBalance = MutableLiveData<String>()
-    val creditsBalance = MutableLiveData<String>()
-    val cumulativeCreditsBalance = MutableLiveData<String>()
     val wallet = MutableLiveData<Wallet>()
 
     init {
@@ -29,9 +26,6 @@ class WalletViewModel(
             Timber.d("Wallet: ${wallet.gold}")
             withContext(Dispatchers.Main) {
                 this@WalletViewModel.wallet.value = wallet
-                walletBalance.value = wallet.gold.toString()
-                creditsBalance.value = wallet.credits.toString()
-                cumulativeCreditsBalance.value = wallet.cumulativeCredits.toString()
             }
         }
     }
