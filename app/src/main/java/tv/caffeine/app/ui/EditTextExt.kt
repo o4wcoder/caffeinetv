@@ -1,5 +1,7 @@
 package tv.caffeine.app.ui
 
+import android.text.Spannable
+import android.text.style.ImageSpan
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -45,6 +47,13 @@ var TextView.htmlText: String?
     set(value) {
         text = value?.let { string ->
             val imageGetter = UserAvatarImageGetter(this)
-            HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
+            var html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+            for (span in html.getSpans(0, html.length, ImageSpan::class.java)) {
+                val start = html.getSpanStart(span)
+                val end = html.getSpanEnd(span)
+                html.setSpan(CenterImageSpan(span.drawable), start, end, html.getSpanFlags(span))
+            }
+
+            html
         }
     }
