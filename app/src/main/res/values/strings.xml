@@ -95,4 +95,5 @@
     <string name="hint_password2">New Password Again</string>
     <string name="update_password_title">Update Password</string>
     <string name="error_passwords_dont_match">Passwords don\'t match</string>
+    <string name="unknown_error">Unknown Error</string>
 </resources>

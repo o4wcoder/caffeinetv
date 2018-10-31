@@ -9,13 +9,12 @@ import androidx.annotation.UiThread
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSignInBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
@@ -48,13 +47,12 @@ class SignInFragment : CaffeineFragment() {
         binding.formErrorTextView.text = null
         val signInBody = SignInBody(Account(username, password))
         launch {
-            val response = accountsService.signIn(signInBody).await()
-            withContext(Dispatchers.Main) {
-                val signInResult = response.body()
-                when {
-                    response.isSuccessful && signInResult != null -> onSuccess(signInResult)
-                    else -> onError(response)
-                }
+            val rawResult = runCatching { accountsService.signIn(signInBody).awaitAndParseErrors(gson) }
+            val result = rawResult.getOrNull() ?: return@launch onFailure(rawResult.exceptionOrNull() ?: Exception())
+            when(result) {
+                is CaffeineResult.Success -> onSuccess(result.value)
+                is CaffeineResult.Error -> onError(result.error)
+                is CaffeineResult.Failure -> onFailure(result.exception)
             }
         }
     }
@@ -79,12 +77,16 @@ class SignInFragment : CaffeineFragment() {
     }
 
     @UiThread
-    private fun onError(response: Response<SignInResult>) {
-        val signInError = response.errorBody() ?: return
-        val error = gson.fromJson(signInError.string(), ApiErrorResult::class.java)
+    private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
         error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }
         error.errors.username?.joinToString("\n")?.let { binding.usernameTextInputLayout.error = it }
         error.errors.password?.joinToString("\n")?.let { binding.passwordTextInputLayout.error = it }
+    }
+
+    @UiThread
+    private fun onFailure(t: Throwable) {
+        Timber.e(t, "Error while trying to sign in") // TODO show error message
+        binding.formErrorTextView.setText(R.string.unknown_error)
     }
 }
