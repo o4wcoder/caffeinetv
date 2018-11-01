@@ -28,6 +28,12 @@ interface AccountsService {
     @Multipart
     @PUT("v1/upload/avatar")
     fun uploadAvatar(@Part("avatar\"; filename=\"avatar.png") image: RequestBody): Deferred<Response<UploadAvatarResult>>
+
+    @GET("v1/account/notification-settings")
+    fun getNotificationSettings(): Deferred<Response<NotificationSettings>>
+
+    @PATCH("v1/account/notification-settings")
+    fun updateNotificationSettings(@Body notificationSettings: NotificationSettings): Deferred<Response<NotificationSettings>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
@@ -68,6 +74,20 @@ class AccountUpdateResult(val credentials: CaffeineCredentials, val next: NextAc
 
 class UploadAvatarResult(val avatarImagePath: String)
 val UploadAvatarResult.avatarImageUrl: String get() = "https://images.caffeine.tv$avatarImagePath"
+
+// omits iOS and web settings
+class NotificationSettings(
+        val newFollowerEmail: Boolean? = null,
+        val weeklySuggestionsEmail: Boolean? = null,
+        val broadcastLiveEmail: Boolean? = null,
+        val friendJoinsEmail: Boolean? = null,
+        val watchingBroadcastEmail: Boolean? = null,
+        val communityEmail: Boolean? = null,
+        val newFollowerAndroidPush: Boolean? = null,
+        val broadcastLiveAndroidPush: Boolean? = null,
+        val watchingBroadcastAndroidPush: Boolean? = null,
+        val friendJoinsAndroidPush: Boolean? = null
+)
 
 enum class NextAccountAction {
     email_verification, mfa_otp_required
