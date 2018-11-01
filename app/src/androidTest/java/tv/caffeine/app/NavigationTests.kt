@@ -9,19 +9,15 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
 import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-@RunWith(AndroidJUnit4::class)
+//@RunWith(AndroidJUnit4::class)
 class NavigationTests {
     private lateinit var navigator: FragmentNavigator
 
-    @Before
+//    @Before
     fun prep() {
         val activityTestRule = ActivityTestRule(MainActivity::class.java, true, false)
         val mainActivity = activityTestRule.launchActivity(Intent())
@@ -30,12 +26,12 @@ class NavigationTests {
         navigator = navHostFragment.navController.navigatorProvider[FragmentNavigator::class]
     }
 
-    @Test
+//    @Test
     fun signInWithEmailButtonNavigatesToTheSignInFragment() {
         check(click = R.id.sign_in_with_email_button, destination = R.id.signInFragment)
     }
 
-    @Test
+//    @Test
     fun newAccountButtonNavigatesToTheSignUpFragment() {
         check(click = R.id.new_account_button, destination = R.id.signUpFragment)
     }
