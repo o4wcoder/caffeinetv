@@ -2,13 +2,15 @@ package tv.caffeine.app.di
 
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import tv.caffeine.app.auth.AuthWatcher
-import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.notifications.NotificationAuthWatcher
-import javax.inject.Named
+import tv.caffeine.app.settings.EncryptedSettingsStorage
+import tv.caffeine.app.settings.KeyStoreHelper
+import tv.caffeine.app.settings.SettingsStorage
+import tv.caffeine.app.settings.SharedPrefsStorage
+import java.security.KeyStore
 import javax.inject.Singleton
 
 const val REFRESH_TOKEN = "REFRESH_TOKEN"
@@ -25,14 +27,14 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun providesTokenStore(sharedPreferences: SharedPreferences) = TokenStore(sharedPreferences)
+    fun providesKeyStore(): KeyStore = KeyStoreHelper.defaultKeyStore()
+
+    @Provides
+    @Singleton
+    fun providesSettingsStorage(sharedPrefsStorage: SharedPrefsStorage, keyStoreHelper: KeyStoreHelper): SettingsStorage = EncryptedSettingsStorage(keyStoreHelper, sharedPrefsStorage)
 
     @Provides
     @Singleton
     fun providesAuthWatcher(notificationAuthWatcher: NotificationAuthWatcher): AuthWatcher = notificationAuthWatcher
-
-    @Provides
-    @Named(REFRESH_TOKEN)
-    fun providesRefreshToken(sharedPreferences: SharedPreferences): String? = sharedPreferences.getString(REFRESH_TOKEN, null)
 
 }
