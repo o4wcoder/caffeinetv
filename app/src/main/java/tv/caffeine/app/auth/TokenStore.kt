@@ -7,7 +7,9 @@ import tv.caffeine.app.api.RefreshTokenResult
 import tv.caffeine.app.api.SignInResult
 import tv.caffeine.app.settings.SettingsStorage
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class TokenStore @Inject constructor(
         private val settingsStorage: SettingsStorage
 ) {
