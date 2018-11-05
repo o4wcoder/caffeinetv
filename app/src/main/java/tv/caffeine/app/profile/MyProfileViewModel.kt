@@ -1,5 +1,6 @@
 package tv.caffeine.app.profile
 
+import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ class MyProfileViewModel(
         private val usersService: UsersService,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
+        private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val gson: Gson
 ) : CaffeineViewModel() {
     val username = MutableLiveData<String>()
@@ -29,6 +31,11 @@ class MyProfileViewModel(
     val avatarImageUrl = MutableLiveData<String>()
 
     private var loadJob: Job? = null
+        set(value) {
+            if (field == value) return
+            field?.cancel()
+            field = value
+        }
 
     init {
         load()
@@ -38,7 +45,6 @@ class MyProfileViewModel(
 
     private fun load(forceLoad: Boolean = false) {
         val caid = tokenStore.caid?: return
-        loadJob?.cancel()
         loadJob = launch {
             val userProfile = if (forceLoad) loadUserProfile(caid) else getUserProfile(caid)
             userProfile?.let { updateViewModel(it) }
@@ -67,6 +73,15 @@ class MyProfileViewModel(
 
     fun updateBio(bio: String) {
         updateUser(bio = bio)
+    }
+
+    fun uploadAvatar(bitmap: Bitmap) {
+        launch {
+            val result = uploadAvatarUseCase(bitmap)
+            if (result is CaffeineResult.Success) {
+                avatarImageUrl.value = result.value.avatarImagePath
+            }
+        }
     }
 
     private fun updateUser(name: String? = null, bio: String? = null) {

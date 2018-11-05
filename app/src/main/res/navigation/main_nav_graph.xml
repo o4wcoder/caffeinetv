@@ -139,6 +139,10 @@
         <action
             android:id="@+id/action_myProfileFragment_to_editBioFragment"
             app:destination="@id/editBioFragment" />
+        <argument
+            android:name="launchAvatarSelection"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"

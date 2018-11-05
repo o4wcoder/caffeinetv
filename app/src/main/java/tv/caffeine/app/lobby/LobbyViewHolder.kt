@@ -26,6 +26,16 @@ sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     abstract fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
 }
 
+class AvatarCard(val binding: LobbyAvatarCardBinding) : LobbyViewHolder(binding.root) {
+    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+        itemView.setOnClickListener {
+            val action = LobbyFragmentDirections.actionLobbyFragmentToMyProfileFragment()
+            action.setLaunchAvatarSelection(true)
+            Navigation.findNavController(itemView).navigate(action)
+        }
+    }
+}
+
 class HeaderCard(val binding: LobbyHeaderBinding) : LobbyViewHolder(binding.root) {
     override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         binding.viewModel = item as Header

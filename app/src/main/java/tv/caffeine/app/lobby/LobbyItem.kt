@@ -7,13 +7,14 @@ interface LobbyItem {
     val itemType: Type
 
     enum class Type {
-        HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD, PREVIOUS_BROADCAST_CARD, CARD_LIST
+        AVATAR_CARD, HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD, PREVIOUS_BROADCAST_CARD, CARD_LIST
     }
 
     companion object {
 
         fun parse(result: Lobby): List<LobbyItem> {
-            return result.sections.flatMap { section ->
+            return (result.header.avatarCard?.let { listOf(WelcomeCard("username", it.username)) } ?: listOf()).plus(
+            result.sections.flatMap { section ->
                 mutableListOf<LobbyItem>(Header(section.id, section.name)).apply {
                     section.emptyMessage?.let { add(Subtitle(section.id + ".msg", it)) }
                     section.broadcasters?.map(::convert)?.let { addAll(it) }
@@ -22,19 +23,21 @@ interface LobbyItem {
                         add(CardList(category.id + ".list", category.broadcasters.map(::convert)))
                     }
                 }.toList()
-            }
+            })
         }
 
         private fun convert(broadcaster: Lobby.Broadcaster): SingleCard =
-                if (broadcaster.broadcast == null) {
-                    PreviousBroadcast(broadcaster.id, broadcaster)
-                } else if (broadcaster.followingViewersCount == 0) {
-                    LiveBroadcast(broadcaster.id, broadcaster)
-                } else {
-                    LiveBroadcastWithFriends(broadcaster.id, broadcaster)
+                when {
+                    broadcaster.broadcast == null -> PreviousBroadcast(broadcaster.id, broadcaster)
+                    broadcaster.followingViewersCount == 0 -> LiveBroadcast(broadcaster.id, broadcaster)
+                    else -> LiveBroadcastWithFriends(broadcaster.id, broadcaster)
                 }
     }
 
+}
+
+data class WelcomeCard(override val id: String, val username: String) : LobbyItem {
+    override val itemType = LobbyItem.Type.AVATAR_CARD
 }
 
 data class Header(override val id: String, val text: String) : LobbyItem {

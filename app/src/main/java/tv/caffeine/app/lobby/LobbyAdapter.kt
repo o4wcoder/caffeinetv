@@ -40,6 +40,7 @@ class LobbyAdapter @Inject constructor(
         val inflater = LayoutInflater.from(parent.context)
         val itemType = LobbyItem.Type.values()[viewType]
         return when(itemType) {
+            LobbyItem.Type.AVATAR_CARD -> AvatarCard(LobbyAvatarCardBinding.inflate(inflater, parent, false))
             LobbyItem.Type.HEADER -> HeaderCard(LobbyHeaderBinding.inflate(inflater, parent, false))
             LobbyItem.Type.SUBTITLE -> SubtitleCard(LobbySubtitleBinding.inflate(inflater, parent, false))
             LobbyItem.Type.LIVE_BROADCAST_CARD -> LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false))

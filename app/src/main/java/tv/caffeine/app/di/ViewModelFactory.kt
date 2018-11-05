@@ -32,6 +32,7 @@ class ViewModelFactory @Inject constructor(
         private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
         private val updateEmailUseCase: UpdateEmailUseCase,
         private val updatePasswordUseCase: UpdatePasswordUseCase,
+        private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -47,7 +48,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(usersService)
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
-            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(usersService, tokenStore, followManager, gson)
+            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(usersService, tokenStore, followManager, uploadAvatarUseCase, gson)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(transactionHistoryUseCase)
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(updateEmailUseCase, updatePasswordUseCase)
