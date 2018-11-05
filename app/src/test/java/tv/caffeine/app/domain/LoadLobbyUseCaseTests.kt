@@ -23,7 +23,7 @@ class LoadLobbyUseCaseTests {
     @Before
     fun setup() {
         val mockLobbyResponse = mock<Deferred<Response<Lobby>>> {
-            onBlocking { await() } doReturn Response.success(Lobby(tags, content, Any(), arrayOf()))
+            onBlocking { await() } doReturn Response.success(Lobby(tags, content, Lobby.Header(), arrayOf()))
         }
         val fakeLobbyService = mock<LobbyService> {
             on { loadLobby() } doReturn mockLobbyResponse
