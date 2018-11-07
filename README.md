@@ -2,13 +2,22 @@
 
 [![Build Status](https://travis-ci.com/caffeinetv/android.svg?token=qBfqv76hyjADhUsCTEp6&branch=master)](https://travis-ci.com/caffeinetv/android)
 
+The Android app for Caffeine.
+
 <img alt="Mitsurugi" src="logo.png" width="356">
+
+### Setup
+
+1. Install Android Studio 3.3 Beta 3 (latest 3.3 version)
+2. Configure an emulator.
+3. Run unit tests.
+4. Run android tests.
 
 ### About
 
 * Development is done in Kotlin and Android Studio
-  * Current version of Kotlin is 1.3.0-rc-146
-  * Current version of Android Studio is 3.3 Canary 13.
+  * Current version of Kotlin is 1.3.0
+  * Current version of Android Studio is 3.3 Beta 3.
 * The app uses the following libraries:
   * AndroidX, JetPack, Support Libraries
     * AppCompat
@@ -16,7 +25,7 @@
     * Navigation
   * Dagger
     * Must use version 2.16
-    * Version 2.17 causes build problems due to Jetifier (it pins Dagger to 2.16)
+    * Versions 2.17 and 2.18 causes build problems due to Jetifier (it pins Dagger to 2.16)
   * Retrofit
   * OkHttp
   * Picasso
