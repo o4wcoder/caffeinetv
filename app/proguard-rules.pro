@@ -14,8 +14,32 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile
+
+-keep class kotlin.** { *; }
+-keep class kotlin.Metadata { *; }
+-dontwarn kotlin.**
+-keepclassmembers class **$WhenMappings {
+  <fields>;
+}
+-keepclassmembers class kotlin.Metadata {
+  public <methods>;
+}
+-keepclassmembers class * extends java.lang.Enum {
+  <fields>;
+  public static **[] values();
+  public static ** valueOf(java.lang.String);
+}
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+  static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+}
+
+# Gson
+-keepclassmembers class tv.caffeine.app.api** {
+  <fields>;
+  public *;
+}
