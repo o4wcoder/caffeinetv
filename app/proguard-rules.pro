@@ -39,7 +39,7 @@
 }
 
 # Gson
--keepclassmembers class tv.caffeine.app.api** {
-  <fields>;
-  public *;
-}
+-keep class tv.caffeine.app.api.** { *; }
+
+# WebRTC
+-keep class org.webrtc.** { *; }
