@@ -10,9 +10,6 @@ interface AccountsService {
     @POST("v1/account/signin")
     fun signIn(@Body signInBody: SignInBody): Deferred<Response<SignInResult>>
 
-    @POST("v1/account/token")
-    fun refreshToken(@Body refreshTokenBody: RefreshTokenBody): Call<RefreshTokenResult>
-
     @POST("v1/account/forgot-password")
     fun forgotPassword(@Body forgotPasswordBody: ForgotPasswordBody): Deferred<Response<Void>>
 
