@@ -6,99 +6,104 @@
 
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_margin="16dp"
-        tools:context=".auth.SignInFragment">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logo"
-            android:contentDescription="@string/caffeine_logo_content_description" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ScreenTitle"
-            android:text="@string/sign_up_title" />
-
-        <TextView
-            android:id="@+id/form_error_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/sign_in_hint_username"
-            style="@style/OutlinedBox">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_margin="16dp"
+            tools:context=".auth.SignInFragment">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username_edit_text"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo"
+                android:contentDescription="@string/caffeine_logo_content_description" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ScreenTitle"
+                android:text="@string/sign_up_title" />
+
+            <TextView
+                android:id="@+id/form_error_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:imeOptions="actionNext" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/sign_in_hint_username"
+                style="@style/OutlinedBox">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/sign_in_hint_email"
-            style="@style/OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/username_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email_edit_text"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:imeOptions="actionNext" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/sign_in_hint_email"
+                style="@style/OutlinedBox">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/sign_in_hint_password"
-            style="@style/OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password_edit_text"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:imeOptions="actionNext" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/sign_in_hint_password"
+                style="@style/OutlinedBox">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/sign_in_hint_dob"
-            style="@style/OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/dob_edit_text"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="date"
-                android:imeOptions="actionNext" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/sign_in_hint_dob"
+                style="@style/OutlinedBox">
 
-        <CheckBox
-            android:id="@+id/agree_to_legal_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/i_agree_to_legal" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dob_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/sign_up_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/ActionButton"
-            android:text="@string/sign_up_button" />
+            <CheckBox
+                android:id="@+id/agree_to_legal_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/i_agree_to_legal" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/sign_up_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ActionButton"
+                android:text="@string/sign_up_button" />
+
+        </LinearLayout>
+    </ScrollView>
 </layout>
