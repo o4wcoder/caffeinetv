@@ -12,3 +12,5 @@ class Broadcast(val id: String,
         ONLINE, OFFLINE
     }
 }
+
+fun Broadcast.isOnline() = state == Broadcast.State.ONLINE

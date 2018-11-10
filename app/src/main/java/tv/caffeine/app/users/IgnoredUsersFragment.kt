@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,9 +42,9 @@ class IgnoredUsersFragment : CaffeineFragment() {
 
 class IgnoredUsersViewModel(private val tokenStore: TokenStore, private val usersService: UsersService) : CaffeineViewModel() {
 
-    val ignoredUsers: LiveData<List<CaidRecord.IgnoreRecord>> get() = _ignoredUsers
-
     private val _ignoredUsers = MutableLiveData<List<CaidRecord.IgnoreRecord>>()
+
+    val ignoredUsers: LiveData<List<CaidRecord.IgnoreRecord>> = Transformations.map(_ignoredUsers) { it }
 
     init {
         load()

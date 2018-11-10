@@ -1,7 +1,9 @@
 package tv.caffeine.app.profile
 
 import android.graphics.Bitmap
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,15 +22,18 @@ class MyProfileViewModel(
         private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val gson: Gson
 ) : CaffeineViewModel() {
-    val username = MutableLiveData<String>()
-    val name = MutableLiveData<String>()
-    val followersCount = MutableLiveData<String>()
-    val followingCount = MutableLiveData<String>()
-    val bio = MutableLiveData<String>()
 
-    val isVerified = MutableLiveData<Boolean>()
+    private val myProfile = MutableLiveData<User>()
 
-    val avatarImageUrl = MutableLiveData<String>()
+    val username: LiveData<String> = Transformations.map(myProfile) { it.username }
+    val name: LiveData<String> = Transformations.map(myProfile) { it.name }
+    val followersCount: LiveData<String> = Transformations.map(myProfile) { it.followingCount.toString() }
+    val followingCount: LiveData<String> = Transformations.map(myProfile) { it.followingCount.toString() }
+    val bio: LiveData<String> = Transformations.map(myProfile) { it.bio }
+
+    val isVerified: LiveData<Boolean> = Transformations.map(myProfile) { it.isVerified }
+
+    val avatarImageUrl: LiveData<String> = Transformations.map(myProfile) { it.avatarImageUrl }
 
     private var loadJob: Job? = null
         set(value) {
@@ -56,15 +61,7 @@ class MyProfileViewModel(
     private suspend fun loadUserProfile(caid: String) = followManager.loadUserDetails(caid)
 
     private suspend fun updateViewModel(user: User) = withContext(Dispatchers.Main) {
-        username.value = user.username
-        name.value = user.name
-        followersCount.value = user.followersCount.toString()
-        followingCount.value = user.followingCount.toString()
-        avatarImageUrl.value = user.avatarImageUrl
-        isVerified.value = user.isVerified
-
-        // not shown on My Profile
-        bio.value = user.bio
+        myProfile.value = user
     }
 
     fun updateName(name: String) {
@@ -79,7 +76,7 @@ class MyProfileViewModel(
         launch {
             val result = uploadAvatarUseCase(bitmap)
             if (result is CaffeineResult.Success) {
-                avatarImageUrl.value = result.value.avatarImagePath
+                reload()
             }
         }
     }

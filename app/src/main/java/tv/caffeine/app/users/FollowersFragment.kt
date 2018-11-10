@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,8 +39,8 @@ class FollowersFragment : CaffeineFragment() {
 
 class FollowersViewModel(private val usersService: UsersService) : CaffeineViewModel() {
 
-    val followers: LiveData<List<CaidRecord.FollowRecord>> get() = _followers
     private val _followers = MutableLiveData<List<CaidRecord.FollowRecord>>()
+    val followers: LiveData<List<CaidRecord.FollowRecord>> = Transformations.map(_followers) { it }
 
     var caid: String = ""
         set(value) {
@@ -57,4 +58,3 @@ class FollowersViewModel(private val usersService: UsersService) : CaffeineViewM
     }
 
 }
-

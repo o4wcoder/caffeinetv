@@ -2,6 +2,7 @@ package tv.caffeine.app.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.api.GoldBundlesPayload
@@ -13,8 +14,8 @@ class GoldBundlesViewModel(
         private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
         private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase
 ) : CaffeineViewModel() {
-    val goldBundles: LiveData<CaffeineResult<PaymentsEnvelope<GoldBundlesPayload>>> get() = _goldBundles
     private val _goldBundles = MutableLiveData<CaffeineResult<PaymentsEnvelope<GoldBundlesPayload>>>()
+    val goldBundles: LiveData<CaffeineResult<PaymentsEnvelope<GoldBundlesPayload>>> = Transformations.map(_goldBundles) { it }
 
     init {
         load()
