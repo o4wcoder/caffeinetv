@@ -8,7 +8,7 @@ The Android app for Caffeine.
 
 ### Setup
 
-1. Install Android Studio 3.3 Beta 3 (latest 3.3 version)
+1. Install Android Studio 3.3 Beta 4 (latest 3.3 version)
 2. Configure an emulator.
 3. Run unit tests.
 4. Run android tests.
@@ -17,7 +17,7 @@ The Android app for Caffeine.
 
 * Development is done in Kotlin and Android Studio
   * Current version of Kotlin is 1.3.0
-  * Current version of Android Studio is 3.3 Beta 3.
+  * Current version of Android Studio is 3.3 Beta 4.
 * The app uses the following libraries:
   * AndroidX, JetPack, Support Libraries
     * AppCompat
