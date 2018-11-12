@@ -51,18 +51,25 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    // UI
-    implementation 'androidx.appcompat:appcompat:1.0.1'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+    // Jetpack
+    implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.core:core-ktx:1.0.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+
+    // Preferences
     implementation 'androidx.preference:preference:1.0.0'
 
+    // Layout
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    // Image Loading
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+
+    // Date/Time
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
     // Navigation
@@ -73,7 +80,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
     kapt "com.android.databinding:compiler:$android_plugin_version"
 
-    // Networking
+    // Retrofit, okhttp
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
@@ -96,11 +103,15 @@ dependencies {
     // Push notifications
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
-    // Crash Reporting, Logging, Performance
+    // Crash Reporting, Performance
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.google.firebase:firebase-perf:16.2.0'
+
+    // Logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // Leak Canary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'

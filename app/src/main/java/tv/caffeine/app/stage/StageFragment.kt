@@ -106,7 +106,7 @@ class StageFragment : CaffeineFragment() {
         deinitSurfaceViewRenderers()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
     }
@@ -252,12 +252,14 @@ class StageFragment : CaffeineFragment() {
             sendMessage()
         }
         binding.friendsWatchingButton?.setOnClickListener {
+            val fragmentManager = fragmentManager ?: return@setOnClickListener
             val fragment = FriendsWatchingFragment()
             val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcaster)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "FW")
         }
         binding.giftButton?.setOnClickListener {
+            val fragmentManager = fragmentManager ?: return@setOnClickListener
             val fragment = DICatalogFragment()
             val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster)
             fragment.arguments = action.arguments

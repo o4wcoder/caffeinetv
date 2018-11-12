@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.*
 import timber.log.Timber
@@ -16,7 +15,6 @@ import tv.caffeine.app.databinding.FragmentGoldBundlesBinding
 import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.UserAvatarImageGetter
 import tv.caffeine.app.ui.htmlText
 import java.text.NumberFormat
 
