@@ -33,7 +33,7 @@ class StageHandshake(private val tokenStore: TokenStore, private val stageIdenti
         data class Capabilities(val video: Boolean, val audio: Boolean)
     }
 
-    private class EventEnvelope(val v2: Event)
+    private class EventEnvelope(val v2: Event?)
 
     init {
         connect()
@@ -46,7 +46,7 @@ class StageHandshake(private val tokenStore: TokenStore, private val stageIdenti
         launch {
             webSocketController?.channel?.consumeEach {
                 val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
-                val event = eventEnvelope.v2
+                val event = eventEnvelope.v2 ?: return@consumeEach
                 if (event == lastEvent) return@consumeEach
                 lastEvent = event
                 channel.send(event)

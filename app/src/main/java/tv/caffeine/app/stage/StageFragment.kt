@@ -162,7 +162,9 @@ class StageFragment : CaffeineFragment() {
                 Timber.d("StreamState - Removed stream $streamId, ${stream?.type}, ${stream?.label}")
                 peerConnections.remove(streamId)?.close()
                 videoTracks.remove(streamId)?.apply {
-                    removeSink(renderers[sinks[streamId]])
+                    val renderer = renderers[sinks[streamId]] ?: return@apply
+                    removeSink(renderer)
+                    renderer.visibility = View.INVISIBLE
 //                    dispose()
                 }
                 audioTracks.remove(streamId)//?.dispose()
@@ -196,6 +198,7 @@ class StageFragment : CaffeineFragment() {
                     sinks[streamId] = streamType
                     renderers[streamType]?.let {
                         configureRenderer(it, stream, videoTrack)
+                        it.visibility = View.VISIBLE
                     }
                 }
             }
