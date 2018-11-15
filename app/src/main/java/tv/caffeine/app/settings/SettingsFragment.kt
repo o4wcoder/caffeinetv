@@ -82,14 +82,14 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     private fun configureSocialAccounts() {
         findPreference("manage_twitter_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer {  user ->
-                val twitter = user.connectedAccounts["twitter"]
+                val twitter = user.connectedAccounts?.get("twitter")
                 @StringRes val title = if (twitter != null) R.string.disconnect_twitter_account else R.string.connect_twitter_account
                 preference.title = getString(title)
             })
         }
         findPreference("manage_facebook_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer {  user ->
-                val twitter = user.connectedAccounts["facebook"]
+                val twitter = user.connectedAccounts?.get("facebook")
                 @StringRes val title = if (twitter != null) R.string.disconnect_facebook_account else R.string.connect_facebook_account
                 preference.title = getString(title)
             })
