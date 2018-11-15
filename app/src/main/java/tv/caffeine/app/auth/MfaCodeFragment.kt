@@ -24,9 +24,10 @@ class MfaCodeFragment : CaffeineFragment() {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var gson: Gson
-    private lateinit var binding: FragmentMfaCodeBinding
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var authWatcher: AuthWatcher
+
+    private lateinit var binding: FragmentMfaCodeBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,7 +37,6 @@ class MfaCodeFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.submitMfaCodeButton.setOnClickListener { submitMfaCode() }
         binding.mfaCodeEditText.setOnActionGo { submitMfaCode() }
     }

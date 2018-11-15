@@ -13,9 +13,11 @@ import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
 class TransactionHistoryFragment : CaffeineFragment() {
-    private lateinit var binding: tv.caffeine.app.databinding.FragmentTransactionHistoryBinding
-    private val viewModel by lazy { viewModelProvider.get(TransactionHistoryViewModel::class.java) }
+
     @Inject lateinit var adapter: TransactionHistoryAdapter
+
+    private lateinit var binding: FragmentTransactionHistoryBinding
+    private val viewModel by lazy { viewModelProvider.get(TransactionHistoryViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -28,7 +30,6 @@ class TransactionHistoryFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         viewModel.transactionHistory.observe(viewLifecycleOwner, Observer { result ->
             Timber.d("Got transaction history results")
             handle(result, view) { paymentsEnvelope ->
@@ -38,5 +39,4 @@ class TransactionHistoryFragment : CaffeineFragment() {
             }
         })
     }
-
 }

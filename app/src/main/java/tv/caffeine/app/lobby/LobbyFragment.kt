@@ -21,6 +21,7 @@ class LobbyFragment : CaffeineFragment() {
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var lobbyAdapter: LobbyAdapter
     @Inject lateinit var tokenStore: TokenStore
+
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
     private lateinit var binding: FragmentLobbyBinding
 

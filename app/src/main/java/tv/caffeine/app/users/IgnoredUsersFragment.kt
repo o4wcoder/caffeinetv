@@ -21,8 +21,9 @@ import javax.inject.Inject
 
 class IgnoredUsersFragment : CaffeineFragment() {
 
-    private val viewModel by lazy { viewModelProvider.get(IgnoredUsersViewModel::class.java) }
     @Inject lateinit var caidListAdapter: CaidListAdapter
+
+    private val viewModel by lazy { viewModelProvider.get(IgnoredUsersViewModel::class.java) }
     private lateinit var binding: UserListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +38,6 @@ class IgnoredUsersFragment : CaffeineFragment() {
             caidListAdapter.submitList(it)
         })
     }
-
 }
 
 class IgnoredUsersViewModel(private val tokenStore: TokenStore, private val usersService: UsersService) : CaffeineViewModel() {

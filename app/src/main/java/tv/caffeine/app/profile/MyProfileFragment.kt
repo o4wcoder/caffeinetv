@@ -29,6 +29,7 @@ import javax.inject.Inject
 private const val REQUEST_GET_PHOTO = 1
 
 class MyProfileFragment : CaffeineFragment() {
+
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var followManager: FollowManager
@@ -53,7 +54,6 @@ class MyProfileFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
         binding.signOutButton.setOnClickListener { signOut() }
         binding.infoButton.setOnClickListener {

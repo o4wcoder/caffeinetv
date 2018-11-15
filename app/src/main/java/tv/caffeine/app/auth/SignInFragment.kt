@@ -21,11 +21,13 @@ import tv.caffeine.app.ui.setOnActionGo
 import javax.inject.Inject
 
 class SignInFragment : CaffeineFragment() {
+
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var gson: Gson
     @Inject lateinit var tokenStore: TokenStore
-    private lateinit var binding: FragmentSignInBinding
     @Inject lateinit var authWatcher: AuthWatcher
+
+    private lateinit var binding: FragmentSignInBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -35,7 +37,6 @@ class SignInFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.forgotButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
         binding.signInButton.setOnClickListener { login() }
         binding.passwordEditText.setOnActionGo { login() }

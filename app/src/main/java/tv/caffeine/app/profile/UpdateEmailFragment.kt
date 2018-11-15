@@ -11,6 +11,7 @@ import tv.caffeine.app.databinding.FragmentUpdateEmailBinding
 import tv.caffeine.app.ui.CaffeineFragment
 
 class UpdateEmailFragment : CaffeineFragment() {
+
     private lateinit var binding: FragmentUpdateEmailBinding
     private val viewModel by lazy { viewModelProvider.get(UpdateProfileViewModel::class.java) }
 

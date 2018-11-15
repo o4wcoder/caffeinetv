@@ -14,9 +14,10 @@ import javax.inject.Inject
 
 class ExploreFragment : CaffeineFragment() {
 
-    private val viewModel by lazy { viewModelProvider.get(ExploreViewModel::class.java) }
     @Inject lateinit var exploreAdapter: ExploreAdapter
     @Inject lateinit var searchUsersAdapter: SearchUsersAdapter
+
+    private val viewModel by lazy { viewModelProvider.get(ExploreViewModel::class.java) }
     private lateinit var binding: FragmentExploreBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -47,5 +48,4 @@ class ExploreFragment : CaffeineFragment() {
         binding.exploreRecyclerView.adapter = searchUsersAdapter
         binding.viewModel = viewModel
     }
-
 }

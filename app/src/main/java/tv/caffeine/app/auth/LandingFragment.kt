@@ -26,14 +26,15 @@ import javax.inject.Inject
 
 
 class LandingFragment : CaffeineFragment() {
+
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
-    private lateinit var binding: FragmentLandingBinding
-
     @Inject lateinit var oauthService: OAuthService
-    private lateinit var callbackManager: CallbackManager
     @Inject lateinit var gson: Gson
     @Inject lateinit var authWatcher: AuthWatcher
+
+    private lateinit var binding: FragmentLandingBinding
+    private lateinit var callbackManager: CallbackManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -43,7 +44,6 @@ class LandingFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.newAccountButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signUpFragment))
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         callbackManager = CallbackManager.Factory.create()

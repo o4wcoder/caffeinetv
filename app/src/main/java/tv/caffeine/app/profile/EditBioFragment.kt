@@ -9,7 +9,8 @@ import tv.caffeine.app.databinding.FragmentEditBioBinding
 import tv.caffeine.app.ui.CaffeineFragment
 
 class EditBioFragment : CaffeineFragment() {
-    lateinit var binding: FragmentEditBioBinding
+
+    private lateinit var binding: FragmentEditBioBinding
     private val viewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,5 +28,4 @@ class EditBioFragment : CaffeineFragment() {
             viewModel.updateBio(updatedBio)
         }
     }
-
 }

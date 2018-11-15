@@ -27,6 +27,18 @@ import tv.caffeine.app.ui.showKeyboard
 import javax.inject.Inject
 
 class StageFragment : CaffeineFragment() {
+
+    @Inject lateinit var realtime: Realtime
+    @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
+    @Inject lateinit var eglBase: EglBase
+    @Inject lateinit var tokenStore: TokenStore
+    @Inject lateinit var eventsService: EventsService
+    @Inject lateinit var followManager: FollowManager
+    @Inject lateinit var broadcastsService: BroadcastsService
+    @Inject lateinit var usersService: UsersService
+    @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
+
+    private lateinit var binding: FragmentStageBinding
     private lateinit var broadcaster: String
     private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
@@ -37,22 +49,8 @@ class StageFragment : CaffeineFragment() {
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
     private var streams: Map<String, StageHandshake.Stream> = mapOf()
-
-    @Inject lateinit var realtime: Realtime
-    @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
-    @Inject lateinit var eglBase: EglBase
-    @Inject lateinit var tokenStore: TokenStore
-    @Inject lateinit var eventsService: EventsService
-    @Inject lateinit var followManager: FollowManager
-    @Inject lateinit var broadcastsService: BroadcastsService
-    @Inject lateinit var usersService: UsersService
-
-    @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
-
     private val latestMessages: MutableList<Message> = mutableListOf()
     private var broadcastName: String? = null
-
-    lateinit var binding: FragmentStageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,8 +90,6 @@ class StageFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         title = broadcastName
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
         initSurfaceViewRenderer()
@@ -102,8 +98,8 @@ class StageFragment : CaffeineFragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         deinitSurfaceViewRenderers()
+        super.onDestroyView()
     }
 
     override fun onAttach(context: Context) {

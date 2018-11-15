@@ -31,7 +31,6 @@ class GoldAndCreditsFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val numberFormat = NumberFormat.getIntegerInstance()
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
             binding.goldBalanceTextView.text = numberFormat.format(wallet.gold)

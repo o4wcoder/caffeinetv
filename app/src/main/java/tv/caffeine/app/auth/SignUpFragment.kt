@@ -21,8 +21,9 @@ class SignUpFragment : CaffeineFragment() {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
-    private lateinit var binding: tv.caffeine.app.databinding.FragmentSignUpBinding
     @Inject lateinit var gson: Gson
+
+    private lateinit var binding: FragmentSignUpBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,7 +33,6 @@ class SignUpFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.signUpButton.setOnClickListener { signUp() }
         arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.let { oauthCallbackResult ->
             binding.usernameEditText.setText(oauthCallbackResult.possibleUsername)

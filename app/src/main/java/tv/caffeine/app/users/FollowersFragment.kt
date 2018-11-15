@@ -20,8 +20,9 @@ import javax.inject.Inject
 
 class FollowersFragment : CaffeineFragment() {
 
-    private val viewModel by lazy { viewModelProvider.get(FollowersViewModel::class.java) }
     @Inject lateinit var caidListAdapter: CaidListAdapter
+
+    private val viewModel by lazy { viewModelProvider.get(FollowersViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,7 +35,6 @@ class FollowersFragment : CaffeineFragment() {
         })
         return binding.root
     }
-
 }
 
 class FollowersViewModel(private val usersService: UsersService) : CaffeineViewModel() {

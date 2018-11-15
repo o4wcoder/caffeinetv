@@ -20,11 +20,11 @@ import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
 class ForgotFragment : CaffeineFragment() {
+
     @Inject lateinit var accountsService: AccountsService
+    @Inject lateinit var gson: Gson
 
     private lateinit var binding: FragmentForgotBinding
-
-    @Inject lateinit var gson: Gson
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,7 +34,6 @@ class ForgotFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.sendEmailButton.setOnClickListener { sendForgotPasswordEmail() }
     }
 

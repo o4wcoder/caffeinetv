@@ -12,8 +12,9 @@ import javax.inject.Inject
 
 class NotificationsFragment : CaffeineFragment() {
 
-    private lateinit var viewModel: NotificationsViewModel
     @Inject lateinit var caidListAdapter: CaidListAdapter
+
+    private lateinit var viewModel: NotificationsViewModel
     private lateinit var binding: UserListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -29,5 +30,4 @@ class NotificationsFragment : CaffeineFragment() {
             caidListAdapter.submitList(it)
         })
     }
-
 }
