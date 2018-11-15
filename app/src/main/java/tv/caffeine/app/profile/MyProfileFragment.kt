@@ -18,7 +18,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
-import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
@@ -115,8 +114,7 @@ class MyProfileFragment : CaffeineFragment() {
 
     private fun signOut() {
         tokenStore.clear()
-        findNavController().popBackStack()
-        findNavController().navigate(R.id.action_global_landingFragment)
+        navigateToLanding()
         accountsService.signOut().enqueue(object : Callback<Unit?> {
             override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                 Timber.e(t, "Failed to sign out")

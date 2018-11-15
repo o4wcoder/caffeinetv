@@ -3,6 +3,7 @@ package tv.caffeine.app.ui
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
@@ -11,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import timber.log.Timber
+import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.model.CaffeineResult
@@ -50,8 +52,7 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
 
     fun <T> handleError(result: CaffeineResult.Error<T>, view: View) {
         if (result.error.isTokenExpirationError()) {
-            findNavController().popBackStack()
-            findNavController().navigate(R.id.action_global_landingFragment)
+            navigateToLanding()
         } else {
             Snackbar.make(view, "Error ${result.error}", Snackbar.LENGTH_SHORT).show()
         }
@@ -63,4 +64,9 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
         Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
     }
 
+    fun navigateToLanding() {
+        val action = LobbyDirections.ActionGlobalLandingFragment()
+        val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
+        findNavController().navigate(action, navOptions)
+    }
 }
