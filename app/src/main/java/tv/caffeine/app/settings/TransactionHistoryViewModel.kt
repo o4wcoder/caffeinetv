@@ -8,10 +8,12 @@ import tv.caffeine.app.api.PaymentsEnvelope
 import tv.caffeine.app.api.TransactionHistoryPayload
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 
 class TransactionHistoryViewModel(
+        dispatchConfig: DispatchConfig,
         private val transactionHistoryUseCase: TransactionHistoryUseCase
-): CaffeineViewModel() {
+): CaffeineViewModel(dispatchConfig) {
     private val _transactionHistory = MutableLiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>>()
     val transactionHistory: LiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>> = Transformations.map(_transactionHistory) { it }
 

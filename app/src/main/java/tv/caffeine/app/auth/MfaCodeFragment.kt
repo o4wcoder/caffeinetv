@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -51,12 +49,10 @@ class MfaCodeFragment : CaffeineFragment() {
             val mfaCode = MfaCode(binding.mfaCodeEditText.text.toString())
             val signInBody = SignInBody(Account(username, password, caid, loginToken), mfaCode)
             val response = accountsService.signIn(signInBody).await()
-            withContext(Dispatchers.Main) {
-                val signInResult = response.body()
-                when {
-                    response.isSuccessful && signInResult != null -> onSuccess(signInResult)
-                    else -> onError(response)
-                }
+            val signInResult = response.body()
+            when {
+                response.isSuccessful && signInResult != null -> onSuccess(signInResult)
+                else -> onError(response)
             }
         }
     }

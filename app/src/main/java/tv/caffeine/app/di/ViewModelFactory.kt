@@ -18,9 +18,11 @@ import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
+import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class ViewModelFactory @Inject constructor(
+        private val dispatchConfig: DispatchConfig,
         private val loadLobbyUseCase: LoadLobbyUseCase,
         private val findBroadcastersUseCase: FindBroadcastersUseCase,
         private val usersService: UsersService,
@@ -38,20 +40,20 @@ class ViewModelFactory @Inject constructor(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return when {
-            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(loadLobbyUseCase) as T
-            modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(findBroadcastersUseCase)
-            modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(usersService, tokenStore)
-            modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(paymentsClientService)
-            modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(paymentsClientService)
-            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> ProfileViewModel(followManager)
-            modelClass.isAssignableFrom(IgnoredUsersViewModel::class.java) -> IgnoredUsersViewModel(tokenStore, usersService)
-            modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(usersService)
-            modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(usersService)
-            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(tokenStore, followManager)
-            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(usersService, tokenStore, followManager, uploadAvatarUseCase, gson)
-            modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(transactionHistoryUseCase)
-            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
-            modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(updateEmailUseCase, updatePasswordUseCase)
+            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, loadLobbyUseCase) as T
+            modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
+            modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, usersService, tokenStore)
+            modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, paymentsClientService)
+            modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(dispatchConfig, paymentsClientService)
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> ProfileViewModel(dispatchConfig, followManager)
+            modelClass.isAssignableFrom(IgnoredUsersViewModel::class.java) -> IgnoredUsersViewModel(dispatchConfig, tokenStore, usersService)
+            modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(dispatchConfig, usersService)
+            modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(dispatchConfig, usersService)
+            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(dispatchConfig, tokenStore, followManager)
+            modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(dispatchConfig, usersService, tokenStore, followManager, uploadAvatarUseCase, gson)
+            modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
+            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
+            modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

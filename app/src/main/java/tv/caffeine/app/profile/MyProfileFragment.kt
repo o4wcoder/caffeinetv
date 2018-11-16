@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -90,11 +89,11 @@ class MyProfileFragment : CaffeineFragment() {
         }
         if (resultCode != Activity.RESULT_OK) return
         val uri = data?.data ?: return
-        launch(Dispatchers.IO) {
+        launch(dispatchConfig.io) {
             val inputStream = context?.contentResolver?.openInputStream(uri) ?: return@launch
             val bitmap = BitmapFactory.decodeStream(inputStream)
             inputStream.close()
-            withContext(Dispatchers.Main) {
+            withContext(dispatchConfig.main) {
                 viewModel.uploadAvatar(bitmap)
             }
         }

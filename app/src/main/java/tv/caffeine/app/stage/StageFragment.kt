@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import org.webrtc.*
@@ -60,12 +59,12 @@ class StageFragment : CaffeineFragment() {
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val broadcastDetails = userDetails.broadcastId?.let { broadcastsService.broadcastDetails(it) }
-            launch(Dispatchers.Main) {
+            launch(dispatchConfig.main) {
                 connectStreams(userDetails.stageId)
                 broadcastName = broadcastDetails?.await()?.broadcast?.name
                 title = broadcastName
             }
-            launch(Dispatchers.Main) {
+            launch(dispatchConfig.main) {
                 connectMessages(userDetails.stageId)
             }
         }
@@ -143,8 +142,8 @@ class StageFragment : CaffeineFragment() {
     }
 
     private suspend fun connectStreams(stageIdentifier: String) {
-        stageHandshake = StageHandshake(tokenStore, stageIdentifier)
-        streamController = StreamController(realtime, peerConnectionFactory, eventsService, stageIdentifier)
+        stageHandshake = StageHandshake(dispatchConfig, tokenStore, stageIdentifier)
+        streamController = StreamController(dispatchConfig, realtime, peerConnectionFactory, eventsService, stageIdentifier)
         stageHandshake?.channel?.consumeEach { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
             val newStreams = event.streams.associateBy { stream -> stream.id }
@@ -202,7 +201,7 @@ class StageFragment : CaffeineFragment() {
     }
 
     private suspend fun connectMessages(stageIdentifier: String) {
-        messageHandshake = MessageHandshake(tokenStore, stageIdentifier)
+        messageHandshake = MessageHandshake(dispatchConfig, tokenStore, stageIdentifier)
         messageHandshake?.channel?.consumeEach { message ->
             val oldInstance = latestMessages.find { it.id == message.id }
             if (oldInstance != null) {

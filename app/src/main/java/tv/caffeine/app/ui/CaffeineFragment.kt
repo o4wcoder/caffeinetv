@@ -9,7 +9,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
@@ -17,11 +16,14 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var dispatchConfig: DispatchConfig
+
     protected val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     protected lateinit var job: Job
@@ -30,7 +32,7 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job + exceptionHandler
+        get() = dispatchConfig.main + job + exceptionHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

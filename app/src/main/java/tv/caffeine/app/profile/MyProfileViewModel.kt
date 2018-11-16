@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,20 +13,22 @@ import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 
 class MyProfileViewModel(
+        dispatchConfig: DispatchConfig,
         private val usersService: UsersService,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
         private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val gson: Gson
-) : CaffeineViewModel() {
+) : CaffeineViewModel(dispatchConfig) {
 
     private val myProfile = MutableLiveData<User>()
 
     val username: LiveData<String> = Transformations.map(myProfile) { it.username }
     val name: LiveData<String> = Transformations.map(myProfile) { it.name }
-    val followersCount: LiveData<String> = Transformations.map(myProfile) { it.followingCount.toString() }
+    val followersCount: LiveData<String> = Transformations.map(myProfile) { it.followersCount.toString() }
     val followingCount: LiveData<String> = Transformations.map(myProfile) { it.followingCount.toString() }
     val bio: LiveData<String> = Transformations.map(myProfile) { it.bio }
 
@@ -60,7 +61,7 @@ class MyProfileViewModel(
 
     private suspend fun loadUserProfile(caid: String) = followManager.loadUserDetails(caid)
 
-    private suspend fun updateViewModel(user: User) = withContext(Dispatchers.Main) {
+    private suspend fun updateViewModel(user: User) = withContext(dispatchConfig.main) {
         myProfile.value = user
     }
 

@@ -6,11 +6,13 @@ import kotlinx.coroutines.launch
 import tv.caffeine.app.api.AccountUpdateResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 
 class UpdateProfileViewModel(
+        dispatchConfig: DispatchConfig,
         private val updateEmailUseCase: UpdateEmailUseCase,
         private val updatePasswordUseCase: UpdatePasswordUseCase
-) : CaffeineViewModel() {
+) : CaffeineViewModel(dispatchConfig) {
 
     private val update = MutableLiveData<CaffeineResult<AccountUpdateResult>>()
 

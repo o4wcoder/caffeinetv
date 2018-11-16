@@ -2,14 +2,14 @@ package tv.caffeine.app.ui
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import tv.caffeine.app.util.DispatchConfig
 import kotlin.coroutines.CoroutineContext
 
-open class CaffeineViewModel : ViewModel(), CoroutineScope {
+open class CaffeineViewModel(val dispatchConfig: DispatchConfig) : ViewModel(), CoroutineScope {
     private val job = Job()
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + dispatchConfig.main
 
     override fun onCleared() {
         super.onCleared()

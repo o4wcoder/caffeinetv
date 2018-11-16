@@ -7,9 +7,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.api.*
+import tv.caffeine.app.util.DispatchConfig
 import java.util.concurrent.TimeUnit
 
 class StreamController(
+        private val dispatchConfig: DispatchConfig,
         private val realtime: Realtime,
         private val peerConnectionFactory: PeerConnectionFactory,
         private val eventsService: EventsService,
@@ -101,7 +103,7 @@ class StreamController(
                             val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
                             val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
                             callback(peerConnection, videoTrack, audioTrack)
-                            heartbeatJobs.add(GlobalScope.launch(Dispatchers.Default) {
+                            heartbeatJobs.add(GlobalScope.launch(dispatchConfig.main) {
                                 val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
                                 while (isActive) {
                                     repeat(5) {

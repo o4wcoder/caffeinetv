@@ -7,9 +7,13 @@ import kotlinx.coroutines.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 import java.util.concurrent.TimeUnit
 
-class LobbyViewModel(private val loadLobbyUseCase: LoadLobbyUseCase) : CaffeineViewModel() {
+class LobbyViewModel(
+        dispatchConfig: DispatchConfig,
+        private val loadLobbyUseCase: LoadLobbyUseCase
+) : CaffeineViewModel(dispatchConfig) {
     private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
 
     val lobby: LiveData<CaffeineResult<Lobby>> = Transformations.map(_lobby) { it }

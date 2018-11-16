@@ -8,15 +8,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class IgnoredUsersFragment : CaffeineFragment() {
@@ -40,7 +39,11 @@ class IgnoredUsersFragment : CaffeineFragment() {
     }
 }
 
-class IgnoredUsersViewModel(private val tokenStore: TokenStore, private val usersService: UsersService) : CaffeineViewModel() {
+class IgnoredUsersViewModel(
+        dispatchConfig: DispatchConfig,
+        private val tokenStore: TokenStore,
+        private val usersService: UsersService
+) : CaffeineViewModel(dispatchConfig) {
 
     private val _ignoredUsers = MutableLiveData<List<CaidRecord.IgnoreRecord>>()
 
@@ -54,9 +57,7 @@ class IgnoredUsersViewModel(private val tokenStore: TokenStore, private val user
         val caid = tokenStore.caid ?: return
         launch {
             val list = usersService.listIgnoredUsers(caid).await()
-            withContext(Dispatchers.Main) {
-                _ignoredUsers.value = list
-            }
+            _ignoredUsers.value = list
         }
     }
 

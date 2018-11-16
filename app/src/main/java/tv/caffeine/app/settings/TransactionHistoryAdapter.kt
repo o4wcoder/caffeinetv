@@ -6,7 +6,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
@@ -22,12 +24,14 @@ import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class TransactionHistoryAdapter @Inject constructor(
+        private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
         @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
@@ -42,7 +46,7 @@ class TransactionHistoryAdapter @Inject constructor(
 ), CoroutineScope {
     private val job = Job()
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + dispatchConfig.main
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionHistoryViewHolder {
         val binding = TransactionHistoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -89,11 +93,9 @@ class TransactionHistoryViewHolder(
         job = scope.launch {
             userCaid?.let { caid ->
                 val user = followManager.userDetails(caid) ?: return@launch
-                withContext(Dispatchers.Main) {
-                    user.configure(binding.avatarImageView, binding.usernameTextView,
-                            null, followManager, false,
-                            R.dimen.avatar_size, followedTheme, notFollowedTheme)
-                }
+                user.configure(binding.avatarImageView, binding.usernameTextView,
+                        null, followManager, false,
+                        R.dimen.avatar_size, followedTheme, notFollowedTheme)
             }
         }
     }

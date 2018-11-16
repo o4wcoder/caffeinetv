@@ -84,12 +84,10 @@ class LandingFragment : CaffeineFragment() {
         val loginToken = oauthCallbackResult.loginToken
         val signInBody = SignInBody(Account(null, null, caid, loginToken))
         val response = accountsService.signIn(signInBody).await()
-        withContext(Dispatchers.Main) {
-            val signInResult = response.body()
-            when {
-                response.isSuccessful && signInResult != null -> onSuccess(signInResult)
-                else -> onError(response)
-            }
+        val signInResult = response.body()
+        when {
+            response.isSuccessful && signInResult != null -> onSuccess(signInResult)
+            else -> onError(response)
         }
     }
 

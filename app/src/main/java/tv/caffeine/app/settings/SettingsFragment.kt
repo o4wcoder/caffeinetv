@@ -13,9 +13,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.User
@@ -23,6 +21,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector {
@@ -119,9 +118,10 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
 }
 
 class SettingsViewModel(
+        dispatchConfig: DispatchConfig,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager
-) : CaffeineViewModel() {
+) : CaffeineViewModel(dispatchConfig) {
     private val _userDetails = MutableLiveData<User>()
     val userDetails: LiveData<User> = Transformations.map(_userDetails) { it }
 
@@ -133,9 +133,7 @@ class SettingsViewModel(
         val caid = tokenStore.caid ?: return
         launch {
             val userDetails = followManager.userDetails(caid)
-            withContext(Dispatchers.Main) {
-                _userDetails.value = userDetails
-            }
+            _userDetails.value = userDetails
         }
     }
 }

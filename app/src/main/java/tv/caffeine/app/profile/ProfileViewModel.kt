@@ -3,16 +3,18 @@ package tv.caffeine.app.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.isOnline
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 
-class ProfileViewModel(val followManager: FollowManager) : CaffeineViewModel() {
+class ProfileViewModel(
+        dispatchConfig: DispatchConfig,
+        val followManager: FollowManager
+) : CaffeineViewModel(dispatchConfig) {
     private val user = MutableLiveData<User>()
     private val broadcast = MutableLiveData<Broadcast>()
 
@@ -32,10 +34,8 @@ class ProfileViewModel(val followManager: FollowManager) : CaffeineViewModel() {
         launch {
             val userDetails = followManager.userDetails(caid) ?: return@launch
             val broadcastDetails = followManager.broadcastDetails(userDetails)
-            withContext(Dispatchers.Main) {
-                user.value = userDetails
-                broadcast.value = if (broadcastDetails?.isOnline() == true) broadcastDetails else null
-            }
+            user.value = userDetails
+            broadcast.value = if (broadcastDetails?.isOnline() == true) broadcastDetails else null
         }
     }
 

@@ -1,6 +1,7 @@
 package tv.caffeine.app.domain
 
 import android.content.res.Resources
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
@@ -9,6 +10,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.model.CaffeineResult
@@ -16,6 +18,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.profile.UpdatePasswordUseCase
 
 class UpdatePasswordUseCaseTests {
+    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var subject: UpdatePasswordUseCase
 

@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import okhttp3.*
 import timber.log.Timber
+import tv.caffeine.app.util.DispatchConfig
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -15,7 +16,12 @@ private const val STATUS_CODE_NORMAL_CLOSURE = 1000
 private const val HEALZ = "\"HEALZ\""
 private const val THANKS = "\"THANKS\""
 
-class WebSocketController(private val tag: String, private val url: String, private val headers: String): WebSocketListener(), CoroutineScope {
+class WebSocketController(
+        private val dispatchConfig: DispatchConfig,
+        private val tag: String,
+        private val url: String,
+        private val headers: String
+): WebSocketListener(), CoroutineScope {
 
     private var webSocket: WebSocket? = null
 
@@ -24,7 +30,7 @@ class WebSocketController(private val tag: String, private val url: String, priv
 
     private val job = Job()
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + dispatchConfig.main
 
     val channel = Channel<String>()
 

@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
 import tv.caffeine.app.session.FollowManager
@@ -26,13 +24,11 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
         super.onCreate(savedInstanceState)
         val args = FriendsWatchingFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
-        launch(Dispatchers.Default) {
+        launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val broadcastId = userDetails.broadcastId ?: return@launch
             val friendsWatching = broadcastsService.friendsWatching(broadcastId)
-            withContext(Dispatchers.Main) {
-                usersAdapter.submitList(friendsWatching.await())
-            }
+            usersAdapter.submitList(friendsWatching.await())
         }
     }
 

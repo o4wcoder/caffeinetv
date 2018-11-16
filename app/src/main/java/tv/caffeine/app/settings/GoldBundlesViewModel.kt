@@ -9,11 +9,13 @@ import tv.caffeine.app.api.GoldBundlesPayload
 import tv.caffeine.app.api.PaymentsEnvelope
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 
 class GoldBundlesViewModel(
+        dispatchConfig: DispatchConfig,
         private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
         private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase
-) : CaffeineViewModel() {
+) : CaffeineViewModel(dispatchConfig) {
     private val _goldBundles = MutableLiveData<CaffeineResult<PaymentsEnvelope<GoldBundlesPayload>>>()
     val goldBundles: LiveData<CaffeineResult<PaymentsEnvelope<GoldBundlesPayload>>> = Transformations.map(_goldBundles) { it }
 

@@ -11,7 +11,10 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
@@ -19,12 +22,14 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class CaidListAdapter @Inject constructor(
+        private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
         @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
@@ -40,7 +45,7 @@ class CaidListAdapter @Inject constructor(
         Timber.e(throwable, "Coroutine exception")
     }
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job + exceptionHandler
+        get() = dispatchConfig.main + job + exceptionHandler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CaidViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
@@ -70,11 +75,9 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
         clear()
         job = scope.launch {
             val user = followManager.userDetails(item.caid) ?: return@launch
-            withContext(Dispatchers.Main) {
-                followButton.isVisible = item !is CaidRecord.IgnoreRecord
-                val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton
-                user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
-            }
+            followButton.isVisible = item !is CaidRecord.IgnoreRecord
+            val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton
+            user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
         }
         itemView.setOnClickListener {
             val action = LobbyDirections.actionGlobalProfileFragment(item.caid)

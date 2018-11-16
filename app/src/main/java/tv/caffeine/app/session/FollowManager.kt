@@ -1,6 +1,9 @@
 package tv.caffeine.app.session
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -10,12 +13,14 @@ import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.util.DispatchConfig
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FollowManager @Inject constructor(
+        private val dispatchConfig: DispatchConfig,
         private val usersService: UsersService,
         private val broadcastsService: BroadcastsService,
         private val tokenStore: TokenStore
@@ -35,11 +40,11 @@ class FollowManager @Inject constructor(
 
     fun refreshFollowedUsers() {
         refreshFollowedUsersJob?.cancel()
-        refreshFollowedUsersJob = GlobalScope.launch(Dispatchers.Default) {
+        refreshFollowedUsersJob = GlobalScope.launch(dispatchConfig.main) {
             repeat(5) {
                 tokenStore.caid?.let { caid ->
                     val result = usersService.listFollowing(caid).await()
-                    launch(Dispatchers.Main) { followedUsers[caid] = (result.map { it.caid }).toSet() }
+                    launch(dispatchConfig.main) { followedUsers[caid] = (result.map { it.caid }).toSet() }
                     return@launch
                 }
                 delay(TimeUnit.SECONDS.toMillis(1))

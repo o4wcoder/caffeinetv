@@ -8,14 +8,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class FollowingFragment : CaffeineFragment() {
@@ -36,7 +35,10 @@ class FollowingFragment : CaffeineFragment() {
     }
 }
 
-class FollowingViewModel(private val usersService: UsersService) : CaffeineViewModel() {
+class FollowingViewModel(
+        dispatchConfig: DispatchConfig,
+        private val usersService: UsersService
+) : CaffeineViewModel(dispatchConfig) {
 
     private val _following = MutableLiveData<List<CaidRecord.FollowRecord>>()
 
@@ -51,9 +53,7 @@ class FollowingViewModel(private val usersService: UsersService) : CaffeineViewM
     private fun load() {
         launch {
             val list = usersService.listFollowing(caid).await()
-            withContext(Dispatchers.Main) {
-                _following.value = list
-            }
+            _following.value = list
         }
     }
 
