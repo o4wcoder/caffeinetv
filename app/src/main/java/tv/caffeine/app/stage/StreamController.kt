@@ -1,52 +1,49 @@
 package tv.caffeine.app.stage
 
+import com.google.gson.Gson
 import kotlinx.coroutines.*
 import org.webrtc.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.webrtc.createAnswer
+import tv.caffeine.app.webrtc.getStats
+import tv.caffeine.app.webrtc.setLocalDescription
+import tv.caffeine.app.webrtc.setRemoteDescription
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
+
+class ConnectionInfo(val peerConnection: PeerConnection, val videoTrack: VideoTrack?, val audioTrack: AudioTrack?)
 
 class StreamController(
         private val dispatchConfig: DispatchConfig,
         private val realtime: Realtime,
         private val peerConnectionFactory: PeerConnectionFactory,
         private val eventsService: EventsService,
+        private val gson: Gson,
         private val stageIdentifier: String
-) {
-    private val heartbeatJobs: MutableList<Job> = mutableListOf()
+) : CoroutineScope {
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchConfig.main + job
     private var closed = false
 
-    fun connect(stream: StageHandshake.Stream, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
-        realtime.createViewer(stream.id).enqueue(object : Callback<CreateViewerResult?> {
-            override fun onFailure(call: Call<CreateViewerResult?>?, t: Throwable?) {
-                Timber.e(t, "Failed to create viewer for stream ID: ${stream.id}")
-            }
-
-            override fun onResponse(call: Call<CreateViewerResult?>?, response: retrofit2.Response<CreateViewerResult?>?) {
-                Timber.d("Created viewer for stream ID ${stream.id}, ${response?.body()}, ${call?.request()?.headers()}, ${response?.headers()}")
-                if (closed) {
-                    Timber.e(Exception("VIEW"), "Viewer created after closing the stream controller")
-                    return
-                }
-                response?.body()?.let {
-                    Timber.d("Got offer ${it.offer}")
-                    handleOffer(it.offer, it.id, it.signed_payload, callback)
-                }
-            }
-        })
+    suspend fun connect(stream: StageHandshake.Stream) : ConnectionInfo? {
+        val result = runCatching { realtime.createViewer(stream.id).awaitAndParseErrors(gson) }.getOrElse { return null }
+        return when(result) {
+            is CaffeineResult.Success -> handleOffer(result.value.offer, result.value.id, result.value.signed_payload)
+            is CaffeineResult.Error -> Timber.e(Exception("Failed to create viewer for stream ${stream.id}")).run { null }
+            is CaffeineResult.Failure -> Timber.e(result.exception).run { null }
+        }
     }
 
     fun close() {
+        job.cancel()
         closed = true
-        Timber.d("Canceling ${heartbeatJobs.count()} heartbeat jobs")
-        heartbeatJobs.forEach { it.cancel() }
     }
 
-    fun handleOffer(offer: String, viewerId: String, signedPayload: String, callback: (PeerConnection, VideoTrack?, AudioTrack?) -> Unit) {
+    private suspend fun handleOffer(offer: String, viewerId: String, signedPayload: String): ConnectionInfo? {
         val mediaConstraints = MediaConstraints()
         val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, offer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
@@ -61,7 +58,16 @@ class StreamController(
                         "mode" to "viewer", // TODO: support broadcast
                         "viewer_id" to viewerId
                 )
-                eventsService.sendEvent(EventBody("ice_connection_state", data = data))
+                launch {
+                    val result = runCatching {
+                        eventsService.sendEvent(EventBody("ice_connection_state", data = data)).awaitAndParseErrors(gson)
+                    }.getOrElse { return@launch }
+                    when (result) {
+                        is CaffeineResult.Success -> Timber.d("ICE connection state event sent, ${result.value}")
+                        is CaffeineResult.Error -> Timber.e(Exception("Failed to send ICE connection state event"))
+                        is CaffeineResult.Failure -> Timber.e(result.exception)
+                    }
+                }
             }
 
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
@@ -73,93 +79,82 @@ class StreamController(
                 if (iceCandidate == null) return
                 val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
                 val body = IceCandidatesBody(arrayOf(candidate), signedPayload)
-                realtime.sendIceCandidate(viewerId, body).enqueue(object : Callback<Void?> {
-                    override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                        Timber.e(t, "Failed to send ICE candidates")
+                launch {
+                    val result = runCatching { realtime.sendIceCandidate(viewerId, body).awaitAndParseErrors(gson) }.getOrElse { return@launch }
+                    when (result) {
+                        is CaffeineResult.Success -> Timber.d("ICE candidate sent, ${result.value}")
+                        is CaffeineResult.Error -> Timber.e(Exception("Failed to send ICE candidate"))
+                        is CaffeineResult.Failure -> Timber.e(result.exception)
                     }
-
-                    override fun onResponse(call: Call<Void?>?, response: retrofit2.Response<Void?>?) {
-                        Timber.d("ICE candidates sent, $response")
-                    }
-                })
-            }
-        }
-        val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, observer)
-                ?: return
-        peerConnection.setRemoteDescription(sessionDescription) {
-            peerConnection.createAnswer(mediaConstraints) { localSessionDescription ->
-                if (localSessionDescription == null) return@createAnswer
-                peerConnection.setLocalDescription(localSessionDescription) {
-                    Timber.d("LocalDesc: Success! $localSessionDescription - ${localSessionDescription.type} - ${localSessionDescription.description}")
-                    val answer = localSessionDescription.description
-                    realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).enqueue(object : Callback<Void?> {
-                        override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                            Timber.e(t, "sendAnswer failed")
-                        }
-
-                        override fun onResponse(call: Call<Void?>?, response: retrofit2.Response<Void?>?) {
-                            Timber.d("sendAnswer succeeded $response, ${response?.body()}")
-                            val receivers = peerConnection.receivers
-                            val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
-                            val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
-                            callback(peerConnection, videoTrack, audioTrack)
-                            heartbeatJobs.add(GlobalScope.launch(dispatchConfig.main) {
-                                val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
-                                while (isActive) {
-                                    repeat(5) {
-                                        if (closed) return@launch
-                                        peerConnection.getStats { stats ->
-                                            val statsToSend = stats.statsMap
-                                                    .filter { relevantStats.contains(it.value.type) }
-                                                    .map {
-                                                        it.value.members.plus(
-                                                                mapOf(
-                                                                        "id" to it.value.id,
-                                                                        "timestamp" to (it.value.timestampUs / 1000.0),
-                                                                        "type" to it.value.type,
-                                                                        "kind" to it.value.id.substringBefore("_")
-                                                                )
-                                                        )
-                                                    }
-                                            val data = mapOf(
-                                                    "mode" to "viewer", // TODO: support broadcasts
-                                                    "stage_id" to stageIdentifier,
-                                                    "viewer_id" to viewerId,
-                                                    "stats" to statsToSend
-                                            )
-                                            eventsService.sendEvent(EventBody("webrtc_stats", data = data)).enqueue(object : Callback<Void?> {
-                                                override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                                                    Timber.e(t, "Failed to send the event")
-                                                }
-
-                                                override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
-                                                    Timber.d("Sent the event, got response $response")
-                                                    response?.body()?.let { body ->
-                                                        Timber.d("Got response body: $body")
-                                                    }
-                                                }
-                                            })
-                                        }
-                                        delay(TimeUnit.SECONDS.toMillis(3))
-                                    }
-                                    val heartbeatBody = HeartbeatBody(signedPayload)
-                                    realtime.sendHeartbeat(viewerId, heartbeatBody).enqueue(object : Callback<Void?> {
-                                        override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                                            Timber.e(t, "Failed to send a heartbeat")
-                                        }
-
-                                        override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
-                                            Timber.d("Sent heartbeat, got response $response")
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                    })
                 }
             }
         }
+        val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, observer) ?: return null
+        val result1 = peerConnection.setRemoteDescription(sessionDescription)
+        val localSessionDescription = peerConnection.createAnswer(mediaConstraints) ?: return peerConnection.disposeAndReturnNull()
+        val result2 = peerConnection.setLocalDescription(localSessionDescription)
+        Timber.d("LocalDesc: Success! $localSessionDescription - ${localSessionDescription.type} - ${localSessionDescription.description}")
+        val answer = localSessionDescription.description
+        val result = runCatching { realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).awaitAndParseErrors(gson) }.getOrNull() ?: return peerConnection.disposeAndReturnNull()
+        return when (result) {
+            is CaffeineResult.Success -> configureConnections(peerConnection, viewerId, signedPayload)
+            is CaffeineResult.Error -> Timber.e(Exception("sendAnswer failed")).run { peerConnection.disposeAndReturnNull() }
+            is CaffeineResult.Failure -> Timber.e(result.exception).run { peerConnection.disposeAndReturnNull() }
+        }
+    }
 
+    private fun PeerConnection.disposeAndReturnNull(): ConnectionInfo? {
+        dispose()
+        return null
+    }
+
+    private suspend fun configureConnections(peerConnection: PeerConnection, viewerId: String, signedPayload: String): ConnectionInfo {
+        val receivers = peerConnection.receivers
+        val videoTrack = receivers.find { it.track() is VideoTrack }?.track() as? VideoTrack
+        val audioTrack = receivers.find { it.track() is AudioTrack }?.track() as? AudioTrack
+        val connectionInfo = ConnectionInfo(peerConnection, videoTrack, audioTrack)
+        launch {
+            val relevantStats = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
+            while (isActive) {
+                repeat(5) {
+                    if (closed) return@launch
+                    val stats = peerConnection.getStats()
+                    val statsToSend = stats.statsMap
+                            .filter { relevantStats.contains(it.value.type) }
+                            .map {
+                                it.value.members.plus(
+                                        mapOf(
+                                                "id" to it.value.id,
+                                                "timestamp" to (it.value.timestampUs / 1000.0),
+                                                "type" to it.value.type,
+                                                "kind" to it.value.id.substringBefore("_")
+                                        )
+                                )
+                            }
+                    val data = mapOf(
+                            "mode" to "viewer", // TODO: support broadcasts
+                            "stage_id" to stageIdentifier,
+                            "viewer_id" to viewerId,
+                            "stats" to statsToSend
+                    )
+                    val sendEventResult = runCatching { eventsService.sendEvent(EventBody("webrtc_stats", data = data)).awaitAndParseErrors(gson) }.getOrElse { return@repeat }
+                    when(sendEventResult) {
+                        is CaffeineResult.Success -> Timber.d("Successfully sent event")
+                        is CaffeineResult.Error -> Timber.e(Exception("Error sending event webrtc_stats"))
+                        is CaffeineResult.Failure -> Timber.e(sendEventResult.exception)
+                    }
+                    delay(TimeUnit.SECONDS.toMillis(3))
+                }
+                val heartbeatBody = HeartbeatBody(signedPayload)
+                val sendHeartbeatResult = runCatching { realtime.sendHeartbeat(viewerId, heartbeatBody).awaitAndParseErrors(gson) }.getOrNull()
+                when(sendHeartbeatResult) {
+                    is CaffeineResult.Success -> Timber.d("Successfully sent heartbeat")
+                    is CaffeineResult.Error -> Timber.e(Exception("Error sending heartbeat"))
+                    is CaffeineResult.Failure -> Timber.e(sendHeartbeatResult.exception)
+                }
+            }
+        }
+        return connectionInfo
     }
 }
 
@@ -206,52 +201,6 @@ open class SimplePeerConnectionObserver : PeerConnection.Observer {
 
     override fun onAddTrack(receiver: RtpReceiver?, mediaStreams: Array<out MediaStream>?) {
         Timber.d("onAddTrack: $receiver, $mediaStreams")
-    }
-
-}
-
-inline fun PeerConnection.setRemoteDescription(sessionDescription: SessionDescription, crossinline callback: () -> Unit) {
-    setRemoteDescription(object : CafSdpObserver() {
-        override fun onSetSuccess() {
-            super.onSetSuccess()
-            callback()
-        }
-    }, sessionDescription)
-}
-
-inline fun PeerConnection.createAnswer(mediaConstraints: MediaConstraints, crossinline callback: (localSessionDescription: SessionDescription?) -> Unit) {
-    createAnswer(object : CafSdpObserver() {
-        override fun onCreateSuccess(localSessionDescription: SessionDescription?) {
-            super.onCreateSuccess(localSessionDescription)
-            callback(localSessionDescription)
-        }
-    }, mediaConstraints)
-}
-
-inline fun PeerConnection.setLocalDescription(sessionDescription: SessionDescription, crossinline callback: () -> Unit) {
-    setLocalDescription(object : CafSdpObserver() {
-        override fun onSetSuccess() {
-            super.onSetSuccess()
-            callback()
-        }
-    }, sessionDescription)
-}
-
-open class CafSdpObserver : SdpObserver {
-    override fun onCreateSuccess(sdp: SessionDescription?) {
-        Timber.d("CafSdpObserver Create success $sdp!")
-    }
-
-    override fun onSetSuccess() {
-        Timber.d("CafSdpObserver Set success!")
-    }
-
-    override fun onCreateFailure(error: String?) {
-        Timber.e("CafSdpObserver Create failure, error: $error")
-    }
-
-    override fun onSetFailure(error: String?) {
-        Timber.e("CafSdpObserver Set failure, error: $error")
     }
 
 }

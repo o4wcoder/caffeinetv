@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import org.webrtc.*
@@ -36,6 +37,7 @@ class StageFragment : CaffeineFragment() {
     @Inject lateinit var broadcastsService: BroadcastsService
     @Inject lateinit var usersService: UsersService
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
+    @Inject lateinit var gson: Gson
 
     private lateinit var binding: FragmentStageBinding
     private lateinit var broadcaster: String
@@ -143,7 +145,7 @@ class StageFragment : CaffeineFragment() {
 
     private suspend fun connectStreams(stageIdentifier: String) {
         stageHandshake = StageHandshake(dispatchConfig, tokenStore, stageIdentifier)
-        streamController = StreamController(dispatchConfig, realtime, peerConnectionFactory, eventsService, stageIdentifier)
+        streamController = StreamController(dispatchConfig, realtime, peerConnectionFactory, eventsService, gson, stageIdentifier)
         stageHandshake?.channel?.consumeEach { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
             val newStreams = event.streams.associateBy { stream -> stream.id }
@@ -184,17 +186,19 @@ class StageFragment : CaffeineFragment() {
                     }
             newStreams.values.filter { it.id in addedStreamIds }.forEach { stream ->
                 Timber.d("StreamState - Configuring new stream ${stream.id}, ${stream.type}, ${stream.label}")
-                streamController?.connect(stream) { peerConnection, videoTrack, audioTrack ->
-                    val streamId = stream.id
-                    val streamType = stream.type
-                    peerConnections[streamId] = peerConnection
-                    videoTrack?.let { videoTracks[streamId] = it }
-                    audioTrack?.let { audioTracks[streamId] = it }
-                    sinks[streamId] = streamType
-                    renderers[streamType]?.let {
-                        configureRenderer(it, stream, videoTrack)
-                        it.visibility = View.VISIBLE
-                    }
+                val connectionInfo = streamController?.connect(stream) ?: return@forEach
+                val peerConnection = connectionInfo.peerConnection
+                val videoTrack = connectionInfo.videoTrack
+                val audioTrack = connectionInfo.audioTrack
+                val streamId = stream.id
+                val streamType = stream.type
+                peerConnections[streamId] = peerConnection
+                videoTrack?.let { videoTracks[streamId] = it }
+                audioTrack?.let { audioTracks[streamId] = it }
+                sinks[streamId] = streamType
+                renderers[streamType]?.let {
+                    configureRenderer(it, stream, videoTrack)
+                    it.visibility = View.VISIBLE
                 }
             }
         }

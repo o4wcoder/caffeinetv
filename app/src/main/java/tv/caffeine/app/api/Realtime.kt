@@ -1,7 +1,7 @@
 package tv.caffeine.app.api
 
 import kotlinx.coroutines.Deferred
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -10,22 +10,22 @@ import tv.caffeine.app.api.model.Message
 
 interface Realtime {
     @POST("v2/broadcasts/streams/{streamId}/viewers")
-    fun createViewer(@Path("streamId") streamId: String, @Body body: CreateViewerBody = CreateViewerBody(true)): Call<CreateViewerResult>
+    fun createViewer(@Path("streamId") streamId: String, @Body body: CreateViewerBody = CreateViewerBody(true)): Deferred<Response<CreateViewerResult>>
 
     @POST("v2/broadcasts/streams")
-    fun initializeStream(@Body initBody: StreamInitBody): Call<StreamInitResult>
+    fun initializeStream(@Body initBody: StreamInitBody): Deferred<Response<StreamInitResult>>
 
     @PUT("v2/broadcasts/viewers/{viewerId}")
-    fun sendIceCandidate(@Path("viewerId") viewerId: String, @Body iceCandidates: IceCandidatesBody): Call<Void>
+    fun sendIceCandidate(@Path("viewerId") viewerId: String, @Body iceCandidates: IceCandidatesBody): Deferred<Response<Any>>
 
     @PUT("v2/broadcasts/viewers/{viewerId}")
-    fun sendAnswer(@Path("viewerId") viewerId: String, @Body answer: AnswerBody): Call<Void>
+    fun sendAnswer(@Path("viewerId") viewerId: String, @Body answer: AnswerBody): Deferred<Response<Any>>
 
     @POST("v2/broadcasts/viewers/{viewerId}/heartbeat")
-    fun sendHeartbeat(@Path("viewerId") viewerId: String, @Body heartbeatBody: HeartbeatBody): Call<Void>
+    fun sendHeartbeat(@Path("viewerId") viewerId: String, @Body heartbeatBody: HeartbeatBody): Deferred<Response<Any>>
 
     @POST("v2/reaper/stages/{stageId}/messages")
-    fun sendMessage(@Path("stageId") stageId: String, @Body reaction: Reaction): Deferred<Any>
+    fun sendMessage(@Path("stageId") stageId: String, @Body reaction: Reaction): Deferred<Response<Any>>
 }
 
 class CreateViewerBody(val constrained_baseline: Boolean)
