@@ -80,6 +80,7 @@ class NotificationSettings(
         val friendJoinsEmail: Boolean? = null,
         val watchingBroadcastEmail: Boolean? = null,
         val communityEmail: Boolean? = null,
+        val broadcastReportEmail: Boolean? = null,
         val newFollowerAndroidPush: Boolean? = null,
         val broadcastLiveAndroidPush: Boolean? = null,
         val watchingBroadcastAndroidPush: Boolean? = null,

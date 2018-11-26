@@ -22,7 +22,7 @@
         <PreferenceScreen
             android:key="push_notifications"
             android:title="@string/push_notifications"
-            android:summary="5">
+            android:summary=" ">
 
             <CheckBoxPreference
                 android:key="broadcast_live_android_push"
@@ -45,7 +45,7 @@
         <PreferenceScreen
             android:key="email_notifications"
             android:title="@string/email_notifications"
-            android:summary="5">
+            android:summary=" ">
 
             <CheckBoxPreference
                 android:key="broadcast_live_email"

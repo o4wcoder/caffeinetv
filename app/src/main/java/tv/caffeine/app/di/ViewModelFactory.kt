@@ -3,6 +3,7 @@ package tv.caffeine.app.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
+import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
@@ -26,6 +27,7 @@ class ViewModelFactory @Inject constructor(
         private val loadLobbyUseCase: LoadLobbyUseCase,
         private val findBroadcastersUseCase: FindBroadcastersUseCase,
         private val usersService: UsersService,
+        private val accountsService: AccountsService,
         private val paymentsClientService: PaymentsClientService,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
@@ -50,6 +52,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(dispatchConfig, usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(dispatchConfig, usersService)
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(dispatchConfig, tokenStore, followManager)
+            modelClass.isAssignableFrom(NotificationSettingsViewModel::class.java) -> NotificationSettingsViewModel(dispatchConfig, accountsService, gson)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(dispatchConfig, usersService, tokenStore, followManager, uploadAvatarUseCase, gson)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
