@@ -8,9 +8,11 @@ import retrofit2.http.*
 
 interface AccountsService {
     @POST("v1/account/signin")
+    @Headers("No-Authentication: true")
     fun signIn(@Body signInBody: SignInBody): Deferred<Response<SignInResult>>
 
     @POST("v1/account/forgot-password")
+    @Headers("No-Authentication: true")
     fun forgotPassword(@Body forgotPasswordBody: ForgotPasswordBody): Deferred<Response<Void>>
 
     @DELETE("v1/account/token")

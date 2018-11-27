@@ -1,19 +1,17 @@
 package tv.caffeine.app.net
 
-import android.os.Build
 import okhttp3.Interceptor
 import okhttp3.Response
-import tv.caffeine.app.BuildConfig
 import tv.caffeine.app.auth.TokenStore
 
 class AuthorizationInterceptor(private val tokenStore: TokenStore) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request().newBuilder().run {
-            header("User-Agent", "Caffeine/${BuildConfig.VERSION_CODE} Android/${Build.VERSION.SDK_INT}")
-            header("X-Client-Type", "android")
-            header("X-Client-Version", BuildConfig.VERSION_NAME)
-            tokenStore.addHttpHeaders(this)
-            build()
+        var request = chain.request()
+        if (request.header("No-Authentication") == null) {
+            request = request.newBuilder().run {
+                tokenStore.addHttpHeaders(this)
+                build()
+            }
         }
         return chain.proceed(request)
     }

@@ -17,6 +17,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.net.AppMetaDataInterceptor
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
 import javax.inject.Singleton
@@ -54,11 +55,15 @@ class NetworkModule {
     fun providesTokenAuthenticator(refreshTokenService: RefreshTokenService, tokenStore: TokenStore) = TokenAuthenticator(refreshTokenService, tokenStore)
 
     @Provides
+    fun providesAppMetaDataInterceptor(tokenStore: TokenStore) = AppMetaDataInterceptor()
+
+    @Provides
     fun providesAuthorizationInterceptor(tokenStore: TokenStore) = AuthorizationInterceptor(tokenStore)
 
     @Provides
-    fun providesOkHttpClient(tokenAuthenticator: TokenAuthenticator, authorizationInterceptor: AuthorizationInterceptor, loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
+    fun providesOkHttpClient(tokenAuthenticator: TokenAuthenticator, appMetaDataInterceptor: AppMetaDataInterceptor, authorizationInterceptor: AuthorizationInterceptor, loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
             .authenticator(tokenAuthenticator)
+            .addInterceptor(appMetaDataInterceptor)
             .addInterceptor(authorizationInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
             .build()
