@@ -1,9 +1,12 @@
 package tv.caffeine.app.auth
 
 import android.os.Bundle
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
@@ -34,6 +37,10 @@ class SignUpFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.signUpButton.setOnClickListener { signUp() }
+        binding.agreeToLegalCheckbox.apply {
+            text = HtmlCompat.fromHtml(resources.getString(R.string.i_agree_to_legal), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            movementMethod = LinkMovementMethod.getInstance()
+        }
         arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.let { oauthCallbackResult ->
             binding.usernameEditText.setText(oauthCallbackResult.possibleUsername)
             binding.emailEditText.setText(oauthCallbackResult.oauth?.email)

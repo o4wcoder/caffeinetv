@@ -11,7 +11,7 @@
     <string name="forgot_button">Forgot?</string>
     <string name="sign_in_hint_email">Email</string>
     <string name="sign_up_button">Sign Up</string>
-    <string name="i_agree_to_legal">I have read and agree to the Terms of Service, Privacy Policy and Community Guidelines</string>
+    <string name="i_agree_to_legal"><![CDATA[I have read and agree to the <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>]]></string>
     <string name="sign_in_hint_dob">Date of Birth</string>
     <string name="send_email_button">Send Email</string>
     <string name="caffeine_logo_content_description">Caffeine Logo</string>
