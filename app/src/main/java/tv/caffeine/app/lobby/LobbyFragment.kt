@@ -69,11 +69,10 @@ class LobbyFragment : CaffeineFragment() {
 
     private val itemDecorator = object: RecyclerView.ItemDecoration() {
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            val itemType = view.tag as? LobbyItem.Type ?: return
             val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
             val extraTopOffset = if (itemPosition == 0) listTopBottomOffset else 0
             val extraBottomOffset = if (itemPosition == lobbyAdapter.itemCount - 1) listTopBottomOffset else 0
-            val viewType = lobbyAdapter.getItemViewType(itemPosition)
-            val itemType = LobbyItem.Type.values()[viewType]
             when(itemType) {
                 LobbyItem.Type.AVATAR_CARD -> outRect.set(0, extraTopOffset + cardSpacing, 0, extraBottomOffset + cardSpacing)
                 LobbyItem.Type.LIVE_BROADCAST_CARD, LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD, LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset + cardSpacing)

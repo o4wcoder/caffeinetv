@@ -23,7 +23,11 @@ import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 
 sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    abstract fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
+    fun bind(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+        itemView.tag = item.itemType
+        configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
+    }
+    protected abstract fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
 }
 
 class AvatarCard(val binding: LobbyAvatarCardBinding) : LobbyViewHolder(binding.root) {

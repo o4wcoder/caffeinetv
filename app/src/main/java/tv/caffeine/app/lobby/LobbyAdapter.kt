@@ -52,7 +52,7 @@ class LobbyAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: LobbyViewHolder, position: Int) {
         val item = getItem(position)
-        holder.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
+        holder.bind(item, tags, content, followManager, followedTheme, notFollowedTheme)
     }
 
 }
