@@ -72,7 +72,7 @@
                 android:title="@string/community_updates"/>
 
             <CheckBoxPreference
-                android:key="broadcast_report"
+                android:key="broadcast_report_email"
                 android:title="@string/broadcast_report"/>
 
         </PreferenceScreen>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.preference.CheckBoxPreference
@@ -39,7 +40,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SettingsViewModel::class.java) }
-    private val notificationSettingsViewModel by lazy { viewModelProvider.get(NotificationSettingsViewModel::class.java) }
+    private lateinit var notificationSettingsViewModel: NotificationSettingsViewModel
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -56,6 +57,13 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
+        notificationSettingsViewModel = ViewModelProviders.of(context as FragmentActivity, viewModelFactory)
+                .get(NotificationSettingsViewModel::class.java)
+    }
+
+    override fun onStop() {
+        updateNotificationSettings()
+        super.onStop()
     }
 
     private fun configureAuthSettings() {
@@ -81,20 +89,20 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
             })
         }
         notificationSettingsViewModel.notificationSettings.observe(this, Observer { settings ->
-            listOf(Pair("broadcast_live_android_push", settings.broadcastLiveAndroidPush),
-                    Pair("watching_broadcast_android_push", settings.watchingBroadcastAndroidPush),
-                    Pair("new_follower_android_push", settings.newFollowerAndroidPush),
-                    Pair("friend_joins_android_push", settings.friendJoinsAndroidPush),
-                    Pair("broadcast_live_email", settings.broadcastLiveEmail),
-                    Pair("watching_broadcast_email", settings.watchingBroadcastEmail),
-                    Pair("new_follower_email", settings.newFollowerEmail),
-                    Pair("friend_joins_email", settings.friendJoinsEmail),
-                    Pair("weekly_suggestions_email", settings.weeklySuggestionsEmail),
-                    Pair("community_email", settings.communityEmail),
-                    Pair("broadcast_report", settings.broadcastReportEmail)).forEach {
-                (findPreference(it.first) as? CheckBoxPreference)?.isChecked = (it.second == true)
+            settings.toMap().forEach {
+                (findPreference(it.key.name) as? CheckBoxPreference)?.isChecked = (it.value == true)
             }
         })
+        // Since the view model is bound to the activity's scope to share data between fragments, we manually load
+        // every time [SettingsFragment] is created, rather than only once when the view model is initialized.
+        notificationSettingsViewModel.load()
+    }
+
+    private fun updateNotificationSettings() {
+        val newSettings = NotificationSettings.SettingKey.values().associate {
+            it to (findPreference(it.name) as? CheckBoxPreference)?.isChecked
+        }
+        notificationSettingsViewModel.remoteSave(newSettings)
     }
 
     private fun configureLegalDocs() {
@@ -151,7 +159,6 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
         }
         Timber.d("Navigating to ${preferenceScreen?.title}")
     }
-
 }
 
 class SettingsViewModel(
@@ -186,11 +193,7 @@ class NotificationSettingsViewModel(
     val pushCount:LiveData<Int> = Transformations.map(_notificationSettings) { getPushCount(it) }
     val emailCount:LiveData<Int> = Transformations.map(_notificationSettings) { getEmailCount(it) }
 
-    init {
-        load()
-    }
-
-    private fun load() {
+    fun load() {
         launch {
             val result = accountsService.getNotificationSettings().awaitAndParseErrors(gson)
             when (result) {
@@ -201,16 +204,43 @@ class NotificationSettingsViewModel(
         }
     }
 
+    fun remoteSave(newSettings: Map<NotificationSettings.SettingKey, Boolean?>) {
+        var changed = false
+        val oldSettings = _notificationSettings.value?.toMap() ?: mutableMapOf()
+        for (key in newSettings.keys) {
+            // Null is expected. E.g., push notification views are unavailable when the settings root is email.
+            // Do not overwrite the old settings map in these cases.
+            newSettings[key]?.let {
+                if (it != oldSettings[key]) {
+                    oldSettings[key] = it
+                    changed = true
+                }
+            }
+        }
+
+        if (changed) {
+            launch {
+                val result = accountsService.updateNotificationSettings(NotificationSettings.fromMap(oldSettings))
+                        .awaitAndParseErrors(gson)
+                when (result) {
+                    is CaffeineResult.Success -> _notificationSettings.value = result.value
+                    is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()), "Failed to save notification settings")
+                    is CaffeineResult.Failure -> Timber.e(result.exception, "Failed to save notification settings")
+                }
+            }
+        }
+    }
+
     private fun getPushCount(settings: NotificationSettings): Int {
         return listOf(settings.newFollowerAndroidPush, settings.broadcastLiveAndroidPush,
                 settings.watchingBroadcastAndroidPush, settings.friendJoinsAndroidPush)
-                .sumBy { if (it == true) 1 else 0 }
+                .count { it == true }
     }
 
     private fun getEmailCount(settings: NotificationSettings): Int {
         return listOf(settings.newFollowerEmail, settings.weeklySuggestionsEmail,
                 settings.broadcastLiveEmail, settings.friendJoinsEmail,
                 settings.watchingBroadcastEmail, settings.communityEmail, settings.broadcastReportEmail)
-                .sumBy { if (it == true) 1 else 0 }
+                .count { it == true }
     }
 }
