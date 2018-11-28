@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.google.gson.Gson
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
@@ -45,13 +46,13 @@ class StageFragment : CaffeineFragment() {
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
     private val sinks: MutableMap<String, StageHandshake.Stream.Type> = mutableMapOf()
     private var stageHandshake: StageHandshake? = null
-    private var messageHandshake: MessageHandshake? = null
     private var streamController: StreamController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
     private var streams: Map<String, StageHandshake.Stream> = mapOf()
-    private val latestMessages: MutableList<Message> = mutableListOf()
     private var broadcastName: String? = null
+
+    private val chatViewModel: ChatViewModel by lazy { viewModelProvider.get(ChatViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +73,7 @@ class StageFragment : CaffeineFragment() {
         }
     }
 
-    var title: String? = null
+    private var title: String? = null
         set(value) {
             field = value
             (activity as? AppCompatActivity)?.supportActionBar?.title = value
@@ -94,7 +95,6 @@ class StageFragment : CaffeineFragment() {
         title = broadcastName
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
         initSurfaceViewRenderer()
-        displayMessages()
         configureButtons()
     }
 
@@ -204,17 +204,11 @@ class StageFragment : CaffeineFragment() {
         }
     }
 
-    private suspend fun connectMessages(stageIdentifier: String) {
-        messageHandshake = MessageHandshake(dispatchConfig, tokenStore, stageIdentifier)
-        messageHandshake?.channel?.consumeEach { message ->
-            val oldInstance = latestMessages.find { it.id == message.id }
-            if (oldInstance != null) {
-                latestMessages.remove(oldInstance)
-            }
-            latestMessages.add(message)
-            Timber.d("Received message (${message.type}) from ${message.publisher.username} (${message.publisher.name}): ${message.body.text}")
-            displayMessages()
-        }
+    private fun connectMessages(stageIdentifier: String) {
+        chatViewModel.load(stageIdentifier)
+        chatViewModel.messages.observe(this, Observer { messages ->
+            chatMessageAdapter.submitList(messages)
+        })
     }
 
     private fun disconnectStreams() {
@@ -222,19 +216,7 @@ class StageFragment : CaffeineFragment() {
         stageHandshake = null
         streamController?.close()
         streamController = null
-        messageHandshake?.close()
-        messageHandshake = null
         peerConnections.values.onEach { it.dispose() }
-    }
-
-    private fun displayMessages() {
-        val summary = latestMessages
-                .takeLast(4)
-                .joinToString("\n") {
-                    "${it.publisher.username}: ${it.body.text}" + if (it.endorsementCount > 0) " <${it.endorsementCount}>" else ""
-                }
-        Timber.d("Chat messages: $summary")
-        chatMessageAdapter.submitList(latestMessages.takeLast(4))
     }
 
     private fun configureButtons() {

@@ -15,6 +15,7 @@ import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.*
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.*
+import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
@@ -57,6 +58,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
+            modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, tokenStore, followManager)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

@@ -1,7 +1,7 @@
 package tv.caffeine.app.api.model
 
 data class Message(val publisher: User, val id: String, val type: Type, val body: Body, val endorsementCount: Int = 0) {
-    enum class Type { reaction, rescind, presence }
+    enum class Type { reaction, rescind, presence, share, digitalItem, dummy }
     data class Body(val text: String, val digitalItem: ReceivedDigitalItem? = null, val variant: Variant? = null)
     data class ReceivedDigitalItem(val id: String, val count: Int, val creditsPerItem: Int, val staticImagePath: String, val sceneKitPath: String, val webAssetPath: String) {
         val staticImageUrl get() = "https://assets.caffeine.tv$staticImagePath"
@@ -18,3 +18,14 @@ data class Message(val publisher: User, val id: String, val type: Type, val body
     data class Font(val customFace: String)
 }
 
+data class MessageWrapper(
+        val message: Message,
+        val creationTime: Long,
+        val position: Int,
+        val lastUpdateTime: Long = 0,
+        val isFromFollowedUser: Boolean = false,
+        val isFromSelf: Boolean = false,
+        val isStale: Boolean = false,
+        val digitalItemInteractionCount: Int = 0,
+        val hasBeenEndorsed: Boolean = false
+)
