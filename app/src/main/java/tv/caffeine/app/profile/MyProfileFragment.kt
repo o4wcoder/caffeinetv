@@ -2,6 +2,7 @@ package tv.caffeine.app.profile
 
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -54,7 +55,7 @@ class MyProfileFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
-        binding.signOutButton.setOnClickListener { signOut() }
+        binding.signOutButton.setOnClickListener { confirmSignOut() }
         binding.infoButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToEditBioFragment()
             findNavController().navigate(action)
@@ -109,6 +110,13 @@ class MyProfileFragment : CaffeineFragment() {
         val caid = tokenStore.caid ?: return
         val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment(caid)
         findNavController().navigate(action)
+    }
+
+    private fun confirmSignOut() {
+        SignOutDialogFragment().let {
+            it.positiveClickListener =  DialogInterface.OnClickListener { _, _ -> signOut() }
+            it.show(fragmentManager, "signOut")
+        }
     }
 
     private fun signOut() {

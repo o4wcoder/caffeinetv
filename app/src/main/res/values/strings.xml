@@ -24,6 +24,8 @@
     <string name="mfa_code_hint">MFA Code</string>
     <string name="submit_mfa_code">Submit</string>
     <string name="sign_out_button">Sign Out</string>
+    <string name="sign_out_question">Sign out of account?</string>
+    <string name="cancel">Cancel</string>
 
     <string name="hint_current_password">Current Password</string>
     <string name="update_button">Update</string>
