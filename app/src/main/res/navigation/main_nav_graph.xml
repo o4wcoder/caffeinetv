@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lobby"
-    app:startDestination="@id/lobbyFragment">
+    app:startDestination="@+id/lobbyFragment">
 
     <fragment
         android:id="@+id/signInFragment"
@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_forgotFragment"
-            app:destination="@id/forgotFragment" />
+            app:destination="@+id/forgotFragment" />
         <action
             android:id="@+id/action_signInFragment_to_mfaCodeFragment"
-            app:destination="@id/mfaCodeFragment" />
+            app:destination="@+id/mfaCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/mfaCodeFragment"
@@ -46,13 +46,13 @@
         tools:layout="@layout/fragment_landing">
         <action
             android:id="@+id/action_landingFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            app:destination="@+id/signUpFragment" />
         <action
             android:id="@+id/action_landingFragment_to_signInFragment"
-            app:destination="@id/signInFragment" />
+            app:destination="@+id/signInFragment" />
         <action
             android:id="@+id/action_landingFragment_to_mfaCodeFragment"
-            app:destination="@id/mfaCodeFragment" />
+            app:destination="@+id/mfaCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/forgotFragment"
@@ -66,7 +66,7 @@
         tools:layout="@layout/fragment_sign_up" >
         <action
             android:id="@+id/action_signUpFragment_to_legalDocsFragment"
-            app:destination="@id/legalDocsFragment" />
+            app:destination="@+id/legalDocsFragment" />
         <argument
             android:name="oauthCallbackResult"
             app:argType="tv.caffeine.app.api.OAuthCallbackResult"
@@ -80,16 +80,16 @@
         tools:layout="@layout/fragment_lobby">
         <action
             android:id="@+id/action_lobbyFragment_to_exploreFragment"
-            app:destination="@id/exploreFragment" />
+            app:destination="@+id/exploreFragment" />
         <action
             android:id="@+id/action_lobbyFragment_to_notificationsFragment"
-            app:destination="@id/notificationsFragment" />
+            app:destination="@+id/notificationsFragment" />
         <action
             android:id="@+id/action_lobbyFragment_to_stageFragment"
-            app:destination="@id/stageFragment" />
+            app:destination="@+id/stageFragment" />
         <action
             android:id="@+id/action_lobbyFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
+            app:destination="@+id/myProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
@@ -117,10 +117,10 @@
             app:uri="www.caffeine.tv/{broadcaster}" />
         <action
             android:id="@+id/action_stageFragment_to_friendsWatchingFragment"
-            app:destination="@id/friendsWatchingFragment" />
+            app:destination="@+id/friendsWatchingFragment" />
         <action
             android:id="@+id/action_stageFragment_to_digitalItemListDialogFragment"
-            app:destination="@id/digitalItemListDialogFragment" />
+            app:destination="@+id/digitalItemListDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/myProfileFragment"
@@ -129,19 +129,19 @@
         tools:layout="@layout/fragment_my_profile" >
         <action
             android:id="@+id/action_myProfileFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            app:destination="@+id/settingsFragment" />
         <action
             android:id="@+id/action_myProfileFragment_to_followersFragment"
-            app:destination="@id/followersFragment" />
+            app:destination="@+id/followersFragment" />
         <action
             android:id="@+id/action_myProfileFragment_to_followingFragment"
-            app:destination="@id/followingFragment" />
+            app:destination="@+id/followingFragment" />
         <action
             android:id="@+id/action_myProfileFragment_to_goldAndCreditsFragment"
-            app:destination="@id/goldAndCreditsFragment" />
+            app:destination="@+id/goldAndCreditsFragment" />
         <action
             android:id="@+id/action_myProfileFragment_to_editBioFragment"
-            app:destination="@id/editBioFragment" />
+            app:destination="@+id/editBioFragment" />
         <argument
             android:name="launchAvatarSelection"
             app:argType="boolean"
@@ -163,13 +163,13 @@
             app:argType="string" />
         <action
             android:id="@+id/action_profileFragment_to_followersFragment"
-            app:destination="@id/followersFragment" />
+            app:destination="@+id/followersFragment" />
         <action
             android:id="@+id/action_profileFragment_to_followingFragment"
-            app:destination="@id/followingFragment" />
+            app:destination="@+id/followingFragment" />
         <action
             android:id="@+id/action_profileFragment_to_stageFragment"
-            app:destination="@id/stageFragment" />
+            app:destination="@+id/stageFragment" />
     </fragment>
     <fragment
         android:id="@+id/friendsWatchingFragment"
@@ -195,19 +195,19 @@
         android:label="@string/settings" >
         <action
             android:id="@+id/action_settingsFragment_to_legalDocsFragment"
-            app:destination="@id/legalDocsFragment" />
+            app:destination="@+id/legalDocsFragment" />
         <action
             android:id="@+id/action_settingsFragment_self"
-            app:destination="@id/settingsFragment" />
+            app:destination="@+id/settingsFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_ignoredUsersFragment"
-            app:destination="@id/ignoredUsersFragment" />
+            app:destination="@+id/ignoredUsersFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_updateEmailFragment"
-            app:destination="@id/updateEmailFragment" />
+            app:destination="@+id/updateEmailFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_updatePasswordFragment"
-            app:destination="@id/updatePasswordFragment" />
+            app:destination="@+id/updatePasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/legalDocsFragment"
@@ -240,21 +240,21 @@
     </fragment>
     <action
         android:id="@+id/action_global_profileFragment"
-        app:destination="@id/profileFragment" />
+        app:destination="@+id/profileFragment" />
     <fragment
         android:id="@+id/goldAndCreditsFragment"
         android:name="tv.caffeine.app.settings.GoldAndCreditsFragment"
         android:label="@string/gold_and_credits_title" >
         <action
             android:id="@+id/action_goldAndCreditsFragment_to_transactionHistoryFragment"
-            app:destination="@id/transactionHistoryFragment" />
+            app:destination="@+id/transactionHistoryFragment" />
         <action
             android:id="@+id/action_goldAndCreditsFragment_to_goldBundlesFragment"
-            app:destination="@id/goldBundlesFragment" />
+            app:destination="@+id/goldBundlesFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_landingFragment"
-        app:destination="@id/landingFragment"
+        app:destination="@+id/landingFragment"
         app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/transactionHistoryFragment"
