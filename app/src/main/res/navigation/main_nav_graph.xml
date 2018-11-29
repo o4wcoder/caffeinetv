@@ -64,6 +64,9 @@
         android:name="tv.caffeine.app.auth.SignUpFragment"
         android:label="@string/new_account"
         tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_legalDocsFragment"
+            app:destination="@id/legalDocsFragment" />
         <argument
             android:name="oauthCallbackResult"
             app:argType="tv.caffeine.app.api.OAuthCallbackResult"

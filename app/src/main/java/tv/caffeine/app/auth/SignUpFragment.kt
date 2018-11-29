@@ -1,12 +1,17 @@
 package tv.caffeine.app.auth
 
+import android.content.res.Resources
 import android.os.Bundle
-import android.text.Html
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
@@ -16,6 +21,7 @@ import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.databinding.FragmentSignUpBinding
+import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
@@ -38,7 +44,7 @@ class SignUpFragment : CaffeineFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.signUpButton.setOnClickListener { signUp() }
         binding.agreeToLegalCheckbox.apply {
-            text = HtmlCompat.fromHtml(resources.getString(R.string.i_agree_to_legal), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            text = buildLegalDocSpannable(findNavController())
             movementMethod = LinkMovementMethod.getInstance()
         }
         arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.let { oauthCallbackResult ->
@@ -84,4 +90,26 @@ class SignUpFragment : CaffeineFragment() {
                 .joinToString("\n") { it.joinToString("\n") }
     }
 
+    private fun buildLegalDocSpannable(navController: NavController) : Spannable {
+        val spannable = SpannableString(HtmlCompat.fromHtml(
+                resources.getString(R.string.i_agree_to_legal), HtmlCompat.FROM_HTML_MODE_LEGACY))
+        for (urlSpan in spannable.getSpans<URLSpan>(0, spannable.length, URLSpan::class.java)) {
+            spannable.setSpan(LegalDocLinkSpan(urlSpan.url, navController, resources),
+                    spannable.getSpanStart(urlSpan),
+                    spannable.getSpanEnd(urlSpan),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannable.removeSpan(urlSpan)
+        }
+        return spannable
+    }
+
+    private class LegalDocLinkSpan(url: String?, val navController: NavController, resources: Resources) : URLSpan(url) {
+        val legalDoc = LegalDoc.values().find { resources.getString(it.url) == url }
+
+        override fun onClick(widget: View) {
+            legalDoc?.let {
+                navController.navigate(SignUpFragmentDirections.actionSignUpFragmentToLegalDocsFragment(it))
+            }
+        }
+    }
 }
