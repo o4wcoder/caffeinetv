@@ -6,7 +6,10 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -39,6 +42,14 @@ class LegalDocsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val webView = view.findViewById<WebView>(R.id.web_view)
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(legalDoc.title)
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = true
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                if (!URLUtil.isNetworkUrl(request?.url?.toString())) return true
+                return request?.url?.host?.endsWith("caffeine.tv") == false
+            }
+        }
         val url = getString(legalDoc.url)
         webView.loadUrl(url)
     }
