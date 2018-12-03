@@ -3,6 +3,7 @@ package tv.caffeine.app.api.model
 class Broadcast(val id: String,
                 val name: String,
                 val contentId: String,
+                val game: Game?,
                 val previewImagePath: String,
                 val state: State,
                 val dateText: String) {
@@ -14,3 +15,6 @@ class Broadcast(val id: String,
 }
 
 fun Broadcast.isOnline() = state == Broadcast.State.ONLINE
+
+class Game(val iconImagePath: String?)
+val Game.iconImageUrl get() = "https://images.caffeine.tv$iconImagePath"

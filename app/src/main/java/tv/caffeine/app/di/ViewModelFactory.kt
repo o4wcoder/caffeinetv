@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.PaymentsClientService
+import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.explore.ExploreViewModel
@@ -37,6 +38,7 @@ class ViewModelFactory @Inject constructor(
         private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
         private val updateEmailUseCase: UpdateEmailUseCase,
         private val updatePasswordUseCase: UpdatePasswordUseCase,
+        private val realtime: Realtime,
         private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
@@ -58,7 +60,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
-            modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, tokenStore, followManager)
+            modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, realtime, tokenStore, usersService, followManager)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

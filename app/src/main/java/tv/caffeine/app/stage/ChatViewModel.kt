@@ -8,6 +8,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.api.Reaction
+import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.api.model.User
@@ -20,7 +23,9 @@ private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
 
 class ChatViewModel(
         dispatchConfig: DispatchConfig,
+        private val realtime: Realtime,
         private val tokenStore: TokenStore,
+        private val usersService: UsersService,
         private val followManager: FollowManager
 ) : CaffeineViewModel(dispatchConfig) {
     private lateinit var messageHandshake: MessageHandshake
@@ -39,6 +44,20 @@ class ChatViewModel(
         }
         launch {
             messageHandshake.channel.consumeEach { processMessage(it) }
+        }
+    }
+
+    fun sendMessage(text: String, broadcaster: String) {
+        launch {
+            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
+            val caid = tokenStore.caid ?: error("Not logged in")
+            val signedUserDetails = usersService.signedUserDetails(caid)
+            val publisher = signedUserDetails.await().token
+            val stageId = userDetails.stageId
+            val message = Reaction("reaction", publisher, Message.Body(text))
+            val deferred = realtime.sendMessage(stageId, message)
+            val result = deferred.await()
+            Timber.d("Sent message $text with result $result")
         }
     }
 

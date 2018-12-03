@@ -27,7 +27,7 @@ class FindBroadcastersUseCase @Inject constructor(
                         is CaffeineResult.Failure -> CaffeineResult.Failure(it.exception)
                     }
                 }, {
-                    CaffeineResult.Failure(Exception("Unknown"))
+                    CaffeineResult.Failure(it)
                 })
     }
 
@@ -40,7 +40,7 @@ class FindBroadcastersUseCase @Inject constructor(
                         is CaffeineResult.Failure -> CaffeineResult.Failure(it.exception)
                     }
                 }, {
-                    CaffeineResult.Failure(Exception("Unknown"))
+                    CaffeineResult.Failure(it)
                 })
     }
 }

@@ -9,18 +9,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.webrtc.*
 import timber.log.Timber
+import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.api.*
-import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.EventsService
+import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.iconImageUrl
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
+import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
@@ -53,6 +63,7 @@ class StageFragment : CaffeineFragment() {
     private var broadcastName: String? = null
 
     private val chatViewModel: ChatViewModel by lazy { viewModelProvider.get(ChatViewModel::class.java) }
+    private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +72,8 @@ class StageFragment : CaffeineFragment() {
         broadcaster = args.broadcaster
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
-            val broadcastDetails = userDetails.broadcastId?.let { broadcastsService.broadcastDetails(it) }
             launch(dispatchConfig.main) {
                 connectStreams(userDetails.stageId)
-                broadcastName = broadcastDetails?.await()?.broadcast?.name
-                title = broadcastName
             }
             launch(dispatchConfig.main) {
                 connectMessages(userDetails.stageId)
@@ -76,7 +84,7 @@ class StageFragment : CaffeineFragment() {
     private var title: String? = null
         set(value) {
             field = value
-            (activity as? AppCompatActivity)?.supportActionBar?.title = value
+            binding.stageToolbar.title = value
         }
 
     override fun onDestroy() {
@@ -88,10 +96,32 @@ class StageFragment : CaffeineFragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         binding = FragmentStageBinding.inflate(inflater, container, false)
+        binding.setLifecycleOwner(viewLifecycleOwner)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        launch {
+            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
+            launch(dispatchConfig.main) {
+                profileViewModel.load(userDetails.caid)
+                binding.profileViewModel = profileViewModel
+            }
+            val broadcastDetails = userDetails.broadcastId?.let { broadcastsService.broadcastDetails(it) }
+            launch(dispatchConfig.main) {
+                val broadcast = broadcastDetails?.await()?.broadcast
+                broadcastName = broadcast?.name
+                title = broadcastName
+                Picasso.get()
+                        .load(broadcast?.game?.iconImageUrl)
+                        .into(binding.gameLogoImageView)
+            }
+        }
+        binding.avatarImageView.setOnClickListener {
+            findNavController().navigate(LobbyDirections.actionGlobalProfileFragment(broadcaster))
+        }
+        val navController = findNavController()
+        binding.stageToolbar.setupWithNavController(navController, null)
         title = broadcastName
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
         initSurfaceViewRenderer()
@@ -130,6 +160,30 @@ class StageFragment : CaffeineFragment() {
             streams.values.firstOrNull { it.type == key }?.let { stream ->
                 configureRenderer(renderer, stream, videoTracks[stream.id])
             }
+            renderer.setOnClickListener { toggleAppBarVisibility() }
+        }
+    }
+
+    private var appBarVisibilityJob: Job? = null
+
+    private fun toggleAppBarVisibility() {
+        val viewsToToggle = listOf(binding.stageAppbar, binding.gameLogoImageView, binding.liveIndicatorAndAvatarContainer)
+        appBarVisibilityJob?.cancel()
+        val currentVisibility = binding.stageAppbar.visibility
+        if (currentVisibility != View.VISIBLE) {
+            viewsToToggle.forEach {
+                it.visibility = View.VISIBLE
+            }
+            appBarVisibilityJob = launch {
+                delay(3000)
+                viewsToToggle.forEach {
+                    it.visibility = View.INVISIBLE
+                }
+            }
+        } else {
+            viewsToToggle.forEach {
+                it.visibility = View.INVISIBLE
+            }
         }
     }
 
@@ -148,6 +202,7 @@ class StageFragment : CaffeineFragment() {
         streamController = StreamController(dispatchConfig, realtime, peerConnectionFactory, eventsService, gson, stageIdentifier)
         stageHandshake?.channel?.consumeEach { event ->
             Timber.d("Streams: ${event.streams.map { it.type }}")
+            binding.liveIndicatorTextView.isVisible = event.streams.isNotEmpty()
             val newStreams = event.streams.associateBy { stream -> stream.id }
             Timber.d("StreamState - New streams: $newStreams")
             val oldStreams = streams
@@ -255,17 +310,7 @@ class StageFragment : CaffeineFragment() {
         val editText = binding.chatMessageEditText ?: return
         val text = editText.text.toString()
         editText.text = null
-        launch {
-            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
-            val caid = tokenStore.caid ?: error("Not logged in")
-            val signedUserDetails = usersService.signedUserDetails(caid)
-            val publisher = signedUserDetails.await().token
-            val stageId = userDetails.stageId
-            val message = Reaction("reaction", publisher, Message.Body(text))
-            val deferred = realtime.sendMessage(stageId, message)
-            val result = deferred.await()
-            Timber.d("Sent message $text with result $result")
-        }
+        chatViewModel.sendMessage(text, broadcaster)
     }
 
     private fun deinitSurfaceViewRenderers() {
