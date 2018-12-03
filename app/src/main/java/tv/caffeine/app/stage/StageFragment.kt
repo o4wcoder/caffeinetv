@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -54,6 +55,7 @@ class StageFragment : CaffeineFragment() {
     private lateinit var broadcaster: String
     private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
+    private val loadingIndicators: MutableMap<StageHandshake.Stream.Type, ProgressBar> = mutableMapOf()
     private val sinks: MutableMap<String, StageHandshake.Stream.Type> = mutableMapOf()
     private var stageHandshake: StageHandshake? = null
     private var streamController: StreamController? = null
@@ -151,6 +153,8 @@ class StageFragment : CaffeineFragment() {
     private fun initSurfaceViewRenderer() {
         renderers[StageHandshake.Stream.Type.primary] = binding.primaryViewRenderer
         renderers[StageHandshake.Stream.Type.secondary] = binding.secondaryViewRenderer
+        loadingIndicators[StageHandshake.Stream.Type.primary] = binding.primaryLoadingIndicator
+        loadingIndicators[StageHandshake.Stream.Type.secondary] = binding.secondaryLoadingIndicator
         renderers.forEach { entry ->
             val key = entry.key
             val renderer = entry.value
@@ -241,12 +245,15 @@ class StageFragment : CaffeineFragment() {
                     }
             newStreams.values.filter { it.id in addedStreamIds }.forEach { stream ->
                 Timber.d("StreamState - Configuring new stream ${stream.id}, ${stream.type}, ${stream.label}")
-                val connectionInfo = streamController?.connect(stream) ?: return@forEach
+                val streamType = stream.type
+                loadingIndicators[streamType]?.isVisible = true
+                val connectionInfoNullable = streamController?.connect(stream)
+                loadingIndicators[streamType]?.isVisible = false
+                val connectionInfo = connectionInfoNullable ?: return@forEach
                 val peerConnection = connectionInfo.peerConnection
                 val videoTrack = connectionInfo.videoTrack
                 val audioTrack = connectionInfo.audioTrack
                 val streamId = stream.id
-                val streamType = stream.type
                 peerConnections[streamId] = peerConnection
                 videoTrack?.let { videoTracks[streamId] = it }
                 audioTrack?.let { audioTracks[streamId] = it }

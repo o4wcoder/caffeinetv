@@ -18,4 +18,5 @@
     <dimen name="lobby_header_bottom_margin">0dp</dimen>
     <dimen name="lobby_subtitle_top_margin">0dp</dimen>
     <dimen name="lobby_subtitle_bottom_margin">0dp</dimen>
+    <dimen name="stage_loading_indicator_size">48dp</dimen>
 </resources>
