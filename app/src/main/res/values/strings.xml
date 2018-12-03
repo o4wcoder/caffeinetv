@@ -101,4 +101,5 @@
     <string name="my_profile_photo_hint">Profile photo</string>
     <string name="welcome_to_caffeine">Welcome to Caffeine!</string>
     <string name="tap_to_upload_your_profile_picture">Tap to upload your profile picture</string>
+    <string name="pick_profile_photo">Upload a profile photo</string>
 </resources>

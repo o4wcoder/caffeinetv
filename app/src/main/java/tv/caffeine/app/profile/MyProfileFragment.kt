@@ -5,11 +5,15 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -18,15 +22,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
+import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 private const val REQUEST_GET_PHOTO = 1
+private const val CAMERA_IMAGE_PATH = "CAMERA_IMAGE_PATH"
 
 class MyProfileFragment : CaffeineFragment() {
 
@@ -39,11 +48,19 @@ class MyProfileFragment : CaffeineFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
 
+    private var cameraImagePath: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        cameraImagePath = savedInstanceState?.getString(CAMERA_IMAGE_PATH)
         if (MyProfileFragmentArgs.fromBundle(arguments).launchAvatarSelection) {
             chooseNewAvatarImage()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(CAMERA_IMAGE_PATH, cameraImagePath)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -78,10 +95,16 @@ class MyProfileFragment : CaffeineFragment() {
     }
 
     private fun chooseNewAvatarImage() {
-        val intent = Intent(Intent.ACTION_PICK).apply {
+        val galleryIntent = Intent(Intent.ACTION_PICK).apply {
             type = "image/*"
         }
-        startActivityForResult(intent, REQUEST_GET_PHOTO)
+        val chooserTitle = getString(R.string.pick_profile_photo)
+        val chooser = Intent.createChooser(galleryIntent, chooserTitle)
+        val cameraIntent = createCameraIntent()
+        if (cameraIntent != null) {
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
+        }
+        startActivityForResult(chooser, REQUEST_GET_PHOTO)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -89,7 +112,14 @@ class MyProfileFragment : CaffeineFragment() {
             return super.onActivityResult(requestCode, resultCode, data)
         }
         if (resultCode != Activity.RESULT_OK) return
-        val uri = data?.data ?: return
+        val uri = data?.data
+        when {
+            uri != null && cameraImagePath == null -> uploadPhotoFromUri(uri)
+            uri == null && cameraImagePath != null -> uploadPhotoFromCamera()
+        }
+    }
+
+    private fun uploadPhotoFromUri(uri: Uri) {
         launch(dispatchConfig.io) {
             val inputStream = context?.contentResolver?.openInputStream(uri) ?: return@launch
             val bitmap = BitmapFactory.decodeStream(inputStream)
@@ -98,6 +128,34 @@ class MyProfileFragment : CaffeineFragment() {
                 viewModel.uploadAvatar(bitmap)
             }
         }
+    }
+
+    private fun uploadPhotoFromCamera() {
+        val imageFile = File(cameraImagePath)
+        cameraImagePath = null
+        if (!imageFile.exists()) return
+        val uri = imageFile.toUri()
+        uploadPhotoFromUri(uri)
+    }
+
+    private fun createCameraIntent(): Intent? {
+        val context = this.context ?: return null
+        val packageManager = context.packageManager ?: return null
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (cameraIntent.resolveActivity(packageManager) == null) return null
+        val imageFile = createImageFile() ?: return null
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+        cameraImagePath = imageFile.absolutePath
+        return cameraIntent
+    }
+
+    private fun createImageFile(): File? {
+        // Create an image file name
+        val storageDir: File = context?.cacheDir?.let { File(it, "camera") } ?: return null
+        storageDir.mkdirs()
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        return File.createTempFile("JPEG_${timeStamp}_",  ".jpg", storageDir)
     }
 
     private fun showFollowingList() {
