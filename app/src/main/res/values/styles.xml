@@ -115,6 +115,9 @@
     <style name="ExploreUsername.NotFollowing" parent="@style/TextAppearance.MaterialComponents.Body1">
     </style>
 
+    <style name="ExploreFollowerCount" parent="@style/TextAppearance.MaterialComponents.Caption">
+    </style>
+
     <style name="ExploreUsername.Following">
         <item name="android:textColor">@color/caffeineBlue</item>
     </style>

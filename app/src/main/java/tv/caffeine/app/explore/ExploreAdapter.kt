@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -17,6 +18,7 @@ import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.compactNumberFormat
 import tv.caffeine.app.util.configure
 import javax.inject.Inject
 
@@ -59,10 +61,12 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val numberOfFollowersTextView: TextView? = itemView.findViewById(R.id.number_of_followers_text_view)
 
     fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        item.user.configure(avatarImageView, usernameTextView, followButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        item.user.configure(avatarImageView, usernameTextView, followButton, followManager, false, R.dimen.explore_avatar_size, followedTheme, notFollowedTheme)
         numberOfFollowersTextView?.apply {
             val followersCount = item.user.followersCount
-            text = itemView.resources.getQuantityString(R.plurals.number_of_followers, followersCount, followersCount)
+            val compactFollowersCount = compactNumberFormat(followersCount)
+            val string = itemView.resources.getQuantityString(R.plurals.number_of_followers, followersCount, compactFollowersCount)
+            text = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
         itemView.setOnClickListener {
             val action = LobbyDirections.actionGlobalProfileFragment(item.user.caid)
