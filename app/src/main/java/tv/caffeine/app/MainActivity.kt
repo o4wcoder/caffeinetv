@@ -14,6 +14,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
 import tv.caffeine.app.auth.LandingFragment
 import tv.caffeine.app.databinding.ActivityMainBinding
+import tv.caffeine.app.util.dismissKeyboard
 
 private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment)
 
@@ -52,10 +53,5 @@ class MainActivity : AppCompatActivity() {
                 ?.let {  landingFragment ->
                     landingFragment.onActivityResult(requestCode, resultCode, data)
                 }
-    }
-
-    private fun dismissKeyboard() {
-        val currentFocus =  currentFocus ?: return
-        getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(currentFocus.windowToken, 0)
     }
 }
