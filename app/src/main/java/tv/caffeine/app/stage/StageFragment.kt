@@ -36,6 +36,8 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.ui.showKeyboard
+import tv.caffeine.app.util.setImmersiveSticky
+import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
 class StageFragment : CaffeineFragment() {
@@ -128,10 +130,12 @@ class StageFragment : CaffeineFragment() {
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
         initSurfaceViewRenderer()
         configureButtons()
+        activity?.setImmersiveSticky()
     }
 
     override fun onDestroyView() {
         deinitSurfaceViewRenderers()
+        activity?.unsetImmersiveSticky()
         super.onDestroyView()
     }
 
