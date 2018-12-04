@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Caffeine</string>
+    <string name="application_id">tv.caffeine.app</string>
+</resources>

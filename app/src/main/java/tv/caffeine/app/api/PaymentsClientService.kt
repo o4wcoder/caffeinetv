@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import tv.caffeine.app.R
+import tv.caffeine.app.di.ASSETS_BASE_URL
 import java.text.NumberFormat
 import java.util.*
 
@@ -46,7 +47,7 @@ class PaymentsCollection<T>(val state: List<T>)
 data class DigitalItem(val id: String, val name: String, val pluralName: String, val categoryId: String,
                   val goldCost: Int, val score: Int, val staticImagePath: String,
                   val sceneKitPath: String, val webAssetPath: String) {
-    val staticImageUrl get() = "https://assets.caffeine.tv$staticImagePath"
+    val staticImageUrl get() = "$ASSETS_BASE_URL$staticImagePath"
 }
 
 class Wallet(val gold: Int, val credits: Int, val cumulativeCredits: Int, val maintenance: Any)
@@ -55,7 +56,7 @@ class TransactionHistoryPayload(val transactions: PaymentsCollection<HugeTransac
 
 class HugeTransactionHistoryItem(val id: String, val type: String, val createdAt: Int, val cost: Int?, val value: Int?, val costCurrencyCode: String?, val bundleId: String?, val quantity: Int?, val recipient: String?, val sender: String?, val pluralName: String?, val name: String?, val assets: DigitalItemAssets?, val state: String?, val currencyCode: String?)
 
-val HugeTransactionHistoryItem.staticImageUrl get() = assets?.let { "https://assets.caffeine.tv${it.staticImagePath}" }
+val HugeTransactionHistoryItem.staticImageUrl get() = assets?.let { "$ASSETS_BASE_URL${it.staticImagePath}" }
 
 fun HugeTransactionHistoryItem.convert(): TransactionHistoryItem? {
     return when {
@@ -92,8 +93,8 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
 class DigitalItemAssets(val iosSceneKitPath: String, val webAssetPath: String, val staticImagePath: String)
 
 val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
-    is TransactionHistoryItem.SendDigitalItem -> "https://assets.caffeine.tv${assets.staticImagePath}"
-    is TransactionHistoryItem.ReceiveDigitalItem -> "https://assets.caffeine.tv${assets.staticImagePath}"
+    is TransactionHistoryItem.SendDigitalItem -> "$ASSETS_BASE_URL${assets.staticImagePath}"
+    is TransactionHistoryItem.ReceiveDigitalItem -> "$ASSETS_BASE_URL${assets.staticImagePath}"
     else -> null
 
 }

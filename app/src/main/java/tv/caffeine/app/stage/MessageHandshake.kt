@@ -12,6 +12,7 @@ import timber.log.Timber
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.di.REALTIME_WEBSOCKET_URL
 import tv.caffeine.app.realtime.WebSocketController
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.DispatchConfig
@@ -37,7 +38,7 @@ class MessageHandshake(
     }
 
     private fun connect() {
-        val url = "wss://realtime.caffeine.tv/v2/reaper/stages/$stageIdentifier/messages"
+        val url = "$REALTIME_WEBSOCKET_URL/v2/reaper/stages/$stageIdentifier/messages"
         val headers = tokenStore.webSocketHeader()
         webSocketController?.close()
         webSocketController = WebSocketController(dispatchConfig, "msg", url, headers)

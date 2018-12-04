@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.di.REALTIME_WEBSOCKET_URL
 import tv.caffeine.app.realtime.WebSocketController
 import tv.caffeine.app.util.DispatchConfig
 import kotlin.coroutines.CoroutineContext
@@ -44,7 +45,7 @@ class StageHandshake(
     }
 
     private fun connect() {
-        val url = "wss://realtime.caffeine.tv/v2/stages/$stageIdentifier/details"
+        val url = "$REALTIME_WEBSOCKET_URL/v2/stages/$stageIdentifier/details"
         val headers = tokenStore.webSocketHeader()
         webSocketController = WebSocketController(dispatchConfig, "stg", url, headers)
         launch {

@@ -1,5 +1,7 @@
 package tv.caffeine.app.api.model
 
+import tv.caffeine.app.di.IMAGES_BASE_URL
+
 data class User(val caid: String,
                 val username: String,
                 val name: String?,
@@ -18,7 +20,7 @@ data class User(val caid: String,
                 val gender: Any?,
                 val isFeatured: Boolean,
                 val isOnline: Boolean) {
-    val avatarImageUrl get() = "https://images.caffeine.tv$avatarImagePath"
+    val avatarImageUrl get() = "$IMAGES_BASE_URL$avatarImagePath"
 }
 
 class UserContainer(val user: User)

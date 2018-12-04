@@ -1,5 +1,7 @@
 package tv.caffeine.app.api.model
 
+import tv.caffeine.app.di.IMAGES_BASE_URL
+
 class Broadcast(val id: String,
                 val name: String,
                 val contentId: String,
@@ -7,7 +9,7 @@ class Broadcast(val id: String,
                 val previewImagePath: String,
                 val state: State,
                 val dateText: String) {
-    val previewImageUrl get() = "https://images.caffeine.tv$previewImagePath"
+    val previewImageUrl get() = "$IMAGES_BASE_URL$previewImagePath"
 
     enum class State {
         ONLINE, OFFLINE
@@ -17,4 +19,4 @@ class Broadcast(val id: String,
 fun Broadcast.isOnline() = state == Broadcast.State.ONLINE
 
 class Game(val iconImagePath: String?)
-val Game.iconImageUrl get() = "https://images.caffeine.tv$iconImagePath"
+val Game.iconImageUrl get() = "$IMAGES_BASE_URL$iconImagePath"

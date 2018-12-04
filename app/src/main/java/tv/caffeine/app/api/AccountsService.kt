@@ -5,6 +5,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
+import tv.caffeine.app.di.IMAGES_BASE_URL
 
 interface AccountsService {
     @POST("v1/account/signin")
@@ -76,7 +77,7 @@ class AccountUpdateRequest(val currentPassword: String, val password: String? = 
 class AccountUpdateResult(val credentials: CaffeineCredentials, val next: NextAccountAction?)
 
 class UploadAvatarResult(val avatarImagePath: String)
-val UploadAvatarResult.avatarImageUrl: String get() = "https://images.caffeine.tv$avatarImagePath"
+val UploadAvatarResult.avatarImageUrl: String get() = "$IMAGES_BASE_URL$avatarImagePath"
 
 class DeleteAccountBody(val account: DeleteAccountBody.Account) {
     class Account(val currentPassword: String)

@@ -23,7 +23,7 @@ import tv.caffeine.app.net.TokenAuthenticator
 import javax.inject.Singleton
 
 enum class Service {
-    MainApi, RefreshToken, Payments, Realtime, Events
+    MainApi, RefreshToken, Payments, Realtime, Events, RealtimeWebSocket
 }
 
 @Module
@@ -94,22 +94,6 @@ class NetworkModule {
             .addConverterFactory(gsonConverterFactory)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
-
-    @Provides
-    @CaffeineApi(Service.MainApi)
-    fun providesBaseUrl() = "https://api.caffeine.tv"
-
-    @Provides
-    @CaffeineApi(Service.Realtime)
-    fun providesRealtimeBaseUrl() = "https://realtime.caffeine.tv"
-
-    @Provides
-    @CaffeineApi(Service.Payments)
-    fun providesPaymentsBaseUrl() = "https://payments.caffeine.tv"
-
-    @Provides
-    @CaffeineApi(Service.Events)
-    fun providesEventsBaseUrl() = "https://events.caffeine.tv"
 
     @Provides fun providesAccountsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
 
