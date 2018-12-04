@@ -12,6 +12,7 @@ import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,6 +49,9 @@ class LandingFragment : CaffeineFragment() {
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         callbackManager = CallbackManager.Factory.create()
         binding.facebookSignInButton.registerCallback(callbackManager, facebookCallback)
+        LandingFragmentArgs.fromBundle(arguments).message?.let {
+            Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private val facebookCallback = object : FacebookCallback<LoginResult?> {

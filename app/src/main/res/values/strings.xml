@@ -26,6 +26,12 @@
     <string name="sign_out_button">Sign Out</string>
     <string name="sign_out_question">Sign out of account?</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_account_question">Delete Caffeine Account?</string>
+    <string name="delete_account_message">This will permanently delete your account and related data. \"<xliff:g example="randomUserName" id="username">%1$s</xliff:g>\" will be unavailable for 30 days afterwards. There is no undo here! Please enter your password to continue.</string>
+    <string name="delete_account_empty_password_error">Please enter your password.</string>
+    <string name="delete_account_incorrect_password_error">Password is incorrect.</string>
+    <string name="delete_account_button">Delete Account</string>
+    <string name="account_deleted">Account Deleted</string>
 
     <string name="hint_current_password">Current Password</string>
     <string name="update_button">Update</string>

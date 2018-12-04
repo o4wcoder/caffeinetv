@@ -26,6 +26,7 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
@@ -34,13 +35,12 @@ import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector {
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
-
     @Inject lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SettingsViewModel::class.java) }
     private lateinit var notificationSettingsViewModel: NotificationSettingsViewModel
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -52,6 +52,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
         configureLegalDocs()
         configureIgnoredUsers()
         configureSocialAccounts()
+        configureDeleteAccount()
     }
 
     override fun onAttach(context: Context) {
@@ -137,6 +138,20 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
                 @StringRes val title = if (twitter != null) R.string.disconnect_facebook_account else R.string.connect_facebook_account
                 preference.title = getString(title)
             })
+        }
+    }
+
+    private fun configureDeleteAccount() {
+        findPreference("delete_caffeine_account")?.setOnPreferenceClickListener {
+            viewModel.userDetails.observe(this,  Observer { user ->
+                fragmentManager?.let { fm ->
+                    DeleteAccountDialogFragment().apply {
+                        arguments = SettingsFragmentDirections.actionSettingsFragmentToDeleteAccountDialogFragment(user.username).arguments
+                        show(fm, "deleteAccount")
+                    }
+                }
+            })
+            true
         }
     }
 

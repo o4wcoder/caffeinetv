@@ -33,6 +33,10 @@ interface AccountsService {
 
     @PATCH("v1/account/notification-settings")
     fun updateNotificationSettings(@Body notificationSettings: NotificationSettings): Deferred<Response<NotificationSettings>>
+
+    // Non-body HTTP method like DELETE cannot contain @Body, a workaround for @DELETE("v1/account/{caid}")
+    @HTTP(method = "DELETE", path = "v1/account/{caid}", hasBody = true)
+    fun deleteAccount(@Path("caid") userId: String, @Body deleteAccountBody: DeleteAccountBody): Deferred<Response<Unit>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
@@ -73,6 +77,10 @@ class AccountUpdateResult(val credentials: CaffeineCredentials, val next: NextAc
 
 class UploadAvatarResult(val avatarImagePath: String)
 val UploadAvatarResult.avatarImageUrl: String get() = "https://images.caffeine.tv$avatarImagePath"
+
+class DeleteAccountBody(val account: DeleteAccountBody.Account) {
+    class Account(val currentPassword: String)
+}
 
 // omits iOS and web settings
 class NotificationSettings(

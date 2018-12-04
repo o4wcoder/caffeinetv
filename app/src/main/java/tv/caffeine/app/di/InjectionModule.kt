@@ -43,4 +43,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun goldBundlesFragment(): GoldBundlesFragment
     @ContributesAndroidInjector abstract fun updateEmailFragment(): UpdateEmailFragment
     @ContributesAndroidInjector abstract fun updatePasswordFragment(): UpdatePasswordFragment
+    @ContributesAndroidInjector abstract fun deleteAccountDialogFragment(): DeleteAccountDialogFragment
 }

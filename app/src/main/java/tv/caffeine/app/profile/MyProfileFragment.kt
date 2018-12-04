@@ -29,6 +29,7 @@ import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
+import tv.caffeine.app.util.navigateToLanding
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -179,7 +180,7 @@ class MyProfileFragment : CaffeineFragment() {
 
     private fun signOut() {
         tokenStore.clear()
-        navigateToLanding()
+        findNavController().navigateToLanding()
         accountsService.signOut().enqueue(object : Callback<Unit?> {
             override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                 Timber.e(t, "Failed to sign out")

@@ -17,6 +17,7 @@ import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.navigateToLanding
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -54,7 +55,7 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
 
     fun <T> handleError(result: CaffeineResult.Error<T>, view: View) {
         if (result.error.isTokenExpirationError()) {
-            navigateToLanding()
+            findNavController().navigateToLanding()
         } else {
             Snackbar.make(view, "Error ${result.error}", Snackbar.LENGTH_SHORT).show()
         }
@@ -64,11 +65,5 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
         val e = result.exception
         Timber.e(e, "Failure in the LobbyFragment")
         Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
-    }
-
-    fun navigateToLanding() {
-        val action = LobbyDirections.ActionGlobalLandingFragment()
-        val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
-        findNavController().navigate(action, navOptions)
     }
 }

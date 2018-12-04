@@ -53,6 +53,10 @@
         <action
             android:id="@+id/action_landingFragment_to_mfaCodeFragment"
             app:destination="@+id/mfaCodeFragment" />
+        <argument
+            android:name="message"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
     <fragment
         android:id="@+id/forgotFragment"
@@ -208,6 +212,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_updatePasswordFragment"
             app:destination="@+id/updatePasswordFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_deleteAccountDialogFragment"
+            app:destination="@+id/deleteAccountDialogFragment"/>
     </fragment>
     <fragment
         android:id="@+id/legalDocsFragment"
@@ -279,4 +286,11 @@
         android:id="@+id/updatePasswordFragment"
         android:name="tv.caffeine.app.profile.UpdatePasswordFragment"
         android:label="@string/update_password_title" />
+    <fragment
+        android:id="@+id/deleteAccountDialogFragment"
+        android:name="tv.caffeine.app.profile.DeleteAccountDialogFragment">
+        <argument
+            android:name="username"
+            app:argType="string"/>
+    </fragment>
 </navigation>
