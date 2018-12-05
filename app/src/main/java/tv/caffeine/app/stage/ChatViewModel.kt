@@ -3,6 +3,7 @@ package tv.caffeine.app.stage
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.google.gson.Gson
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -11,9 +12,7 @@ import timber.log.Timber
 import tv.caffeine.app.api.Reaction
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.Message
-import tv.caffeine.app.api.model.MessageWrapper
-import tv.caffeine.app.api.model.User
+import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
@@ -26,7 +25,8 @@ class ChatViewModel(
         private val realtime: Realtime,
         private val tokenStore: TokenStore,
         private val usersService: UsersService,
-        private val followManager: FollowManager
+        private val followManager: FollowManager,
+        private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
     private lateinit var messageHandshake: MessageHandshake
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
@@ -58,6 +58,19 @@ class ChatViewModel(
             val deferred = realtime.sendMessage(stageId, message)
             val result = deferred.await()
             Timber.d("Sent message $text with result $result")
+        }
+    }
+
+    fun endorseMessage(message: Message) {
+        launch {
+            val result = runCatching {
+                realtime.endorseMessage(message.id).awaitEmptyAndParseErrors(gson)
+            }.getOrElse { return@launch }
+            when(result) {
+                is CaffeineEmptyResult.Success -> Timber.d("Successfully endorsed a message")
+                is CaffeineEmptyResult.Error -> Timber.e(Exception(result.error.toString()))
+                is CaffeineEmptyResult.Failure -> Timber.e(result.exception)
+            }
         }
     }
 

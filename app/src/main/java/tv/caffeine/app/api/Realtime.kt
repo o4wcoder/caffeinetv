@@ -26,6 +26,9 @@ interface Realtime {
 
     @POST("v2/reaper/stages/{stageId}/messages")
     fun sendMessage(@Path("stageId") stageId: String, @Body reaction: Reaction): Deferred<Response<Any>>
+
+    @POST("v2/reaper/messages/{messageId}/endorsements")
+    fun endorseMessage(@Path("messageId") messageId: String): Deferred<Response<Unit>>
 }
 
 class CreateViewerBody(val constrained_baseline: Boolean)

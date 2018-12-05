@@ -33,6 +33,45 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Hi! How are you?" />
 
+        <View
+            android:id="@+id/interaction_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/chat_bubble"
+            android:backgroundTint="#80000000"
+            app:layout_constraintBottom_toBottomOf="@+id/speech_bubble_text_view"
+            app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
+            app:layout_constraintStart_toStartOf="@+id/speech_bubble_text_view"
+            app:layout_constraintTop_toTopOf="@+id/speech_bubble_text_view"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/reply_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/at_sign"
+            android:textAppearance="@style/ReactionInteraction"
+            app:layout_constraintBottom_toBottomOf="@+id/interaction_overlay"
+            app:layout_constraintEnd_toStartOf="@+id/upvote_text_view"
+            app:layout_constraintStart_toStartOf="@+id/interaction_overlay"
+            app:layout_constraintTop_toTopOf="@+id/interaction_overlay"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/upvote_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checkmark"
+            android:textAppearance="@style/ReactionInteraction"
+            app:layout_constraintBottom_toBottomOf="@+id/interaction_overlay"
+            app:layout_constraintEnd_toEndOf="@+id/interaction_overlay"
+            app:layout_constraintStart_toEndOf="@+id/reply_text_view"
+            app:layout_constraintTop_toTopOf="@+id/interaction_overlay"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
         <ImageView
             android:id="@+id/avatar_image_view"
             android:layout_width="@dimen/chat_avatar_size"

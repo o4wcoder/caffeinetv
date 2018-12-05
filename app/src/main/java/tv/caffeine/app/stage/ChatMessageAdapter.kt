@@ -33,6 +33,13 @@ class ChatMessageAdapter @Inject constructor(
         }
 ) {
 
+    interface Callback {
+        fun replyClicked(message: Message)
+        fun upvoteClicked(message: Message)
+    }
+
+    var callback: Callback? = null
+
     override fun getItemViewType(position: Int): Int {
         return getItem(position).type.ordinal
     }
@@ -41,7 +48,7 @@ class ChatMessageAdapter @Inject constructor(
         val type = Message.Type.values()[viewType]
         return when(type) {
             Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false), callback)
         }
     }
 
@@ -73,7 +80,27 @@ private val Message.endorsementCountBackgroundResId get() = when(endorsementCoun
     else -> R.drawable.polygon_9_sides
 }
 
-class MessageViewHolder(val binding: ChatMessageBubbleBinding) : ChatMessageViewHolder(binding.root) {
+private fun View.toggleVisibility() {
+    isVisible = !isVisible
+}
+
+class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
+
+    init {
+        itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
+    }
+
+    private fun toggleInteractionOverlayVisibility() {
+        binding.interactionOverlay.toggleVisibility()
+        binding.replyTextView.toggleVisibility()
+        binding.upvoteTextView.toggleVisibility()
+    }
+
+    private fun hideInteractionOverlay() {
+        binding.interactionOverlay.isVisible = false
+        binding.replyTextView.isVisible = false
+        binding.upvoteTextView.isVisible = false
+    }
 
     override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
@@ -86,11 +113,18 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding) : ChatMessageView
         val endorsementTextColor = itemView.resources.getColor(message.endorsementTextColorResId, null)
         binding.endorsementCountTextView.setTextColor(endorsementTextColor)
         binding.endorsementCountTextView.setBackgroundResource(message.endorsementCountBackgroundResId)
-        message.body.digitalItem?.let { digitalItem ->
-            Picasso.get()
-                    .load(digitalItem.staticImageUrl)
-                    .into(binding.digitalItemImageView)
-        } ?: binding.digitalItemImageView.setImageDrawable(null)
+        when(val digitalItem = message.body.digitalItem) {
+            null -> binding.digitalItemImageView.setImageDrawable(null)
+            else -> Picasso.get().load(digitalItem.staticImageUrl).into(binding.digitalItemImageView)
+        }
+        binding.replyTextView.setOnClickListener {
+            hideInteractionOverlay()
+            callback?.replyClicked(message)
+        }
+        binding.upvoteTextView.setOnClickListener {
+            hideInteractionOverlay()
+            callback?.upvoteClicked(message)
+        }
     }
 
     private fun viewProfile(caid: String) {

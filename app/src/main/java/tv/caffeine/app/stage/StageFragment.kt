@@ -28,6 +28,7 @@ import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.iconImageUrl
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
@@ -128,6 +129,18 @@ class StageFragment : CaffeineFragment() {
         binding.stageToolbar.setupWithNavController(navController, null)
         title = broadcastName
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
+        chatMessageAdapter.callback = object: ChatMessageAdapter.Callback {
+            override fun replyClicked(message: Message) {
+                val string = getString(R.string.username_prepopulated_reply, message.publisher.username)
+                binding.chatMessageEditText?.setText(string)
+                binding.chatMessageEditText?.showKeyboard()
+                binding.chatMessageEditText?.setSelection(string.length)
+            }
+
+            override fun upvoteClicked(message: Message) {
+                chatViewModel.endorseMessage(message)
+            }
+        }
         initSurfaceViewRenderer()
         configureButtons()
         activity?.setImmersiveSticky()
