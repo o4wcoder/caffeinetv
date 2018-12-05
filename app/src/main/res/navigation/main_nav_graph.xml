@@ -5,6 +5,30 @@
     android:id="@+id/lobby"
     app:startDestination="@+id/lobbyFragment">
 
+    <!-- Unauth -->
+    <action
+        android:id="@+id/action_global_landingFragment"
+        app:destination="@+id/landingFragment"
+        app:popUpToInclusive="true"/>
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="tv.caffeine.app.auth.LandingFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_landing">
+        <action
+            android:id="@+id/action_landingFragment_to_signUpFragment"
+            app:destination="@+id/signUpFragment"/>
+        <action
+            android:id="@+id/action_landingFragment_to_signInFragment"
+            app:destination="@+id/signInFragment"/>
+        <action
+            android:id="@+id/action_landingFragment_to_mfaCodeFragment"
+            app:destination="@+id/mfaCodeFragment"/>
+        <argument
+            android:name="message"
+            app:argType="string"
+            app:nullable="true"/>
+    </fragment>
     <fragment
         android:id="@+id/signInFragment"
         android:name="tv.caffeine.app.auth.SignInFragment"
@@ -12,10 +36,10 @@
         tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_forgotFragment"
-            app:destination="@+id/forgotFragment" />
+            app:destination="@+id/forgotFragment"/>
         <action
             android:id="@+id/action_signInFragment_to_mfaCodeFragment"
-            app:destination="@+id/mfaCodeFragment" />
+            app:destination="@+id/mfaCodeFragment"/>
     </fragment>
     <fragment
         android:id="@+id/mfaCodeFragment"
@@ -25,36 +49,17 @@
         <argument
             android:name="username"
             app:argType="string"
-            app:nullable="true" />
+            app:nullable="true"/>
         <argument
             android:name="password"
             app:argType="string"
-            app:nullable="true" />
+            app:nullable="true"/>
         <argument
             android:name="caid"
             app:argType="string"
-            app:nullable="true" />
+            app:nullable="true"/>
         <argument
             android:name="loginToken"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/landingFragment"
-        android:name="tv.caffeine.app.auth.LandingFragment"
-        android:label="@string/app_name"
-        tools:layout="@layout/fragment_landing">
-        <action
-            android:id="@+id/action_landingFragment_to_signUpFragment"
-            app:destination="@+id/signUpFragment" />
-        <action
-            android:id="@+id/action_landingFragment_to_signInFragment"
-            app:destination="@+id/signInFragment" />
-        <action
-            android:id="@+id/action_landingFragment_to_mfaCodeFragment"
-            app:destination="@+id/mfaCodeFragment" />
-        <argument
-            android:name="message"
             app:argType="string"
             app:nullable="true"/>
     </fragment>
@@ -62,7 +67,7 @@
         android:id="@+id/forgotFragment"
         android:name="tv.caffeine.app.auth.ForgotFragment"
         android:label="@string/forgot_password_title"
-        tools:layout="@layout/fragment_forgot" />
+        tools:layout="@layout/fragment_forgot"/>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="tv.caffeine.app.auth.SignUpFragment"
@@ -70,13 +75,15 @@
         tools:layout="@layout/fragment_sign_up" >
         <action
             android:id="@+id/action_signUpFragment_to_legalDocsFragment"
-            app:destination="@+id/legalDocsFragment" />
+            app:destination="@+id/legalDocsFragment"/>
         <argument
             android:name="oauthCallbackResult"
             app:argType="tv.caffeine.app.api.OAuthCallbackResult"
             app:nullable="true"
-            android:defaultValue="@null" />
+            android:defaultValue="@null"/>
     </fragment>
+
+    <!-- Lobby & Stage -->
     <fragment
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"
@@ -84,27 +91,17 @@
         tools:layout="@layout/fragment_lobby">
         <action
             android:id="@+id/action_lobbyFragment_to_exploreFragment"
-            app:destination="@+id/exploreFragment" />
+            app:destination="@+id/exploreFragment"/>
         <action
             android:id="@+id/action_lobbyFragment_to_notificationsFragment"
-            app:destination="@+id/notificationsFragment" />
+            app:destination="@+id/notificationsFragment"/>
         <action
             android:id="@+id/action_lobbyFragment_to_stageFragment"
-            app:destination="@+id/stageFragment" />
+            app:destination="@+id/stageFragment"/>
         <action
             android:id="@+id/action_lobbyFragment_to_myProfileFragment"
-            app:destination="@+id/myProfileFragment" />
+            app:destination="@+id/myProfileFragment"/>
     </fragment>
-    <fragment
-        android:id="@+id/exploreFragment"
-        android:name="tv.caffeine.app.explore.ExploreFragment"
-        android:label="@string/find_people"
-        tools:layout="@layout/fragment_explore"/>
-    <fragment
-        android:id="@+id/notificationsFragment"
-        android:name="tv.caffeine.app.notifications.NotificationsFragment"
-        android:label="@string/activity_title"
-        tools:layout="@layout/user_list_fragment"/>
     <fragment
         android:id="@+id/stageFragment"
         android:name="tv.caffeine.app.stage.StageFragment"
@@ -112,68 +109,19 @@
         tools:layout="@layout/fragment_stage" >
         <argument
             android:name="broadcaster"
-            app:argType="string" />
+            app:argType="string"/>
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="caffeine.tv/{broadcaster}" />
+            app:uri="caffeine.tv/{broadcaster}"/>
         <deepLink
             android:id="@+id/deepLink2"
-            app:uri="www.caffeine.tv/{broadcaster}" />
+            app:uri="www.caffeine.tv/{broadcaster}"/>
         <action
             android:id="@+id/action_stageFragment_to_friendsWatchingFragment"
-            app:destination="@+id/friendsWatchingFragment" />
+            app:destination="@+id/friendsWatchingFragment"/>
         <action
             android:id="@+id/action_stageFragment_to_digitalItemListDialogFragment"
-            app:destination="@+id/digitalItemListDialogFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/myProfileFragment"
-        android:name="tv.caffeine.app.profile.MyProfileFragment"
-        android:label="@string/my_profile"
-        tools:layout="@layout/fragment_my_profile" >
-        <action
-            android:id="@+id/action_myProfileFragment_to_settingsFragment"
-            app:destination="@+id/settingsFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_followersFragment"
-            app:destination="@+id/followersFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_followingFragment"
-            app:destination="@+id/followingFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_goldAndCreditsFragment"
-            app:destination="@+id/goldAndCreditsFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_editBioFragment"
-            app:destination="@+id/editBioFragment" />
-        <argument
-            android:name="launchAvatarSelection"
-            app:argType="boolean"
-            android:defaultValue="false" />
-    </fragment>
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="tv.caffeine.app.profile.ProfileFragment"
-        android:label="@string/profile"
-        tools:layout="@layout/fragment_profile">
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="caffeine.tv/{caid}/profile" />
-        <deepLink
-            android:id="@+id/deepLink2"
-            app:uri="www.caffeine.tv/{caid}/profile" />
-        <argument
-            android:name="caid"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_profileFragment_to_followersFragment"
-            app:destination="@+id/followersFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_followingFragment"
-            app:destination="@+id/followingFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_stageFragment"
-            app:destination="@+id/stageFragment" />
+            app:destination="@+id/digitalItemListDialogFragment"/>
     </fragment>
     <fragment
         android:id="@+id/friendsWatchingFragment"
@@ -182,7 +130,119 @@
         tools:layout="@layout/fragment_friends_watching">
         <argument
             android:name="broadcaster"
-            app:argType="string" />
+            app:argType="string"/>
+    </fragment>
+
+    <!-- Explore -->
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="tv.caffeine.app.explore.ExploreFragment"
+        android:label="@string/find_people"
+        tools:layout="@layout/fragment_explore"/>
+
+    <!-- Notifications -->
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="tv.caffeine.app.notifications.NotificationsFragment"
+        android:label="@string/activity_title"
+        tools:layout="@layout/user_list_fragment"/>
+
+    <!-- Profile -->
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@+id/profileFragment"/>
+    <fragment
+        android:id="@+id/myProfileFragment"
+        android:name="tv.caffeine.app.profile.MyProfileFragment"
+        android:label="@string/my_profile"
+        tools:layout="@layout/fragment_my_profile" >
+        <action
+            android:id="@+id/action_myProfileFragment_to_settingsFragment"
+            app:destination="@+id/settingsFragment"/>
+        <action
+            android:id="@+id/action_myProfileFragment_to_followersFragment"
+            app:destination="@+id/followersFragment"/>
+        <action
+            android:id="@+id/action_myProfileFragment_to_followingFragment"
+            app:destination="@+id/followingFragment"/>
+        <action
+            android:id="@+id/action_myProfileFragment_to_goldAndCreditsFragment"
+            app:destination="@+id/goldAndCreditsFragment"/>
+        <action
+            android:id="@+id/action_myProfileFragment_to_editBioFragment"
+            app:destination="@+id/editBioFragment"/>
+        <argument
+            android:name="launchAvatarSelection"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="tv.caffeine.app.profile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="caffeine.tv/{caid}/profile"/>
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="www.caffeine.tv/{caid}/profile"/>
+        <argument
+            android:name="caid"
+            app:argType="string"/>
+        <action
+            android:id="@+id/action_profileFragment_to_followersFragment"
+            app:destination="@+id/followersFragment"/>
+        <action
+            android:id="@+id/action_profileFragment_to_followingFragment"
+            app:destination="@+id/followingFragment"/>
+        <action
+            android:id="@+id/action_profileFragment_to_stageFragment"
+            app:destination="@+id/stageFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/followersFragment"
+        android:name="tv.caffeine.app.users.FollowersFragment"
+        android:label="@string/followers">
+        <argument
+            android:name="caid"
+            app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="tv.caffeine.app.users.FollowingFragment"
+        android:label="@string/following">
+        <argument
+            android:name="caid"
+            app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/editBioFragment"
+        android:name="tv.caffeine.app.profile.EditBioFragment"
+        android:label="@string/edit_bio_title"/>
+
+    <!-- Gold & Credits -->
+    <fragment
+        android:id="@+id/goldAndCreditsFragment"
+        android:name="tv.caffeine.app.settings.GoldAndCreditsFragment"
+        android:label="@string/gold_and_credits_title" >
+        <action
+            android:id="@+id/action_goldAndCreditsFragment_to_transactionHistoryFragment"
+            app:destination="@+id/transactionHistoryFragment"/>
+        <action
+            android:id="@+id/action_goldAndCreditsFragment_to_goldBundlesFragment"
+            app:destination="@+id/goldBundlesFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/transactionHistoryFragment"
+        android:name="tv.caffeine.app.settings.TransactionHistoryFragment"
+        android:label="@string/transaction_history"/>
+    <fragment
+        android:id="@+id/goldBundlesFragment"
+        android:name="tv.caffeine.app.settings.GoldBundlesFragment"
+        android:label="@string/gold_bundles_title" >
+        <argument android:name="buyGoldOption"
+            app:argType="tv.caffeine.app.settings.BuyGoldOption"/>
     </fragment>
     <fragment
         android:id="@+id/digitalItemListDialogFragment"
@@ -191,31 +251,45 @@
         tools:layout="@layout/fragment_di_catalog">
         <argument
             android:name="broadcaster"
-            app:argType="string" />
+            app:argType="string"/>
     </fragment>
+
+    <!-- Settings -->
     <fragment
         android:id="@+id/settingsFragment"
         android:name="tv.caffeine.app.settings.SettingsFragment"
         android:label="@string/settings" >
         <action
             android:id="@+id/action_settingsFragment_to_legalDocsFragment"
-            app:destination="@+id/legalDocsFragment" />
+            app:destination="@+id/legalDocsFragment"/>
         <action
             android:id="@+id/action_settingsFragment_self"
-            app:destination="@+id/settingsFragment" />
+            app:destination="@+id/settingsFragment"/>
         <action
             android:id="@+id/action_settingsFragment_to_ignoredUsersFragment"
-            app:destination="@+id/ignoredUsersFragment" />
+            app:destination="@+id/ignoredUsersFragment"/>
         <action
             android:id="@+id/action_settingsFragment_to_updateEmailFragment"
-            app:destination="@+id/updateEmailFragment" />
+            app:destination="@+id/updateEmailFragment"/>
         <action
             android:id="@+id/action_settingsFragment_to_updatePasswordFragment"
-            app:destination="@+id/updatePasswordFragment" />
+            app:destination="@+id/updatePasswordFragment"/>
         <action
             android:id="@+id/action_settingsFragment_to_deleteAccountDialogFragment"
             app:destination="@+id/deleteAccountDialogFragment"/>
     </fragment>
+    <fragment
+        android:id="@+id/updateEmailFragment"
+        android:name="tv.caffeine.app.profile.UpdateEmailFragment"
+        android:label="@string/update_email_title"/>
+    <fragment
+        android:id="@+id/updatePasswordFragment"
+        android:name="tv.caffeine.app.profile.UpdatePasswordFragment"
+        android:label="@string/update_password_title"/>
+    <fragment
+        android:id="@+id/ignoredUsersFragment"
+        android:name="tv.caffeine.app.users.IgnoredUsersFragment"
+        android:label="@string/ignored_users"/>
     <fragment
         android:id="@+id/legalDocsFragment"
         android:name="tv.caffeine.app.settings.LegalDocsFragment"
@@ -223,69 +297,8 @@
         tools:layout="@layout/fragment_legal_docs">
         <argument
             android:name="document"
-            app:argType="tv.caffeine.app.settings.LegalDoc" />
+            app:argType="tv.caffeine.app.settings.LegalDoc"/>
     </fragment>
-    <fragment
-        android:id="@+id/ignoredUsersFragment"
-        android:name="tv.caffeine.app.users.IgnoredUsersFragment"
-        android:label="@string/ignored_users" />
-    <fragment
-        android:id="@+id/followersFragment"
-        android:name="tv.caffeine.app.users.FollowersFragment"
-        android:label="@string/followers">
-        <argument
-            android:name="caid"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/followingFragment"
-        android:name="tv.caffeine.app.users.FollowingFragment"
-        android:label="@string/following">
-        <argument
-            android:name="caid"
-            app:argType="string" />
-    </fragment>
-    <action
-        android:id="@+id/action_global_profileFragment"
-        app:destination="@+id/profileFragment" />
-    <fragment
-        android:id="@+id/goldAndCreditsFragment"
-        android:name="tv.caffeine.app.settings.GoldAndCreditsFragment"
-        android:label="@string/gold_and_credits_title" >
-        <action
-            android:id="@+id/action_goldAndCreditsFragment_to_transactionHistoryFragment"
-            app:destination="@+id/transactionHistoryFragment" />
-        <action
-            android:id="@+id/action_goldAndCreditsFragment_to_goldBundlesFragment"
-            app:destination="@+id/goldBundlesFragment" />
-    </fragment>
-    <action
-        android:id="@+id/action_global_landingFragment"
-        app:destination="@+id/landingFragment"
-        app:popUpToInclusive="true" />
-    <fragment
-        android:id="@+id/transactionHistoryFragment"
-        android:name="tv.caffeine.app.settings.TransactionHistoryFragment"
-        android:label="@string/transaction_history" />
-    <fragment
-        android:id="@+id/editBioFragment"
-        android:name="tv.caffeine.app.profile.EditBioFragment"
-        android:label="@string/edit_bio_title" />
-    <fragment
-        android:id="@+id/goldBundlesFragment"
-        android:name="tv.caffeine.app.settings.GoldBundlesFragment"
-        android:label="@string/gold_bundles_title" >
-        <argument android:name="buyGoldOption"
-            app:argType="tv.caffeine.app.settings.BuyGoldOption" />
-    </fragment>
-    <fragment
-        android:id="@+id/updateEmailFragment"
-        android:name="tv.caffeine.app.profile.UpdateEmailFragment"
-        android:label="@string/update_email_title" />
-    <fragment
-        android:id="@+id/updatePasswordFragment"
-        android:name="tv.caffeine.app.profile.UpdatePasswordFragment"
-        android:label="@string/update_password_title" />
     <fragment
         android:id="@+id/deleteAccountDialogFragment"
         android:name="tv.caffeine.app.profile.DeleteAccountDialogFragment">
