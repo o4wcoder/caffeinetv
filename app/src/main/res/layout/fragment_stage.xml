@@ -86,7 +86,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/primary_view_renderer"
             app:layout_constraintBottom_toTopOf="@id/chat_message_edit_text"
-            app:spanCount="2" />
+            app:spanCount="2"
+            tools:listitem="@layout/chat_message_bubble"
+            tools:itemCount="4"/>
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/chat_message_edit_text"
@@ -122,8 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_share_gray8b_24dp"
-                    android:tint="@color/toolbarIcon"
+                    android:src="@drawable/ic_share"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/chat_button"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"

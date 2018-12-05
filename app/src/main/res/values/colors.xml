@@ -11,4 +11,17 @@
     <color name="toolbarIcon">#8b8b8b</color>
     <color name="gold_coin">#ffaa00</color>
     <color name="purple_coin">#aa33aa</color>
+    <color name="chat_bubble_bg">#8b8b8b</color>
+    <color name="endorsement_4_bg">#009FE0</color>
+    <color name="endorsement_5_bg">#4cd964</color>
+    <color name="endorsement_6_bg">#FFCC00</color>
+    <color name="endorsement_7_bg">#FF9500</color>
+    <color name="endorsement_8_bg">#FF3B30</color>
+    <color name="endorsement_9_bg">#5856D6</color>
+    <color name="endorsement_4_text">#FFFFFF</color>
+    <color name="endorsement_5_text">#000000</color>
+    <color name="endorsement_6_text">#000000</color>
+    <color name="endorsement_7_text">#FFFFFF</color>
+    <color name="endorsement_8_text">#FFFFFF</color>
+    <color name="endorsement_9_text">#FFFFFF</color>
 </resources>

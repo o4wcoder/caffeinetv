@@ -15,7 +15,7 @@
         android:paddingTop="@dimen/list_item_spacing_half"
         android:paddingRight="@dimen/list_item_spacing"
         android:paddingBottom="@dimen/list_item_spacing_half"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large">
+        tools:background="#000000">
 
         <TextView
             android:id="@+id/speech_bubble_text_view"
@@ -57,13 +57,14 @@
             android:id="@+id/endorsement_count_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/gold_coin"
+            android:background="@drawable/polygon_4_sides"
+            android:textColor="@color/endorsement_4_text"
             android:gravity="center_horizontal"
             android:padding="4dp"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="3" />
+            tools:text="2" />
 
         <ImageView
             android:id="@+id/digital_item_image_view"
@@ -81,7 +82,7 @@
             android:layout_height="@dimen/chat_bubble_triangle_size"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="4dp"
-            android:tint="@color/caffeineBlue"
+            android:tint="@color/chat_bubble_bg"
             app:layout_constraintEnd_toStartOf="@+id/avatar_image_view"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"

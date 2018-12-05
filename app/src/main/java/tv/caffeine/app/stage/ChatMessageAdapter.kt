@@ -55,6 +55,24 @@ sealed class ChatMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(ite
     abstract fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
 }
 
+private val Message.endorsementTextColorResId get() = when(endorsementCount) {
+    in 0..4 -> R.color.endorsement_4_text
+    in 5..9 -> R.color.endorsement_5_text
+    in 10..14 -> R.color.endorsement_6_text
+    in 15..19 -> R.color.endorsement_7_text
+    in 20..24 -> R.color.endorsement_8_text
+    else -> R.color.endorsement_9_text
+}
+
+private val Message.endorsementCountBackgroundResId get() = when(endorsementCount) {
+    in 0..4 -> R.drawable.polygon_4_sides
+    in 5..9 -> R.drawable.polygon_5_sides
+    in 10..14 -> R.drawable.polygon_6_sides
+    in 15..19 -> R.drawable.polygon_7_sides
+    in 20..24 -> R.drawable.polygon_8_sides
+    else -> R.drawable.polygon_9_sides
+}
+
 class MessageViewHolder(val binding: ChatMessageBubbleBinding) : ChatMessageViewHolder(binding.root) {
 
     override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
@@ -65,6 +83,9 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding) : ChatMessageView
         binding.speechBubbleTextView.text = message.body.text
         binding.endorsementCountTextView.text = if (message.endorsementCount > 0) message.endorsementCount.toString() else null
         binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
+        val endorsementTextColor = itemView.resources.getColor(message.endorsementTextColorResId, null)
+        binding.endorsementCountTextView.setTextColor(endorsementTextColor)
+        binding.endorsementCountTextView.setBackgroundResource(message.endorsementCountBackgroundResId)
         message.body.digitalItem?.let { digitalItem ->
             Picasso.get()
                     .load(digitalItem.staticImageUrl)
