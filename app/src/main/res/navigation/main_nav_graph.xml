@@ -191,6 +191,9 @@
             android:name="caid"
             app:argType="string"/>
         <action
+            android:id="@+id/action_profileFragment_to_reportOrIgnoreDialogFragment"
+            app:destination="@+id/reportOrIgnoreDialogFragment"/>
+        <action
             android:id="@+id/action_profileFragment_to_followersFragment"
             app:destination="@+id/followersFragment"/>
         <action
@@ -199,6 +202,29 @@
         <action
             android:id="@+id/action_profileFragment_to_stageFragment"
             app:destination="@+id/stageFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/reportOrIgnoreDialogFragment"
+        android:name="tv.caffeine.app.profile.ReportOrIgnoreDialogFragment">
+        <action
+            android:id="@+id/action_profileFragment_to_reportDialogFragment"
+            app:destination="@+id/reportDialogFragment"/>
+        <argument
+            android:name="caid"
+            app:argType="string"/>
+        <argument
+            android:name="username"
+            app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/reportDialogFragment"
+        android:name="tv.caffeine.app.profile.ReportDialogFragment">
+        <argument
+            android:name="caid"
+            app:argType="string"/>
+        <argument
+            android:name="username"
+            app:argType="string"/>
     </fragment>
     <fragment
         android:id="@+id/followersFragment"

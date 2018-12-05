@@ -34,6 +34,8 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun friendsWatchingFragment(): FriendsWatchingFragment
     @ContributesAndroidInjector abstract fun digitalItemListDialogFragment(): DICatalogFragment
     @ContributesAndroidInjector abstract fun ignoredUsersFragment(): IgnoredUsersFragment
+    @ContributesAndroidInjector abstract fun reportOrIgnoreDialogFragment(): ReportOrIgnoreDialogFragment
+    @ContributesAndroidInjector abstract fun reportDialogFragment(): ReportDialogFragment
     @ContributesAndroidInjector abstract fun followersFragment(): FollowersFragment
     @ContributesAndroidInjector abstract fun followingFragment(): FollowingFragment
     @ContributesAndroidInjector abstract fun goldAndCreditsFragment(): GoldAndCreditsFragment
