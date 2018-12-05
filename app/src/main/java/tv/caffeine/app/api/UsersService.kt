@@ -19,6 +19,9 @@ interface UsersService {
     @DELETE("v1/users/{caid1}/unfollow/{caid2}")
     fun unfollow(@Path("caid1") follower: String, @Path("caid2") toUnfollow: String): Call<Void>
 
+    @POST("v1/users/{caid1}/ignore/{caid2}")
+    fun ignore(@Path("caid1") ignorer: String, @Path("caid2") ignoree: String): Deferred<Response<Void>>
+
     @GET("v1/users/suggestions")
     fun listSuggestions(): Deferred<Response<List<SearchUserItem>>>
 

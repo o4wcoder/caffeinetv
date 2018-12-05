@@ -3,9 +3,11 @@ package tv.caffeine.app.util
 import android.app.Activity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.StringRes
 import androidx.core.content.getSystemService
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.google.android.material.snackbar.Snackbar
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 
@@ -39,3 +41,6 @@ fun Activity.unsetImmersiveSticky() {
     }
 }
 
+fun Activity.showSnackbar(@StringRes resId: Int) {
+    Snackbar.make(window.decorView, resId, Snackbar.LENGTH_SHORT).show()
+}

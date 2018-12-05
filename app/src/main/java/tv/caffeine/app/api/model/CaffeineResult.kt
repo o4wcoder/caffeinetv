@@ -37,3 +37,5 @@ suspend fun <T> Deferred<Response<T>>.awaitEmptyAndParseErrors(gson: Gson): Caff
         else -> CaffeineEmptyResult.Failure(Exception("awaitAndParseErrors"))
     }
 }
+
+class BooleanResult(val isSuccessful: Boolean)

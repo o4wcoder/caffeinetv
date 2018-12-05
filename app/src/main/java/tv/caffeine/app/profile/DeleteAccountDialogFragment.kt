@@ -2,23 +2,15 @@ package tv.caffeine.app.profile
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.EditText
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -27,25 +19,19 @@ import tv.caffeine.app.api.DeleteAccountBody
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.ui.CaffeineDialogFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.navigateToLanding
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class DeleteAccountDialogFragment : DialogFragment(), HasSupportFragmentInjector {
+class DeleteAccountDialogFragment : CaffeineDialogFragment() {
 
-    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-
     private lateinit var username: String
     private lateinit var passwordEditText: EditText
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory)}
     private val viewModel by lazy { viewModelProvider.get(DeleteAccountViewModel::class.java) }
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity == null) {
@@ -79,11 +65,6 @@ class DeleteAccountDialogFragment : DialogFragment(), HasSupportFragmentInjector
         return alert
     }
 
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
-
     private fun deleteAccount() {
         val password = passwordEditText.text.toString()
         if (password.isEmpty()) {
@@ -107,7 +88,8 @@ class DeleteAccountViewModel(
     fun deleteAccount(password: String) {
         val caid = tokenStore.caid ?: return
         launch {
-            val result = accountsService.deleteAccount(caid, DeleteAccountBody(DeleteAccountBody.Account(password))).awaitEmptyAndParseErrors(gson)
+            val result = accountsService.deleteAccount(caid, DeleteAccountBody(DeleteAccountBody.Account(password)))
+                    .awaitEmptyAndParseErrors(gson)
             when (result) {
                 is CaffeineEmptyResult.Success-> {
                     _deleteAccountResult.value = DeleteAccountResult(true)
