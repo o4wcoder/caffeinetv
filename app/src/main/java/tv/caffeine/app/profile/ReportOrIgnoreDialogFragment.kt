@@ -4,10 +4,12 @@ import tv.caffeine.app.R
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -26,6 +28,7 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
 
     @Inject lateinit var usersService: UsersService
     private val viewModel by lazy { viewModelProvider.get(IgnoreUserViewModel::class.java) }
+    private var shouldNavigateBackWhenDone = false
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity == null) {
@@ -37,14 +40,19 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
         viewModel.ignoreUserResult.observe(this, Observer {
             activity?.showSnackbar(if (it.isSuccessful) R.string.user_ignored else R.string.failed_to_ignore_the_user)
             dismiss()
-            // TODO (david) different navigation backstack behaviors depending on where the dialog is opened.
+            if (shouldNavigateBackWhenDone) {
+                findNavController().popBackStack()
+            }
         })
+
         val args=  ReportOrIgnoreDialogFragmentArgs.fromBundle(arguments)
         val caid = args.caid
         val username = args.username
+        shouldNavigateBackWhenDone = args.shouldNavigateBackWhenDone
         val text = arrayOf(
-                getString(R.string.report_user_more, username),
-                getString(R.string.ignore_user, username)
+                HtmlCompat.fromHtml(getString(R.string.report_user_more_dialog_option, username), HtmlCompat.FROM_HTML_MODE_LEGACY),
+                HtmlCompat.fromHtml(getString(R.string.ignore_user_dialog_option, username), HtmlCompat.FROM_HTML_MODE_LEGACY),
+                getString(R.string.cancel)
         )
         val alert = AlertDialog.Builder(activity)
                 .setItems(text, null)
@@ -53,6 +61,7 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
             when(position) {
                 0 -> reportUser(caid, username)
                 1 -> viewModel.ignoreUser(caid)
+                2 -> dismiss()
             }
         }
         return alert

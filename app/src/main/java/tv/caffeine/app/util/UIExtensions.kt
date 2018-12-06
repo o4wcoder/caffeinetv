@@ -5,16 +5,26 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.core.content.getSystemService
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.google.android.material.snackbar.Snackbar
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
 
 fun NavController.navigateToLanding(message: String? = null) {
     val action = LobbyDirections.ActionGlobalLandingFragment(message)
     val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
     navigate(action, navOptions)
+}
+
+fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: String, shouldNavigateBackWhenDone: Boolean) {
+    ReportOrIgnoreDialogFragment().let {
+        it.arguments = LobbyDirections.ActionGlobalReportOrIgnoreDialogFragment(
+                caid, username, shouldNavigateBackWhenDone).arguments
+        it.show(this, "reportOrIgnoreUser")
+    }
 }
 
 fun Activity.dismissKeyboard() {

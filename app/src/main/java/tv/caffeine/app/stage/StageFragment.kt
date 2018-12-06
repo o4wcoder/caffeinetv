@@ -5,11 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -33,11 +32,14 @@ import tv.caffeine.app.api.model.iconImageUrl
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
+import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.ui.showKeyboard
+import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.setImmersiveSticky
+import tv.caffeine.app.util.showSnackbar
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
@@ -111,6 +113,17 @@ class StageFragment : CaffeineFragment() {
             launch(dispatchConfig.main) {
                 profileViewModel.load(userDetails.caid)
                 binding.profileViewModel = profileViewModel
+                binding.stageToolbar.apply {
+                    inflateMenu(R.menu.stage_menu)
+                    menu.findItem(R.id.stage_overflow_menu).setOnMenuItemClickListener {
+                        if (it.itemId == R.id.stage_overflow_menu) {
+                            fragmentManager?.navigateToReportOrIgnoreDialog(
+                                    userDetails.caid, userDetails.username, true
+                            )
+                        }
+                        true
+                    }
+                }
             }
             val broadcastDetails = userDetails.broadcastId?.let { broadcastsService.broadcastDetails(it) }
             launch(dispatchConfig.main) {
@@ -351,6 +364,5 @@ class StageFragment : CaffeineFragment() {
         videoTracks.values.forEach { it.setEnabled(enabled) }
         audioTracks.values.forEach { it.setEnabled(enabled) }
     }
-
 }
 

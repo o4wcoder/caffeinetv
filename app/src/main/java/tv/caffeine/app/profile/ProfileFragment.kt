@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import tv.caffeine.app.R
-import tv.caffeine.app.databinding.FragmentMyProfileBindingImpl
 import tv.caffeine.app.databinding.FragmentProfileBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 
 class ProfileFragment : CaffeineFragment() {
 
@@ -31,7 +31,7 @@ class ProfileFragment : CaffeineFragment() {
         viewModel.username.observe(this, Observer { username ->
             binding.moreButton.apply {
                 visibility = View.VISIBLE
-                setOnClickListener { showReportOrIgnoreDialogFragment(username) }
+                setOnClickListener { fragmentManager?.navigateToReportOrIgnoreDialog(caid, username, true) }
             }
         })
         binding.profileViewModel = viewModel
@@ -40,16 +40,6 @@ class ProfileFragment : CaffeineFragment() {
         binding.numberOfFollowersTextView.setOnClickListener { showFollowersList() }
         binding.stageImageView.setOnClickListener { watchBroadcast() }
         return binding.root
-    }
-
-    private fun showReportOrIgnoreDialogFragment(username: String) {
-        fragmentManager?.let { fm ->
-            ReportOrIgnoreDialogFragment().apply {
-                arguments = ProfileFragmentDirections
-                        .actionProfileFragmentToReportOrIgnoreDialogFragment(caid, username).arguments
-                show(fm, "reportOrIgnoreUser")
-            }
-        }
     }
 
     private fun showFollowingList() {
