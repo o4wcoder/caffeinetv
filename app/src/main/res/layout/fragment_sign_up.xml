@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
     </data>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
             android:layout_margin="16dp"
             tools:context=".auth.SignInFragment">
 
             <ImageView
+                android:id="@+id/logo_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/logo"
-                android:contentDescription="@string/caffeine_logo_content_description" />
+                android:contentDescription="@string/caffeine_logo_content_description"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
+                style="@style/ScreenTitle"
+                android:id="@+id/sign_up_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/ScreenTitle"
-                android:text="@string/sign_up_title" />
+                android:text="@string/sign_up_title"
+                app:layout_constraintTop_toBottomOf="@+id/logo_image_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
                 android:id="@+id/form_error_text_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/sign_up_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
+                style="@style/OutlinedBox"
+                android:id="@+id/username_text_input_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/sign_in_hint_username"
-                style="@style/OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/form_error_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/username_edit_text"
@@ -50,10 +63,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
+                style="@style/OutlinedBox"
+                android:id="@+id/email_text_input_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/sign_in_hint_email"
-                style="@style/OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/username_text_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email_edit_text"
@@ -64,10 +81,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
+                style="@style/OutlinedBox"
+                android:id="@+id/password_text_input_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/sign_in_hint_password"
-                style="@style/OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/email_text_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password_edit_text"
@@ -78,10 +99,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
+                style="@style/OutlinedBox"
+                android:id="@+id/dob_text_input_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/sign_in_hint_dob"
-                style="@style/OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/password_text_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/dob_edit_text"
@@ -93,16 +118,38 @@
 
             <CheckBox
                 android:id="@+id/agree_to_legal_checkbox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/dob_text_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintEnd_toStartOf="@id/agree_to_legal_text_view"
+                tools:ignore="RtlSymmetry"/>
+
+            <TextView
+                android:id="@+id/agree_to_legal_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/dob_text_input_layout"
+                app:layout_constraintStart_toEndOf="@id/agree_to_legal_checkbox"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="I have read and agree to the Terms of Service, Privacy Policy, Community Guidelines"/>
 
             <Button
-                android:id="@+id/sign_up_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 style="@style/ActionButton"
-                android:text="@string/sign_up_button" />
+                android:id="@+id/sign_up_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
 
-        </LinearLayout>
+                android:layout_marginTop="8dp"
+                android:text="@string/sign_up_button"
+                app:layout_constraintTop_toBottomOf="@+id/agree_to_legal_text_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

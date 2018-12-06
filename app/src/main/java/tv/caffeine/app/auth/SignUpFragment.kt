@@ -43,7 +43,7 @@ class SignUpFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.signUpButton.setOnClickListener { signUp() }
-        binding.agreeToLegalCheckbox.apply {
+        binding.agreeToLegalTextView.apply {
             text = buildLegalDocSpannable(findNavController())
             movementMethod = LinkMovementMethod.getInstance()
         }
