@@ -1,5 +1,6 @@
 package tv.caffeine.app.lobby
 
+import android.app.Activity
 import android.graphics.Rect
 import android.view.View
 import android.widget.Button
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 
 sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
@@ -102,6 +105,9 @@ open class LiveBroadcastCard(val binding: LiveBroadcastCardBinding) : Broadcaste
         } else {
             binding.gameLogoImageView.setImageDrawable(null)
         }
+        liveBroadcastItem.broadcaster.user.let {
+            binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
+        }
         itemView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).navigate(action)
@@ -128,10 +134,19 @@ class LiveBroadcastWithFriendsCard(val binding: LiveBroadcastWithFriendsCardBind
         } else {
             binding.gameLogoImageView.setImageDrawable(null)
         }
+        liveBroadcastItem.broadcaster.user.let {
+            binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
+        }
         itemView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).navigate(action)
         }
+    }
+}
+
+private class MoreButtonClickListener(val caid: String, val username: String) : View.OnClickListener {
+    override fun onClick(v: View?) {
+        (v?.context as? FragmentActivity)?.supportFragmentManager?.navigateToReportOrIgnoreDialog(caid, username, false)
     }
 }
 
