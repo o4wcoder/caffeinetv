@@ -117,4 +117,6 @@
     <string name="at_sign" translatable="false">\@</string>
     <string name="checkmark">\u2713</string>
     <string name="username_prepopulated_reply" translatable="false">\@<xliff:g example="zand" id="username">%s</xliff:g> </string>
+    <string name="message">Message</string>
+    <string name="send">Send</string>
 </resources>

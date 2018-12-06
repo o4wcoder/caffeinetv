@@ -23,10 +23,7 @@ import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.api.BroadcastsService
-import tv.caffeine.app.api.EventsService
-import tv.caffeine.app.api.Realtime
-import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.iconImageUrl
 import tv.caffeine.app.auth.TokenStore
@@ -43,7 +40,7 @@ import tv.caffeine.app.util.showSnackbar
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
-class StageFragment : CaffeineFragment() {
+class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -58,6 +55,7 @@ class StageFragment : CaffeineFragment() {
 
     private lateinit var binding: FragmentStageBinding
     private lateinit var broadcaster: String
+    private lateinit var broadcasterCaid: String
     private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<StageHandshake.Stream.Type, ProgressBar> = mutableMapOf()
@@ -79,6 +77,7 @@ class StageFragment : CaffeineFragment() {
         broadcaster = args.broadcaster
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
+            broadcasterCaid = userDetails.caid
             launch(dispatchConfig.main) {
                 connectStreams(userDetails.stageId)
             }
@@ -338,6 +337,7 @@ class StageFragment : CaffeineFragment() {
             val fragmentManager = fragmentManager ?: return@setOnClickListener
             val fragment = DICatalogFragment()
             val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster)
+            fragment.setTargetFragment(this, 0)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "DI")
         }
@@ -348,6 +348,15 @@ class StageFragment : CaffeineFragment() {
         val text = editText.text.toString()
         editText.text = null
         chatViewModel.sendMessage(text, broadcaster)
+    }
+
+    override fun digitalItemSelected(digitalItem: DigitalItem) {
+        fragmentManager?.let { fm ->
+            val fragment = SendDigitalItemFragment()
+            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, broadcasterCaid)
+            fragment.arguments = action.arguments
+            fragment.show(fm, "sendDigitalItem")
+        }
     }
 
     private fun deinitSurfaceViewRenderers() {

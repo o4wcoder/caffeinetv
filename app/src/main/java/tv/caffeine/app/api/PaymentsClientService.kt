@@ -13,7 +13,10 @@ import java.util.*
 
 interface PaymentsClientService {
     @POST("store/get-digital-items")
-    fun getDigitalItems(@Body body: GetDigitalItemsBody): Deferred<PaymentsEnvelope<DigitalItemsPayload>>
+    fun getDigitalItems(@Body body: GetDigitalItemsBody): Deferred<Response<PaymentsEnvelope<DigitalItemsPayload>>>
+
+    @POST("store/buy-digital-item")
+    fun buyDigitalItem(@Body body: BuyDigitalItemBody): Deferred<Response<PaymentsEnvelope<Any>>>
 
     @POST("store/get-wallet")
     fun getWallet(@Body body: GetWalletBody): Deferred<PaymentsEnvelope<Wallet>>
@@ -29,6 +32,8 @@ interface PaymentsClientService {
 }
 
 class GetDigitalItemsBody
+
+class BuyDigitalItemBody(val id: String, val quantity: Int, val recipient: String, val message: String)
 
 class GetWalletBody
 

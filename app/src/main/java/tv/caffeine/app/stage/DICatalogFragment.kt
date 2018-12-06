@@ -20,7 +20,17 @@ import java.text.NumberFormat
 
 class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 
-    private val adapter = DigitalItemAdapter()
+    interface Callback {
+        fun digitalItemSelected(digitalItem: DigitalItem)
+    }
+
+    private val adapter = DigitalItemAdapter(object: Callback {
+        override fun digitalItemSelected(digitalItem: DigitalItem) {
+            val callback = targetFragment as? Callback ?: return
+            callback.digitalItemSelected(digitalItem)
+            dismiss()
+        }
+    })
     private val viewModel by lazy { viewModelProvider.get(DICatalogViewModel::class.java) }
     private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
     private lateinit var binding: FragmentDiCatalogBinding
@@ -46,7 +56,10 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 
 }
 
-private class DigitalItemViewHolder internal constructor(val binding: DiCatalogItemBinding)
+private class DigitalItemViewHolder constructor(
+        val binding: DiCatalogItemBinding,
+        val callback: DICatalogFragment.Callback
+)
     : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(digitalItem: DigitalItem) {
@@ -56,11 +69,16 @@ private class DigitalItemViewHolder internal constructor(val binding: DiCatalogI
         Picasso.get()
                 .load(digitalItem.staticImageUrl)
                 .into(binding.previewImageView)
+        itemView.setOnClickListener {
+            callback.digitalItemSelected(digitalItem)
+        }
     }
 }
 
 
-private class DigitalItemAdapter internal constructor() : ListAdapter<DigitalItem, DigitalItemViewHolder>(
+private class DigitalItemAdapter constructor(
+        private val callback: DICatalogFragment.Callback
+) : ListAdapter<DigitalItem, DigitalItemViewHolder>(
         object : DiffUtil.ItemCallback<DigitalItem>() {
             override fun areItemsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem.id == newItem.id
 
@@ -70,7 +88,7 @@ private class DigitalItemAdapter internal constructor() : ListAdapter<DigitalIte
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigitalItemViewHolder {
         val binding = DiCatalogItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DigitalItemViewHolder(binding)
+        return DigitalItemViewHolder(binding, callback)
     }
 
     override fun onBindViewHolder(holder: DigitalItemViewHolder, position: Int) {

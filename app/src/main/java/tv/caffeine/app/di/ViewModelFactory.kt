@@ -18,10 +18,12 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.*
 import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
+import tv.caffeine.app.stage.SendDigitalItemViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.wallet.DigitalItemRepository
 import javax.inject.Inject
 
 class ViewModelFactory @Inject constructor(
@@ -40,6 +42,7 @@ class ViewModelFactory @Inject constructor(
         private val updatePasswordUseCase: UpdatePasswordUseCase,
         private val realtime: Realtime,
         private val uploadAvatarUseCase: UploadAvatarUseCase,
+        private val digitalItemRepository: DigitalItemRepository,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -48,7 +51,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, loadLobbyUseCase) as T
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, usersService, tokenStore)
-            modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, paymentsClientService)
+            modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, digitalItemRepository)
             modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(dispatchConfig, paymentsClientService)
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> ProfileViewModel(dispatchConfig, followManager)
             modelClass.isAssignableFrom(IgnoredUsersViewModel::class.java) -> IgnoredUsersViewModel(dispatchConfig, tokenStore, usersService)
@@ -63,6 +66,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, realtime, tokenStore, usersService, followManager, gson)
+            modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

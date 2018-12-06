@@ -122,6 +122,9 @@
         <action
             android:id="@+id/action_stageFragment_to_digitalItemListDialogFragment"
             app:destination="@+id/digitalItemListDialogFragment"/>
+        <action
+            android:id="@+id/action_stageFragment_to_sendDigitalItemFragment"
+            app:destination="@id/sendDigitalItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/friendsWatchingFragment"
@@ -131,6 +134,17 @@
         <argument
             android:name="broadcaster"
             app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/sendDigitalItemFragment"
+        android:name="tv.caffeine.app.stage.SendDigitalItemFragment"
+        android:label="SendDigitalItemFragment" >
+        <argument
+            android:name="digitalItemId"
+            app:argType="string" />
+        <argument
+            android:name="recipientCaid"
+            app:argType="string" />
     </fragment>
 
     <!-- Explore -->
