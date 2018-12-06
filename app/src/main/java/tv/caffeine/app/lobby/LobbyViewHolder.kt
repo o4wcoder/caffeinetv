@@ -1,6 +1,5 @@
 package tv.caffeine.app.lobby
 
-import android.app.Activity
 import android.graphics.Rect
 import android.view.View
 import android.widget.Button
@@ -76,7 +75,7 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .transform(roundedCornersTransformation)
                 .into(previewImageView)
         val isLive = singleCard.broadcaster.broadcast != null
-        singleCard.broadcaster.user.configure(avatarImageView, usernameTextView, followButton, followManager, !isLive, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        singleCard.broadcaster.user.configure(avatarImageView, usernameTextView, followButton, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
         avatarImageView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         usernameTextView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         broadcastTitleTextView.text = broadcast.name

@@ -28,6 +28,7 @@ fun User.configure(avatarImageView: ImageView, usernameTextView: TextView,
             followButton.setText(R.string.follow_button)
             followButton.setOnClickListener {
                 followButton.isVisible = allowUnfollowing
+                followButton.setText(R.string.unfollow_button)
                 followManager.followUser(caid)
             }
         } else if (allowUnfollowing && followManager.followersLoaded() && following) {
