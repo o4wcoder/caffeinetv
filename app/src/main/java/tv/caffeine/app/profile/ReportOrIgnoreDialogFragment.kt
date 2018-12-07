@@ -14,7 +14,6 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.BooleanResult
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
@@ -37,8 +36,8 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
                 throw it
             }
         }
-        viewModel.ignoreUserResult.observe(this, Observer {
-            activity?.showSnackbar(if (it.isSuccessful) R.string.user_ignored else R.string.failed_to_ignore_the_user)
+        viewModel.ignoreUserResult.observe(this, Observer { isSuccessful ->
+            activity?.showSnackbar(if (isSuccessful) R.string.user_ignored else R.string.failed_to_ignore_the_user)
             dismiss()
             if (shouldNavigateBackWhenDone) {
                 findNavController().popBackStack()
@@ -85,19 +84,19 @@ class IgnoreUserViewModel(
         private val usersService: UsersService,
         private val gson: Gson
 ): CaffeineViewModel(dispatchConfig) {
-    private val _ignoreUserResult = MutableLiveData<BooleanResult>()
-    val ignoreUserResult: LiveData<BooleanResult> = Transformations.map(_ignoreUserResult) { it }
+    private val _ignoreUserResult = MutableLiveData<Boolean>()
+    val ignoreUserResult: LiveData<Boolean> = Transformations.map(_ignoreUserResult) { it }
 
     fun ignoreUser(ignoree: String) {
         val ignorer= tokenStore.caid ?: return
         launch {
             val result = usersService.ignore(ignorer, ignoree).awaitEmptyAndParseErrors(gson)
             when (result) {
-                is CaffeineEmptyResult.Success -> _ignoreUserResult.value = BooleanResult(true)
-                is CaffeineEmptyResult.Error -> _ignoreUserResult.value = BooleanResult(false)
+                is CaffeineEmptyResult.Success -> _ignoreUserResult.value = true
+                is CaffeineEmptyResult.Error -> _ignoreUserResult.value = false
                 is CaffeineEmptyResult.Failure -> {
                     Timber.e(result.exception, "Failed to ignore the user")
-                    _ignoreUserResult.value = BooleanResult(false)
+                    _ignoreUserResult.value = false
                 }
             }
         }
