@@ -41,7 +41,8 @@
     <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> is watching]]></string>
     <string name="live_indicator">LIVE</string>
     <string name="follow_button">Follow</string>
-    <string name="unfollow_button">Following</string>
+    <string name="following_button">Following</string>
+    <string name="unfollow_button">Unfollow</string>
     <string name="find_people">Find people</string>
     <string name="activity_title">Activity</string>
     <string name="my_profile">My Profile</string>
@@ -122,4 +123,5 @@
     <string name="send">Send</string>
     <string name="must_accept_terms_error">You must accept terms and conditions</string>
     <string name="i_agree_button">I Agree</string>
+    <string name="unfollow_question">Unfollow %s?</string>
 </resources>

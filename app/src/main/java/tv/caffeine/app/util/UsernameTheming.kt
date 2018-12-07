@@ -8,6 +8,8 @@ import androidx.annotation.StyleRes
 import androidx.core.view.isVisible
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
@@ -29,14 +31,18 @@ fun User.configure(avatarImageView: ImageView, usernameTextView: TextView,
             followButton.setOnClickListener {
                 followButton.isVisible = allowUnfollowing
                 followButton.setText(R.string.unfollow_button)
-                followManager.followUser(caid)
+                GlobalScope.launch {
+                    followManager.followUser(caid)
+                }
             }
         } else if (allowUnfollowing && followManager.followersLoaded() && following) {
             followButton.isVisible = true
             followButton.setText(R.string.unfollow_button)
             followButton.setOnClickListener {
                 followButton.isVisible = allowUnfollowing
-                followManager.unfollowUser(caid)
+                GlobalScope.launch {
+                    followManager.unfollowUser(caid)
+                }
             }
         } else {
             followButton.isVisible = false

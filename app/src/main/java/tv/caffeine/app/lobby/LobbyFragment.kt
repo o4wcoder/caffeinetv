@@ -18,9 +18,7 @@ import javax.inject.Inject
 
 class LobbyFragment : CaffeineFragment() {
 
-    @Inject lateinit var followManager: FollowManager
     @Inject lateinit var lobbyAdapter: LobbyAdapter
-    @Inject lateinit var tokenStore: TokenStore
 
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
     private lateinit var binding: FragmentLobbyBinding
@@ -55,7 +53,6 @@ class LobbyFragment : CaffeineFragment() {
     }
 
     private fun refreshLobby() {
-        followManager.refreshFollowedUsers()
         viewModel.refresh()
     }
 

@@ -52,7 +52,7 @@ class ViewModelFactory @Inject constructor(
         return when {
             modelClass.isAssignableFrom(SignInViewModel::class.java) -> SignInViewModel(dispatchConfig, signInUseCase) as T
             modelClass.isAssignableFrom(LegalAgreementViewModel::class.java) -> LegalAgreementViewModel(dispatchConfig, acceptLegalUseCase)
-            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, loadLobbyUseCase) as T
+            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, followManager, loadLobbyUseCase) as T
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, usersService, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, digitalItemRepository)

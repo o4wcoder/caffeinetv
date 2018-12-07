@@ -1,7 +1,6 @@
 package tv.caffeine.app.api
 
 import kotlinx.coroutines.Deferred
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 import tv.caffeine.app.api.model.*
@@ -14,10 +13,10 @@ interface UsersService {
     fun listFollowing(@Path("caid") userId: String): Deferred<List<CaidRecord.FollowRecord>>
 
     @POST("v1/users/{caid1}/follow/{caid2}")
-    fun follow(@Path("caid1") follower: String, @Path("caid2") toFollow: String): Call<Void>
+    fun follow(@Path("caid1") follower: String, @Path("caid2") toFollow: String): Deferred<Response<Any>>
 
     @DELETE("v1/users/{caid1}/unfollow/{caid2}")
-    fun unfollow(@Path("caid1") follower: String, @Path("caid2") toUnfollow: String): Call<Void>
+    fun unfollow(@Path("caid1") follower: String, @Path("caid2") toUnfollow: String): Deferred<Response<Any>>
 
     @POST("v1/users/{caid1}/ignore/{caid2}")
     fun ignore(@Path("caid1") ignorer: String, @Path("caid2") ignoree: String): Deferred<Response<Void>>

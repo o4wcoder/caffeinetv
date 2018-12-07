@@ -30,13 +30,26 @@ class ProfileViewModel(
     val avatarImageUrl: LiveData<String> = Transformations.map(user) { it.avatarImageUrl }
     val stageImageUrl: LiveData<String> = Transformations.map(broadcast) { it?.previewImageUrl }
 
-    fun load(caid: String) {
-        launch {
-            val userDetails = followManager.userDetails(caid) ?: return@launch
-            val broadcastDetails = followManager.broadcastDetails(userDetails)
-            user.value = userDetails
-            broadcast.value = if (broadcastDetails?.isOnline() == true) broadcastDetails else null
-        }
+    fun load(caid: String) = launch {
+        val userDetails = followManager.userDetails(caid) ?: return@launch
+        val broadcastDetails = followManager.broadcastDetails(userDetails)
+        user.value = userDetails
+        broadcast.value = if (broadcastDetails?.isOnline() == true) broadcastDetails else null
+    }
+
+    private fun forceLoad(caid: String) = launch {
+        val userDetails = followManager.loadUserDetails(caid) ?: return@launch
+        user.value = userDetails
+    }
+
+    fun follow(caid: String) = launch {
+        val result = followManager.followUser(caid)
+        forceLoad(caid)
+    }
+
+    fun unfollow(caid: String) = launch {
+        val result = followManager.unfollowUser(caid)
+        forceLoad(caid)
     }
 
 }

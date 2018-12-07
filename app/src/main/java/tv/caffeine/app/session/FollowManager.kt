@@ -1,26 +1,23 @@
 package tv.caffeine.app.session
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.google.gson.Gson
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.Broadcast
+import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.User
+import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.util.DispatchConfig
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FollowManager @Inject constructor(
         private val dispatchConfig: DispatchConfig,
+        private val gson: Gson,
         private val usersService: UsersService,
         private val broadcastsService: BroadcastsService,
         private val tokenStore: TokenStore
@@ -28,7 +25,6 @@ class FollowManager @Inject constructor(
 
     private val followedUsers: MutableMap<String, Set<String>> = mutableMapOf()
     private val userDetails: MutableMap<String, User> = mutableMapOf()
-    private var refreshFollowedUsersJob: Job? = null
 
     fun followers() = tokenStore.caid?.let { followedUsers[it] } ?: setOf()
 
@@ -38,50 +34,31 @@ class FollowManager @Inject constructor(
 
     fun followersLoaded() = tokenStore.caid?.let { followedUsers.containsKey(it) } == true
 
-    fun refreshFollowedUsers() {
-        refreshFollowedUsersJob?.cancel()
-        refreshFollowedUsersJob = GlobalScope.launch(dispatchConfig.main) {
-            repeat(5) {
-                tokenStore.caid?.let { caid ->
-                    val result = usersService.listFollowing(caid).await()
-                    launch(dispatchConfig.main) { followedUsers[caid] = (result.map { it.caid }).toSet() }
-                    return@launch
-                }
-                delay(TimeUnit.SECONDS.toMillis(1))
-            }
+    suspend fun refreshFollowedUsers() {
+        tokenStore.caid?.let { caid ->
+            val result = usersService.listFollowing(caid).await()
+            withContext(dispatchConfig.main) { followedUsers[caid] = (result.map { it.caid }).toSet() }
         }
     }
 
-    fun followUser(caid: String) {
-        val self = tokenStore.caid ?: return // TODO: report error
+    suspend fun followUser(caid: String): CaffeineEmptyResult {
+        val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
         followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
+        val result = runCatching {
+            usersService.follow(self, caid).awaitEmptyAndParseErrors(gson)
+        }.getOrElse { return CaffeineEmptyResult.Failure(Exception("Failed to follow")) }
         refreshFollowedUsers()
-        usersService.follow(self, caid).enqueue(object: Callback<Void?> {
-            override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                Timber.e(t, "Failed to follow user")
-            }
-
-            override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
-                response?.body()?.let {
-                }
-            }
-        })
+        return result
     }
 
-    fun unfollowUser(caid: String) {
-        val self = tokenStore.caid ?: return // TODO: report error
+    suspend fun unfollowUser(caid: String): CaffeineEmptyResult {
+        val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
         followedUsers[self] = followedUsers[self]?.toMutableSet()?.apply { remove(caid) }?.toSet() ?: setOf()
+        val result = runCatching {
+            usersService.unfollow(self, caid).awaitEmptyAndParseErrors(gson)
+        }.getOrElse { return CaffeineEmptyResult.Failure(Exception("Failed to unfollow")) }
         refreshFollowedUsers()
-        usersService.unfollow(self, caid).enqueue(object: Callback<Void?> {
-            override fun onFailure(call: Call<Void?>?, t: Throwable?) {
-                Timber.e(t, "Failed to follow user")
-            }
-
-            override fun onResponse(call: Call<Void?>?, response: Response<Void?>?) {
-                response?.body()?.let {
-                }
-            }
-        })
+        return result
     }
 
     suspend fun userDetails(caid: String): User? {

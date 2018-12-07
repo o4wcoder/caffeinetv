@@ -228,6 +228,9 @@
         <action
             android:id="@+id/action_profileFragment_to_stageFragment"
             app:destination="@+id/stageFragment"/>
+        <action
+            android:id="@+id/action_profileFragment_to_unfollowUserDialogFragment"
+            app:destination="@+id/unfollowUserDialogFragment"/>
     </fragment>
     <fragment
         android:id="@+id/reportOrIgnoreDialogFragment"
@@ -275,6 +278,14 @@
         android:id="@+id/editBioFragment"
         android:name="tv.caffeine.app.profile.EditBioFragment"
         android:label="@string/edit_bio_title"/>
+    <fragment
+        android:id="@+id/unfollowUserDialogFragment"
+        android:name="tv.caffeine.app.profile.UnfollowUserDialogFragment"
+        android:label="@string/unfollow_button">
+        <argument
+            android:name="username"
+            app:argType="string"/>
+    </fragment>
 
     <!-- Gold & Credits -->
     <fragment
