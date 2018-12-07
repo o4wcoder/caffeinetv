@@ -102,6 +102,9 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_lobby">
         <action
+            android:id="@+id/action_lobbyFragment_to_broadcastFragment"
+            app:destination="@+id/broadcastFragment"/>
+        <action
             android:id="@+id/action_lobbyFragment_to_exploreFragment"
             app:destination="@+id/exploreFragment"/>
         <action
@@ -158,6 +161,11 @@
             android:name="recipientCaid"
             app:argType="string" />
     </fragment>
+
+    <!-- Broadcast -->
+    <fragment
+        android:id="@+id/broadcastFragment"
+        android:label="tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment"/>
 
     <!-- Explore -->
     <fragment

@@ -136,4 +136,9 @@
     <string name="must_accept_terms_error">You must accept terms and conditions</string>
     <string name="i_agree_button">I Agree</string>
     <string name="unfollow_question">Unfollow %s?</string>
+
+    <!-- Broadcast -->
+    <string name="broardcast_placeholder_dialog_title">Broadcast coming soon to Android!</string>
+    <string name="broardcast_placeholder_dialog_message">Meanwhile you can broadcast on Windows, Web and iOS.</string>
+    <string name="got_it">Got it</string>
 </resources>

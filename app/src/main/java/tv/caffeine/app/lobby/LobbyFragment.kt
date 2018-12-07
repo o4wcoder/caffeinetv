@@ -11,6 +11,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import tv.caffeine.app.R
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbyBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
@@ -38,6 +39,9 @@ class LobbyFragment : CaffeineFragment() {
             adapter = lobbyAdapter
             addItemDecoration(itemDecorator)
             setRecycledViewPool(lobbyAdapter.recycledViewPool)
+        }
+        binding.cameraButton.setOnClickListener {
+            BroadcastPlaceholderDialogFragment().show(fragmentManager, "broadcastPlaceholder")
         }
         binding.profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
         binding.searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))
