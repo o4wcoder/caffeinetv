@@ -68,10 +68,11 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
     }
 
     private fun reportUser(caid: String, username: String) {
+        dismiss()
         fragmentManager?.let { fm ->
             ReportDialogFragment().apply {
                 arguments = ReportOrIgnoreDialogFragmentDirections
-                        .actionProfileFragmentToReportDialogFragment(caid, username).arguments
+                        .actionProfileFragmentToReportDialogFragment(caid, username, shouldNavigateBackWhenDone).arguments
                 show(fm, "reportUser")
             }
         }

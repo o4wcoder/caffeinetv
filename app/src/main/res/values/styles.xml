@@ -25,6 +25,18 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="FullscreenDialogTheme" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
+        <item name="android:statusBarColor">@color/statusBar</item>
+        <item name="android:navigationBarColor">@color/navBar</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+    </style>
+
+    <style name="ActionBarTitle" parent="@style/TextAppearance.MaterialComponents.Headline6"/>
+    <style name="ActionBarActionText" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">@color/caffeineBlue</item>
+    </style>
+
     <style name="Button" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="cornerRadius">18dp</item>
     </style>

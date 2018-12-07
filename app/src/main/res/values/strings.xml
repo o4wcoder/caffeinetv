@@ -53,9 +53,19 @@
     <string name="more">more</string>
     <string name="report_user_more_dialog_option"><![CDATA[<font color="#FF0000">Report <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
     <string name="report_user">Report <xliff:g example="randomUser" id="username">%1$s</xliff:g></string>
+    <string name="close">Close</string>
+    <string name="reason">Reason</string>
+    <string name="report_reason_harassment_trolling">Harassment/trolling</string>
+    <string name="report_reason_inappropriate_content">Inappropriate content</string>
+    <string name="report_reason_violence_self_harm">Violence/self-harm</string>
+    <string name="descript_optional">Description (optional)</string>
+    <string name="spam">Spam</string>
+    <string name="other">Other</string>
+    <string name="report_description">Caffeine will be notified and <xliff:g example="randomUser" id="username">%1$s</xliff:g> will be added to your ignored list.</string>
     <string name="ignore_user_dialog_option"><![CDATA[<font color="#FF0000">Ignore <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
     <string name="user_ignored">User ignored.</string>
     <string name="failed_to_ignore_the_user">Failed to ignore the user.</string>
+    <string name="submit">Submit</string>
     <string name="followed_you">followed you</string>
     <string name="following">Following</string>
     <string name="followers">Followers</string>
