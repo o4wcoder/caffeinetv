@@ -136,6 +136,7 @@
     <string name="must_accept_terms_error">You must accept terms and conditions</string>
     <string name="i_agree_button">I Agree</string>
     <string name="unfollow_question">Unfollow %s?</string>
+    <string name="recaptcha_failed">Recaptcha failed</string>
 
     <!-- Broadcast -->
     <string name="broardcast_placeholder_dialog_title">Broadcast coming soon to Android!</string>

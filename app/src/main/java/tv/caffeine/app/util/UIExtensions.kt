@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
+import tv.caffeine.app.ui.CaffeineFragment
 
 fun NavController.navigateToLanding(message: String? = null) {
     val action = LobbyDirections.ActionGlobalLandingFragment(message)
@@ -53,4 +54,9 @@ fun Activity.unsetImmersiveSticky() {
 
 fun Activity.showSnackbar(@StringRes resId: Int) {
     Snackbar.make(window.decorView, resId, Snackbar.LENGTH_SHORT).show()
+}
+
+fun CaffeineFragment.showSnackbar(@StringRes resId: Int) {
+    val view = this.view ?: return
+    Snackbar.make(view, resId, Snackbar.LENGTH_SHORT).show()
 }

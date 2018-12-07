@@ -139,6 +139,9 @@ dependencies {
     // Social
     implementation 'com.facebook.android:facebook-android-sdk:4.39.0'
 
+    // recaptcha
+    implementation 'com.google.android.gms:play-services-safetynet:16.0.0'
+
     // Tests
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0'

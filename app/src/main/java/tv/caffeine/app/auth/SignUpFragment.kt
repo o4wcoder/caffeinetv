@@ -14,6 +14,9 @@ import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.safetynet.SafetyNet
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -23,6 +26,7 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 
@@ -42,7 +46,7 @@ class SignUpFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.signUpButton.setOnClickListener { signUp() }
+        binding.signUpButton.setOnClickListener { signUpClicked() }
         binding.agreeToLegalTextView.apply {
             text = buildLegalDocSpannable(findNavController())
             movementMethod = LinkMovementMethod.getInstance()
@@ -53,16 +57,38 @@ class SignUpFragment : CaffeineFragment() {
         }
     }
 
-    private fun signUp() {
+    private fun signUpClicked() {
+        val iid: String? = arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.oauth?.iid
+        if (iid != null) return signUp(null, iid)
+        val context = context ?: return
+        SafetyNet.getClient(context)
+                .verifyWithRecaptcha(getString(R.string.safetynet_app_key))
+                .addOnSuccessListener { response ->
+                    val token = response.tokenResult
+                    if (token?.isNotEmpty() == true) {
+                        signUp(token, iid)
+                    }
+                }
+                .addOnFailureListener {
+                    if (it is ApiException) {
+                        val reason = CommonStatusCodes.getStatusCodeString(it.statusCode)
+                        Timber.e(Exception("Failed to do reCaptcha. Reason: $reason", it))
+                    } else {
+                        Timber.e(it, "Failed to do reCaptcha")
+                    }
+                    showSnackbar(R.string.recaptcha_failed)
+                }
+    }
+
+    private fun signUp(token: String?, iid: String?) {
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         val email = binding.emailEditText.text.toString()
         val dob = binding.dobEditText.text.toString()
         val countryCode = "US"
-        val iid: String? = arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.oauth?.iid
         val agreedToTos = binding.agreeToLegalCheckbox.isChecked
         val account = SignUpAccount(username, password, email, dob, countryCode)
-        val signUpBody = SignUpBody(account, iid, agreedToTos)
+        val signUpBody = SignUpBody(account, iid, agreedToTos, token)
         launch {
             val response = accountsService.signUp(signUpBody).await()
             Timber.d("Sign up API call succeeded $response")

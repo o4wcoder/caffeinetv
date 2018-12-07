@@ -71,7 +71,7 @@ class ApiError(
 
 class ForgotPasswordBody(val email: String)
 
-class SignUpBody(val account: SignUpAccount, val iid: String?, val tos: Boolean)
+class SignUpBody(val account: SignUpAccount, val iid: String?, val tos: Boolean, val recaptchaToken: String?)
 class SignUpAccount(val username: String, val password: String, val email: String, val dob: String, val countryCode: String)
 class SignUpResult(val credentials: CaffeineCredentials, val next: NextAccountAction)
 
