@@ -92,12 +92,21 @@
     <string name="friends_watching_title">Friends watching</string>
     <string name="settings_button">Settings</string>
     <string name="add_your_full_name">Add your full name</string>
+
+    <!-- Gold and Credits -->
     <string name="gold_and_credits_button">Gold &amp; Credits</string>
     <string name="gold_and_credits_title">Gold &amp; Credits</string>
     <string name="gold_buy_purpose">Gold buys items to send to broadcasters</string>
     <string name="wallet_balance"><![CDATA[<img src="goldcoin">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
     <string name="you_have_gold_balance">You have <![CDATA[<img src="goldcoin">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
     <string name="you_have_gold_and_credits_balance">You have <![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> and <![CDATA[<img src="purplecoin">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
+    <string name="gold_and_credits_help">Use Gold to buy items to send to broadcasters.\n\nReceived items become Credits.\nYou can buy Gold with Credits.</string>
+    <string name="gold_and_credits_help_html"><![CDATA[<div>Use <img src="goldcoin"> Gold to buy items to send to broadcasters.</div><div>Received items become <img src="purplecoin"> Credits.</div><div>You can buy <img src="goldcoin"> Gold with <img src="purplecoin"> Credits.</div>]]></string>
+    <string name="gold_formatted"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_amount">%s</xliff:g></string>
+    <string name="credits_formatted"><![CDATA[<img src="purplecoin">]]> <xliff:g example="42" id="credits_amount">%s</xliff:g></string>
+    <string name="large_gold_formatted"><![CDATA[<img src="largegoldcoin">]]><xliff:g example="42" id="gold_amount">%s</xliff:g></string>
+    <string name="large_credits_formatted"><![CDATA[<img src="largepurplecoin">]]><xliff:g example="42" id="credits_amount">%s</xliff:g></string>
+
     <string name="info_button">Info</string>
     <string name="transaction_history">Transaction History</string>
     <string name="legal_documents">Legal Documents</string>

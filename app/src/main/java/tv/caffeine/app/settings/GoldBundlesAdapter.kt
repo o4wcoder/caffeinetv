@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.databinding.GoldBundleItemBinding
+import tv.caffeine.app.ui.htmlText
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -38,10 +40,18 @@ class GoldBundleViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(goldBundle: GoldBundle) {
-        binding.goldCostTextView.text = goldBundle.amount.toString()
-        binding.dollarCostTextView.text = goldBundle.skuDetails?.let {
-            NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(it.priceCurrencyCode) }.format(it.priceAmountMicros/1000000f)
-        } ?: goldBundle.amount.toString()
+        val numberFormat = NumberFormat.getNumberInstance()
+        binding.goldCostTextView.text = numberFormat.format(goldBundle.amount)
+        val skuDetails = goldBundle.skuDetails
+        if (skuDetails != null) {
+            val currencyFormat = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(skuDetails.priceCurrencyCode) }
+            binding.dollarCostTextView.text = currencyFormat.format(skuDetails.priceAmountMicros/1000000f)
+        } else if (goldBundle.usingCredits != null) {
+            val amount = numberFormat.format(goldBundle.usingCredits.cost)
+            binding.dollarCostTextView.htmlText = itemView.resources.getString(R.string.credits_formatted, amount)
+        } else {
+            binding.dollarCostTextView.text = null
+        }
         itemView.setOnClickListener { itemClickListener.onClick(goldBundle) }
     }
 }

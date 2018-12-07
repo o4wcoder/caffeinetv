@@ -18,7 +18,9 @@ private class ImageSpec(@DrawableRes val drawable: Int, val width: Int, val heig
 private val inlineImages: Map<String, ImageSpec> = mapOf(
         "checkmark" to ImageSpec(R.drawable.verified_small_white, R.dimen.chat_avatar_size, R.dimen.chat_avatar_size),
         "goldcoin" to ImageSpec(R.drawable.gold_coin, R.dimen.coin_size, R.dimen.coin_size),
-        "purplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.coin_size, R.dimen.coin_size)
+        "purplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.coin_size, R.dimen.coin_size),
+        "largegoldcoin" to ImageSpec(R.drawable.gold_coin, R.dimen.large_coin_size, R.dimen.large_coin_size),
+        "largepurplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.large_coin_size, R.dimen.large_coin_size)
 )
 
 class UserAvatarImageGetter(private val textView: TextView) : Html.ImageGetter {
