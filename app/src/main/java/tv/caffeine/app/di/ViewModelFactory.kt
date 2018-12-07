@@ -7,7 +7,7 @@ import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.auth.*
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.explore.FindBroadcastersUseCase
 import tv.caffeine.app.lobby.LoadLobbyUseCase
@@ -28,6 +28,8 @@ import javax.inject.Inject
 
 class ViewModelFactory @Inject constructor(
         private val dispatchConfig: DispatchConfig,
+        private val signInUseCase: SignInUseCase,
+        private val acceptLegalUseCase: AcceptLegalUseCase,
         private val loadLobbyUseCase: LoadLobbyUseCase,
         private val findBroadcastersUseCase: FindBroadcastersUseCase,
         private val usersService: UsersService,
@@ -48,6 +50,8 @@ class ViewModelFactory @Inject constructor(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return when {
+            modelClass.isAssignableFrom(SignInViewModel::class.java) -> SignInViewModel(dispatchConfig, signInUseCase) as T
+            modelClass.isAssignableFrom(LegalAgreementViewModel::class.java) -> LegalAgreementViewModel(dispatchConfig, acceptLegalUseCase)
             modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, loadLobbyUseCase) as T
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, usersService, tokenStore)

@@ -48,4 +48,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun updatePasswordFragment(): UpdatePasswordFragment
     @ContributesAndroidInjector abstract fun deleteAccountDialogFragment(): DeleteAccountDialogFragment
     @ContributesAndroidInjector abstract fun sendDigitalItemFragment(): SendDigitalItemFragment
+    @ContributesAndroidInjector abstract fun legalAgreementFragment(): LegalAgreementFragment
 }

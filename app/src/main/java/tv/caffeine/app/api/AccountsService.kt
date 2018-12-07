@@ -38,6 +38,9 @@ interface AccountsService {
     // Non-body HTTP method like DELETE cannot contain @Body, a workaround for @DELETE("v1/account/{caid}")
     @HTTP(method = "DELETE", path = "v1/account/{caid}", hasBody = true)
     fun deleteAccount(@Path("caid") userId: String, @Body deleteAccountBody: DeleteAccountBody): Deferred<Response<Unit>>
+
+    @POST("v1/legal-acceptance")
+    fun acceptLegalAgreement(): Deferred<Response<LegalAcceptanceResult>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
@@ -149,6 +152,8 @@ class NotificationSettings(
     }
 }
 
+class LegalAcceptanceResult(val success: Boolean)
+
 enum class NextAccountAction {
-    email_verification, mfa_otp_required
+    email_verification, mfa_otp_required, legal_acceptance_required
 }

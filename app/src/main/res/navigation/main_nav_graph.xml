@@ -40,6 +40,18 @@
         <action
             android:id="@+id/action_signInFragment_to_mfaCodeFragment"
             app:destination="@+id/mfaCodeFragment"/>
+        <action
+            android:id="@+id/action_signInFragment_to_legalAgreementFragment"
+            app:destination="@+id/legalAgreementFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/legalAgreementFragment"
+        android:name="tv.caffeine.app.auth.LegalAgreementFragment"
+        android:label="@string/legal_documents"
+        tools:layout="@layout/fragment_legal_agreement">
+        <action
+            android:id="@+id/action_legalAgreementFragment_to_legalDocsFragment"
+            app:destination="@+id/legalDocsFragment"/>
     </fragment>
     <fragment
         android:id="@+id/mfaCodeFragment"

@@ -14,9 +14,9 @@ class TokenAuthenticator(private val refreshTokenService: RefreshTokenService, p
 
         val result = refreshTokenService.refreshTokenSync(refreshTokenBody).execute()
         if (!result.isSuccessful) return null
-        val credentials = result.body()?.credentials ?: return null
+        val refreshTokenResult = result.body() ?: return null
 
-        tokenStore.storeCredentials(credentials)
+        tokenStore.storeRefreshTokenResult(refreshTokenResult)
         return response.request().newBuilder()
                 .apply { tokenStore.addHttpHeaders(this) }
                 .build()

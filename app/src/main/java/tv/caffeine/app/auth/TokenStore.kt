@@ -1,10 +1,7 @@
 package tv.caffeine.app.auth
 
 import okhttp3.Request
-import tv.caffeine.app.api.CaffeineCredentials
-import tv.caffeine.app.api.RefreshTokenBody
-import tv.caffeine.app.api.RefreshTokenResult
-import tv.caffeine.app.api.SignInResult
+import tv.caffeine.app.api.*
 import tv.caffeine.app.settings.SettingsStorage
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,7 +16,9 @@ class TokenStore @Inject constructor(
         private set
 
     fun storeSignInResult(signInResult: SignInResult) {
-        settingsStorage.refreshToken = signInResult.refreshToken
+        if (signInResult.next != NextAccountAction.legal_acceptance_required) {
+            settingsStorage.refreshToken = signInResult.refreshToken
+        }
         caid = signInResult.caid
         accessToken = signInResult.accessToken
         credential = signInResult.credentials.credential
@@ -33,7 +32,12 @@ class TokenStore @Inject constructor(
     }
 
     fun storeRefreshTokenResult(refreshTokenResult: RefreshTokenResult) {
-        storeCredentials(refreshTokenResult.credentials)
+        if (refreshTokenResult.next != NextAccountAction.legal_acceptance_required) {
+            settingsStorage.refreshToken = refreshTokenResult.credentials.refreshToken
+        }
+        caid = refreshTokenResult.credentials.caid
+        accessToken = refreshTokenResult.credentials.accessToken
+        credential = refreshTokenResult.credentials.credential
     }
 
     fun clear() {
