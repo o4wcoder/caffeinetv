@@ -86,6 +86,7 @@
         tools:text="@string/report_description"/>
 
     <EditText
+        android:id="@+id/description_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"

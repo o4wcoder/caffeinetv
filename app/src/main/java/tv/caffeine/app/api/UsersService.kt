@@ -21,6 +21,9 @@ interface UsersService {
     @POST("v1/users/{caid1}/ignore/{caid2}")
     fun ignore(@Path("caid1") ignorer: String, @Path("caid2") ignoree: String): Deferred<Response<Void>>
 
+    @POST("v1/users/{caid1}/report")
+    fun report(@Path("caid1") reportee: String, @Body reportUserBody: ReportUserBody): Deferred<Response<Void>>
+
     @GET("v1/users/suggestions")
     fun listSuggestions(): Deferred<Response<List<SearchUserItem>>>
 
@@ -38,4 +41,15 @@ interface UsersService {
 
     @PATCH("v1/users/{caid}")
     fun updateUser(@Path("caid") userId: String, @Body user: UserUpdateBody): Deferred<Response<UserContainer>>
+}
+
+class ReportUserBody(val reason: String, val description: String?)
+
+enum class ReasonKey {
+    HARASSMENT_OR_TROLLING,
+    INAPPROPRIATE_CONTENT,
+    VIOLENCE_OR_SELF_HARM,
+    HACKING_OR_CHEATING, // used for reporting a stage only
+    SPAM,
+    OTHER
 }

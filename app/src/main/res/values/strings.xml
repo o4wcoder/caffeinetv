@@ -65,6 +65,8 @@
     <string name="ignore_user_dialog_option"><![CDATA[<font color="#FF0000">Ignore <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
     <string name="user_ignored">User ignored.</string>
     <string name="failed_to_ignore_the_user">Failed to ignore the user.</string>
+    <string name="user_reported">User reported.</string>
+    <string name="failed_to_report_the_user">Failed to report the user.</string>
     <string name="submit">Submit</string>
     <string name="followed_you">followed you</string>
     <string name="following">Following</string>
