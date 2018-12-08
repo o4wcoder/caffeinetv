@@ -49,11 +49,11 @@ class ReportDialogFragment : CaffeineDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_report_dialog, container, false)
         val reasonRadioGroup = view.findViewById<RadioGroup>(R.id.reason_radio_group)
-        val description = view.findViewById<EditText>(R.id.description_edit_text).text.toString()
+        val descriptionEditText = view.findViewById<EditText>(R.id.description_edit_text)
         view.findViewById<DialogActionBar>(R.id.action_bar).apply {
             setTitle(getString(R.string.report_user, username))
             setActionText(R.string.submit)
-            setActionListener { viewModel.reportUser(caid, getReason(reasonRadioGroup), description) }
+            setActionListener { viewModel.reportUser(caid, getReason(reasonRadioGroup), descriptionEditText.text.toString()) }
             setDismissListener { dismiss() }
         }
         view.findViewById<TextView>(R.id.report_description).text = getString(R.string.report_description, username)
