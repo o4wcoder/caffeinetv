@@ -123,7 +123,7 @@ class SignInViewModel(
             liveData.value = when(result) {
                 is CaffeineResult.Success -> processSuccess(result.value)
                 is CaffeineResult.Error -> processError(result.error)
-                is CaffeineResult.Failure -> processFailure(result.exception)
+                is CaffeineResult.Failure -> processFailure(result.throwable)
             }
         }
         return Transformations.map(liveData) { it }
@@ -155,10 +155,7 @@ class SignInUseCase @Inject constructor(
 
     suspend operator fun invoke(username: String, password: String): CaffeineResult<SignInResult> {
         val signInBody = SignInBody(Account(username, password))
-        val rawResult = runCatching {
-            accountsService.signIn(signInBody).awaitAndParseErrors(gson)
-        }
-        val result = rawResult.getOrDefault(CaffeineResult.Failure(Exception("SignInUseCase")))
+        val result = accountsService.signIn(signInBody).awaitAndParseErrors(gson)
         postLogin(result)
         return result
     }

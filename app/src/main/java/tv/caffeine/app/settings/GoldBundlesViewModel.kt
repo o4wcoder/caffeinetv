@@ -25,13 +25,13 @@ class GoldBundlesViewModel(
 
     private fun load() {
         launch {
-            _goldBundles.value = runCatching { loadGoldBundlesUseCase() }.fold({ it }, { CaffeineResult.Failure(it) })
+            _goldBundles.value = loadGoldBundlesUseCase()
         }
     }
 
     fun purchaseGoldBundleUsingCredits(goldBundle: GoldBundle) {
         launch {
-            runCatching { purchaseGoldBundleUseCase(goldBundle) }
+            purchaseGoldBundleUseCase(goldBundle)
         }
     }
 }

@@ -95,7 +95,7 @@ class IgnoreUserViewModel(
                 is CaffeineEmptyResult.Success -> _ignoreUserResult.value = true
                 is CaffeineEmptyResult.Error -> _ignoreUserResult.value = false
                 is CaffeineEmptyResult.Failure -> {
-                    Timber.e(result.exception, "Failed to ignore the user")
+                    Timber.e(result.throwable, "Failed to ignore the user")
                     _ignoreUserResult.value = false
                 }
             }

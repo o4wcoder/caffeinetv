@@ -38,7 +38,7 @@ class LobbyViewModel(
     }
 
     private suspend fun loadLobby() = coroutineScope {
-        _lobby.value = runCatching { loadLobbyUseCase() }.fold({ it }, { CaffeineResult.Failure(it) })
+        _lobby.value = loadLobbyUseCase()
     }
 
 }

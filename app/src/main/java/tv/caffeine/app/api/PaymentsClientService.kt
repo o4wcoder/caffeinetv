@@ -19,7 +19,7 @@ interface PaymentsClientService {
     fun buyDigitalItem(@Body body: BuyDigitalItemBody): Deferred<Response<PaymentsEnvelope<Any>>>
 
     @POST("store/get-wallet")
-    fun getWallet(@Body body: GetWalletBody): Deferred<PaymentsEnvelope<Wallet>>
+    fun getWallet(@Body body: GetWalletBody): Deferred<Response<PaymentsEnvelope<Wallet>>>
 
     @POST("store/get-transactions")
     fun getTransactionHistory(@Body body: GetTransactionHistoryBody): Deferred<Response<PaymentsEnvelope<TransactionHistoryPayload>>>

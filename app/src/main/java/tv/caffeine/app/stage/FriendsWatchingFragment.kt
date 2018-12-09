@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
@@ -17,6 +21,7 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var broadcastsService: BroadcastsService
     @Inject lateinit var usersAdapter: CaidListAdapter
+    @Inject lateinit var gson: Gson
 
     private lateinit var broadcaster: String
 
@@ -27,8 +32,12 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val broadcastId = userDetails.broadcastId ?: return@launch
-            val friendsWatching = broadcastsService.friendsWatching(broadcastId)
-            usersAdapter.submitList(friendsWatching.await())
+            val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
+            when(result) {
+                is CaffeineResult.Success -> usersAdapter.submitList(result.value)
+                is CaffeineResult.Error -> Timber.e(Exception("Failed to fetch friends watching ${result.error}"))
+                is CaffeineResult.Failure -> Timber.e(result.throwable)
+            }
         }
     }
 

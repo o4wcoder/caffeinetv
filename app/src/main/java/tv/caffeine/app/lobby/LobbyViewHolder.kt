@@ -108,7 +108,7 @@ open class LiveBroadcastCard(val binding: LiveBroadcastCardBinding) : Broadcaste
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         itemView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
+            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
             Navigation.findNavController(itemView).navigate(action)
         }
     }
@@ -137,7 +137,7 @@ class LiveBroadcastWithFriendsCard(val binding: LiveBroadcastWithFriendsCardBind
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         itemView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
+            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
             Navigation.findNavController(itemView).navigate(action)
         }
     }

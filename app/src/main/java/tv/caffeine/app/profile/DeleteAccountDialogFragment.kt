@@ -96,7 +96,7 @@ class DeleteAccountViewModel(
                     tokenStore.clear()
                 }
                 is CaffeineEmptyResult.Error -> _deleteAccountResult.value = DeleteAccountResult(false)
-                is CaffeineEmptyResult.Failure -> Timber.e(result.exception, "Failed to delete the account")
+                is CaffeineEmptyResult.Failure -> Timber.e(result.throwable, "Failed to delete the account")
             }
         }
     }

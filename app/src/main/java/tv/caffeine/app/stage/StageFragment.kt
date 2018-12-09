@@ -5,10 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
-import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -24,21 +25,22 @@ import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.iconImageUrl
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
-import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.ui.showKeyboard
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.setImmersiveSticky
-import tv.caffeine.app.util.showSnackbar
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
+import kotlin.collections.set
 
 class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
 
@@ -124,14 +126,19 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
                     }
                 }
             }
-            val broadcastDetails = userDetails.broadcastId?.let { broadcastsService.broadcastDetails(it) }
-            launch(dispatchConfig.main) {
-                val broadcast = broadcastDetails?.await()?.broadcast
-                broadcastName = broadcast?.name
-                title = broadcastName
-                Picasso.get()
-                        .load(broadcast?.game?.iconImageUrl)
-                        .into(binding.gameLogoImageView)
+            val broadcastId = userDetails.broadcastId ?: return@launch
+            val result = broadcastsService.broadcastDetails(broadcastId).awaitAndParseErrors(gson)
+            when(result) {
+                is CaffeineResult.Success -> {
+                    val broadcast = result.value.broadcast
+                    broadcastName = broadcast.name
+                    title = broadcastName
+                    Picasso.get()
+                            .load(broadcast.game?.iconImageUrl)
+                            .into(binding.gameLogoImageView)
+                }
+                is CaffeineResult.Error -> Timber.e(Exception("Error loading broadcast details ${result.error}"))
+                is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
         binding.avatarImageView.setOnClickListener {

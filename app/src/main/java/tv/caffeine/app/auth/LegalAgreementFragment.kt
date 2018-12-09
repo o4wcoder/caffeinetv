@@ -110,7 +110,7 @@ class LegalAgreementViewModel(
             liveData.value = when(result) {
                 is CaffeineResult.Success -> LegalAgreementOutcome.Success
                 is CaffeineResult.Error -> LegalAgreementOutcome.Error
-                is CaffeineResult.Failure -> LegalAgreementOutcome.Failure(result.exception)
+                is CaffeineResult.Failure -> LegalAgreementOutcome.Failure(result.throwable)
             }
         }
         return Transformations.map(liveData) { it }
@@ -124,10 +124,7 @@ class AcceptLegalUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): CaffeineResult<LegalAcceptanceResult> {
-        val rawResult = runCatching {
-            accountsService.acceptLegalAgreement().awaitAndParseErrors(gson)
-        }
-        return rawResult.getOrDefault(CaffeineResult.Failure(Exception("AcceptLegalUseCase")))
+        return accountsService.acceptLegalAgreement().awaitAndParseErrors(gson)
     }
 
 }

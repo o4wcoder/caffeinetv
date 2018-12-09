@@ -50,26 +50,31 @@ class ChatViewModel(
     fun sendMessage(text: String, broadcaster: String) {
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
-            val caid = tokenStore.caid ?: error("Not logged in")
-            val signedUserDetails = usersService.signedUserDetails(caid)
-            val publisher = signedUserDetails.await().token
+            val caid = tokenStore.caid ?: return@launch Timber.e(Exception("Not logged in"))
+            val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
+            val publisher = when(result) {
+                is CaffeineResult.Success -> result.value.token
+                is CaffeineResult.Error -> return@launch Timber.e(Exception("Failed to get signed user details"))
+                is CaffeineResult.Failure -> return@launch Timber.e(result.throwable)
+            }
             val stageId = userDetails.stageId
             val message = Reaction("reaction", publisher, Message.Body(text))
-            val deferred = realtime.sendMessage(stageId, message)
-            val result = deferred.await()
-            Timber.d("Sent message $text with result $result")
+            val result2 = realtime.sendMessage(stageId, message).awaitAndParseErrors(gson)
+            when(result2) {
+                is CaffeineResult.Success -> Timber.d("Sent message $text with result $result")
+                is CaffeineResult.Error -> Timber.e(Exception("Failed to send message"))
+                is CaffeineResult.Failure -> Timber.e(result2.throwable)
+            }
         }
     }
 
     fun endorseMessage(message: Message) {
         launch {
-            val result = runCatching {
-                realtime.endorseMessage(message.id).awaitEmptyAndParseErrors(gson)
-            }.getOrElse { return@launch }
+            val result = realtime.endorseMessage(message.id).awaitEmptyAndParseErrors(gson)
             when(result) {
                 is CaffeineEmptyResult.Success -> Timber.d("Successfully endorsed a message")
                 is CaffeineEmptyResult.Error -> Timber.e(Exception(result.error.toString()))
-                is CaffeineEmptyResult.Failure -> Timber.e(result.exception)
+                is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
             }
         }
     }

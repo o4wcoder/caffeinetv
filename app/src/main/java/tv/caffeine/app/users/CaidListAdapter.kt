@@ -42,7 +42,7 @@ class CaidListAdapter @Inject constructor(
 
     private val job = Job()
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        Timber.e(throwable, "Coroutine exception")
+        Timber.e(throwable, "Coroutine throwable")
     }
     override val coroutineContext: CoroutineContext
         get() = dispatchConfig.main + job + exceptionHandler

@@ -8,9 +8,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.CaidRecord
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
@@ -38,6 +42,7 @@ class FollowersFragment : CaffeineFragment() {
 
 class FollowersViewModel(
         dispatchConfig: DispatchConfig,
+        private val gson: Gson,
         private val usersService: UsersService
 ) : CaffeineViewModel(dispatchConfig) {
 
@@ -52,8 +57,12 @@ class FollowersViewModel(
 
     private fun load() {
         launch {
-            val list = usersService.listFollowers(caid).await()
-            _followers.value = list
+            val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
+            when(result) {
+                is CaffeineResult.Success -> _followers.value = result.value
+                is CaffeineResult.Error -> Timber.e(Exception("Error loading followers list ${result.error}"))
+                is CaffeineResult.Failure -> Timber.e(result.throwable)
+            }
         }
     }
 

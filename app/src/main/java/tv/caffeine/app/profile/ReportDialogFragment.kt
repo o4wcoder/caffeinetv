@@ -96,7 +96,7 @@ class ReportUserViewModel(
                 is CaffeineEmptyResult.Success -> _reportUserResult.value = true
                 is CaffeineEmptyResult.Error -> _reportUserResult.value = false
                 is CaffeineEmptyResult.Failure -> {
-                    Timber.e(result.exception, "Failed to report the user")
+                    Timber.e(result.throwable, "Failed to report the user")
                     _reportUserResult.value = false
                 }
             }

@@ -24,11 +24,11 @@ class LoadLobbyUseCase @Inject constructor(
 
     private suspend fun sendLobbyCounters() {
         val stats = Counters(listOf(StatsCounter("android.loadlobbywithsections.counter", 1)))
-        val sendStatsResult = runCatching { eventsService.sendCounters(stats).awaitAndParseErrors(gson) }.getOrElse { return }
+        val sendStatsResult = eventsService.sendCounters(stats).awaitAndParseErrors(gson)
         when (sendStatsResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent lobby stats")
             is CaffeineResult.Error -> Timber.e(Exception("Error sending lobby stats"))
-            is CaffeineResult.Failure -> Timber.e(sendStatsResult.exception)
+            is CaffeineResult.Failure -> Timber.e(sendStatsResult.throwable)
         }
     }
 }

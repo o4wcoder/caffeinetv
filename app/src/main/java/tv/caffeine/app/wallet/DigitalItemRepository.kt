@@ -35,11 +35,11 @@ class DigitalItemRepository @Inject constructor(
 
     private suspend fun loadDigitalItems() {
         val deferred = paymentsClientService.getDigitalItems(GetDigitalItemsBody())
-        val result = runCatching { deferred.awaitAndParseErrors(gson) }.getOrElse { return }
+        val result = deferred.awaitAndParseErrors(gson)
         when(result) {
             is CaffeineResult.Success -> onSuccess(result.value)
             is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()))
-            is CaffeineResult.Failure -> Timber.e(result.exception)
+            is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
     }
 

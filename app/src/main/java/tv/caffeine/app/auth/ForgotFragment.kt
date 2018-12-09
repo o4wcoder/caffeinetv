@@ -45,7 +45,7 @@ class ForgotFragment : CaffeineFragment() {
             when (result) {
                 is CaffeineResult.Success -> findNavController().navigateUp()
                 is CaffeineResult.Error -> onError(result.error)
-                is CaffeineResult.Failure -> onFailure(result.exception)
+                is CaffeineResult.Failure -> onFailure(result.throwable)
             }
         }
     }

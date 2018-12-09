@@ -214,7 +214,7 @@ class NotificationSettingsViewModel(
             when (result) {
                 is CaffeineResult.Success -> _notificationSettings.value = result.value
                 is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()), "Failed to load notification settings")
-                is CaffeineResult.Failure -> Timber.e(result.exception, "Failed to load notification settings")
+                is CaffeineResult.Failure -> Timber.e(result.throwable, "Failed to load notification settings")
             }
         }
     }
@@ -240,7 +240,7 @@ class NotificationSettingsViewModel(
                 when (result) {
                     is CaffeineResult.Success -> _notificationSettings.value = result.value
                     is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()), "Failed to save notification settings")
-                    is CaffeineResult.Failure -> Timber.e(result.exception, "Failed to save notification settings")
+                    is CaffeineResult.Failure -> Timber.e(result.throwable, "Failed to save notification settings")
                 }
             }
         }

@@ -102,13 +102,11 @@ class SendDigitalItemViewModel(
 
     fun send(digitalItem: DigitalItem, quantity: Int, recipientCaid: String, message: String) = launch {
         val body = BuyDigitalItemBody(digitalItem.id, quantity, recipientCaid, message)
-        val result = runCatching {
-            paymentsClientService.buyDigitalItem(body).awaitAndParseErrors(gson)
-        }.getOrElse { return@launch }
+        val result = paymentsClientService.buyDigitalItem(body).awaitAndParseErrors(gson)
         when(result) {
             is CaffeineResult.Success -> Timber.d("Successfully sent a digital item")
             is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()))
-            is CaffeineResult.Failure -> Timber.e(result.exception)
+            is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
         // TODO show errors
     }

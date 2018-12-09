@@ -30,11 +30,11 @@ class StreamController(
     private var closed = false
 
     suspend fun connect(stream: StageHandshake.Stream) : ConnectionInfo? {
-        val result = runCatching { realtime.createViewer(stream.id).awaitAndParseErrors(gson) }.getOrElse { return null }
+        val result = realtime.createViewer(stream.id).awaitAndParseErrors(gson)
         return when(result) {
             is CaffeineResult.Success -> handleOffer(result.value.offer, result.value.id, result.value.signed_payload, stream.label)
             is CaffeineResult.Error -> Timber.e(Exception("Failed to create viewer for stream ${stream.id}")).run { null }
-            is CaffeineResult.Failure -> Timber.e(result.exception).run { null }
+            is CaffeineResult.Failure -> Timber.e(result.throwable).run { null }
         }
     }
 
@@ -59,13 +59,11 @@ class StreamController(
                         "viewer_id" to viewerId
                 )
                 launch {
-                    val result = runCatching {
-                        eventsService.sendEvent(EventBody("ice_connection_state", data = data)).awaitAndParseErrors(gson)
-                    }.getOrElse { return@launch }
+                    val result = eventsService.sendEvent(EventBody("ice_connection_state", data = data)).awaitAndParseErrors(gson)
                     when (result) {
                         is CaffeineResult.Success -> Timber.d("ICE connection state event sent, ${result.value}")
                         is CaffeineResult.Error -> Timber.e(Exception("Failed to send ICE connection state event"))
-                        is CaffeineResult.Failure -> Timber.e(result.exception)
+                        is CaffeineResult.Failure -> Timber.e(result.throwable)
                     }
                 }
             }
@@ -80,11 +78,11 @@ class StreamController(
                 val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
                 val body = IceCandidatesBody(arrayOf(candidate), signedPayload)
                 launch {
-                    val result = runCatching { realtime.sendIceCandidate(viewerId, body).awaitAndParseErrors(gson) }.getOrElse { return@launch }
+                    val result = realtime.sendIceCandidate(viewerId, body).awaitAndParseErrors(gson)
                     when (result) {
                         is CaffeineResult.Success -> Timber.d("ICE candidate sent, ${result.value}")
                         is CaffeineResult.Error -> Timber.e(Exception("Failed to send ICE candidate"))
-                        is CaffeineResult.Failure -> Timber.e(result.exception)
+                        is CaffeineResult.Failure -> Timber.e(result.throwable)
                     }
                 }
             }
@@ -95,11 +93,11 @@ class StreamController(
         val result2 = peerConnection.setLocalDescription(localSessionDescription)
         Timber.d("LocalDesc: Success! $localSessionDescription - ${localSessionDescription.type} - ${localSessionDescription.description}")
         val answer = localSessionDescription.description
-        val result = runCatching { realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).awaitAndParseErrors(gson) }.getOrNull() ?: return peerConnection.disposeAndReturnNull()
+        val result = realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).awaitAndParseErrors(gson)
         return when (result) {
             is CaffeineResult.Success -> configureConnections(peerConnection, viewerId, signedPayload, streamLabel)
             is CaffeineResult.Error -> Timber.e(Exception("sendAnswer failed")).run { peerConnection.disposeAndReturnNull() }
-            is CaffeineResult.Failure -> Timber.e(result.exception).run { peerConnection.disposeAndReturnNull() }
+            is CaffeineResult.Failure -> Timber.e(result.throwable).run { peerConnection.disposeAndReturnNull() }
         }
     }
 
@@ -134,18 +132,18 @@ class StreamController(
     private suspend fun reportStats(peerConnection: PeerConnection, viewerId: String, streamLabel: String) {
         val rtcStats = peerConnection.getStats()
         val data = collectEventInfo(rtcStats, viewerId)
-        val sendEventResult = runCatching { eventsService.sendEvent(EventBody("webrtc_stats", data = data)).awaitAndParseErrors(gson) }.getOrElse { return }
+        val sendEventResult = eventsService.sendEvent(EventBody("webrtc_stats", data = data)).awaitAndParseErrors(gson)
         when (sendEventResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent event")
             is CaffeineResult.Error -> Timber.e(Exception("Error sending event webrtc_stats"))
-            is CaffeineResult.Failure -> Timber.e(sendEventResult.exception)
+            is CaffeineResult.Failure -> Timber.e(sendEventResult.throwable)
         }
         val stats = collectPerformanceStats(rtcStats, streamLabel)
-        val sendStatsResult = runCatching { eventsService.sendStats(stats).awaitAndParseErrors(gson) }.getOrElse { return }
+        val sendStatsResult = eventsService.sendStats(stats).awaitAndParseErrors(gson)
         when (sendStatsResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent stats")
             is CaffeineResult.Error -> Timber.e(Exception("Error sending stats webrtc_stats"))
-            is CaffeineResult.Failure -> Timber.e(sendStatsResult.exception)
+            is CaffeineResult.Failure -> Timber.e(sendStatsResult.throwable)
         }
     }
 
@@ -195,11 +193,11 @@ class StreamController(
 
     private suspend fun sendHeartbeat(signedPayload: String, viewerId: String) {
         val heartbeatBody = HeartbeatBody(signedPayload)
-        val sendHeartbeatResult = runCatching { realtime.sendHeartbeat(viewerId, heartbeatBody).awaitAndParseErrors(gson) }.getOrNull()
+        val sendHeartbeatResult = realtime.sendHeartbeat(viewerId, heartbeatBody).awaitAndParseErrors(gson)
         when (sendHeartbeatResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent heartbeat")
             is CaffeineResult.Error -> Timber.e(Exception("Error sending heartbeat"))
-            is CaffeineResult.Failure -> Timber.e(sendHeartbeatResult.exception)
+            is CaffeineResult.Failure -> Timber.e(sendHeartbeatResult.throwable)
         }
     }
 }

@@ -23,7 +23,7 @@ class TransactionHistoryViewModel(
 
     private fun load() {
         launch {
-            _transactionHistory.value = runCatching { transactionHistoryUseCase() }.fold({ it }, { CaffeineResult.Failure(it) })
+            _transactionHistory.value = transactionHistoryUseCase()
         }
     }
 }

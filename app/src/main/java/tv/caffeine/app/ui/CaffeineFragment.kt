@@ -3,7 +3,6 @@ package tv.caffeine.app.ui
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
@@ -11,8 +10,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
-import tv.caffeine.app.LobbyDirections
-import tv.caffeine.app.R
 import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.di.ViewModelFactory
@@ -29,7 +26,7 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
 
     protected lateinit var job: Job
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        Timber.e(throwable, "Coroutine exception")
+        Timber.e(throwable, "Coroutine throwable")
     }
 
     override val coroutineContext: CoroutineContext
@@ -62,7 +59,7 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     }
 
     fun <T> handleFailure(result: CaffeineResult.Failure<T>, view: View) {
-        val e = result.exception
+        val e = result.throwable
         Timber.e(e, "Failure in the LobbyFragment")
         Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
     }

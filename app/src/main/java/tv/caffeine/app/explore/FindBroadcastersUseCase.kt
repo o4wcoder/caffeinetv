@@ -19,28 +19,20 @@ class FindBroadcastersUseCase @Inject constructor(
             else findUsers(searchString)
 
     private suspend fun suggestUsers(): CaffeineResult<Findings> {
-        return runCatching { usersService.listSuggestions().awaitAndParseErrors(gson) }
-                .fold({
-                    when(it) {
-                        is CaffeineResult.Success -> CaffeineResult.Success(Findings.Explore(it.value.toTypedArray()))
-                        is CaffeineResult.Error -> CaffeineResult.Error(it.error)
-                        is CaffeineResult.Failure -> CaffeineResult.Failure(it.exception)
-                    }
-                }, {
-                    CaffeineResult.Failure(it)
-                })
+        val result = usersService.listSuggestions().awaitAndParseErrors(gson)
+        return when(result) {
+            is CaffeineResult.Success -> CaffeineResult.Success(Findings.Explore(result.value.toTypedArray()))
+            is CaffeineResult.Error -> CaffeineResult.Error(result.error)
+            is CaffeineResult.Failure -> CaffeineResult.Failure(result.throwable)
+        }
     }
 
     private suspend fun findUsers(query: String): CaffeineResult<Findings> {
-        return runCatching { searchService.searchUsers(SearchQueryBody(query)).awaitAndParseErrors(gson) }
-                .fold({
-                    when (it) {
-                        is CaffeineResult.Success -> CaffeineResult.Success(Findings.Search(it.value.results))
-                        is CaffeineResult.Error -> CaffeineResult.Error(it.error)
-                        is CaffeineResult.Failure -> CaffeineResult.Failure(it.exception)
-                    }
-                }, {
-                    CaffeineResult.Failure(it)
-                })
+        val result = searchService.searchUsers(SearchQueryBody(query)).awaitAndParseErrors(gson)
+        return when (result) {
+            is CaffeineResult.Success -> CaffeineResult.Success(Findings.Search(result.value.results))
+            is CaffeineResult.Error -> CaffeineResult.Error(result.error)
+            is CaffeineResult.Failure -> CaffeineResult.Failure(result.throwable)
+        }
     }
 }

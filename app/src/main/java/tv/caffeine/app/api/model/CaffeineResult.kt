@@ -8,17 +8,17 @@ import tv.caffeine.app.api.ApiErrorResult
 sealed class CaffeineResult<T> {
     class Success<T>(val value: T) : CaffeineResult<T>()
     class Error<T>(val error: ApiErrorResult) : CaffeineResult<T>()
-    class Failure<T>(val exception: Throwable) : CaffeineResult<T>()
+    class Failure<T>(val throwable: Throwable) : CaffeineResult<T>()
 }
 
 sealed class CaffeineEmptyResult {
     object Success : CaffeineEmptyResult()
     class Error(val error: ApiErrorResult) : CaffeineEmptyResult()
-    class Failure(val exception: Throwable) : CaffeineEmptyResult()
+    class Failure(val throwable: Throwable) : CaffeineEmptyResult()
 }
 
 suspend fun <T> Deferred<Response<T>>.awaitAndParseErrors(gson: Gson): CaffeineResult<T> {
-    val response = await()
+    val response = runCatching { await() }.getOrElse { return CaffeineResult.Failure(it) }
     val body = response.body()
     val errorBody = response.errorBody()
     return when {
@@ -29,7 +29,7 @@ suspend fun <T> Deferred<Response<T>>.awaitAndParseErrors(gson: Gson): CaffeineR
 }
 
 suspend fun <T> Deferred<Response<T>>.awaitEmptyAndParseErrors(gson: Gson): CaffeineEmptyResult {
-    val response = await()
+    val response = runCatching { await() }.getOrElse { return CaffeineEmptyResult.Failure(it) }
     val errorBody = response.errorBody()
     return when {
         response.isSuccessful -> CaffeineEmptyResult.Success

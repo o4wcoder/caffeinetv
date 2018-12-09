@@ -1,14 +1,10 @@
 package tv.caffeine.app.session
 
 import com.google.gson.Gson
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.Broadcast
-import tv.caffeine.app.api.model.CaffeineEmptyResult
-import tv.caffeine.app.api.model.User
-import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
+import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
@@ -36,17 +32,19 @@ class FollowManager @Inject constructor(
 
     suspend fun refreshFollowedUsers() {
         tokenStore.caid?.let { caid ->
-            val result = usersService.listFollowing(caid).await()
-            withContext(dispatchConfig.main) { followedUsers[caid] = (result.map { it.caid }).toSet() }
+            val result = usersService.listFollowing(caid).awaitAndParseErrors(gson)
+            when(result) {
+                is CaffeineResult.Success -> followedUsers[caid] = result.value.map { it.caid }.toSet()
+                is CaffeineResult.Error -> Timber.e(Exception("Error loading following list ${result.error.toString()}"))
+                is CaffeineResult.Failure -> Timber.e(result.throwable)
+            }
         }
     }
 
     suspend fun followUser(caid: String): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
         followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
-        val result = runCatching {
-            usersService.follow(self, caid).awaitEmptyAndParseErrors(gson)
-        }.getOrElse { return CaffeineEmptyResult.Failure(Exception("Failed to follow")) }
+        val result = usersService.follow(self, caid).awaitEmptyAndParseErrors(gson)
         refreshFollowedUsers()
         return result
     }
@@ -54,9 +52,7 @@ class FollowManager @Inject constructor(
     suspend fun unfollowUser(caid: String): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
         followedUsers[self] = followedUsers[self]?.toMutableSet()?.apply { remove(caid) }?.toSet() ?: setOf()
-        val result = runCatching {
-            usersService.unfollow(self, caid).awaitEmptyAndParseErrors(gson)
-        }.getOrElse { return CaffeineEmptyResult.Failure(Exception("Failed to unfollow")) }
+        val result = usersService.unfollow(self, caid).awaitEmptyAndParseErrors(gson)
         refreshFollowedUsers()
         return result
     }
@@ -67,20 +63,23 @@ class FollowManager @Inject constructor(
     }
 
     suspend fun loadUserDetails(caid: String): User? {
-        val result = usersService.userDetails(caid)
-        try {
-            val user = result.await().user
-            userDetails[caid] = user
-            return user
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to load user details")
+        val result = usersService.userDetails(caid).awaitAndParseErrors(gson)
+        when(result) {
+            is CaffeineResult.Success -> userDetails[caid] = result.value.user
+            is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()))
+            is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
-        return null
+        return userDetails[caid]
     }
 
     suspend fun broadcastDetails(user: User): Broadcast? {
         val broadcastId = user.broadcastId ?: return null
-        return broadcastsService.broadcastDetails(broadcastId).await().broadcast
+        val result = broadcastsService.broadcastDetails(broadcastId).awaitAndParseErrors(gson)
+        return when(result) {
+            is CaffeineResult.Success -> result.value.broadcast
+            is CaffeineResult.Error -> Timber.e(Exception("Failure loading broadcast details ${result.error}")).let { null }
+            is CaffeineResult.Failure -> Timber.e(result.throwable).let { null }
+        }
     }
 }
 
