@@ -23,7 +23,7 @@ suspend fun <T> Deferred<Response<T>>.awaitAndParseErrors(gson: Gson): CaffeineR
     val errorBody = response.errorBody()
     return when {
         response.isSuccessful && body != null -> CaffeineResult.Success(body)
-        errorBody != null -> CaffeineResult.Error(gson.fromJson(errorBody.string(), ApiErrorResult::class.java))
+        errorBody != null -> parseApiError(gson, errorBody.string())?.let { CaffeineResult.Error<T>(it) } ?: CaffeineResult.Failure(Exception("Couldn't parse error"))
         else -> CaffeineResult.Failure(Exception("awaitAndParseErrors"))
     }
 }
@@ -33,7 +33,13 @@ suspend fun <T> Deferred<Response<T>>.awaitEmptyAndParseErrors(gson: Gson): Caff
     val errorBody = response.errorBody()
     return when {
         response.isSuccessful -> CaffeineEmptyResult.Success
-        errorBody != null -> CaffeineEmptyResult.Error(gson.fromJson(errorBody.string(), ApiErrorResult::class.java))
+        errorBody != null -> parseApiError(gson, errorBody.string())?.let { CaffeineEmptyResult.Error(it) } ?: CaffeineEmptyResult.Failure(Exception("Couldn't parse error"))
         else -> CaffeineEmptyResult.Failure(Exception("awaitAndParseErrors"))
     }
+}
+
+private fun parseApiError(gson: Gson, error: String) = try {
+    gson.fromJson(error, ApiErrorResult::class.java)
+} catch (e: Exception) {
+    null
 }
