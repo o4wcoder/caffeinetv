@@ -1,6 +1,5 @@
 package tv.caffeine.app.stage
 
-
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -102,6 +101,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        activity?.setImmersiveSticky()
         // Inflate the layout for this fragment
         binding = FragmentStageBinding.inflate(inflater, container, false)
         binding.setLifecycleOwner(viewLifecycleOwner)
@@ -162,7 +162,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
         }
         initSurfaceViewRenderer()
         configureButtons()
-        activity?.setImmersiveSticky()
     }
 
     override fun onDestroyView() {
@@ -331,9 +330,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
         binding.chatButton?.setOnClickListener {
             binding.chatMessageEditText?.requestFocus()
             binding.chatMessageEditText?.showKeyboard()
+            activity?.unsetImmersiveSticky()
         }
-        binding.chatMessageEditText?.setOnAction(EditorInfo.IME_ACTION_SEND) {
-            sendMessage()
+        binding.chatMessageEditText?.apply {
+            setOnAction(EditorInfo.IME_ACTION_SEND) { sendMessage() }
+            setOnClickListener { activity?.unsetImmersiveSticky() }
         }
         binding.friendsWatchingButton?.setOnClickListener {
             val fragmentManager = fragmentManager ?: return@setOnClickListener
