@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.activityToolbar)
         navController = findNavController(R.id.activity_main)
         setupActionBarWithNavController(this, navController)
-        navController.addOnNavigatedListener { _, destination ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             dismissKeyboard()
             binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
             FirebaseAnalytics.getInstance(this).setCurrentScreen(this, destination.label.toString(), null)

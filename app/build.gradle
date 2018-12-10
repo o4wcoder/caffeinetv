@@ -86,8 +86,8 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
     // Navigation
-    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha07'
-    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha07'
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha08'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha08'
 
     // Data binding
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
