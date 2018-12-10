@@ -9,12 +9,15 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import tv.caffeine.app.R
-import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbyBinding
-import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LobbyFragment : CaffeineFragment() {
@@ -23,6 +26,7 @@ class LobbyFragment : CaffeineFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
     private lateinit var binding: FragmentLobbyBinding
+    private var refreshJob: Job? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -57,7 +61,24 @@ class LobbyFragment : CaffeineFragment() {
     }
 
     private fun refreshLobby() {
-        viewModel.refresh()
+        refreshJob?.cancel()
+        refreshJob = launch {
+            while(isActive) {
+                viewModel.refresh()
+                delay(TimeUnit.SECONDS.toMillis(30))
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        refreshLobby()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        refreshJob?.cancel()
+        refreshJob = null
     }
 
     private val edgeOffset by lazy { resources.getDimension(R.dimen.lobby_card_side_margin).toInt() }
