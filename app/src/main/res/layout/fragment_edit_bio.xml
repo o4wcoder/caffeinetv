@@ -26,7 +26,7 @@
             android:layout_marginEnd="8dp"
             android:gravity="top"
             android:hint="@string/edit_bio_prompt"
-            android:inputType="text"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
             android:text="@{viewModel.bio}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
