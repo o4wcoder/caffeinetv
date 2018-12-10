@@ -25,6 +25,7 @@
             android:keepScreenOn="true"
             app:layout_constraintBottom_toTopOf="@+id/primary_view_renderer"
             app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
@@ -81,12 +82,13 @@
             android:id="@+id/messages_recycler_view"
             android:layout_width="0dp"
             android:layout_height="256dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layoutManager="tv.caffeine.app.ui.ChatLayoutManager"
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/primary_view_renderer"
             app:layout_constraintBottom_toTopOf="@id/chat_message_edit_text"
-            app:spanCount="2"
+            app:spanCount="@integer/chat_column_count"
             tools:listitem="@layout/chat_message_bubble"
             tools:itemCount="4"/>
 
@@ -96,7 +98,7 @@
             android:layout_height="wrap_content"
             android:background="#000000"
             android:imeOptions="actionSend"
-            android:inputType="textShortMessage"
+            android:inputType="textCapSentences"
             android:singleLine="true"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/bottom_stage_toolbar"

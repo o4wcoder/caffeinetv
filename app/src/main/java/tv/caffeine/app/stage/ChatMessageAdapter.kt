@@ -103,6 +103,7 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
     }
 
     override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+        hideInteractionOverlay()
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }

@@ -1,5 +1,6 @@
 package tv.caffeine.app.stage
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -9,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.R
 import tv.caffeine.app.api.Reaction
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.api.UsersService
@@ -22,6 +24,7 @@ private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
 
 class ChatViewModel(
         dispatchConfig: DispatchConfig,
+        context: Context,
         private val realtime: Realtime,
         private val tokenStore: TokenStore,
         private val usersService: UsersService,
@@ -30,6 +33,12 @@ class ChatViewModel(
 ) : CaffeineViewModel(dispatchConfig) {
     private lateinit var messageHandshake: MessageHandshake
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
+
+    private val columns = context.resources.getInteger(R.integer.chat_column_count)
+    private val rows = context.resources.getInteger(R.integer.chat_row_count)
+
+    private val maxVisibleReactions = columns * rows
+    private val preferredPositions = (0 until maxVisibleReactions).toList()
 
     private val _messages = MutableLiveData<List<Message>>()
     val messages: LiveData<List<Message>> = Transformations.map(_messages) { it }
@@ -85,8 +94,6 @@ class ChatViewModel(
         val message = messageWrapper.message
         Timber.d("Received message (${message.type}) from ${message.publisher.username} (${message.publisher.name}): ${message.body.text}")
         val currentTime = System.currentTimeMillis()
-        val preferredPositions = listOf(0, 1, 2, 3)
-        val maxVisibleReactions = 4
         val position = stageReducer.determineReactionPosition(latestMessages, messageWrapper, preferredPositions, maxVisibleReactions, currentTime)
         if (position >= 0) {
             latestMessages.removeAll { it.position == position }
@@ -107,7 +114,7 @@ class ChatViewModel(
         latestMessages.clear()
         latestMessages.addAll(nonStaleMessages)
         Timber.d("Chat Messages [$currentTime] - after $latestMessages")
-        val messagesToShow = 0.rangeTo(3).map { position ->
+        val messagesToShow = preferredPositions.map { position ->
             nonStaleMessages.find { it.position == position }?.message ?: dummyMessage.copy(id = "$position")
         }
         _messages.value = messagesToShow

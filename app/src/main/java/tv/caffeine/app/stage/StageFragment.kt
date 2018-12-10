@@ -319,12 +319,14 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
 
     private fun configureButtons() {
         binding.shareButton?.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, it) } ?: getString(R.string.watching_caffeine_live)
-                putExtra(Intent.EXTRA_TEXT, textToShare)
-                type = "text/plain"
-            }
-            startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
+            profileViewModel.username.observe(viewLifecycleOwner, Observer { username ->
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, username, it) } ?: getString(R.string.watching_caffeine_live)
+                    putExtra(Intent.EXTRA_TEXT, textToShare)
+                    type = "text/plain"
+                }
+                startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
+            })
         }
         binding.chatButton?.setOnClickListener {
             binding.chatMessageEditText?.requestFocus()

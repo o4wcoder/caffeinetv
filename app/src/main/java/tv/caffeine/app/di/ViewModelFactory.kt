@@ -1,5 +1,6 @@
 package tv.caffeine.app.di
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
@@ -27,6 +28,7 @@ import tv.caffeine.app.wallet.DigitalItemRepository
 import javax.inject.Inject
 
 class ViewModelFactory @Inject constructor(
+        private val context: Context,
         private val dispatchConfig: DispatchConfig,
         private val signInUseCase: SignInUseCase,
         private val acceptLegalUseCase: AcceptLegalUseCase,
@@ -70,7 +72,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
-            modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, realtime, tokenStore, usersService, followManager, gson)
+            modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
