@@ -14,7 +14,7 @@
         android:textAppearance="@style/ExploreUsername.NotFollowing"
         android:drawablePadding="@dimen/verified_icon_padding"
         tools:drawableEnd="@drawable/verified_large"
-        tools:text="Caffeine"
+        tools:text="@tools:sample/first_names"
         app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view" />

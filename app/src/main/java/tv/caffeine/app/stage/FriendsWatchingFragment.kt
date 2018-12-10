@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.R
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
@@ -46,6 +49,12 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
         val binding = FragmentFriendsWatchingBinding.inflate(inflater, container, false)
         binding.usersRecyclerView.adapter = usersAdapter
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        activity?.findNavController(R.id.activity_main)?.let {
+            Navigation.setViewNavController(view, it)
+        }
     }
 
 }

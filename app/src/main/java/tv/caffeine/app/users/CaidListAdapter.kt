@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -81,7 +81,7 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
         }
         itemView.setOnClickListener {
             val action = LobbyDirections.actionGlobalProfileFragment(item.caid)
-            Navigation.findNavController(itemView).navigate(action)
+            itemView.findNavController().navigate(action)
         }
     }
 
