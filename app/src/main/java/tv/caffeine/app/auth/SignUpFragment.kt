@@ -1,6 +1,9 @@
 package tv.caffeine.app.auth
 
+import android.app.DatePickerDialog
 import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -10,6 +13,8 @@ import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
+import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -19,6 +24,9 @@ import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.safetynet.SafetyNet
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -27,16 +35,19 @@ import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.showSnackbar
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 
-class SignUpFragment : CaffeineFragment() {
+class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var gson: Gson
 
     private lateinit var binding: FragmentSignUpBinding
+    private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,10 +62,48 @@ class SignUpFragment : CaffeineFragment() {
             text = buildLegalDocSpannable(findNavController())
             movementMethod = LinkMovementMethod.getInstance()
         }
+        binding.dobEditText.apply {
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) { setDate() }
+            }
+            setOnClickListener { setDate() }
+            setOnKeyListener { _, _, _ -> true }
+        }
         arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.let { oauthCallbackResult ->
             binding.usernameEditText.setText(oauthCallbackResult.possibleUsername)
             binding.emailEditText.setText(oauthCallbackResult.oauth?.email)
         }
+    }
+
+    private fun setDate() {
+        val dateText = binding.dobEditText.tag as? String
+        val calendar = if (dateText?.isNotBlank() == true) {
+            try {
+                Calendar.getInstance().also { it.time = apiDateFormat.parse(dateText) }
+            } catch (e: Exception) {
+                Timber.e("Error parsing the date of birth")
+                Calendar.getInstance()
+            }
+        } else {
+            Calendar.getInstance()
+        }
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+        context?.let {
+            DatePickerDialog(it, android.R.style.Theme_Holo_Light_Dialog, this, year, month, dayOfMonth).apply {
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                show()
+            }
+        }
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        val calendar = Calendar.getInstance().also { it.set(year, month, dayOfMonth) }
+        val displayText = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(LocalDate.of(year, month + 1, dayOfMonth))
+        val apiText = apiDateFormat.format(calendar.time)
+        binding.dobEditText.setText(displayText, TextView.BufferType.NORMAL)
+        binding.dobEditText.tag = apiText
     }
 
     private fun signUpClicked() {
@@ -85,7 +134,7 @@ class SignUpFragment : CaffeineFragment() {
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         val email = binding.emailEditText.text.toString()
-        val dob = binding.dobEditText.text.toString()
+        val dob = binding.dobEditText.tag as String
         val countryCode = "US"
         val agreedToTos = binding.agreeToLegalCheckbox.isChecked
         val account = SignUpAccount(username, password, email, dob, countryCode)
