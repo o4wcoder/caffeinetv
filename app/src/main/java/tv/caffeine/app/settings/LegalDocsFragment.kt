@@ -42,8 +42,13 @@ class LegalDocsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val webView = view.findViewById<WebView>(R.id.web_view)
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(legalDoc.title)
-        webView.settings.loadWithOverviewMode = true
-        webView.settings.useWideViewPort = true
+        webView.settings.apply {
+            loadWithOverviewMode = true
+            useWideViewPort = true
+            builtInZoomControls = true
+            setSupportZoom(true)
+            displayZoomControls = false
+        }
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 if (!URLUtil.isNetworkUrl(request?.url?.toString())) return true
