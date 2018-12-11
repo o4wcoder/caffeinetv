@@ -8,8 +8,6 @@ buildscript {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-        maven { url 'https://dl.bintray.com/android/android-tools' }
-        maven { url 'https://dl.bintray.com/firebase/gradle' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$android_plugin_version"
