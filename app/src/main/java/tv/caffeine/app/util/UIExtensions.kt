@@ -1,6 +1,7 @@
 package tv.caffeine.app.util
 
 import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -31,10 +32,12 @@ fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: Strin
     }
 }
 
+fun Context.dismissKeyboard(view: View) {
+    getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
 fun Activity.dismissKeyboard() {
-    currentFocus?.let {
-        getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(it.windowToken, 0)
-    }
+    currentFocus?.let { dismissKeyboard(it) }
 }
 
 fun Activity.setImmersiveSticky() {

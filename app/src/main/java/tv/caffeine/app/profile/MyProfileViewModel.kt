@@ -4,12 +4,11 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.*
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
@@ -17,11 +16,9 @@ import tv.caffeine.app.util.DispatchConfig
 
 class MyProfileViewModel(
         dispatchConfig: DispatchConfig,
-        private val usersService: UsersService,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
-        private val uploadAvatarUseCase: UploadAvatarUseCase,
-        private val gson: Gson
+        private val uploadAvatarUseCase: UploadAvatarUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val myProfile = MutableLiveData<User>()
@@ -83,13 +80,11 @@ class MyProfileViewModel(
     }
 
     private fun updateUser(name: String? = null, bio: String? = null) {
-        tokenStore.caid?.let { caid ->
-            launch {
-                val userUpdateBody = UserUpdateBody(UserUpdateDetails(name, bio, null))
-                val result = usersService.updateUser(caid, userUpdateBody).awaitAndParseErrors(gson)
-                if (result is CaffeineResult.Success) {
-                    updateViewModel(result.value.user)
-                }
+        val caid = tokenStore.caid?: return
+        launch {
+            val result = followManager.updateUser(caid, name, bio)
+            when (result) {
+                is CaffeineResult.Success -> updateViewModel(result.value.user)
             }
         }
     }

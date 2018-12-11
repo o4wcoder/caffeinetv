@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import tv.caffeine.app.databinding.FragmentEditBioBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.dismissKeyboard
 
 class EditBioFragment : CaffeineFragment() {
 
@@ -24,6 +25,7 @@ class EditBioFragment : CaffeineFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
         binding.saveBioButton.setOnClickListener {
+            context?.dismissKeyboard(it)
             val updatedBio = binding.editBioEditText.text.toString()
             viewModel.updateBio(updatedBio)
         }

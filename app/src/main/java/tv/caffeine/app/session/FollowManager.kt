@@ -72,6 +72,15 @@ class FollowManager @Inject constructor(
         return userDetails[caid]
     }
 
+    suspend fun updateUser(caid: String, name: String? = null, bio: String? = null): CaffeineResult<UserContainer> {
+        val userUpdateBody = UserUpdateBody(UserUpdateDetails(name, bio, null))
+        val result = usersService.updateUser(caid, userUpdateBody).awaitAndParseErrors(gson)
+        if (result is CaffeineResult.Success) {
+            userDetails[caid] = result.value.user
+        }
+        return result
+    }
+
     suspend fun broadcastDetails(user: User): Broadcast? {
         val broadcastId = user.broadcastId ?: return null
         val result = broadcastsService.broadcastDetails(broadcastId).awaitAndParseErrors(gson)

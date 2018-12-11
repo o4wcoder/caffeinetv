@@ -1,7 +1,6 @@
 package tv.caffeine.app.profile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.mock
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -37,7 +36,7 @@ class MyProfileViewModelTests {
         val fakeFollowManager = mockk<FollowManager>()
         coEvery { fakeFollowManager.userDetails(any()) } returns justUser
         val fakeUploadAvatarUseCase = mockk<UploadAvatarUseCase>()
-        subject = MyProfileViewModel(TestDispatchConfig, fakeService, fakeTokenStore, fakeFollowManager, fakeUploadAvatarUseCase, Gson())
+        subject = MyProfileViewModel(TestDispatchConfig, fakeTokenStore, fakeFollowManager, fakeUploadAvatarUseCase)
     }
 
     @Test
