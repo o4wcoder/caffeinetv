@@ -17,20 +17,26 @@
         android:paddingBottom="@dimen/list_item_spacing_half"
         tools:background="#000000">
 
+        <ImageView
+            android:id="@+id/digital_item_image_view"
+            android:layout_width="@dimen/digital_item_size"
+            android:layout_height="@dimen/digital_item_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo" />
+
         <TextView
             android:id="@+id/speech_bubble_text_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/chat_bubble"
+            android:layout_margin="4dp"
             android:gravity="center"
-            android:padding="10dp"
             android:textAppearance="@style/ChatMessageText"
             app:layout_constraintBottom_toTopOf="@+id/username_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/digital_item_image_view"
             tools:text="Hi! How are you?" />
 
         <View
@@ -39,12 +45,12 @@
             android:layout_height="0dp"
             android:background="@drawable/chat_bubble"
             android:backgroundTint="#80000000"
-            app:layout_constraintBottom_toBottomOf="@+id/speech_bubble_text_view"
-            app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
-            app:layout_constraintStart_toStartOf="@+id/speech_bubble_text_view"
-            app:layout_constraintTop_toTopOf="@+id/speech_bubble_text_view"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            app:layout_constraintBottom_toBottomOf="@+id/speech_bubble_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/reply_text_view"
@@ -52,12 +58,12 @@
             android:layout_height="wrap_content"
             android:text="@string/at_sign"
             android:textAppearance="@style/ReactionInteraction"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/interaction_overlay"
             app:layout_constraintEnd_toStartOf="@+id/upvote_text_view"
             app:layout_constraintStart_toStartOf="@+id/interaction_overlay"
             app:layout_constraintTop_toTopOf="@+id/interaction_overlay"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/upvote_text_view"
@@ -65,12 +71,12 @@
             android:layout_height="wrap_content"
             android:text="@string/checkmark"
             android:textAppearance="@style/ReactionInteraction"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/interaction_overlay"
             app:layout_constraintEnd_toEndOf="@+id/interaction_overlay"
             app:layout_constraintStart_toEndOf="@+id/reply_text_view"
             app:layout_constraintTop_toTopOf="@+id/interaction_overlay"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/avatar_image_view"
@@ -90,6 +96,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+            app:layout_constraintTop_toBottomOf="@id/speech_bubble_text_view"
             tools:text="Caffeine" />
 
         <TextView
@@ -97,26 +104,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/polygon_4_sides"
-            android:textColor="@color/endorsement_4_text"
             android:gravity="center_horizontal"
             android:padding="4dp"
+            android:textColor="@color/endorsement_4_text"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="@dimen/chat_bubble_triangle_size"
-            android:layout_height="@dimen/chat_bubble_triangle_size"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="4dp"
-            android:tint="@color/chat_bubble_bg"
-            app:layout_constraintEnd_toStartOf="@+id/avatar_image_view"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/speech_bubble_text_view"
-            app:srcCompat="@drawable/chat_bubble_triangle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

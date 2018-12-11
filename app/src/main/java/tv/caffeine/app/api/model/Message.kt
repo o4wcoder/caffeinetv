@@ -5,8 +5,9 @@ import tv.caffeine.app.di.ASSETS_BASE_URL
 data class Message(val publisher: User, val id: String, val type: Type, val body: Body, val endorsementCount: Int = 0) {
     enum class Type { reaction, rescind, presence, share, digital_item, dummy }
     data class Body(val text: String, val digitalItem: ReceivedDigitalItem? = null, val variant: Variant? = null)
-    data class ReceivedDigitalItem(val id: String, val count: Int, val creditsPerItem: Int, val staticImagePath: String, val sceneKitPath: String, val webAssetPath: String) {
+    data class ReceivedDigitalItem(val id: String, val count: Int, val creditsPerItem: Int, val staticImagePath: String, val previewImagePath: String, val sceneKitPath: String, val webAssetPath: String) {
         val staticImageUrl get() = "$ASSETS_BASE_URL$staticImagePath"
+        val previewImageUrl get() = "$ASSETS_BASE_URL$previewImagePath"
     }
     data class Variant(val background: Background, val text: Text, val theme: String, val thumbnailPathComponents: Map<String, String>, val tintColor: String, val variant: String)
     data class Background(val image: Image)

@@ -3,6 +3,7 @@ package tv.caffeine.app.stage
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -13,6 +14,7 @@ import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
+import tv.caffeine.app.databinding.ChatMessageDigitalItemBinding
 import tv.caffeine.app.databinding.ChatMessageDummyBinding
 import tv.caffeine.app.di.ThemeFollowedChat
 import tv.caffeine.app.di.ThemeNotFollowedChat
@@ -46,9 +48,11 @@ class ChatMessageAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatMessageViewHolder {
         val type = Message.Type.values()[viewType]
+        val layoutInflater = LayoutInflater.from(parent.context)
         return when(type) {
-            Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false), callback)
+            Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(layoutInflater, parent, false))
+            Message.Type.digital_item -> ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false), callback)
+            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false), callback)
         }
     }
 
@@ -111,12 +115,59 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
         binding.speechBubbleTextView.text = message.body.text
         binding.endorsementCountTextView.text = if (message.endorsementCount > 0) message.endorsementCount.toString() else null
         binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
-        val endorsementTextColor = itemView.resources.getColor(message.endorsementTextColorResId, null)
+        val endorsementTextColor = ContextCompat.getColor(itemView.context, message.endorsementTextColorResId)
+        binding.endorsementCountTextView.setTextColor(endorsementTextColor)
+        binding.endorsementCountTextView.setBackgroundResource(message.endorsementCountBackgroundResId)
+        binding.replyTextView.setOnClickListener {
+            hideInteractionOverlay()
+            callback?.replyClicked(message)
+        }
+        binding.upvoteTextView.setOnClickListener {
+            hideInteractionOverlay()
+            callback?.upvoteClicked(message)
+        }
+    }
+
+    private fun viewProfile(caid: String) {
+        val action = LobbyDirections.actionGlobalProfileFragment(caid)
+        itemView.findNavController().navigate(action)
+    }
+
+}
+
+class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
+
+    init {
+        itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
+    }
+
+    private fun toggleInteractionOverlayVisibility() {
+        binding.interactionOverlay.toggleVisibility()
+        binding.replyTextView.toggleVisibility()
+        binding.upvoteTextView.toggleVisibility()
+    }
+
+    private fun hideInteractionOverlay() {
+        binding.interactionOverlay.isVisible = false
+        binding.replyTextView.isVisible = false
+        binding.upvoteTextView.isVisible = false
+    }
+
+    override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+        hideInteractionOverlay()
+        message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        val caid = message.publisher.caid
+        binding.avatarImageView.setOnClickListener { viewProfile(caid) }
+        binding.usernameTextView.setOnClickListener { viewProfile(caid) }
+        binding.speechBubbleTextView.text = message.body.text
+        binding.endorsementCountTextView.text = if (message.endorsementCount > 0) message.endorsementCount.toString() else null
+        binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
+        val endorsementTextColor = ContextCompat.getColor(itemView.context, message.endorsementTextColorResId)
         binding.endorsementCountTextView.setTextColor(endorsementTextColor)
         binding.endorsementCountTextView.setBackgroundResource(message.endorsementCountBackgroundResId)
         when(val digitalItem = message.body.digitalItem) {
             null -> binding.digitalItemImageView.setImageDrawable(null)
-            else -> Picasso.get().load(digitalItem.staticImageUrl).into(binding.digitalItemImageView)
+            else -> Picasso.get().load(digitalItem.previewImageUrl).into(binding.digitalItemImageView)
         }
         binding.replyTextView.setOnClickListener {
             hideInteractionOverlay()
