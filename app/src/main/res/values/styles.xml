@@ -20,6 +20,10 @@
     <style name="AppTheme" parent="BaseAppTheme">
     </style>
 
+    <style name="DarkBottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

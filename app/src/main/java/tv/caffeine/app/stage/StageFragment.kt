@@ -37,6 +37,7 @@ import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.ui.showKeyboard
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.setImmersiveSticky
+import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 import kotlin.collections.set
@@ -101,7 +102,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        activity?.setImmersiveSticky()
+        activity?.apply {
+            setDarkMode(true)
+            setImmersiveSticky()
+        }
         // Inflate the layout for this fragment
         binding = FragmentStageBinding.inflate(inflater, container, false)
         binding.setLifecycleOwner(viewLifecycleOwner)
@@ -166,7 +170,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
 
     override fun onDestroyView() {
         deinitSurfaceViewRenderers()
-        activity?.unsetImmersiveSticky()
+        activity?.apply {
+            unsetImmersiveSticky()
+            setDarkMode(false)
+        }
         super.onDestroyView()
     }
 

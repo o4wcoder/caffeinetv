@@ -37,6 +37,8 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
     private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
     private lateinit var binding: FragmentDiCatalogBinding
 
+    override fun getTheme() = R.style.DarkBottomSheetDialog
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentDiCatalogBinding.inflate(inflater, container, false)

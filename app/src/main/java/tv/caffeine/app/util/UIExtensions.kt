@@ -1,9 +1,12 @@
 package tv.caffeine.app.util
 
 import android.app.Activity
+import android.os.Build
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
@@ -35,8 +38,13 @@ fun Activity.dismissKeyboard() {
 }
 
 fun Activity.setImmersiveSticky() {
-    window.decorView.let {
-        it.systemUiVisibility = it.systemUiVisibility
+    window.apply {
+        // Prevent white status/nav bars when launching dialogs and toggling the immersive mode at the same time.
+        addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+        clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        decorView.systemUiVisibility = decorView.systemUiVisibility
                 .or(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
                 .or(View.SYSTEM_UI_FLAG_FULLSCREEN)
                 .or(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
@@ -44,11 +52,43 @@ fun Activity.setImmersiveSticky() {
 }
 
 fun Activity.unsetImmersiveSticky() {
-    window.decorView.let {
-        it.systemUiVisibility = it.systemUiVisibility
+    window.apply {
+        // Prevent white status/nav bars when launching dialogs and toggling the immersive mode at the same time.
+        clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+        addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        decorView.systemUiVisibility = decorView.systemUiVisibility
                 .and(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv())
                 .and(View.SYSTEM_UI_FLAG_FULLSCREEN.inv())
                 .and(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv())
+    }
+}
+
+fun Activity.setDarkMode(isDarkMode: Boolean) {
+    window.apply {
+        addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        statusBarColor = ContextCompat.getColor(context,
+                if (isDarkMode) android.R.color.black else R.color.statusBar)
+        if (isDarkMode) {
+            decorView.systemUiVisibility = decorView.systemUiVisibility
+                    .and(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv())
+        } else {
+            decorView.systemUiVisibility = decorView.systemUiVisibility
+                    .or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            navigationBarColor = ContextCompat.getColor(context,
+                    if (isDarkMode) android.R.color.black else R.color.navBar)
+            if (isDarkMode) {
+                decorView.systemUiVisibility = decorView.systemUiVisibility
+                        .and(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv())
+            } else {
+                decorView.systemUiVisibility = decorView.systemUiVisibility
+                        .or(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+            }
+        }
     }
 }
 

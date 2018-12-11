@@ -28,6 +28,8 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
 
     private lateinit var broadcaster: String
 
+    override fun getTheme() = R.style.DarkBottomSheetDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = FriendsWatchingFragmentArgs.fromBundle(arguments)
