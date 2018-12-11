@@ -61,8 +61,10 @@ fun ApiErrorResult.isTokenExpirationError() = !errors._token.isNullOrEmpty()
 
 class ApiError(
         val _error: Array<String>? = null,
+        val _denied: Array<String>? = null,
         val username: Array<String>? = null,
         val password: Array<String>? = null,
+        val dob: Array<String>? = null,
         val currentPassword: Array<String>? = null,
         val email: Array<String>? = null,
         val otp: Array<String>? = null,

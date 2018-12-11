@@ -81,6 +81,7 @@ class SignUpFragment : CaffeineFragment() {
     }
 
     private fun signUp(token: String?, iid: String?) {
+        clearErrors()
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         val email = binding.emailEditText.text.toString()
@@ -107,13 +108,25 @@ class SignUpFragment : CaffeineFragment() {
         navController.navigate(R.id.lobby, null, navOptions)
     }
 
+    private fun clearErrors() {
+        binding.formErrorTextView.text = null
+        binding.usernameTextInputLayout.error = null
+        binding.passwordTextInputLayout.error = null
+        binding.emailTextInputLayout.error = null
+        binding.dobTextInputLayout.error = null
+    }
+
     private fun onError(response: Response<SignUpResult>) {
         val errorBody = response.errorBody() ?: return
         val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
         val errors = error.errors
-        binding.formErrorTextView.text = listOfNotNull(errors._error, errors.username, errors.password)
+        binding.formErrorTextView.text = listOfNotNull(errors._error, errors._denied)
                 .joinToString("\n") { it.joinToString("\n") }
+        binding.usernameTextInputLayout.error = errors.username?.joinToString("\n")
+        binding.passwordTextInputLayout.error = errors.password?.joinToString("\n")
+        binding.emailTextInputLayout.error = errors.email?.joinToString("\n")
+        binding.dobTextInputLayout.error = errors.dob?.joinToString("\n")
     }
 
     private fun buildLegalDocSpannable(navController: NavController) : Spannable {
