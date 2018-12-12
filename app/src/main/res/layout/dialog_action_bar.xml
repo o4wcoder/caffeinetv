@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/white">
+        android:background="@color/color_primary">
 
         <ImageView
             android:id="@+id/close_image_view"

@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="6dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/sign_in_with_facebook" />
@@ -45,12 +45,14 @@
             android:text="@string/sign_in_with_twitter" />
 
         <Button
+            style="@style/Button.Outline"
             android:id="@+id/new_account_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/new_account" />
 
         <Button
+            style="@style/Button.Outline"
             android:id="@+id/sign_in_with_email_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

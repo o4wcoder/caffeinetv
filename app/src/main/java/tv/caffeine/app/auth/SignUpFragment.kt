@@ -1,6 +1,7 @@
 package tv.caffeine.app.auth
 
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -15,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -91,9 +93,12 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         val month = calendar.get(Calendar.MONTH)
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
         context?.let {
-            DatePickerDialog(it, android.R.style.Theme_Holo_Light_Dialog, this, year, month, dayOfMonth).apply {
-                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                show()
+            val dialog = DatePickerDialog(it, android.R.style.Theme_Holo_Light_Dialog, this, year, month, dayOfMonth)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.show()
+            ContextCompat.getColor(it, android.R.color.transparent).let { color ->
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setBackgroundColor(color)
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setBackgroundColor(color)
             }
         }
     }

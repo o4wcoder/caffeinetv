@@ -3,7 +3,7 @@
     <!-- Theme colors -->
     <color name="color_primary">#f0f0f0</color>
     <color name="color_primary_dark">#f9f9f9</color>
-    <color name="color_accent">#009fe0</color>
+    <color name="color_accent">@color/caffeine_blue</color>
     <color name="status_bar">#f0f0f0</color>
     <color name="nav_bar">#f0f0f0</color>
 

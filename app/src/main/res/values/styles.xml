@@ -1,19 +1,25 @@
 <resources>
 
+    <!-- Guidelines
+    1. Use ThemeOverlay.* instead of Theme.* when possible so it picks up the styles defined in AppTheme.
+    2. If a style is used in both values/ and values-v27/, create a base style to hold all the shared attributes.
+    3. Group attributes by namespace.
+    4. Move styles to the Design approved section once they are approved.
+    -->
+
     <!-- Design approved - Start -->
-    <!-- Design approved - End -->
 
     <!-- Application theme -->
     <style name="BaseAppTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
+        <item name="materialButtonStyle">@style/Button</item>
 
         <item name="android:statusBarColor">@color/status_bar</item>
         <item name="android:navigationBarColor">@color/nav_bar</item>
         <item name="android:windowLightStatusBar">true</item>
-
-        <item name="materialButtonStyle">@style/Button.Outline</item>
+        <item name="android:alertDialogTheme">@style/AlertDialog</item>
 
         <item name="android:fragmentEnterTransition">@android:transition/slide_right</item>
         <item name="android:fragmentExitTransition">@android:transition/slide_left</item>
@@ -22,19 +28,72 @@
     <style name="AppTheme" parent="BaseAppTheme"/>
 
     <!-- Dialog -->
-    <style name="DarkBottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+    <style name="AlertDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="BaseDarkBottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="DarkBottomSheetDialog" parent="BaseDarkBottomSheetDialog">
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="FullscreenDialogTheme" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
+        <item name="colorAccent">@color/color_accent</item>
         <item name="android:statusBarColor">@color/status_bar</item>
         <item name="android:navigationBarColor">@color/nav_bar</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
     </style>
 
     <!-- Button -->
-    <style name="Button" parent="@style/Widget.MaterialComponents.Button.TextButton"/>
+    <style name="Button" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Button.Outline" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Button.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- Not used directly -->
+    <style name="Button.Follow" parent="Button.Outline">
+        <item name="android:inset">0dp</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <!-- Not used directly -->
+    <style name="Button.Following" parent="Button.Outline">
+        <item name="android:backgroundTint">@color/caffeine_blue</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Button.Follow.Lobby">
+        <item name="cornerRadius">18dp</item>
+        <item name="strokeColor">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:height">@dimen/avatar_size</item>
+    </style>
+
+    <style name="Button.Following.Lobby">
+        <item name="cornerRadius">18dp</item>
+        <item name="android:height">@dimen/avatar_size</item>
+    </style>
+
+    <!-- Design approved - End -->
+
+    <style name="ActionButton" parent="@style/Widget.MaterialComponents.Button">
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <style name="LinkButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeWidth">0dp</item>
+    </style>
 
     <!-- Action bar -->
     <style name="AppTheme.NoActionBar">
@@ -47,36 +106,6 @@
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
-    <style name="Button.Outline" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="cornerRadius">18dp</item>
-    </style>
-
-    <style name="Button.Follow">
-        <item name="android:textAllCaps">false</item>
-        <item name="android:inset">0dp</item>
-        <item name="android:letterSpacing">0.05</item>
-    </style>
-
-    <style name="Button.Following">
-        <item name="android:backgroundTint">@color/caffeine_blue</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="Button.Follow.Lobby">
-        <item name="strokeColor">@color/white</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="Button.Following.Lobby">
-    </style>
-
-    <style name="ActionButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="cornerRadius">16dp</item>
-    </style>
-
-    <style name="LinkButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="strokeWidth">0dp</item>
-    </style>
 
     <style name="ScreenTitle" parent="@style/TextAppearance.MaterialComponents.Headline5">
 
