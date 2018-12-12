@@ -3,6 +3,7 @@ package tv.caffeine.app.settings
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
+import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.TransactionHistoryItem
 import tv.caffeine.app.api.costString
@@ -94,8 +96,13 @@ class TransactionHistoryViewHolder(
                 }
                 binding.usernameTextView.formatUsernameAsHtml(itemView.resources.getString(usernameStringResId, user.username, user.avatarImageUrl), followManager.isFollowing(userCaid), R.dimen.tx_history_avatar_size)
             }
+            itemView.setOnClickListener {
+                val action = LobbyDirections.actionGlobalProfileFragment(userCaid)
+                itemView.findNavController().navigate(action)
+            }
         } else {
             binding.usernameTextView.text = null
+            itemView.setOnClickListener(null)
         }
         binding.digitalItemImageView.isVisible = item.digitalItemStaticImageUrl != null
     }
