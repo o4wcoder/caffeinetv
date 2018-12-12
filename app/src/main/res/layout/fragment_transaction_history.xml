@@ -16,7 +16,8 @@
             android:id="@+id/transaction_history_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/transaction_history_item"/>
 
     </FrameLayout>
 </layout>

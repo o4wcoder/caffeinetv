@@ -20,21 +20,16 @@ import tv.caffeine.app.api.costString
 import tv.caffeine.app.api.digitalItemStaticImageUrl
 import tv.caffeine.app.api.titleResId
 import tv.caffeine.app.databinding.TransactionHistoryItemBinding
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
-import tv.caffeine.app.util.configure
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class TransactionHistoryAdapter @Inject constructor(
         private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+        private val followManager: FollowManager
 ): ListAdapter<TransactionHistoryItem, TransactionHistoryViewHolder>(
         object: DiffUtil.ItemCallback<TransactionHistoryItem?>() {
             override fun areItemsTheSame(oldItem: TransactionHistoryItem, newItem: TransactionHistoryItem) =
@@ -50,7 +45,7 @@ class TransactionHistoryAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionHistoryViewHolder {
         val binding = TransactionHistoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TransactionHistoryViewHolder(binding, followManager, this, followedTheme, notFollowedTheme)
+        return TransactionHistoryViewHolder(binding, followManager, this)
     }
 
     override fun onBindViewHolder(holder: TransactionHistoryViewHolder, position: Int) {
@@ -66,16 +61,13 @@ class TransactionHistoryAdapter @Inject constructor(
 class TransactionHistoryViewHolder(
         private val binding: TransactionHistoryItemBinding,
         private val followManager: FollowManager,
-        private val scope: CoroutineScope,
-        private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme
+        private val scope: CoroutineScope
 ) : RecyclerView.ViewHolder(binding.root) {
 
     var job: Job? = null
 
     fun bind(item: TransactionHistoryItem) {
         job?.cancel()
-        clear()
         val zoneId = ZoneId.systemDefault()
         val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
         binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
@@ -87,24 +79,24 @@ class TransactionHistoryViewHolder(
             is TransactionHistoryItem.ReceiveDigitalItem -> item.sender
             else -> null
         }
-        binding.usernameTextView.isVisible = userCaid != null
-        binding.avatarImageView.isVisible = userCaid != null
-        binding.digitalItemImageView.isVisible = item.digitalItemStaticImageUrl != null
-        job = scope.launch {
-            userCaid?.let { caid ->
-                val user = followManager.userDetails(caid) ?: return@launch
-                user.configure(binding.avatarImageView, binding.usernameTextView,
-                        null, followManager, false,
-                        R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        if (userCaid != null) {
+            val usernameTextAppearance = when {
+                followManager.isFollowing(userCaid) -> R.style.ExploreUsername_Following
+                else -> R.style.ExploreUsername_NotFollowing
             }
+            binding.usernameTextView.setTextAppearance(usernameTextAppearance)
+            binding.usernameTextView.text = null
+            job = scope.launch {
+                val user = followManager.userDetails(userCaid) ?: return@launch
+                val usernameStringResId = when {
+                    user.isVerified -> R.string.user_avatar_username_verified
+                    else -> R.string.user_avatar_username_not_verified
+                }
+                binding.usernameTextView.formatUsernameAsHtml(itemView.resources.getString(usernameStringResId, user.username, user.avatarImageUrl), followManager.isFollowing(userCaid), R.dimen.tx_history_avatar_size)
+            }
+        } else {
+            binding.usernameTextView.text = null
         }
-    }
-
-    private fun clear() {
-        binding.avatarImageView.setImageResource(R.drawable.default_avatar_round)
-        binding.usernameTextView.text = null
-        binding.usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-        binding.avatarImageView.isVisible = false
-        binding.usernameTextView.isVisible = false
+        binding.digitalItemImageView.isVisible = item.digitalItemStaticImageUrl != null
     }
 }

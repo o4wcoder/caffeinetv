@@ -6,8 +6,10 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.DimenRes
 import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
+import tv.caffeine.app.R
 
 inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -42,18 +44,22 @@ inline fun EditText.setOnAction(action: Int, crossinline block: () -> Unit) {
     }
 }
 
+fun TextView.formatUsernameAsHtml(string: String?, isFollowed: Boolean, @DimenRes avatarSizeDimen: Int) {
+    text = string?.let { string ->
+        val imageGetter = UserAvatarImageGetter(this, isFollowed, avatarSizeDimen)
+        val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+        for (span in html.getSpans(0, html.length, ImageSpan::class.java)) {
+            val start = html.getSpanStart(span)
+            val end = html.getSpanEnd(span)
+            html.setSpan(CenterImageSpan(span.drawable), start, end, html.getSpanFlags(span))
+        }
+
+        html
+    }
+}
+
 var TextView.htmlText: String?
     get() = null
     set(value) {
-        text = value?.let { string ->
-            val imageGetter = UserAvatarImageGetter(this)
-            val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
-            for (span in html.getSpans(0, html.length, ImageSpan::class.java)) {
-                val start = html.getSpanStart(span)
-                val end = html.getSpanEnd(span)
-                html.setSpan(CenterImageSpan(span.drawable), start, end, html.getSpanFlags(span))
-            }
-
-            html
-        }
+        formatUsernameAsHtml(value, false, R.dimen.chat_avatar_size)
     }

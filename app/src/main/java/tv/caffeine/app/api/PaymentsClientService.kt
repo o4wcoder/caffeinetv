@@ -107,6 +107,10 @@ val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
 fun TransactionHistoryItem.costString(resources: Resources) = when {
     this is TransactionHistoryItem.Bundle && costCurrencyCode != "CREDITS" -> resources.getString(R.string.transaction_item_purchased, value.toString(), NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }.format(cost/100f))
     this is TransactionHistoryItem.Bundle && costCurrencyCode == "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, value.toString(), cost.toString())
+    this is TransactionHistoryItem.SendDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_sent, cost)
+    this is TransactionHistoryItem.SendDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_sent, cost, quantity)
+    this is TransactionHistoryItem.ReceiveDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_received, cost)
+    this is TransactionHistoryItem.ReceiveDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_received, cost, quantity)
     this is TransactionHistoryItem.Adjustment -> quantity.toString()
     else -> cost.toString()
 }
