@@ -80,7 +80,7 @@
             app:layout_constraintStart_toStartOf="@id/preview_image_view"
             app:layout_constraintTop_toTopOf="@id/preview_image_view"
             tools:text="FEATURED"
-            tools:textColor="@color/colorAccent" />
+            tools:textColor="@color/color_accent" />
 
         <TextView
             android:id="@+id/name_text_view"

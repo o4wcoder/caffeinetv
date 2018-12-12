@@ -53,7 +53,7 @@
                 android:drawablePadding="@dimen/verified_icon_padding"
                 android:text="@{profileViewModel.username}"
                 android:textAppearance="@style/ExploreUsername"
-                android:textColor="@{profileViewModel.isFollowed ? @color/caffeineBlue : @color/mediumGray}"
+                android:textColor="@{profileViewModel.isFollowed ? @color/caffeine_blue: @color/medium_gray}"
                 android:drawableEnd="@{profileViewModel.isVerified ? @drawable/verified_large : null}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

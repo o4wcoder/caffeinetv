@@ -23,7 +23,7 @@ class UIModule {
     @Singleton
     @BlueCircleTransformation
     fun providesCircleWithBlueBorderTransformation(resources: Resources)
-            = CropBorderedCircleTransformation(resources.getColor(R.color.caffeineBlue, null),
+            = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
 
     @Provides

@@ -1,47 +1,53 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Design approved - Start -->
+    <!-- Design approved - End -->
+
+    <!-- Application theme -->
     <style name="BaseAppTheme" parent="Theme.MaterialComponents.Light">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
 
-        <item name="materialButtonStyle">@style/Button</item>
-
-        <item name="android:statusBarColor">@color/statusBar</item>
-        <item name="android:navigationBarColor">@color/navBar</item>
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:navigationBarColor">@color/nav_bar</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="materialButtonStyle">@style/Button.Outline</item>
 
         <item name="android:fragmentEnterTransition">@android:transition/slide_right</item>
         <item name="android:fragmentExitTransition">@android:transition/slide_left</item>
     </style>
 
-    <style name="AppTheme" parent="BaseAppTheme">
-    </style>
+    <style name="AppTheme" parent="BaseAppTheme"/>
 
+    <!-- Dialog -->
     <style name="DarkBottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
+    <style name="FullscreenDialogTheme" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:navigationBarColor">@color/nav_bar</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+    </style>
+
+    <!-- Button -->
+    <style name="Button" parent="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+    <!-- Action bar -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="FullscreenDialogTheme" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
-        <item name="android:statusBarColor">@color/statusBar</item>
-        <item name="android:navigationBarColor">@color/navBar</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
-    </style>
-
     <style name="ActionBarTitle" parent="@style/TextAppearance.MaterialComponents.Headline6"/>
     <style name="ActionBarActionText" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:textColor">@color/caffeineBlue</item>
+        <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
-    <style name="Button" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="Button.Outline" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="cornerRadius">18dp</item>
     </style>
 
@@ -52,7 +58,7 @@
     </style>
 
     <style name="Button.Following">
-        <item name="android:backgroundTint">@color/caffeineBlue</item>
+        <item name="android:backgroundTint">@color/caffeine_blue</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
@@ -121,7 +127,7 @@
     </style>
 
     <style name="BroadcastCardUsername.Following">
-        <item name="android:textColor">@color/caffeineBlue</item>
+        <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
     <style name="ExploreUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
@@ -135,7 +141,7 @@
     </style>
 
     <style name="ExploreUsername.Following">
-        <item name="android:textColor">@color/caffeineBlue</item>
+        <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
     <style name="ChatMessageUsername" parent="@style/TextAppearance.MaterialComponents.Caption">
@@ -145,7 +151,7 @@
     </style>
 
     <style name="ChatMessageUsername.Following">
-        <item name="android:textColor">@color/caffeineBlue</item>
+        <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
     <style name="ChatMessageUsername.NotFollowing">

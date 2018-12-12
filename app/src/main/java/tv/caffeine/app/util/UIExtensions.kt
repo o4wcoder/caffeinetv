@@ -72,7 +72,7 @@ fun Activity.setDarkMode(isDarkMode: Boolean) {
     window.apply {
         addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         statusBarColor = ContextCompat.getColor(context,
-                if (isDarkMode) android.R.color.black else R.color.statusBar)
+                if (isDarkMode) android.R.color.black else R.color.status_bar)
         if (isDarkMode) {
             decorView.systemUiVisibility = decorView.systemUiVisibility
                     .and(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv())
@@ -83,7 +83,7 @@ fun Activity.setDarkMode(isDarkMode: Boolean) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             navigationBarColor = ContextCompat.getColor(context,
-                    if (isDarkMode) android.R.color.black else R.color.navBar)
+                    if (isDarkMode) android.R.color.black else R.color.nav_bar)
             if (isDarkMode) {
                 decorView.systemUiVisibility = decorView.systemUiVisibility
                         .and(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv())

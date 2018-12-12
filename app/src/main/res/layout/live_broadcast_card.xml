@@ -77,7 +77,7 @@
             android:layout_marginTop="12dp"
             tools:text="FEATURED"
             android:textAppearance="@style/LobbyCardTag"
-            tools:textColor="@color/colorAccent"
+            tools:textColor="@color/color_accent"
             app:layout_constraintStart_toStartOf="@id/preview_image_view"
             app:layout_constraintTop_toTopOf="@id/preview_image_view" />
 

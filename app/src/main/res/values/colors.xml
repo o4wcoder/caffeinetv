@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#f0f0f0</color>
-    <color name="colorPrimaryDark">#f9f9f9</color>
-    <color name="colorAccent">#009fe0</color>
-    <color name="caffeineBlue">#009fe0</color>
-    <color name="mediumGray">#808080</color>
+    <!-- Theme colors -->
+    <color name="color_primary">#f0f0f0</color>
+    <color name="color_primary_dark">#f9f9f9</color>
+    <color name="color_accent">#009fe0</color>
+    <color name="status_bar">#f0f0f0</color>
+    <color name="nav_bar">#f0f0f0</color>
+
+    <!-- Caffeine colors -->
+    <color name="caffeine_blue">#009fe0</color>
     <color name="white">#ffffff</color>
-    <color name="statusBar">#f0f0f0</color>
-    <color name="navBar">#f0f0f0</color>
-    <color name="toolbarIcon">#8b8b8b</color>
+    <color name="medium_gray">#8b8b8b</color>
+
+    <!-- Coin -->
     <color name="gold_coin">#ffaa00</color>
     <color name="purple_coin">#aa33aa</color>
-    <color name="chat_bubble_bg">#8b8b8b</color>
+
+    <!-- Endorsement -->
     <color name="endorsement_4_bg">#009FE0</color>
     <color name="endorsement_5_bg">#4cd964</color>
     <color name="endorsement_6_bg">#FFCC00</color>
