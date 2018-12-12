@@ -13,9 +13,11 @@ import javax.inject.Inject
 
 interface SettingsStorage {
     var refreshToken: String?
+    var caid: String?
 }
 
 private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
+private const val CAID_KEY = "CAID"
 
 class SharedPrefsStorage @Inject constructor(
         private val sharedPreferences: SharedPreferences
@@ -27,6 +29,16 @@ class SharedPrefsStorage @Inject constructor(
                 remove(REFRESH_TOKEN_KEY)
             } else {
                 putString(REFRESH_TOKEN_KEY, value)
+            }
+        }
+
+    override var caid: String?
+        get() = sharedPreferences.getString(CAID_KEY, null)
+        set(value) = sharedPreferences.edit {
+            if (value == null) {
+                remove(CAID_KEY)
+            } else {
+                putString(CAID_KEY, value)
             }
         }
 
@@ -49,6 +61,20 @@ class EncryptedSettingsStorage @Inject constructor(
             }
             val encryptedValue = encryptValue(value)
             settingsStorage.refreshToken = encryptedValue
+        }
+
+    override var caid: String?
+        get() {
+            val encryptedValue = settingsStorage.caid ?: return null
+            return decryptValue(encryptedValue)
+        }
+        set(value) {
+            if (value == null) {
+                settingsStorage.caid = null
+                return
+            }
+            val encryptedValue = encryptValue(value)
+            settingsStorage.caid = encryptedValue
         }
 
     private fun encryptValue(originalValue: String): String {

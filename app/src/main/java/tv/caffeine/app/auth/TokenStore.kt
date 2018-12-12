@@ -12,8 +12,11 @@ class TokenStore @Inject constructor(
 ) {
     private var accessToken: String? = null
     private var credential: String? = null
-    var caid: String? = null
-        private set
+    var caid: String?
+        get() = settingsStorage.caid
+        set(value) {
+            settingsStorage.caid = value
+        }
 
     fun storeSignInResult(signInResult: SignInResult) {
         if (signInResult.next != NextAccountAction.legal_acceptance_required) {
