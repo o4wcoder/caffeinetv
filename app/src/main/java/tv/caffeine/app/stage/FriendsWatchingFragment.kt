@@ -40,7 +40,7 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
             val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
             when(result) {
                 is CaffeineResult.Success -> usersAdapter.submitList(result.value)
-                is CaffeineResult.Error -> Timber.e(Exception("Failed to fetch friends watching ${result.error}"))
+                is CaffeineResult.Error -> Timber.e("Failed to fetch friends watching ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }

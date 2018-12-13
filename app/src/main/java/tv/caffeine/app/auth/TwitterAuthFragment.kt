@@ -107,7 +107,7 @@ class TwitterAuthFragment : CaffeineFragment() {
 
     @UiThread
     private fun onError(error: ApiErrorResult) {
-        Timber.e(Exception("Twitter login error: $error"))
+        Timber.e("Twitter login error: $error")
         findNavController().popBackStack()
         activity?.showSnackbar(R.string.twitter_login_failed)
     }

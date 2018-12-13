@@ -70,7 +70,7 @@ class ForgotFragment : CaffeineFragment() {
 
     @UiThread
     private fun onFailure(t: Throwable) {
-        Timber.e(Exception("Something went wrong trying to request forgot password email", t))
+        Timber.e(t)
         binding.formErrorTextView.setText(R.string.forgot_password_cannot_reset_password)
     }
 

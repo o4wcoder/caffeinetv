@@ -54,7 +54,7 @@ class LegalAgreementFragment : CaffeineFragment() {
             legalAgreementViewModel.agree().observe(viewLifecycleOwner, Observer {  outcome ->
                 when(outcome) {
                     is LegalAgreementOutcome.Success -> onSuccess()
-                    is LegalAgreementOutcome.Error -> Timber.e(Exception("Error accepting agreement"))
+                    is LegalAgreementOutcome.Error -> Timber.e("Error accepting agreement")
                     is LegalAgreementOutcome.Failure -> Timber.e(outcome.exception)
                 }
             })

@@ -27,7 +27,7 @@ class LoadLobbyUseCase @Inject constructor(
         val sendStatsResult = eventsService.sendCounters(stats).awaitAndParseErrors(gson)
         when (sendStatsResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent lobby stats")
-            is CaffeineResult.Error -> Timber.e(Exception("Error sending lobby stats"))
+            is CaffeineResult.Error -> Timber.e("Error sending lobby stats")
             is CaffeineResult.Failure -> Timber.e(sendStatsResult.throwable)
         }
     }

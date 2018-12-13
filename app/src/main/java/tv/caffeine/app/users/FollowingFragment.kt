@@ -60,7 +60,7 @@ class FollowingViewModel(
             val result = usersService.listFollowing(caid).awaitAndParseErrors(gson)
             when(result) {
                 is CaffeineResult.Success -> _following.value = result.value
-                is CaffeineResult.Error -> Timber.e(Exception("Error loading following list ${result.error}"))
+                is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }

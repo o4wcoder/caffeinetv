@@ -8,6 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.REALTIME_WEBSOCKET_URL
 import tv.caffeine.app.realtime.WebSocketController
@@ -50,12 +51,21 @@ class StageHandshake(
         webSocketController = WebSocketController(dispatchConfig, "stg", url, headers)
         launch {
             webSocketController?.channel?.consumeEach {
-                val eventEnvelope = gsonForEvents.fromJson(it, EventEnvelope::class.java)
-                val event = eventEnvelope.v2 ?: return@consumeEach
+                val event = parseEvent(it) ?: return@consumeEach
                 if (event == lastEvent) return@consumeEach
                 lastEvent = event
                 channel.send(event)
             }
+        }
+    }
+
+    private fun parseEvent(input: String): Event? {
+        return try {
+            val eventEnvelope = gsonForEvents.fromJson(input, EventEnvelope::class.java)
+            eventEnvelope.v2 ?: null
+        } catch (e: Exception) {
+            Timber.e(e)
+            null
         }
     }
 

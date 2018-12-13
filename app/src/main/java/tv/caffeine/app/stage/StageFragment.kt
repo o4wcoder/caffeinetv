@@ -141,7 +141,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                             .load(broadcast.game?.iconImageUrl)
                             .into(binding.gameLogoImageView)
                 }
-                is CaffeineResult.Error -> Timber.e(Exception("Error loading broadcast details ${result.error}"))
+                is CaffeineResult.Error -> Timber.e("Error loading broadcast details ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }

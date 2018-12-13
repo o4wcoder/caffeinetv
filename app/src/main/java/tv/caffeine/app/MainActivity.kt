@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     Timber.d("${result.id}, ${result.token}")
                 }
             } else {
-                Timber.e(Exception(), "Couldn't get the FCM registration token")
+                Timber.e("Couldn't get the FCM registration token")
             }
         }
     }

@@ -38,7 +38,7 @@ class DigitalItemRepository @Inject constructor(
         val result = deferred.awaitAndParseErrors(gson)
         when(result) {
             is CaffeineResult.Success -> onSuccess(result.value)
-            is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()))
+            is CaffeineResult.Error -> Timber.e(result.error.toString())
             is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
     }

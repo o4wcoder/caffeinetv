@@ -31,7 +31,7 @@ class WalletViewModel(
             val result = paymentsClientService.getWallet(GetWalletBody()).awaitAndParseErrors(gson)
             when(result) {
                 is CaffeineResult.Success -> _wallet.value = result.value.payload
-                is CaffeineResult.Error -> Timber.e(Exception("Error loading wallet ${result.error}"))
+                is CaffeineResult.Error -> Timber.e("Error loading wallet ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }

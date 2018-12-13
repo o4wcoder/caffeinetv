@@ -4,6 +4,7 @@ import android.os.Build
 import okhttp3.Interceptor
 import okhttp3.Response
 import tv.caffeine.app.BuildConfig
+import java.io.IOException
 
 class AppMetaDataInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -13,6 +14,10 @@ class AppMetaDataInterceptor : Interceptor {
             header("X-Client-Version", BuildConfig.VERSION_NAME)
             build()
         }
-        return chain.proceed(request)
+        try {
+            return chain.proceed(request)
+        } catch (e: Exception) {
+            throw IOException("AppMetaDataInterceptor", e)
+        }
     }
 }

@@ -35,7 +35,7 @@ class FollowManager @Inject constructor(
             val result = usersService.listFollowing(caid).awaitAndParseErrors(gson)
             when(result) {
                 is CaffeineResult.Success -> followedUsers[caid] = result.value.map { it.caid }.toSet()
-                is CaffeineResult.Error -> Timber.e(Exception("Error loading following list ${result.error.toString()}"))
+                is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
@@ -66,7 +66,7 @@ class FollowManager @Inject constructor(
         val result = usersService.userDetails(caid).awaitAndParseErrors(gson)
         when(result) {
             is CaffeineResult.Success -> userDetails[caid] = result.value.user
-            is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()))
+            is CaffeineResult.Error -> Timber.e(result.error.toString())
             is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
         return userDetails[caid]
@@ -86,7 +86,7 @@ class FollowManager @Inject constructor(
         val result = broadcastsService.broadcastDetails(broadcastId).awaitAndParseErrors(gson)
         return when(result) {
             is CaffeineResult.Success -> result.value.broadcast
-            is CaffeineResult.Error -> Timber.e(Exception("Failure loading broadcast details ${result.error}")).let { null }
+            is CaffeineResult.Error -> Timber.e("Failure loading broadcast details ${result.error}").let { null }
             is CaffeineResult.Failure -> Timber.e(result.throwable).let { null }
         }
     }

@@ -55,20 +55,20 @@ class RefreshTokenResult(val credentials: CaffeineCredentials, val next: NextAcc
 
 class CaffeineCredentials(val accessToken: String, val caid: String, val credential: String, val refreshToken: String)
 
-class ApiErrorResult(val errors: ApiError)
+data class ApiErrorResult(val errors: ApiError)
 
 fun ApiErrorResult.isTokenExpirationError() = !errors._token.isNullOrEmpty()
 
-class ApiError(
-        val _error: Array<String>? = null,
-        val _denied: Array<String>? = null,
-        val username: Array<String>? = null,
-        val password: Array<String>? = null,
-        val dob: Array<String>? = null,
-        val currentPassword: Array<String>? = null,
-        val email: Array<String>? = null,
-        val otp: Array<String>? = null,
-        val _token: Array<String>? = null
+data class ApiError(
+        val _error: List<String>? = null,
+        val _denied: List<String>? = null,
+        val username: List<String>? = null,
+        val password: List<String>? = null,
+        val dob: List<String>? = null,
+        val currentPassword: List<String>? = null,
+        val email: List<String>? = null,
+        val otp: List<String>? = null,
+        val _token: List<String>? = null
 )
 
 class ForgotPasswordBody(val email: String)

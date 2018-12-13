@@ -33,7 +33,7 @@ class StreamController(
         val result = realtime.createViewer(stream.id).awaitAndParseErrors(gson)
         return when(result) {
             is CaffeineResult.Success -> handleOffer(result.value.offer, result.value.id, result.value.signed_payload, stream.label)
-            is CaffeineResult.Error -> Timber.e(Exception("Failed to create viewer for stream ${stream.id}")).run { null }
+            is CaffeineResult.Error -> Timber.e("Failed to create viewer for stream ${stream.id}").run { null }
             is CaffeineResult.Failure -> Timber.e(result.throwable).run { null }
         }
     }
@@ -62,7 +62,7 @@ class StreamController(
                     val result = eventsService.sendEvent(EventBody("ice_connection_state", data = data)).awaitAndParseErrors(gson)
                     when (result) {
                         is CaffeineResult.Success -> Timber.d("ICE connection state event sent, ${result.value}")
-                        is CaffeineResult.Error -> Timber.e(Exception("Failed to send ICE connection state event"))
+                        is CaffeineResult.Error -> Timber.e("Failed to send ICE connection state event")
                         is CaffeineResult.Failure -> Timber.e(result.throwable)
                     }
                 }
@@ -71,7 +71,7 @@ class StreamController(
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
                 super.onIceCandidate(iceCandidate)
                 if (closed) {
-                    Timber.e(Exception("ICE"), "Ice candidate received after closing the stream controller")
+                    Timber.e("Ice candidate received after closing the stream controller")
                     return
                 }
                 if (iceCandidate == null) return
@@ -81,7 +81,7 @@ class StreamController(
                     val result = realtime.sendIceCandidate(viewerId, body).awaitAndParseErrors(gson)
                     when (result) {
                         is CaffeineResult.Success -> Timber.d("ICE candidate sent, ${result.value}")
-                        is CaffeineResult.Error -> Timber.e(Exception("Failed to send ICE candidate"))
+                        is CaffeineResult.Error -> Timber.e("Failed to send ICE candidate")
                         is CaffeineResult.Failure -> Timber.e(result.throwable)
                     }
                 }
@@ -96,7 +96,7 @@ class StreamController(
         val result = realtime.sendAnswer(viewerId, AnswerBody(answer, signedPayload)).awaitAndParseErrors(gson)
         return when (result) {
             is CaffeineResult.Success -> configureConnections(peerConnection, viewerId, signedPayload, streamLabel)
-            is CaffeineResult.Error -> Timber.e(Exception("sendAnswer failed")).run { peerConnection.disposeAndReturnNull() }
+            is CaffeineResult.Error -> Timber.e("sendAnswer failed").run { peerConnection.disposeAndReturnNull() }
             is CaffeineResult.Failure -> Timber.e(result.throwable).run { peerConnection.disposeAndReturnNull() }
         }
     }
@@ -135,26 +135,28 @@ class StreamController(
         val sendEventResult = eventsService.sendEvent(EventBody("webrtc_stats", data = data)).awaitAndParseErrors(gson)
         when (sendEventResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent event")
-            is CaffeineResult.Error -> Timber.e(Exception("Error sending event webrtc_stats"))
+            is CaffeineResult.Error -> Timber.e("Error sending event webrtc_stats")
             is CaffeineResult.Failure -> Timber.e(sendEventResult.throwable)
         }
         val stats = collectPerformanceStats(rtcStats, streamLabel)
         val sendStatsResult = eventsService.sendStats(stats).awaitAndParseErrors(gson)
         when (sendStatsResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent stats")
-            is CaffeineResult.Error -> Timber.e(Exception("Error sending stats webrtc_stats"))
+            is CaffeineResult.Error -> Timber.e("Error sending stats webrtc_stats")
             is CaffeineResult.Failure -> Timber.e(sendStatsResult.throwable)
         }
     }
 
     private fun collectPerformanceStats(rtcStats: RTCStatsReport, streamLabel: String): CumulativeCounters {
         val statsToSend: List<StatsSnippet> = rtcStats.statsMap
+                .filter { it.value != null }
                 .filter { it.value.type == "inbound-rtp" }
                 .map { stat ->
                     val mediaType = stat.value.members["mediaType"] as String
                     val sourceName = streamLabelToSourceName[streamLabel] ?: defaultSourceName
                     Timber.d("Stats available: ${stat.value.members.keys}")
-                    return@map relevantStatsMetrics
+                    relevantStatsMetrics
+                            .filter { stat.value?.members != null }
                             .filter { stat.value.members.containsKey(it) }
                             .mapNotNull { metricName ->
                                 Timber.d("Stats available: $metricName = ${stat.value.members[metricName]}")
@@ -170,6 +172,7 @@ class StreamController(
 
     private fun collectEventInfo(rtcStats: RTCStatsReport, viewerId: String): Map<String, Any> {
         val relevantStats = rtcStats.statsMap
+                .filter { it.value != null }
                 .filter { relevantStatsTypes.contains(it.value.type) }
         val eventsToSend = relevantStats
                 .map {
@@ -196,7 +199,7 @@ class StreamController(
         val sendHeartbeatResult = realtime.sendHeartbeat(viewerId, heartbeatBody).awaitAndParseErrors(gson)
         when (sendHeartbeatResult) {
             is CaffeineResult.Success -> Timber.d("Successfully sent heartbeat")
-            is CaffeineResult.Error -> Timber.e(Exception("Error sending heartbeat"))
+            is CaffeineResult.Error -> Timber.e("Error sending heartbeat")
             is CaffeineResult.Failure -> Timber.e(sendHeartbeatResult.throwable)
         }
     }

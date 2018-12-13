@@ -30,7 +30,6 @@ import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
-import java.lang.Exception
 import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector {
@@ -126,15 +125,15 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
 
     private fun configureSocialAccounts() {
         findPreference("manage_twitter_account")?.let { preference ->
-            viewModel.userDetails.observe(this, Observer {  user ->
-                val twitter = user.connectedAccounts?.get("twitter")
+            viewModel.userDetails.observe(this, Observer { user ->
+                val twitter = user?.connectedAccounts?.get("twitter")
                 @StringRes val title = if (twitter != null) R.string.disconnect_twitter_account else R.string.connect_twitter_account
                 preference.title = getString(title)
             })
         }
         findPreference("manage_facebook_account")?.let { preference ->
-            viewModel.userDetails.observe(this, Observer {  user ->
-                val twitter = user.connectedAccounts?.get("facebook")
+            viewModel.userDetails.observe(this, Observer { user ->
+                val twitter = user?.connectedAccounts?.get("facebook")
                 @StringRes val title = if (twitter != null) R.string.disconnect_facebook_account else R.string.connect_facebook_account
                 preference.title = getString(title)
             })
@@ -143,7 +142,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
 
     private fun configureDeleteAccount() {
         findPreference("delete_caffeine_account")?.setOnPreferenceClickListener {
-            viewModel.userDetails.observe(this,  Observer { user ->
+            viewModel.userDetails.observe(this, Observer { user ->
                 fragmentManager?.let { fm ->
                     DeleteAccountDialogFragment().apply {
                         arguments = SettingsFragmentDirections.actionSettingsFragmentToDeleteAccountDialogFragment(user.username).arguments
@@ -213,7 +212,7 @@ class NotificationSettingsViewModel(
             val result = accountsService.getNotificationSettings().awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> _notificationSettings.value = result.value
-                is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()), "Failed to load notification settings")
+                is CaffeineResult.Error -> Timber.e("Failed to load notification settings, ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable, "Failed to load notification settings")
             }
         }
@@ -239,7 +238,7 @@ class NotificationSettingsViewModel(
                         .awaitAndParseErrors(gson)
                 when (result) {
                     is CaffeineResult.Success -> _notificationSettings.value = result.value
-                    is CaffeineResult.Error -> Timber.e(Exception(result.error.toString()), "Failed to save notification settings")
+                    is CaffeineResult.Error -> Timber.e("Failed to save notification settings, ${result.error}")
                     is CaffeineResult.Failure -> Timber.e(result.throwable, "Failed to save notification settings")
                 }
             }

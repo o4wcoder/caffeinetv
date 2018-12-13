@@ -30,7 +30,7 @@ class NotificationsViewModel(
             val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
             when(result) {
                 is CaffeineResult.Success -> followers.value = result.value
-                is CaffeineResult.Error -> Timber.e(Exception("Error loading followers ${result.error}"))
+                is CaffeineResult.Error -> Timber.e("Error loading followers ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }

@@ -45,7 +45,12 @@ class MessageHandshake(
         launch {
             webSocketController?.channel?.consumeEach {
                 Timber.d("Received message $it")
-                val message = gson.fromJson(it, Message::class.java)
+                val message = try {
+                    gson.fromJson(it, Message::class.java)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    return@consumeEach
+                }
                 val creationTime = System.currentTimeMillis()
                 val dummyPosition = -1
                 val messageAuthorCaid = message.publisher.caid

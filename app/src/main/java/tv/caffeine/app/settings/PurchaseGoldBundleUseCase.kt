@@ -11,7 +11,7 @@ class PurchaseGoldBundleUseCase @Inject constructor(
         private val gson: Gson
 ) {
     suspend operator fun invoke(goldBundle: GoldBundle): CaffeineResult<PaymentsEnvelope<GoldBundlesPayload>> {
-        val id = goldBundle.usingCredits?.id ?: return CaffeineResult.Error(ApiErrorResult(ApiError(_error = arrayOf("Invalid gold bundle ID"))))
+        val id = goldBundle.usingCredits?.id ?: return CaffeineResult.Error(ApiErrorResult(ApiError(_error = listOf("Invalid gold bundle ID"))))
         return paymentsClientService.buyGoldUsingCredits(BuyGoldUsingCreditsBody(id)).awaitAndParseErrors(gson)
     }
 
