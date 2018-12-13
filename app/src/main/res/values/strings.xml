@@ -4,6 +4,8 @@
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
     <string name="new_account">New Account</string>
     <string name="sign_in_with_email">Sign In</string>
+    <string name="twitter_login">Twitter Login</string>
+    <string name="twitter_login_failed">Twitter login failed</string>
 
     <string name="sign_in_hint_username">Username</string>
     <string name="sign_in_hint_password">Password</string>

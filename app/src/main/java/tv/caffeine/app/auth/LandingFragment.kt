@@ -47,6 +47,7 @@ class LandingFragment : CaffeineFragment() {
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         callbackManager = CallbackManager.Factory.create()
         binding.facebookSignInButton.registerCallback(callbackManager, facebookCallback)
+        binding.twitterSignInButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.twitterAuthFragment))
         LandingFragmentArgs.fromBundle(arguments).message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
         }

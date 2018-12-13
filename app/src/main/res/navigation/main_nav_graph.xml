@@ -74,6 +74,9 @@
             android:name="loginToken"
             app:argType="string"
             app:nullable="true"/>
+        <action
+            android:id="@+id/action_landingFragment_to_twitterAuthFragment"
+            app:destination="@id/twitterAuthFragment" />
     </fragment>
     <fragment
         android:id="@+id/forgotFragment"
@@ -382,5 +385,16 @@
         <argument
             android:name="username"
             app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/twitterAuthFragment"
+        android:name="tv.caffeine.app.auth.TwitterAuthFragment"
+        android:label="@string/twitter_login">
+        <action
+            android:id="@+id/action_twitterAuthFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_twitterAuthFragment_to_mfaCodeFragment"
+            app:destination="@id/mfaCodeFragment" />
     </fragment>
 </navigation>

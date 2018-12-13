@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
     </data>
@@ -57,9 +58,13 @@
                 android:text="@string/sign_in_with_facebook"/>
 
             <Button
+                android:id="@+id/twitter_sign_in_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_in_with_twitter"/>
+                android:paddingStart="2dp"
+                android:paddingEnd="34dp"
+                android:text="@string/sign_in_with_twitter"
+                app:icon="@drawable/twitter_logo_blue"/>
 
             <Button
                 style="@style/Button.Outline"
