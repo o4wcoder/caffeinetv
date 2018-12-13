@@ -39,7 +39,7 @@
                 android:textAlignment="center"/>
 
             <TextView
-                style="@style/FormWarningText"
+                style="@style/FormErrorText"
                 android:id="@+id/form_error_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

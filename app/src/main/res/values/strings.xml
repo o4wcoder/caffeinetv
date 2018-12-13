@@ -11,7 +11,7 @@
     <string name="sign_in_hint_password">Password</string>
     <string name="sign_in_button">Sign In</string>
     <string name="forgot_button">Forgot?</string>
-    <string name="sign_in_hint_email">Email</string>
+    <string name="sign_in_hint_email">New Email Address</string>
     <string name="sign_up_button">Sign Up</string>
     <string name="i_agree_to_legal"><![CDATA[I have read and agree to the <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>]]></string>
     <string name="must_agree_to_legal"><![CDATA[Caffeine requires your consent to personalize your experience based on your relationships and activities. We have new <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>. Please read them and agree to them to continue using Caffeine.]]></string>
@@ -141,7 +141,7 @@
     <string name="gold_bundles_title">Gold Bundles</string>
     <string name="update_email_title">Update Email</string>
     <string name="hint_password1">New Password</string>
-    <string name="hint_password2">New Password Again</string>
+    <string name="hint_password2">Confirm New Password</string>
     <string name="update_password_title">Update Password</string>
     <string name="error_passwords_dont_match">Passwords don\'t match</string>
     <string name="unknown_error">Unknown Error</string>

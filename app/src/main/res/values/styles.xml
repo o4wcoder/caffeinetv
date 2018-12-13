@@ -96,16 +96,12 @@
     <style name="ScreenSubtitle">
         <item name="android:textSize">18sp</item>
     </style>
-    <style name="FormWarningText">
+    <style name="FormErrorText">
         <item name="android:textColor">@color/warning_red</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Design approved - End -->
-
-    <style name="ActionButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="cornerRadius">16dp</item>
-    </style>
 
     <style name="LinkButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeWidth">0dp</item>
