@@ -163,7 +163,7 @@ class SignInUseCase @Inject constructor(
     private fun postLogin(result: CaffeineResult<SignInResult>) {
         if (result !is CaffeineResult.Success) return
         val signInResult = result.value
-        if (signInResult.next == null || signInResult.next == NextAccountAction.legal_acceptance_required) {
+        if (signInResult.next == null || signInResult.next == NextAccountAction.legal_acceptance_required || signInResult.next == NextAccountAction.email_verification) {
             tokenStore.storeSignInResult(signInResult)
             authWatcher.onSignIn()
         }
