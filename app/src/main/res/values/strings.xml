@@ -22,6 +22,8 @@
     <string name="sign_in_title">Sign In</string>
     <string name="forgot_password_title">Forgot Password</string>
     <string name="forgot_password_subtitle">That\'s ok. We\'ll send you an email with a link to reset your password.</string>
+    <string name="forgot_password_email_sent">Email Sent. Please check your inbox.</string>
+    <string name="forgot_password_cannot_reset_password">We could not reset your password. Please try again later.</string>
     <string name="mfa_code_title">MFA Code</string>
     <string name="enter_code_title">Enter Code</string>
     <string name="mfa_code_hint">MFA Code</string>
