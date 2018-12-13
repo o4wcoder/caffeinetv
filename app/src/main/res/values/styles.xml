@@ -49,8 +49,9 @@
     </style>
 
     <!-- Button -->
-    <style name="Button" parent="@style/Widget.MaterialComponents.Button">
+    <style name="Button" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="Button.Outline" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
@@ -85,6 +86,9 @@
         <item name="android:height">@dimen/avatar_size</item>
     </style>
 
+    <style name="NoBarScrollView">
+        <item name="android:scrollbars">none</item>
+    </style>
     <!-- Design approved - End -->
 
     <style name="ActionButton" parent="@style/Widget.MaterialComponents.Button">

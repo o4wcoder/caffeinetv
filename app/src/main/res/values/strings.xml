@@ -1,7 +1,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="landing_signup_prompt">Sign up and make friends around live entertainment.</string>
-    <string name="sign_in_with_facebook">Sign In with Facebook</string>
-    <string name="sign_in_with_twitter">Sign In with Twitter</string>
+    <string name="landing_signup_prompt">Sign up and make friends around live games and sports.</string>
+    <string name="sign_in_with_facebook">Sign in with Facebook</string>
+    <string name="sign_in_with_twitter">Sign in with Twitter</string>
     <string name="new_account">New Account</string>
     <string name="sign_in_with_email">Sign In</string>
 

@@ -3,60 +3,77 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
     </data>
 
-    <LinearLayout
+    <ScrollView
+        style="@style/NoBarScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_margin="16dp"
-        tools:context=".auth.LandingFragment">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logo_wordmark" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/landing_signup_prompt" />
-
-        <TextView
-            android:id="@+id/form_error_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebook_sign_in_button"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="6dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:text="@string/sign_in_with_facebook" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="40dp"
+            tools:context=".auth.LandingFragment">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sign_in_with_twitter" />
+            <!-- TODO (david) Remove the hardcoded numbers and fitXY once we get the new logo with the correct size -->
+            <ImageView
+                android:layout_width="124dp"
+                android:layout_height="108dp"
+                android:layout_marginTop="85dp"
+                android:src="@drawable/logo_wordmark"
+                android:scaleType="fitXY"
+                android:contentDescription="@string/caffeine_logo_content_description"/>
 
-        <Button
-            style="@style/Button.Outline"
-            android:id="@+id/new_account_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/new_account" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="@string/landing_signup_prompt"
+                android:textSize="@dimen/text_h2"
+                android:textAlignment="center"/>
 
-        <Button
-            style="@style/Button.Outline"
-            android:id="@+id/sign_in_with_email_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sign_in_with_email" />
+            <TextView
+                android:id="@+id/form_error_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:textColor="@color/warning_red"
+                android:textStyle="bold"
+                tools:text="Sign in failed."/>
 
-    </LinearLayout>
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/facebook_sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="6dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/sign_in_with_facebook"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_in_with_twitter"/>
+
+            <Button
+                style="@style/Button.Outline"
+                android:id="@+id/new_account_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/new_account"/>
+
+            <Button
+                style="@style/Button.Outline"
+                android:id="@+id/sign_in_with_email_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_in_with_email"/>
+        </LinearLayout>
+    </ScrollView>
 </layout>

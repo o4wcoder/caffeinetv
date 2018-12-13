@@ -11,6 +11,7 @@
     <color name="caffeine_blue">#009fe0</color>
     <color name="white">#ffffff</color>
     <color name="medium_gray">#8b8b8b</color>
+    <color name="warning_red">#FF3B30</color>
 
     <!-- Coin -->
     <color name="gold_coin">#ffaa00</color>

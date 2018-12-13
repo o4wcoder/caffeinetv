@@ -14,9 +14,7 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
