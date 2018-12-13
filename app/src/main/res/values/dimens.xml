@@ -5,6 +5,7 @@
 
     <dimen name="avatar_size">36dp</dimen>
     <dimen name="explore_avatar_size">96dp</dimen>
+    <dimen name="toolbar_icon_size">24dp</dimen>
     <dimen name="profile_size">192dp</dimen>
     <dimen name="verified_icon_padding">4dp</dimen>
     <dimen name="list_item_spacing">8dp</dimen>

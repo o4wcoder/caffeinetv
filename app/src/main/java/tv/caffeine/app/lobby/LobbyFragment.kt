@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbyBinding
+import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -25,6 +28,7 @@ class LobbyFragment : CaffeineFragment() {
     @Inject lateinit var lobbyAdapter: LobbyAdapter
 
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
+    private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
     private lateinit var binding: FragmentLobbyBinding
     private var refreshJob: Job? = null
 
@@ -57,6 +61,13 @@ class LobbyFragment : CaffeineFragment() {
                 val items = LobbyItem.parse(lobby)
                 lobbyAdapter.submitList(items, lobby.tags, lobby.content)
             }
+        })
+        myProfileViewModel.avatarImageUrl.observe(viewLifecycleOwner, Observer {  avatarImageUrl ->
+            Picasso.get()
+                    .load(avatarImageUrl)
+                    .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
+                    .transform(CropCircleTransformation())
+                    .into(binding.profileButton)
         })
     }
 
