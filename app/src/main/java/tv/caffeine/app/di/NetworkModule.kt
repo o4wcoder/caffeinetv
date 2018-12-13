@@ -1,14 +1,14 @@
 package tv.caffeine.app.di
 
 import android.content.Context
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.google.gson.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.EglBase
 import org.webrtc.PeerConnectionFactory
@@ -20,6 +20,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.net.AppMetaDataInterceptor
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
+import java.lang.reflect.Type
 import javax.inject.Singleton
 
 enum class Service {
@@ -30,8 +31,18 @@ enum class Service {
 class NetworkModule {
 
     @Provides
-    fun providesGson(): Gson = GsonBuilder()
+    fun providesZonedDateTimeConverter(): JsonDeserializer<ZonedDateTime> = object : JsonDeserializer<ZonedDateTime> {
+        private val formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+        override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): ZonedDateTime {
+            return formatter.parse(json?.asString, ZonedDateTime.FROM)
+        }
+
+    }
+
+    @Provides
+    fun providesGson(jsonDeserializer: JsonDeserializer<ZonedDateTime>): Gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .registerTypeAdapter(ZonedDateTime::class.java, jsonDeserializer)
             .create()
 
     @Provides

@@ -102,7 +102,7 @@ class ChatViewModel(
         displayMessages()
     }
 
-    private val dummyPublisher = User("0", "", null, "", 0, 0, false, null, "", mapOf(), null, null, "", null, null, null, false, false)
+    private val dummyPublisher = User("0", "", null, "", 0, 0, false, null, "", mapOf(), null, null, "", null, null, null, false, false, null)
     private val dummyMessageBody = Message.Body("")
     private val dummyMessage = Message(dummyPublisher, "", Message.Type.dummy, dummyMessageBody, 0)
 

@@ -1,5 +1,6 @@
 package tv.caffeine.app.api.model
 
+import org.threeten.bp.ZonedDateTime
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
 data class User(val caid: String,
@@ -19,7 +20,8 @@ data class User(val caid: String,
                 val countryName: Any?,
                 val gender: Any?,
                 val isFeatured: Boolean,
-                val isOnline: Boolean) {
+                val isOnline: Boolean,
+                val notificationsLastViewedAt: ZonedDateTime?) {
     val avatarImageUrl get() = "$IMAGES_BASE_URL$avatarImagePath"
 }
 
@@ -34,8 +36,8 @@ enum class IdentityProvider {
 
 sealed class CaidRecord(val caid: String) {
     class FriendWatching(caid: String) : CaidRecord(caid)
-    class FollowRecord(caid: String, val followedAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
-    class IgnoreRecord(caid: String, val ignoredAt: String?) : CaidRecord(caid) // followedAt = ISO-8601 date
+    class FollowRecord(caid: String, val followedAt: ZonedDateTime?) : CaidRecord(caid)
+    class IgnoreRecord(caid: String, val ignoredAt: ZonedDateTime?) : CaidRecord(caid)
 }
 
 class ConnectedAccount(val uid: String, val provider: IdentityProvider, val displayName: String)

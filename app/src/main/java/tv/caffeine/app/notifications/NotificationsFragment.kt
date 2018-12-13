@@ -7,27 +7,26 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.users.CaidListAdapter
 import javax.inject.Inject
 
 class NotificationsFragment : CaffeineFragment() {
 
-    @Inject lateinit var caidListAdapter: CaidListAdapter
+    @Inject lateinit var notificationsAdapter: NotificationsAdapter
 
-    private lateinit var viewModel: NotificationsViewModel
+    private val viewModel by lazy { viewModelProvider.get(NotificationsViewModel::class.java) }
     private lateinit var binding: UserListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+        binding.setLifecycleOwner(viewLifecycleOwner)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.userListRecyclerView.adapter = caidListAdapter
-        viewModel = viewModelProvider.get(NotificationsViewModel::class.java)
-        viewModel.followers.observe(viewLifecycleOwner, Observer {
-            caidListAdapter.submitList(it)
+        binding.userListRecyclerView.adapter = notificationsAdapter
+        viewModel.notifications.observe(viewLifecycleOwner, Observer {
+            notificationsAdapter.submitList(it)
         })
     }
 }

@@ -35,14 +35,14 @@ fun User.configure(
             followButton.setText(R.string.follow_button)
             followButton.setOnClickListener {
                 followButton.isVisible = allowUnfollowing
-                followButton.setText(R.string.unfollow_button)
+                followButton.setText(R.string.following_button)
                 GlobalScope.launch {
                     followManager.followUser(caid)
                 }
             }
         } else if (allowUnfollowing && followManager.followersLoaded() && following) {
             followButton.isVisible = true
-            followButton.setText(R.string.unfollow_button)
+            followButton.setText(R.string.following_button)
             followButton.setOnClickListener {
                 followButton.isVisible = allowUnfollowing
                 GlobalScope.launch {

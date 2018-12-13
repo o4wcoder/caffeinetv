@@ -12,9 +12,11 @@ class TokenStore @Inject constructor(
 ) {
     private var accessToken: String? = null
     private var credential: String? = null
+    private var _caid: String? = null
     var caid: String?
-        get() = settingsStorage.caid
+        get() = _caid ?: settingsStorage.caid?.apply { _caid = this }
         set(value) {
+            _caid = value
             settingsStorage.caid = value
         }
 
