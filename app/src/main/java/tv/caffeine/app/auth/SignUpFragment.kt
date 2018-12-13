@@ -139,11 +139,12 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         val email = binding.emailEditText.text.toString()
-        val dob = binding.dobEditText.tag as String
+        val dob = binding.dobEditText.tag as? String ?: ""
         val countryCode = "US"
         val agreedToTos = binding.agreeToLegalCheckbox.isChecked
         val account = SignUpAccount(username, password, email, dob, countryCode)
         val signUpBody = SignUpBody(account, iid, agreedToTos, token)
+        // TODO: better error handling before calling the API
         launch {
             val response = accountsService.signUp(signUpBody).await()
             Timber.d("Sign up API call succeeded $response")
