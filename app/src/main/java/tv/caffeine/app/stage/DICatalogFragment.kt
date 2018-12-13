@@ -22,13 +22,14 @@ import java.text.NumberFormat
 class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 
     interface Callback {
-        fun digitalItemSelected(digitalItem: DigitalItem)
+        fun digitalItemSelected(digitalItem: DigitalItem, message: String? = null)
     }
 
-    private val adapter = DigitalItemAdapter(object: Callback {
+    private val adapter = DigitalItemAdapter(object: DigitalItemViewHolder.Callback {
         override fun digitalItemSelected(digitalItem: DigitalItem) {
             val callback = targetFragment as? Callback ?: return
-            callback.digitalItemSelected(digitalItem)
+            val message = DICatalogFragmentArgs.fromBundle(arguments).message
+            callback.digitalItemSelected(digitalItem, message)
             dismiss()
         }
     })
@@ -64,9 +65,13 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 
 private class DigitalItemViewHolder constructor(
         val binding: DiCatalogItemBinding,
-        val callback: DICatalogFragment.Callback
+        val callback: Callback
 )
     : RecyclerView.ViewHolder(binding.root) {
+
+    interface Callback {
+        fun digitalItemSelected(digitalItem: DigitalItem)
+    }
 
     fun bind(digitalItem: DigitalItem) {
         binding.digitalItem = digitalItem
@@ -82,8 +87,8 @@ private class DigitalItemViewHolder constructor(
 }
 
 
-private class DigitalItemAdapter constructor(
-        private val callback: DICatalogFragment.Callback
+private class DigitalItemAdapter (
+        private val callback: DigitalItemViewHolder.Callback
 ) : ListAdapter<DigitalItem, DigitalItemViewHolder>(
         object : DiffUtil.ItemCallback<DigitalItem>() {
             override fun areItemsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem.id == newItem.id

@@ -14,6 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/black"
         tools:context=".stage.StageFragment">
 
         <org.webrtc.SurfaceViewRenderer
@@ -81,14 +82,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             tools:visibility="visible">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/stage_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+                android:background="@color/black"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark"
+                tools:title="Live on Caffeine"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 

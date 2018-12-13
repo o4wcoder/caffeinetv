@@ -59,6 +59,7 @@
             android:ems="10"
             android:hint="@string/message"
             android:inputType="textPersonName"
+            android:imeOptions="actionSend"
             app:layout_constraintEnd_toStartOf="@+id/send_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,20 +91,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@{Integer.toString(digitalItem.goldCost)}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/di_image_view"
             app:layout_constraintStart_toEndOf="@+id/gold_coin_image_view"
-            app:layout_constraintTop_toBottomOf="@+id/message_edit_text"
+            app:layout_constraintTop_toBottomOf="@+id/di_image_view"
             tools:text="700" />
 
         <ImageView
             android:id="@+id/gold_coin_image_view"
             android:layout_width="@dimen/coin_size"
             android:layout_height="@dimen/coin_size"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/gold_cost_text_view"
             app:layout_constraintEnd_toStartOf="@+id/gold_cost_text_view"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/di_image_view"
             app:layout_constraintTop_toTopOf="@+id/gold_cost_text_view"
             app:srcCompat="@drawable/gold_coin" />
 

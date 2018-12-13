@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -33,16 +32,17 @@ import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.setOnAction
-import tv.caffeine.app.ui.showKeyboard
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
-import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.setDarkMode
+import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 import kotlin.collections.set
 
-class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
+private const val PICK_DIGITAL_ITEM = 0
+private const val SEND_MESSAGE = 1
+
+class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessageFragment.Callback {
 
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
@@ -155,9 +155,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
         chatMessageAdapter.callback = object: ChatMessageAdapter.Callback {
             override fun replyClicked(message: Message) {
                 val string = getString(R.string.username_prepopulated_reply, message.publisher.username)
-                binding.chatMessageEditText?.setText(string)
-                binding.chatMessageEditText?.showKeyboard()
-                binding.chatMessageEditText?.setSelection(string.length)
+                openSendMessage(string)
             }
 
             override fun upvoteClicked(message: Message) {
@@ -334,15 +332,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
                 startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
             })
         }
-        binding.chatButton?.setOnClickListener {
-            binding.chatMessageEditText?.requestFocus()
-            binding.chatMessageEditText?.showKeyboard()
-            activity?.unsetImmersiveSticky()
-        }
-        binding.chatMessageEditText?.apply {
-            setOnAction(EditorInfo.IME_ACTION_SEND) { sendMessage() }
-            setOnClickListener { activity?.unsetImmersiveSticky() }
-        }
+        binding.chatButton?.setOnClickListener { openSendMessage() }
         binding.friendsWatchingButton?.setOnClickListener {
             val fragmentManager = fragmentManager ?: return@setOnClickListener
             val fragment = FriendsWatchingFragment()
@@ -351,26 +341,37 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback {
             fragment.show(fragmentManager, "FW")
         }
         binding.giftButton?.setOnClickListener {
-            val fragmentManager = fragmentManager ?: return@setOnClickListener
-            val fragment = DICatalogFragment()
-            val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster)
-            fragment.setTargetFragment(this, 0)
-            fragment.arguments = action.arguments
-            fragment.show(fragmentManager, "DI")
+            sendDigitalItemWithMessage(null)
         }
     }
 
-    private fun sendMessage() {
-        val editText = binding.chatMessageEditText ?: return
-        val text = editText.text.toString()
-        editText.text = null
+    override fun sendDigitalItemWithMessage(message: String?) {
+        val fragmentManager = fragmentManager ?: return
+        val fragment = DICatalogFragment()
+        val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster, message)
+        fragment.setTargetFragment(this, PICK_DIGITAL_ITEM)
+        fragment.arguments = action.arguments
+        fragment.show(fragmentManager, "DI")
+    }
+
+    override fun sendMessage(message: String?) {
+        val text = message ?: return
         chatViewModel.sendMessage(text, broadcaster)
     }
 
-    override fun digitalItemSelected(digitalItem: DigitalItem) {
+    private fun openSendMessage(message: String? = null) {
+        val fragmentManager = fragmentManager ?: return
+        val fragment = SendMessageFragment()
+        val action = StageFragmentDirections.actionStageFragmentToSendMessageFragment(message)
+        fragment.arguments = action.arguments
+        fragment.show(fragmentManager, "sendMessage")
+        fragment.setTargetFragment(this, SEND_MESSAGE)
+    }
+
+    override fun digitalItemSelected(digitalItem: DigitalItem, message: String?) {
         fragmentManager?.let { fm ->
             val fragment = SendDigitalItemFragment()
-            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, broadcasterCaid)
+            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, broadcasterCaid, message)
             fragment.arguments = action.arguments
             fragment.show(fm, "sendDigitalItem")
         }

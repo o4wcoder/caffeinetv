@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="java.lang.Integer" />
+
+        <variable
+            name="digitalItem"
+            type="tv.caffeine.app.api.DigitalItem"/>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/digital_item_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            android:src="@drawable/ic_card_giftcard_gray8b_24dp"
+            android:tint="@color/caffeine_blue"
+            android:backgroundTint="@color/transparent"
+            app:layout_constraintTop_toTopOf="@+id/message_edit_text"
+            app:layout_constraintBottom_toBottomOf="@+id/message_edit_text"
+            app:layout_constraintEnd_toStartOf="@id/message_edit_text"
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/send_with_digital_item" />
+
+        <EditText
+            android:id="@+id/message_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/message"
+            android:inputType="textPersonName"
+            android:imeOptions="actionSend"
+            app:layout_constraintEnd_toStartOf="@+id/send_button"
+            app:layout_constraintStart_toEndOf="@id/digital_item_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            app:layout_constraintBaseline_toBaselineOf="@+id/message_edit_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/message_edit_text" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

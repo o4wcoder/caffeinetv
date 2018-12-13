@@ -16,11 +16,16 @@ import tv.caffeine.app.session.FollowManager
 
 class UserTheme(val avatarImageTransformation: Transformation, @StyleRes val usernameTextAppearance: Int)
 
-fun User.configure(avatarImageView: ImageView, usernameTextView: TextView,
-                                             followButton: Button?, followManager: FollowManager,
-                                             allowUnfollowing: Boolean = false,
-                                             @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
-                                             followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+fun User.configure(
+        avatarImageView: ImageView,
+        usernameTextView: TextView,
+        followButton: Button?,
+        followManager: FollowManager,
+        allowUnfollowing: Boolean = false,
+        @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme
+) {
     val following = followManager.isFollowing(caid)
     val theme = if (following) followedTheme else notFollowedTheme
     val transformation = theme.avatarImageTransformation

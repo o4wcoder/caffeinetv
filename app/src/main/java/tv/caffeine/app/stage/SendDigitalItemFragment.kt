@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
@@ -19,9 +20,7 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSendDigitalItemBinding
 import tv.caffeine.app.profile.WalletViewModel
-import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.*
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.DigitalItemRepository
 import java.text.NumberFormat
@@ -31,15 +30,19 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
 
     private lateinit var digitalItemId: String
     private lateinit var recipientCaid: String
+    private var message: String? = null
 
     private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
     private val sendDigitalItemViewModel by lazy { viewModelProvider.get(SendDigitalItemViewModel::class.java) }
+
+    override fun getTheme() = R.style.DarkBottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = SendDigitalItemFragmentArgs.fromBundle(arguments)
         digitalItemId = args.digitalItemId
         recipientCaid = args.recipientCaid
+        message = args.message
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,16 +56,13 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
     private val total get() = itemGoldCost * quantity
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        binding.messageEditText.prepopulateText(message)
         sendDigitalItemViewModel.load(digitalItemId).observe(viewLifecycleOwner, Observer { digitalItem ->
             itemGoldCost = digitalItem.goldCost
             binding.goldCostTextView.text = total.toString()
             Picasso.get().load(digitalItem.staticImageUrl).into(binding.diImageView)
-            binding.sendButton.setOnClickListener {
-                val message = binding.messageEditText.text.toString()
-                sendDigitalItemViewModel.send(digitalItem, quantity, recipientCaid, message)
-                dismiss()
-            }
+            binding.messageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) { sendDigitalItem(digitalItem) }
+            binding.sendButton.setOnClickListener { sendDigitalItem(digitalItem) }
         })
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             val numberFormat = NumberFormat.getIntegerInstance()
@@ -77,6 +77,12 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
                 binding.goldCostTextView.text = total.toString()
             }
         }
+    }
+
+    private fun sendDigitalItem(digitalItem: DigitalItem) {
+        val message = binding.messageEditText.text.toString()
+        sendDigitalItemViewModel.send(digitalItem, quantity, recipientCaid, message)
+        dismiss()
     }
 
 }
