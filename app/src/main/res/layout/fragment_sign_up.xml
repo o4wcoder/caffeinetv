@@ -7,13 +7,14 @@
     </data>
 
     <ScrollView
+        style="@style/NoBarScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:padding="@dimen/margin"
             tools:context=".auth.SignInFragment">
 
             <ImageView
@@ -31,7 +32,7 @@
                 android:id="@+id/sign_up_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_up_title"
+                android:text="@string/new_account"
                 app:layout_constraintTop_toBottomOf="@+id/logo_image_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -46,29 +47,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/OutlinedBox"
-                android:id="@+id/username_text_input_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_username"
-                app:layout_constraintTop_toBottomOf="@+id/form_error_text_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/username_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:imeOptions="actionNext" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/OutlinedBox"
                 android:id="@+id/email_text_input_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
                 android:hint="@string/sign_in_hint_email"
-                app:layout_constraintTop_toBottomOf="@+id/username_text_input_layout"
+                app:layout_constraintTop_toBottomOf="@+id/form_error_text_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -82,11 +66,29 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/OutlinedBox"
+                android:id="@+id/username_text_input_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/sign_in_hint_username"
+                app:layout_constraintTop_toBottomOf="@+id/email_text_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/username_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionNext" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/OutlinedBox"
                 android:id="@+id/password_text_input_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/sign_in_hint_password"
-                app:layout_constraintTop_toBottomOf="@+id/email_text_input_layout"
+                app:layout_constraintTop_toBottomOf="@+id/username_text_input_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -122,7 +124,7 @@
                 android:id="@+id/agree_to_legal_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/dob_text_input_layout"
                 app:layout_constraintStart_toStartOf="parent"
@@ -134,19 +136,17 @@
                 android:id="@+id/agree_to_legal_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin"
                 app:layout_constraintTop_toBottomOf="@+id/dob_text_input_layout"
                 app:layout_constraintStart_toEndOf="@id/agree_to_legal_checkbox"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="I have read and agree to the Terms of Service, Privacy Policy, Community Guidelines"/>
 
             <Button
-                style="@style/ActionButton"
                 android:id="@+id/sign_up_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin"
                 android:text="@string/sign_up_button"
                 app:layout_constraintTop_toBottomOf="@+id/agree_to_legal_text_view"
                 app:layout_constraintBottom_toBottomOf="parent"

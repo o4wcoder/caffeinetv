@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:padding="40dp"
+            android:padding="@dimen/margin_double"
             tools:context=".auth.LandingFragment">
 
             <!-- TODO (david) Remove the hardcoded numbers and fitXY once we get the new logo with the correct size -->
@@ -29,13 +29,13 @@
                 android:contentDescription="@string/caffeine_logo_content_description"/>
 
             <TextView
+                style="@style/ScreenSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:text="@string/landing_signup_prompt"
-                android:textSize="@dimen/text_h2"
                 android:textAlignment="center"/>
 
             <TextView

@@ -48,6 +48,11 @@
         <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
     </style>
 
+    <!-- Container -->
+    <style name="NoBarScrollView">
+        <item name="android:scrollbars">none</item>
+    </style>
+
     <!-- Button -->
     <style name="Button" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:textAllCaps">false</item>
@@ -86,9 +91,12 @@
         <item name="android:height">@dimen/avatar_size</item>
     </style>
 
-    <style name="NoBarScrollView">
-        <item name="android:scrollbars">none</item>
+    <!-- Text -->
+    <style name="ScreenTitle" parent="@style/TextAppearance.MaterialComponents.Headline5"/>
+    <style name="ScreenSubtitle">
+        <item name="android:textSize">18sp</item>
     </style>
+
     <!-- Design approved - End -->
 
     <style name="ActionButton" parent="@style/Widget.MaterialComponents.Button">
@@ -111,9 +119,6 @@
     </style>
 
 
-    <style name="ScreenTitle" parent="@style/TextAppearance.MaterialComponents.Headline5">
-
-    </style>
 
     <style name="OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
