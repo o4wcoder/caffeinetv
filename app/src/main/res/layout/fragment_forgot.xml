@@ -3,61 +3,70 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
     </data>
 
-    <LinearLayout
+    <ScrollView
+        style="@style/NoBarScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_margin="16dp"
-        tools:context=".auth.ForgotFragment">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logo"
-            android:contentDescription="@string/caffeine_logo_content_description" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ScreenTitle"
-            android:text="@string/forgot_password_title" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/forgot_password_subtitle" />
-
-        <TextView
-            android:id="@+id/form_error_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/email_text_input_layout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/sign_in_hint_email"
-            style="@style/OutlinedBox">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/margin"
+            tools:context=".auth.ForgotFragment">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email_edit_text"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo"
+                android:contentDescription="@string/caffeine_logo_content_description" />
+
+            <TextView
+                style="@style/ScreenTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password_title"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginStart="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
+                android:gravity="center"
+                android:text="@string/forgot_password_subtitle"/>
+
+            <TextView
+                android:id="@+id/form_error_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/OutlinedBox"
+                android:id="@+id/email_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:imeOptions="actionSend" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/sign_in_hint_email">
 
-        <Button
-            android:id="@+id/send_email_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/ActionButton"
-            android:text="@string/send_email_button" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:imeOptions="actionSend"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/send_email_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
+                android:text="@string/send_email_button"/>
+        </LinearLayout>
+    </ScrollView>
 </layout>
