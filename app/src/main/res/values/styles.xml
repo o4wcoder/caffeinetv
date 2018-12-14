@@ -130,10 +130,6 @@
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
-
-
-    <style name="OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
-
     <style name="LobbyHeader" parent="@style/TextAppearance.MaterialComponents.Headline4">
         <item name="fontFamily">sans-serif-medium</item>
         <item name="android:fontFamily">sans-serif-medium</item>
