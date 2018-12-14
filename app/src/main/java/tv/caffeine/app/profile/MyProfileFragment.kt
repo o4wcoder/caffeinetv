@@ -28,9 +28,11 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.navigateToLanding
 import java.io.File
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -48,6 +50,7 @@ class MyProfileFragment : CaffeineFragment() {
     private lateinit var binding: FragmentMyProfileBinding
 
     private val viewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
+    private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
 
     private var cameraImagePath: String? = null
 
@@ -90,6 +93,12 @@ class MyProfileFragment : CaffeineFragment() {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToGoldAndCreditsFragment()
             findNavController().navigate(action)
         }
+        walletViewModel.wallet.observe(viewLifecycleOwner, androidx.lifecycle.Observer { wallet ->
+            if (wallet == null) return@Observer
+            val goldBalance = NumberFormat.getInstance().format(wallet.gold)
+            val creditsBalance = NumberFormat.getInstance().format(wallet.credits)
+            binding.goldAndCreditsButton.htmlText = getString(R.string.gold_and_credits_button_with_balance, goldBalance, creditsBalance)
+        })
         binding.numberFollowingTextView.setOnClickListener { showFollowingList() }
         binding.numberOfFollowersTextView.setOnClickListener { showFollowersList() }
         binding.avatarImageView.setOnClickListener { chooseNewAvatarImage() }
