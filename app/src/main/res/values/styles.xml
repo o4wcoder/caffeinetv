@@ -114,6 +114,7 @@
         <item name="strokeColor">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:height">@dimen/avatar_size</item>
+        <item name="android:letterSpacing">-0.01</item>
     </style>
 
     <style name="Button.Following.Lobby">
@@ -181,6 +182,10 @@
         <item name="android:textColor">@color/dark_gray</item>
         <item name="android:textSize">12sp</item>
         <item name="android:letterSpacing">0.0</item>
+    </style>
+
+    <style name="LobbyFriendsWatchingText" parent="@style/TextAppearance.MaterialComponents.Caption">
+        <item name="android:letterSpacing">-0.01</item>
     </style>
 
     <style name="LiveIndicator">

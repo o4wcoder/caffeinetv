@@ -21,7 +21,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.*
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
@@ -204,11 +204,12 @@ class LiveBroadcastWithFriendsCard(
         binding.previewImageView.clipToOutline = true
         val singleFriendWatchingResId = if (item.broadcaster.user.isVerified) R.string.verified_user_watching else R.string.user_watching
         val multipleFriendsWatchingResId = if (item.broadcaster.user.isVerified) R.plurals.verified_user_and_friends_watching else R.plurals.user_and_friends_watching
-        binding.friendsWatchingTextView.htmlText = when(item.broadcaster.followingViewersCount) {
+        val friendsWatchingString = when(item.broadcaster.followingViewersCount) {
             0 -> null
             1 -> itemView.context.getString(singleFriendWatchingResId, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl)
             else -> itemView.context.resources.getQuantityString(multipleFriendsWatchingResId, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl, item.broadcaster.followingViewersCount - 1)
         }
+        friendsWatchingString?.let { binding.friendsWatchingTextView.formatUsernameAsHtml(it, true, R.dimen.avatar_lobby_friend_watching) }
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
         if (game != null) {

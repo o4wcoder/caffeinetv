@@ -6,6 +6,8 @@
 
     <dimen name="avatar_size">36dp</dimen> <!-- on a lobby card -->
     <dimen name="avatar_size_large">175dp</dimen> <!-- profile -->
+    <dimen name="avatar_lobby_previous_broadcast">66dp</dimen>
+    <dimen name="avatar_lobby_friend_watching">24dp</dimen>
 
     <dimen name="explore_avatar_size">96dp</dimen>
     <dimen name="toolbar_icon_size">24dp</dimen>
@@ -22,9 +24,9 @@
     <dimen name="lobby_card_rounding_radius">15dp</dimen>
     <dimen name="lobby_card_side_margin">18dp</dimen>
     <dimen name="lobby_card_narrow_margin">4dp</dimen>
-    <dimen name="lobby_list_top_bottom_margin">18dp</dimen>
-    <dimen name="lobby_card_vertical_spacing">8dp</dimen>
-    <dimen name="lobby_header_top_margin">12dp</dimen>
+    <dimen name="lobby_list_top_bottom_margin">0dp</dimen>
+    <dimen name="lobby_card_vertical_spacing">10dp</dimen>
+    <dimen name="lobby_header_top_margin">20dp</dimen>
     <dimen name="lobby_header_bottom_margin">0dp</dimen>
     <dimen name="lobby_subtitle_top_margin">0dp</dimen>
     <dimen name="lobby_subtitle_bottom_margin">0dp</dimen>

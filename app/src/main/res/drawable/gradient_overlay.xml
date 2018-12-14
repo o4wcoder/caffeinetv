@@ -4,9 +4,9 @@
 
     <gradient
         android:angle="90"
-        android:startColor="#cc000000"
-        android:centerColor="#00000000"
-        android:endColor="#99000000"/>
+        android:startColor="#dd000000"
+        android:centerColor="#bb000000"
+        android:endColor="#dd000000"/>
 
     <corners android:radius="@dimen/lobby_card_rounding_radius"/>
 
