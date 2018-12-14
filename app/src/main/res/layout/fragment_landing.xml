@@ -57,13 +57,11 @@
                 android:text="@string/sign_in_with_facebook"/>
 
             <Button
+                style="@style/SocialSignInButton.Twitter"
                 android:id="@+id/twitter_sign_in_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="2dp"
-                android:paddingEnd="34dp"
-                android:text="@string/sign_in_with_twitter"
-                app:icon="@drawable/twitter_logo_blue"/>
+                android:text="@string/sign_in_with_twitter"/>
 
             <Button
                 style="@style/Button.Outline"

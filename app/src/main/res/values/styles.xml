@@ -60,11 +60,23 @@
     </style>
 
     <style name="Button.Outline" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/caffeine_blue</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="Button.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="SocialSignInButton">
+        <!-- The icon's width is 24dp. paddingEnd = paddingStart + width + 8 (magic number) -->
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">42dp</item>
+    </style>
+
+    <style name="SocialSignInButton.Twitter">
+        <item name="android:backgroundTint">#1da1f2</item>
+        <item name="icon">@drawable/twitter_sign_in_button_icon</item>
     </style>
 
     <!-- Not used directly -->

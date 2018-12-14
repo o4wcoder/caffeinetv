@@ -18,7 +18,6 @@ class BroadcastPlaceholderDialogFragment : DialogFragment() {
         }
         return AlertDialog.Builder(activity)
                 .setTitle(R.string.broardcast_placeholder_dialog_title)
-                .setMessage(R.string.broardcast_placeholder_dialog_message)
                 .setPositiveButton(R.string.got_it, null)
                 .create()
     }
