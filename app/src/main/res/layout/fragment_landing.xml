@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
     </data>
@@ -19,13 +18,11 @@
             android:padding="@dimen/margin_double"
             tools:context=".auth.LandingFragment">
 
-            <!-- TODO (david) Remove the hardcoded numbers and fitXY once we get the new logo with the correct size -->
             <ImageView
-                android:layout_width="124dp"
-                android:layout_height="108dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="85dp"
                 android:src="@drawable/logo_wordmark"
-                android:scaleType="fitXY"
                 android:contentDescription="@string/caffeine_logo_content_description"/>
 
             <TextView
