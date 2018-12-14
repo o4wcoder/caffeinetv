@@ -126,6 +126,10 @@
     <style name="ScreenSubtitle">
         <item name="android:textSize">18sp</item>
     </style>
+    <style name="BoldDarkSubtitle" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="FormErrorText">
         <item name="android:textColor">@color/warning_red</item>
         <item name="android:textStyle">bold</item>

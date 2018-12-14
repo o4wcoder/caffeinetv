@@ -109,7 +109,7 @@
     <string name="wallet_balance"><![CDATA[<img src="goldcoin">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
     <string name="you_have_gold_balance">You have <![CDATA[<img src="goldcoin">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
     <string name="you_have_gold_and_credits_balance">You have <![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> and <![CDATA[<img src="purplecoin">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
-    <string name="gold_and_credits_button_with_balance">Gold &amp; Credits <![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> <![CDATA[<img src="purplecoin">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
+    <string name="gold_and_credits_button_balance"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> <![CDATA[<img src="purplecoin">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
     <string name="gold_and_credits_help">Use Gold to buy items to send to broadcasters.\n\nReceived items become Credits.\nYou can buy Gold with Credits.</string>
     <string name="gold_and_credits_help_html"><![CDATA[<div>Use <img src="goldcoin"> Gold to buy items to send to broadcasters.</div><div>Received items become <img src="purplecoin"> Credits.</div><div>You can buy <img src="goldcoin"> Gold with <img src="purplecoin"> Credits.</div>]]></string>
     <string name="gold_formatted"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_amount">%s</xliff:g></string>

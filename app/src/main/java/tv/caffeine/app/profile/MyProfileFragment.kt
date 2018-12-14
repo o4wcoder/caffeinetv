@@ -89,7 +89,7 @@ class MyProfileFragment : CaffeineFragment() {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToSettingsFragment()
             findNavController().navigate(action)
         }
-        binding.goldAndCreditsButton.setOnClickListener {
+        binding.goldAndCreditsButtonContainer.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToGoldAndCreditsFragment()
             findNavController().navigate(action)
         }
@@ -97,7 +97,7 @@ class MyProfileFragment : CaffeineFragment() {
             if (wallet == null) return@Observer
             val goldBalance = NumberFormat.getInstance().format(wallet.gold)
             val creditsBalance = NumberFormat.getInstance().format(wallet.credits)
-            binding.goldAndCreditsButton.htmlText = getString(R.string.gold_and_credits_button_with_balance, goldBalance, creditsBalance)
+            binding.goldAndCreditsBalanceButton.htmlText = getString(R.string.gold_and_credits_button_balance, goldBalance, creditsBalance)
         })
         binding.numberFollowingTextView.setOnClickListener { showFollowingList() }
         binding.numberOfFollowersTextView.setOnClickListener { showFollowersList() }
