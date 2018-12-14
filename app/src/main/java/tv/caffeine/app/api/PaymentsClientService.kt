@@ -140,6 +140,7 @@ data class GoldBundle(
         val score: Int,
         val usingCredits: PurchaseOption.PurchaseWithCredits?,
         val usingStoreKit: PurchaseOption.PurchaseUsingStoreKit?,
+        val usingInAppBilling: PurchaseOption.PurchaseUsingInAppBilling?,
         val usingStripe: PurchaseOption.PurchaseUsingStripe?,
         var skuDetails: SkuDetails?
 )
@@ -147,6 +148,7 @@ data class GoldBundle(
 sealed class PurchaseOption {
     data class PurchaseWithCredits(val id: String, val cost: Int) : PurchaseOption()
     data class PurchaseUsingStoreKit(val productId: String, val canPurchase: Boolean) : PurchaseOption()
+    data class PurchaseUsingInAppBilling(val productId: String, val canPurchase: Boolean) : PurchaseOption()
     data class PurchaseUsingStripe(val id: String, val cost: Int, val canPurchase: Boolean) : PurchaseOption()
 }
 

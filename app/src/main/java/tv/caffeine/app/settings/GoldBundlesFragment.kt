@@ -87,8 +87,8 @@ class GoldBundlesFragment : CaffeineFragment() {
         val handler = Handler()
         viewModel.goldBundles.observe(viewLifecycleOwner, Observer { result ->
             handle(result, view) { paymentsEnvelope ->
-                val list = paymentsEnvelope.payload.goldBundles.state.filter { it.usingStoreKit != null }
-                val skuList = list.mapNotNull { it.usingStoreKit }.map { it.productId }
+                val list = paymentsEnvelope.payload.goldBundles.state.filter { it.usingInAppBilling != null }
+                val skuList = list.mapNotNull { it.usingInAppBilling }.map { it.productId }
                 when(buyGoldOption) {
                     BuyGoldOption.UsingCredits -> goldBundlesAdapter.submitList(list)
                     BuyGoldOption.UsingPlayStore -> {
@@ -96,7 +96,7 @@ class GoldBundlesFragment : CaffeineFragment() {
                         billingClient.querySkuDetailsAsync(params) { responseCode, skuDetailsList ->
                             Timber.d("Results: $skuDetailsList")
                             list.forEach {  goldBundle ->
-                                goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingStoreKit?.productId }
+                                goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingInAppBilling?.productId }
                             }
                             handler.post { goldBundlesAdapter.submitList(list) }
                         }
