@@ -48,8 +48,8 @@ class ProfileFragment : CaffeineFragment() {
         binding.followButton.setOnClickListener { if (isFollowed) promptToUnfollow() else viewModel.follow(caid) }
         binding.profileViewModel = viewModel
         binding.setLifecycleOwner(viewLifecycleOwner)
-        binding.numberFollowingTextView.setOnClickListener { showFollowingList() }
-        binding.numberOfFollowersTextView.setOnClickListener { showFollowersList() }
+        binding.followingContainer.setOnClickListener { showFollowingList() }
+        binding.followerContainer.setOnClickListener { showFollowersList() }
         binding.stageImageView.setOnClickListener { watchBroadcast() }
         return binding.root
     }

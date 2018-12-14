@@ -97,20 +97,19 @@
         <item name="android:paddingBottom">14dp</item>
     </style>
 
-    <!-- Not used directly -->
     <style name="Button.Follow" parent="Button.Outline">
+        <item name="cornerRadius">18dp</item>
         <item name="android:inset">0dp</item>
         <item name="android:letterSpacing">0.05</item>
     </style>
 
-    <!-- Not used directly -->
     <style name="Button.Following" parent="Button.Outline">
+        <item name="cornerRadius">18dp</item>
         <item name="android:backgroundTint">@color/caffeine_blue</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Button.Follow.Lobby">
-        <item name="cornerRadius">18dp</item>
         <item name="strokeColor">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:height">@dimen/avatar_size</item>
@@ -118,7 +117,6 @@
     </style>
 
     <style name="Button.Following.Lobby">
-        <item name="cornerRadius">18dp</item>
         <item name="android:height">@dimen/avatar_size</item>
     </style>
 

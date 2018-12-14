@@ -99,8 +99,8 @@ class MyProfileFragment : CaffeineFragment() {
             val creditsBalance = NumberFormat.getInstance().format(wallet.credits)
             binding.goldAndCreditsBalanceButton.htmlText = getString(R.string.gold_and_credits_button_balance, goldBalance, creditsBalance)
         })
-        binding.numberFollowingTextView.setOnClickListener { showFollowingList() }
-        binding.numberOfFollowersTextView.setOnClickListener { showFollowersList() }
+        binding.followingContainer.setOnClickListener { showFollowingList() }
+        binding.followerContainer.setOnClickListener { showFollowersList() }
         binding.avatarImageView.setOnClickListener { chooseNewAvatarImage() }
     }
 

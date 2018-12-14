@@ -10,47 +10,47 @@
     </data>
 
     <ScrollView
+        style="@style/NoBarScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".profile.MyProfileFragment">
+            android:paddingTop="@dimen/margin"
+            tools:context=".profile.ProfileFragment">
 
             <ImageView
                 android:id="@+id/avatar_image_view"
                 android:layout_width="@dimen/avatar_size_large"
                 android:layout_height="@dimen/avatar_size_large"
-                android:layout_marginTop="8dp"
                 android:src="@drawable/default_avatar_round"
                 android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
-                android:padding="2dp"
+                android:contentDescription="@string/user_avatar_content_description"
                 app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@drawable/circle_white_with_blue_rim"
-                tools:src="@drawable/default_avatar_round"
-                android:contentDescription="@string/user_avatar_content_description" />
+                tools:src="@drawable/default_avatar_round"/>
 
             <TextView
                 android:id="@+id/name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_line_spacing"
                 android:text="@{profileViewModel.name}"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
-                tools:text="Winnie the Pooh" />
+                tools:text="Winnie the Pooh"/>
 
             <TextView
+                style="@style/BoldDarkSubtitle"
                 android:id="@+id/username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:drawablePadding="@dimen/verified_icon_padding"
                 android:text="@{profileViewModel.username}"
                 android:textAppearance="@style/ExploreUsername"
@@ -62,6 +62,7 @@
                 tools:text="Caffeine" />
 
             <Button
+                style="@style/Button.Follow"
                 android:id="@+id/follow_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,74 +88,87 @@
                 app:layout_constraintBottom_toBottomOf="@id/follow_button"
                 tools:visibility="visible"/>
 
-            <TextView
-                android:id="@+id/number_following_text_view"
+            <LinearLayout
+                style="@style/FollowCountContainer"
+                android:id="@+id/following_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@{profileViewModel.followingCount}"
-                android:textAppearance="@style/FollowCount"
-                app:layout_constraintEnd_toEndOf="@+id/number_following_title_text_view"
-                app:layout_constraintStart_toStartOf="@+id/number_following_title_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/follow_button"
-                tools:text="42" />
-
-            <TextView
-                android:id="@+id/number_of_followers_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@{profileViewModel.followersCount}"
-                android:textAppearance="@style/FollowCount"
-                app:layout_constraintEnd_toEndOf="@+id/number_of_followers_title_text_view"
-                app:layout_constraintStart_toStartOf="@+id/number_of_followers_title_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/follow_button"
-                tools:text="42" />
-
-            <TextView
-                android:id="@+id/number_following_title_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/following"
-                app:layout_constraintEnd_toStartOf="@+id/number_of_followers_title_text_view"
+                android:layout_marginEnd="@dimen/margin"
+                android:layout_marginTop="@dimen/margin"
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/number_following_text_view" />
+                app:layout_constraintEnd_toStartOf="@id/follower_container"
+                app:layout_constraintTop_toBottomOf="@+id/follow_button">
 
-            <TextView
-                android:id="@+id/number_of_followers_title_text_view"
+                <TextView
+                    android:id="@+id/number_following_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{profileViewModel.followingCount}"
+                    android:textAppearance="@style/FollowCount"
+                    tools:text="42"/>
+                <TextView
+                    android:id="@+id/number_following_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/following"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/FollowCountContainer"
+                android:id="@+id/follower_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/followers"
+                android:layout_marginStart="@dimen/margin"
+                android:layout_marginTop="@dimen/margin"
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/following_container"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/number_following_title_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/number_of_followers_text_view" />
+                app:layout_constraintTop_toBottomOf="@+id/follow_button">
+
+                <TextView
+                    android:id="@+id/number_of_followers_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{profileViewModel.followersCount}"
+                    android:textAppearance="@style/FollowCount"
+                    tools:text="42"/>
+                <TextView
+                    android:id="@+id/number_of_followers_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/followers"/>
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/stage_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="25dp"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/stage_image_content_description"
                 app:imageUrl="@{profileViewModel.stageImageUrl}"
-                app:layout_constraintTop_toBottomOf="@+id/number_following_title_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/following_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintDimensionRatio="4:3"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                tools:srcCompat="@tools:sample/backgrounds/scenic"/>
 
             <TextView
                 android:id="@+id/bio_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginStart="@dimen/margin_double"
+                android:layout_marginEnd="@dimen/margin_double"
                 android:gravity="center_horizontal"
                 android:text="@{profileViewModel.bio}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/stage_image_view"
                 tools:text="Caffeine is a social broadcasting community" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
