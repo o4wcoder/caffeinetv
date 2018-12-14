@@ -46,7 +46,6 @@ class LobbyFragment : CaffeineFragment() {
         binding.lobbyRecyclerView.run {
             adapter = lobbyAdapter
             addItemDecoration(itemDecorator)
-            setRecycledViewPool(lobbyAdapter.recycledViewPool)
         }
         binding.cameraButton.setOnClickListener {
             BroadcastPlaceholderDialogFragment().show(fragmentManager, "broadcastPlaceholder")

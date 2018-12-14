@@ -32,6 +32,14 @@ annotation class ThemeNotFollowedLobby
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
+annotation class ThemeFollowedLobbyLight
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ThemeNotFollowedLobbyLight
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
 annotation class ThemeFollowedChat
 
 @Qualifier

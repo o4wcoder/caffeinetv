@@ -3,6 +3,8 @@
     <solid
         android:color="@color/caffeine_blue"/>
 
-    <corners android:radius="@dimen/lobby_card_rounding_radius"/>
+    <corners
+        android:topLeftRadius="@dimen/lobby_card_rounding_radius"
+        android:topRightRadius="@dimen/lobby_card_rounding_radius" />
 
 </shape>

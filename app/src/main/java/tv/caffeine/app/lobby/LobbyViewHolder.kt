@@ -1,5 +1,7 @@
 package tv.caffeine.app.lobby
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Rect
 import android.view.View
 import android.widget.Button
@@ -24,16 +26,34 @@ import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 
-sealed class LobbyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun bind(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+sealed class LobbyViewHolder(
+        itemView: View,
+        val tags: Map<String, Lobby.Tag>,
+        val content: Map<String, Lobby.Content>,
+        val followManager: FollowManager,
+        val followedTheme: UserTheme,
+        val notFollowedTheme: UserTheme,
+        val followedThemeLight: UserTheme,
+        val notFollowedThemeLight: UserTheme
+) : RecyclerView.ViewHolder(itemView) {
+    fun bind(item: LobbyItem) {
         itemView.tag = item.itemType
-        configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
+        configure(item)
     }
-    protected abstract fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
+    protected abstract fun configure(item: LobbyItem)
 }
 
-class AvatarCard(val binding: LobbyAvatarCardBinding) : LobbyViewHolder(binding.root) {
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+class AvatarCard(
+        val binding: LobbyAvatarCardBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    override fun configure(item: LobbyItem) {
         itemView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToMyProfileFragment()
             action.setLaunchAvatarSelection(true)
@@ -42,29 +62,59 @@ class AvatarCard(val binding: LobbyAvatarCardBinding) : LobbyViewHolder(binding.
     }
 }
 
-class HeaderCard(val binding: LobbyHeaderBinding) : LobbyViewHolder(binding.root) {
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+class HeaderCard(
+        val binding: LobbyHeaderBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    override fun configure(item: LobbyItem) {
         binding.viewModel = item as Header
     }
 }
 
-class SubtitleCard(val binding: LobbySubtitleBinding) : LobbyViewHolder(binding.root) {
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+class SubtitleCard(
+        val binding: LobbySubtitleBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    override fun configure(item: LobbyItem) {
         binding.viewModel = item as Subtitle
     }
 }
 
-abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
+abstract class BroadcasterCard(
+        view: View,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : LobbyViewHolder(view, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
     private val previewImageView: ImageView = view.findViewById(R.id.preview_image_view)
     private val avatarImageView: ImageView = view.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = view.findViewById(R.id.username_text_view)
     private val broadcastTitleTextView: TextView = view.findViewById(R.id.broadcast_title_text_view)
     private val tagTextView: TextView = view.findViewById(R.id.tag_text_view)
     private val followButton: Button = view.findViewById(R.id.follow_button)
+    private val dotTextView: TextView? = view.findViewById(R.id.dot_text_view)
 
-    private val roundedCornersTransformation = RoundedCornersTransformation(itemView.resources.getDimension(R.dimen.lobby_card_rounding_radius).toInt(), 0)
+    protected open val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.TOP
+    protected open val isLight: Boolean = false
+    private val roundedCornersTransformation by lazy { RoundedCornersTransformation(itemView.resources.getDimension(R.dimen.lobby_card_rounding_radius).toInt(), 0, cornerType) }
 
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    override fun configure(item: LobbyItem) {
         val singleCard = item as SingleCard
         val broadcast = singleCard.broadcaster.broadcast ?: singleCard.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
         Picasso.get()
@@ -75,7 +125,17 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
                 .transform(roundedCornersTransformation)
                 .into(previewImageView)
         val isLive = singleCard.broadcaster.broadcast != null
-        singleCard.broadcaster.user.configure(avatarImageView, usernameTextView, followButton, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        singleCard.broadcaster.user.configure(
+                avatarImageView,
+                usernameTextView,
+                followButton,
+                followManager,
+                false,
+                R.dimen.avatar_size,
+                if (isLight) followedThemeLight else followedTheme,
+                if (isLight) notFollowedThemeLight else notFollowedTheme
+        )
+        dotTextView?.isVisible = !followManager.isFollowing(singleCard.broadcaster.user.caid)
         avatarImageView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         usernameTextView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         broadcastTitleTextView.text = broadcast.name
@@ -83,7 +143,12 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
         tagTextView.isVisible = tag != null
         if (tag != null) {
             tagTextView.text = tag.name
-            tagTextView.setTextColor(tag.color.toColorInt())
+            if (isLive) {
+                tagTextView.setTextColor(Color.WHITE)
+                tagTextView.backgroundTintList = ColorStateList.valueOf(tag.color.toColorInt())
+            } else {
+                tagTextView.setTextColor(tag.color.toColorInt())
+            }
         }
     }
 
@@ -93,9 +158,18 @@ abstract class BroadcasterCard(view: View) : LobbyViewHolder(view) {
     }
 }
 
-open class LiveBroadcastCard(val binding: LiveBroadcastCardBinding) : BroadcasterCard(binding.root) {
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
+open class LiveBroadcastCard(
+        val binding: LiveBroadcastCardBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    override fun configure(item: LobbyItem) {
+        super.configure(item)
         val liveBroadcastItem = item as LiveBroadcast
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
@@ -114,9 +188,18 @@ open class LiveBroadcastCard(val binding: LiveBroadcastCardBinding) : Broadcaste
     }
 }
 
-class LiveBroadcastWithFriendsCard(val binding: LiveBroadcastWithFriendsCardBinding) : BroadcasterCard(binding.root) {
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
+class LiveBroadcastWithFriendsCard(
+        val binding: LiveBroadcastWithFriendsCardBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    override fun configure(item: LobbyItem) {
+        super.configure(item)
         val liveBroadcastItem = item as LiveBroadcastWithFriends
         binding.previewImageView.clipToOutline = true
         val singleFriendWatchingResId = if (item.broadcaster.user.isVerified) R.string.verified_user_watching else R.string.user_watching
@@ -149,9 +232,21 @@ private class MoreButtonClickListener(val caid: String, val username: String) : 
     }
 }
 
-class PreviousBroadcastCard(val binding: PreviousBroadcastCardBinding) : BroadcasterCard(binding.root) {
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        super.configure(item, tags, content, followManager, followedTheme, notFollowedTheme)
+class PreviousBroadcastCard(
+        val binding: PreviousBroadcastCardBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    override val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.ALL
+    override val isLight: Boolean = true
+
+    override fun configure(item: LobbyItem) {
+        super.configure(item)
         val previousBroadcastItem = item as PreviousBroadcast
         val broadcast = previousBroadcastItem.broadcaster.lastBroadcast ?: error("Unexpected broadcast state")
         binding.viewModel = item
@@ -161,11 +256,23 @@ class PreviousBroadcastCard(val binding: PreviousBroadcastCardBinding) : Broadca
     }
 }
 
-class ListCard(val binding: CardListBinding, private val recycledViewPool: RecyclerView.RecycledViewPool) : LobbyViewHolder(binding.root) {
+class ListCard(
+        val binding: CardListBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme,
+        recycledViewPool: RecyclerView.RecycledViewPool
+) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
     private val snapHelper = LinearSnapHelper()
     private val edgeOffset = binding.root.resources.getDimension(R.dimen.lobby_card_side_margin).toInt()
     private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
+    private val lobbyAdapter = LobbyAdapter(followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight)
     init {
+        binding.cardListRecyclerView.adapter = lobbyAdapter
         binding.cardListRecyclerView.run {
             addItemDecoration(object: RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -185,10 +292,8 @@ class ListCard(val binding: CardListBinding, private val recycledViewPool: Recyc
             marginEnd = 0
         }
     }
-    override fun configure(item: LobbyItem, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    override fun configure(item: LobbyItem) {
         val cardList = item as CardList
-        val lobbyAdapter = LobbyAdapter(followManager, recycledViewPool, followedTheme, notFollowedTheme)
-        binding.cardListRecyclerView.adapter = lobbyAdapter
         lobbyAdapter.submitList(cardList.cards, tags, content)
     }
 }

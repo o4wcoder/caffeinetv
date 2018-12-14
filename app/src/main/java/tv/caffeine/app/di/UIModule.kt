@@ -59,6 +59,18 @@ class UIModule {
 
     @Provides
     @Singleton
+    @ThemeFollowedLobbyLight
+    fun providesFollowedUserThemeLobbyLight(@BlueCircleTransformation transformation: CropBorderedCircleTransformation)
+            = UserTheme(transformation, R.style.BroadcastCardUsername_Following_Previous)
+
+    @Provides
+    @Singleton
+    @ThemeNotFollowedLobbyLight
+    fun providesNotFollowedUserThemeLobbyLight(@WhiteCircleTransformation transformation: CropBorderedCircleTransformation)
+            = UserTheme(transformation, R.style.BroadcastCardUsername_NotFollowing_Previous)
+
+    @Provides
+    @Singleton
     @ThemeFollowedChat
     fun providesFollowedUserThemeChat(@BlueCircleTransformation transformation: CropBorderedCircleTransformation)
             = UserTheme(transformation, R.style.ChatMessageUsername_Following)

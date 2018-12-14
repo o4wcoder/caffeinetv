@@ -36,8 +36,8 @@ class LobbyLinearLayoutManager : LinearLayoutManager {
     private fun lobbyLayoutSize(layoutParams: RecyclerView.LayoutParams) =
             layoutParams.apply {
                 when(orientation) {
-                    HORIZONTAL -> width = horizontalSpace - margin*2
-                    VERTICAL -> height = verticalSpace - margin*2
+                    HORIZONTAL -> width = horizontalSpace * 90/100 - margin*2
+                    VERTICAL -> height = verticalSpace * 90/100 - margin*2
                 }
             }
 

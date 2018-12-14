@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:clipToPadding="false"
+        android:paddingBottom="10dp"
         app:layoutManager="tv.caffeine.app.ui.LobbyLinearLayoutManager"
         tools:listitem="@layout/previous_broadcast_card">
 

@@ -151,6 +151,7 @@
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
+    <!-- Lobby -->
     <style name="LobbyHeader" parent="@style/TextAppearance.MaterialComponents.Headline4">
         <item name="fontFamily">sans-serif-medium</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -172,6 +173,12 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="LobbyBroadcastTitle" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.0</item>
+    </style>
+
     <style name="LiveIndicator">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
@@ -185,16 +192,23 @@
     </style>
 
     <style name="BroadcastCardUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:drawablePadding">4dp</item>
     </style>
 
     <style name="BroadcastCardUsername.NotFollowing">
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="BroadcastCardUsername.Following">
         <item name="android:textColor">@color/caffeine_blue</item>
+    </style>
+
+    <style name="BroadcastCardUsername.NotFollowing.Previous">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="BroadcastCardUsername.Following.Previous">
     </style>
 
     <style name="ExploreUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
