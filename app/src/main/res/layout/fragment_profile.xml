@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/avatar_image_view"
-                android:layout_width="@dimen/profile_size"
-                android:layout_height="@dimen/profile_size"
+                android:layout_width="@dimen/avatar_size_large"
+                android:layout_height="@dimen/avatar_size_large"
                 android:layout_marginTop="8dp"
                 android:src="@drawable/default_avatar_round"
                 android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
@@ -32,7 +32,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@drawable/circle_white_with_blue_rim"
-                tools:src="@drawable/default_avatar_round" />
+                tools:src="@drawable/default_avatar_round"
+                android:contentDescription="@string/user_avatar_content_description" />
 
             <TextView
                 android:id="@+id/name_text_view"
@@ -92,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@{profileViewModel.followingCount}"
-                android:textAppearance="@style/FollowerCount"
+                android:textAppearance="@style/FollowCount"
                 app:layout_constraintEnd_toEndOf="@+id/number_following_title_text_view"
                 app:layout_constraintStart_toStartOf="@+id/number_following_title_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/follow_button"
@@ -104,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@{profileViewModel.followersCount}"
-                android:textAppearance="@style/FollowerCount"
+                android:textAppearance="@style/FollowCount"
                 app:layout_constraintEnd_toEndOf="@+id/number_of_followers_title_text_view"
                 app:layout_constraintStart_toStartOf="@+id/number_of_followers_title_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/follow_button"
