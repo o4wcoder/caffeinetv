@@ -17,7 +17,7 @@ import tv.caffeine.app.util.dismissKeyboard
 import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.unsetImmersiveSticky
 
-private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment)
+private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment, R.id.needsUpdateFragment)
 
 class MainActivity : AppCompatActivity() {
 

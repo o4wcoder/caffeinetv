@@ -417,4 +417,12 @@
             android:id="@+id/action_twitterAuthFragment_to_mfaCodeFragment"
             app:destination="@id/mfaCodeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/needsUpdateFragment"
+        android:name="tv.caffeine.app.update.NeedsUpdateFragment"
+        android:label="NeedsUpdateFragment"
+        tools:layout="@layout/fragment_needs_update"/>
+    <action
+        android:id="@+id/action_global_needsUpdateFragment"
+        app:destination="@id/needsUpdateFragment" />
 </navigation>

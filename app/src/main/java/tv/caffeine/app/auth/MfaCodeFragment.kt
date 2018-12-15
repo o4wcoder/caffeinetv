@@ -71,8 +71,8 @@ class MfaCodeFragment : CaffeineFragment() {
         val errorBody = response.errorBody() ?: return
         val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
-        error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }
-        error.errors.otp?.joinToString("\n")?.let { binding.mfaCodeTextInputLayout.error = it }
+        binding.formErrorTextView.text = error.generalErrorsString
+        binding.mfaCodeTextInputLayout.error = error.otpErrorsString
     }
 
 }

@@ -144,6 +144,7 @@
     <string name="gold_bundles_title">Gold Bundles</string>
     <string name="update_email_title">Update Email</string>
     <string name="update_email_hint_email">New Email Address</string>
+    <string name="update_email_email_sent">Verification email sent. Please check your inbox.</string>
     <string name="hint_password1">New Password</string>
     <string name="hint_password2">Confirm New Password</string>
     <string name="update_password_title">Update Password</string>
@@ -167,4 +168,9 @@
     <!-- Broadcast -->
     <string name="broardcast_placeholder_dialog_title">Broadcast from Android Coming Soon</string>
     <string name="got_it">Got it</string>
+
+    <!-- Version Check -->
+    <string name="take_me_to_play_store_button">Sweet! Take me to the Play Store to update.</string>
+    <string name="time_to_update">Time to Update</string>
+    <string name="new_version_awaits">A shiny new version of the app awaits you.</string>
 </resources>

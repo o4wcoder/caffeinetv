@@ -12,9 +12,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.api.ApiErrorResult
-import tv.caffeine.app.api.ForgotPasswordBody
+import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentForgotBinding
@@ -64,8 +62,8 @@ class ForgotFragment : CaffeineFragment() {
 
     @UiThread
     private fun onError(error: ApiErrorResult) {
-        error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }
-        error.errors.email?.joinToString("\n")?.let { binding.emailTextInputLayout.error = it }
+        binding.formErrorTextView.text = error.generalErrorsString
+        binding.emailTextInputLayout.error = error.emailErrorsString
     }
 
     @UiThread

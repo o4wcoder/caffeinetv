@@ -124,8 +124,7 @@ class LandingFragment : CaffeineFragment() {
         val errorBody = response.errorBody() ?: return
         val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
-        val errors = error.errors
-        binding.formErrorTextView.text = listOfNotNull(errors._error, errors.username, errors.password)
-                .joinToString("\n") { it.joinToString("\n") }
+        binding.formErrorTextView.text = listOfNotNull(error.generalErrorsString, error.usernameErrorsString, error.passwordErrorsString)
+                .joinToString("\n")
     }
 }

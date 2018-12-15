@@ -55,9 +55,11 @@ class RefreshTokenResult(val credentials: CaffeineCredentials, val next: NextAcc
 
 class CaffeineCredentials(val accessToken: String, val caid: String, val credential: String, val refreshToken: String)
 
-data class ApiErrorResult(val errors: ApiError)
+data class ApiErrorResult(val errors: ApiError?)
 
-fun ApiErrorResult.isTokenExpirationError() = !errors._token.isNullOrEmpty()
+fun ApiErrorResult.isTokenExpirationError() = errors?._token?.isNullOrEmpty() == false
+fun ApiErrorResult.isVersionCheckError() = errors?._expired?.contains("version") == true
+fun VersionCheckError() = ApiErrorResult(ApiError(_expired = listOf("version")))
 
 data class ApiError(
         val _error: List<String>? = null,
@@ -68,8 +70,18 @@ data class ApiError(
         val currentPassword: List<String>? = null,
         val email: List<String>? = null,
         val otp: List<String>? = null,
-        val _token: List<String>? = null
+        val _token: List<String>? = null,
+        val _expired: List<String>? = null
 )
+
+val ApiErrorResult.generalErrorsString get() = errors?._error?.joinToString("\n")
+val ApiErrorResult.deniedErrorsString get() = errors?._denied?.joinToString("\n")
+val ApiErrorResult.usernameErrorsString get() = errors?.username?.joinToString("\n")
+val ApiErrorResult.passwordErrorsString get() = errors?.password?.joinToString("\n")
+val ApiErrorResult.dobErrorsString get() = errors?.dob?.joinToString("\n")
+val ApiErrorResult.currentPasswordErrorsString get() = errors?.currentPassword?.joinToString("\n")
+val ApiErrorResult.emailErrorsString get() = errors?.email?.joinToString("\n")
+val ApiErrorResult.otpErrorsString get() = errors?.otp?.joinToString("\n")
 
 class ForgotPasswordBody(val email: String)
 

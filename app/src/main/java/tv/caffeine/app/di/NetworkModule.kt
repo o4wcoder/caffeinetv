@@ -124,6 +124,8 @@ class NetworkModule {
 
     @Provides fun providesOAuthService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(OAuthService::class.java)
 
+    @Provides fun providesVersionCheckService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(VersionCheckService::class.java)
+
     @Provides
     @CaffeineApi(Service.Realtime)
     fun providesRealtimeRetrofit(client: OkHttpClient, @CaffeineApi(Service.Realtime) baseUrl: String) = Retrofit.Builder()

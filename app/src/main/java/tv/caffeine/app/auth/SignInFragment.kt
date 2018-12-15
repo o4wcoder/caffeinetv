@@ -137,9 +137,9 @@ class SignInViewModel(
             }
 
     private fun processError(error: ApiErrorResult): SignInOutcome {
-        val formError = error.errors._error?.joinToString("\n")
-        val usernameError = error.errors.username?.joinToString("\n")
-        val passwordError = error.errors.password?.joinToString("\n")
+        val formError = error.generalErrorsString
+        val usernameError = error.usernameErrorsString
+        val passwordError = error.passwordErrorsString
         return SignInOutcome.Error(formError, usernameError, passwordError)
     }
 

@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import tv.caffeine.app.api.currentPasswordErrorsString
+import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.databinding.FragmentUpdatePasswordBinding
 import tv.caffeine.app.ui.CaffeineFragment
 
@@ -37,9 +40,9 @@ class UpdatePasswordFragment : CaffeineFragment() {
 
     private fun <T> onError(result: CaffeineResult.Error<T>, view: View) {
         val error = result.error
-        error.errors._error?.joinToString("\n")?.let { binding.formErrorTextView.text = it }
-        error.errors.password?.joinToString("\n")?.let { binding.password1TextInputLayout.error = it }
-        error.errors.currentPassword?.joinToString("\n")?.let { binding.currentPasswordTextInputLayout.error = it }
+        binding.formErrorTextView.text = error.generalErrorsString
+        binding.password1TextInputLayout.error = error.passwordErrorsString
+        binding.currentPasswordTextInputLayout.error = error.currentPasswordErrorsString
         super.handleError(result, view)
     }
 

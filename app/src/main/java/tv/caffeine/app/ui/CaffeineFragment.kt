@@ -11,10 +11,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
 import tv.caffeine.app.api.isTokenExpirationError
+import tv.caffeine.app.api.isVersionCheckError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.navigateToLanding
+import tv.caffeine.app.util.navigateToNeedsUpdate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -51,10 +53,10 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     }
 
     fun <T> handleError(result: CaffeineResult.Error<T>, view: View) {
-        if (result.error.isTokenExpirationError()) {
-            findNavController().navigateToLanding()
-        } else {
-            Snackbar.make(view, "Error ${result.error}", Snackbar.LENGTH_SHORT).show()
+        when {
+            result.error.isTokenExpirationError() -> findNavController().navigateToLanding()
+            result.error.isVersionCheckError() -> findNavController().navigateToNeedsUpdate()
+            else -> Snackbar.make(view, "Error ${result.error}", Snackbar.LENGTH_SHORT).show()
         }
     }
 

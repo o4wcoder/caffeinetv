@@ -12,6 +12,7 @@ import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.settings.SettingsFragment
 import tv.caffeine.app.settings.TransactionHistoryFragment
 import tv.caffeine.app.stage.*
+import tv.caffeine.app.update.NeedsUpdateFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowingFragment
 import tv.caffeine.app.users.IgnoredUsersFragment
@@ -48,4 +49,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun sendMessageFragment(): SendMessageFragment
     @ContributesAndroidInjector abstract fun legalAgreementFragment(): LegalAgreementFragment
     @ContributesAndroidInjector abstract fun twitterAuthFragment(): TwitterAuthFragment
+    @ContributesAndroidInjector abstract fun needsUpdateFragment(): NeedsUpdateFragment
 }

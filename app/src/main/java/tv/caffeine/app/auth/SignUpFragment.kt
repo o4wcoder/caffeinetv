@@ -175,13 +175,12 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         val errorBody = response.errorBody() ?: return
         val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
         Timber.d("Error: $error")
-        val errors = error.errors
-        binding.formErrorTextView.text = listOfNotNull(errors._error, errors._denied)
-                .joinToString("\n") { it.joinToString("\n") }
-        binding.usernameTextInputLayout.error = errors.username?.joinToString("\n")
-        binding.passwordTextInputLayout.error = errors.password?.joinToString("\n")
-        binding.emailTextInputLayout.error = errors.email?.joinToString("\n")
-        binding.dobTextInputLayout.error = errors.dob?.joinToString("\n")
+        binding.formErrorTextView.text = listOfNotNull(error.generalErrorsString, error.deniedErrorsString)
+                .joinToString("\n")
+        binding.usernameTextInputLayout.error = error.usernameErrorsString
+        binding.passwordTextInputLayout.error = error.passwordErrorsString
+        binding.emailTextInputLayout.error = error.emailErrorsString
+        binding.dobTextInputLayout.error = error.dobErrorsString
     }
 
     private fun buildLegalDocSpannable(navController: NavController) : Spannable {

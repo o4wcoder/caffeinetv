@@ -24,6 +24,12 @@ fun NavController.navigateToLanding(message: String? = null) {
     navigate(action, navOptions)
 }
 
+fun NavController.navigateToNeedsUpdate() {
+    val action = LobbyDirections.ActionGlobalNeedsUpdateFragment()
+    val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
+    navigate(action, navOptions)
+}
+
 fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: String, shouldNavigateBackWhenDone: Boolean) {
     ReportOrIgnoreDialogFragment().let {
         it.arguments = LobbyDirections.ActionGlobalReportOrIgnoreDialogFragment(

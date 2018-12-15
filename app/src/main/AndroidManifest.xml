@@ -62,7 +62,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/logo"/>
+            android:resource="@drawable/caffeine_wireframe_logo"/>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"

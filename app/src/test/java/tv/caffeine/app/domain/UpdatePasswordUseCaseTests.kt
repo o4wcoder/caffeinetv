@@ -14,6 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.profile.UpdatePasswordUseCase
 
@@ -43,7 +44,7 @@ class UpdatePasswordUseCaseTests {
             subject(currentPassword, password1, password2)
         }
         when (result) {
-            is CaffeineResult.Error -> Assert.assertNotNull(result.error.errors.password)
+            is CaffeineResult.Error -> Assert.assertNotNull(result.error.passwordErrorsString)
             else -> Assert.fail("Was expecting lobby to load")
         }
     }

@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
-import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.api.PaymentsClientService
-import tv.caffeine.app.api.Realtime
-import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.*
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.explore.FindBroadcastersUseCase
@@ -20,6 +17,7 @@ import tv.caffeine.app.settings.*
 import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.SendDigitalItemViewModel
+import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
@@ -47,6 +45,7 @@ class ViewModelFactory @Inject constructor(
         private val realtime: Realtime,
         private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val digitalItemRepository: DigitalItemRepository,
+        private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -54,7 +53,7 @@ class ViewModelFactory @Inject constructor(
         return when {
             modelClass.isAssignableFrom(SignInViewModel::class.java) -> SignInViewModel(dispatchConfig, signInUseCase) as T
             modelClass.isAssignableFrom(LegalAgreementViewModel::class.java) -> LegalAgreementViewModel(dispatchConfig, acceptLegalUseCase)
-            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, followManager, loadLobbyUseCase) as T
+            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, followManager, loadLobbyUseCase, isVersionSupportedCheckUseCase) as T
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, gson, usersService, followManager, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, digitalItemRepository)
