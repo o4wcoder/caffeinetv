@@ -18,6 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/margin"
+            android:paddingStart="@dimen/margin"
+            android:paddingEnd="@dimen/margin"
             tools:context=".profile.ProfileFragment">
 
             <ImageView
@@ -25,6 +27,7 @@
                 android:layout_width="@dimen/avatar_size_large"
                 android:layout_height="@dimen/avatar_size_large"
                 android:src="@drawable/default_avatar_round"
+                android:padding="@dimen/avatar_rim_size"
                 android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                 android:contentDescription="@string/user_avatar_content_description"
                 app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
