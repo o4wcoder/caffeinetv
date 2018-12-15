@@ -9,8 +9,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.REALTIME_WEBSOCKET_URL
 import tv.caffeine.app.realtime.WebSocketController
@@ -22,10 +25,12 @@ class MessageHandshake(
         private val dispatchConfig: DispatchConfig,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
+        private val usersService: UsersService,
+        private val gson: Gson,
         private val stageIdentifier: String
 ): CoroutineScope {
     private var webSocketController: WebSocketController? = null
-    private val gson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
+    private val webSocketGson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
     private val job = Job()
     override val coroutineContext: CoroutineContext
@@ -39,14 +44,21 @@ class MessageHandshake(
 
     private fun connect() {
         val url = "$REALTIME_WEBSOCKET_URL/v2/reaper/stages/$stageIdentifier/messages"
-        val headers = tokenStore.webSocketHeader()
+        val caid = tokenStore.caid ?: return
         webSocketController?.close()
-        webSocketController = WebSocketController(dispatchConfig, "msg", url, headers)
         launch {
+            val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
+            val payload = when(result) {
+                is CaffeineResult.Success -> result.value.token
+                is CaffeineResult.Error -> return@launch Timber.e("Failed to get signed user details")
+                is CaffeineResult.Failure -> return@launch Timber.e(result.throwable)
+            }
+            val headers = tokenStore.webSocketHeaderAndSignedPayload(payload)
+            webSocketController = WebSocketController(dispatchConfig, "msg", url, headers)
             webSocketController?.channel?.consumeEach {
                 Timber.d("Received message $it")
                 val message = try {
-                    gson.fromJson(it, Message::class.java)
+                    webSocketGson.fromJson(it, Message::class.java)
                 } catch (e: Exception) {
                     Timber.e(e)
                     return@consumeEach

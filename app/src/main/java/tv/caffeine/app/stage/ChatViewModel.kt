@@ -44,7 +44,7 @@ class ChatViewModel(
     val messages: LiveData<List<Message>> = Transformations.map(_messages) { it }
 
     fun load(stageIdentifier: String) {
-        messageHandshake = MessageHandshake(dispatchConfig, tokenStore, followManager, stageIdentifier)
+        messageHandshake = MessageHandshake(dispatchConfig, tokenStore, followManager, usersService, gson, stageIdentifier)
         launch {
             while (isActive) {
                 displayMessages()

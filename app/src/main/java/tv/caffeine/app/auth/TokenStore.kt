@@ -54,13 +54,20 @@ class TokenStore @Inject constructor(
 
     fun createRefreshTokenBody() = settingsStorage.refreshToken?.let { RefreshTokenBody(it) }
 
-    fun webSocketHeader() = """{
+    fun header() = """
                 "Headers": {
                     "x-credential" : "${credential ?: ""}",
                     "authorization" : "Bearer ${accessToken ?: ""}",
                     "X-Client-Type" : "android",
                     "X-Client-Version" : "0"
                 }
+            """.trimMargin()
+
+    fun webSocketHeader() = "{${header()}".trimMargin()
+
+    fun webSocketHeaderAndSignedPayload(payload: String) = """{
+                ${header()},
+                "Body": "{\"user\":\"$payload\"}"
             }""".trimMargin()
 
     fun addHttpHeaders(requestBuilder: Request.Builder) {
