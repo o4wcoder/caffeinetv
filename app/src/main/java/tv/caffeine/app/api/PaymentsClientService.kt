@@ -109,8 +109,8 @@ fun TransactionHistoryItem.costString(resources: Resources) = when {
     this is TransactionHistoryItem.Bundle && costCurrencyCode == "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, value.toString(), cost.toString())
     this is TransactionHistoryItem.SendDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_sent, cost)
     this is TransactionHistoryItem.SendDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_sent, cost, quantity)
-    this is TransactionHistoryItem.ReceiveDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_received, cost)
-    this is TransactionHistoryItem.ReceiveDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_received, cost, quantity)
+    this is TransactionHistoryItem.ReceiveDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_received, value)
+    this is TransactionHistoryItem.ReceiveDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_received, value, quantity)
     this is TransactionHistoryItem.Adjustment -> quantity.toString()
     else -> cost.toString()
 }

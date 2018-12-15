@@ -136,8 +136,8 @@
     <string name="transaction_item_purchased_using_credits"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="coin_count">%1$s</xliff:g> for <![CDATA[<img src="purplecoin">]]> <xliff:g example="42" id="credits_amount">%2$s</xliff:g></string>
     <string name="transaction_item_sent"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="coin_count">%1$d</xliff:g></string>
     <string name="transaction_items_sent">x<xliff:g example="2" id="item_count">%2$d</xliff:g> <![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="coin_count">%1$d</xliff:g></string>
-    <string name="transaction_item_received"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="coin_count">%1$d</xliff:g></string>
-    <string name="transaction_items_received">x<xliff:g example="2" id="item_count">%2$d</xliff:g> <![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="coin_count">%1$d</xliff:g></string>
+    <string name="transaction_item_received"><![CDATA[<img src="purplecoin">]]> <xliff:g example="42" id="coin_count">%1$d</xliff:g></string>
+    <string name="transaction_items_received">x<xliff:g example="2" id="item_count">%2$d</xliff:g> <![CDATA[<img src="purplecoin">]]> <xliff:g example="42" id="coin_count">%1$d</xliff:g></string>
     <string name="credits_available">Available</string>
     <string name="credits_lifetime">Lifetime</string>
     <string name="edit_bio_title">Info</string>
