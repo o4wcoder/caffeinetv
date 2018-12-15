@@ -63,7 +63,7 @@ class TokenStore @Inject constructor(
                 }
             """.trimMargin()
 
-    fun webSocketHeader() = "{${header()}".trimMargin()
+    fun webSocketHeader() = "{${header()}}".trimMargin()
 
     fun webSocketHeaderAndSignedPayload(payload: String) = """{
                 ${header()},

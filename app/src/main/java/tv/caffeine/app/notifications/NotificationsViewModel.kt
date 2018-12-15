@@ -30,7 +30,7 @@ class NotificationsViewModel(
     private fun load() {
         val caid = tokenStore.caid ?: return
         launch {
-            val currentUser = followManager.userDetails(caid) ?: return@launch
+            val currentUser = followManager.loadUserDetails(caid) ?: return@launch
             val referenceTimestamp = currentUser.notificationsLastViewedAt
             val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
             when(result) {
