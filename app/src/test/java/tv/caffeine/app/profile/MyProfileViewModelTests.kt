@@ -26,7 +26,7 @@ class MyProfileViewModelTests {
         private const val AGE = 99
     }
 
-    private val justUser = User("caid", "username", "name", "avatarImagePath", FOLLOWING_COUNT, FOLLOWERS_COUNT, false, "broadcastId", "stageId", mapOf(), mapOf(), AGE, "bio", "countryCode", "countryName", "gender", false, false, null)
+    private val justUser = User("caid", "username", "name", "email", "avatarImagePath", FOLLOWING_COUNT, FOLLOWERS_COUNT, false, "broadcastId", "stageId", mapOf(), mapOf(), AGE, "bio", "countryCode", "countryName", "gender", false, false, null)
 
     @Before
     fun setup() {
@@ -35,6 +35,7 @@ class MyProfileViewModelTests {
         coEvery { fakeTokenStore.caid } returns "caid"
         val fakeFollowManager = mockk<FollowManager>()
         coEvery { fakeFollowManager.userDetails(any()) } returns justUser
+        coEvery { fakeFollowManager.loadUserDetails(any()) } returns justUser
         val fakeUploadAvatarUseCase = mockk<UploadAvatarUseCase>()
         subject = MyProfileViewModel(TestDispatchConfig, fakeTokenStore, fakeFollowManager, fakeUploadAvatarUseCase)
     }

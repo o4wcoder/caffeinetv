@@ -24,6 +24,7 @@ class MyProfileViewModel(
     private val myProfile = MutableLiveData<User>()
 
     val username: LiveData<String> = Transformations.map(myProfile) { it.username }
+    val email: LiveData<String> = Transformations.map(myProfile) { it.email }
     val name: LiveData<String> = Transformations.map(myProfile) { it.name }
     val followersCount: LiveData<String> = Transformations.map(myProfile) { it.followersCount.toString() }
     val followingCount: LiveData<String> = Transformations.map(myProfile) { it.followingCount.toString() }
@@ -44,13 +45,11 @@ class MyProfileViewModel(
         load()
     }
 
-    fun reload() = load(forceLoad = true)
-
-    private fun load(forceLoad: Boolean = false) {
+    private fun load() {
         val caid = tokenStore.caid?: return
         loadJob = launch {
-            val userProfile = if (forceLoad) loadUserProfile(caid) else getUserProfile(caid)
-            userProfile?.let { updateViewModel(it) }
+            getUserProfile(caid)?.let { updateViewModel(it) }
+            loadUserProfile(caid)?.let { updateViewModel(it) }
         }
     }
 
@@ -74,7 +73,7 @@ class MyProfileViewModel(
         launch {
             val result = uploadAvatarUseCase(bitmap)
             if (result is CaffeineResult.Success) {
-                reload()
+                load()
             }
         }
     }

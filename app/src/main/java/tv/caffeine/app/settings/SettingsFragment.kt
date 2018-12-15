@@ -27,6 +27,7 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
+import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
@@ -37,6 +38,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SettingsViewModel::class.java) }
+    private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
     private lateinit var notificationSettingsViewModel: NotificationSettingsViewModel
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
@@ -75,6 +77,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
             findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdatePasswordFragment())
             true
         }
+        myProfileViewModel.email.observe(this, Observer {
+            findPreference("change_email")?.summary = it ?: getString(R.string.email)
+        })
     }
 
     private fun configureNotificationSettings() {

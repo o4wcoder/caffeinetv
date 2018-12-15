@@ -6,6 +6,7 @@ import tv.caffeine.app.di.IMAGES_BASE_URL
 data class User(val caid: String,
                 val username: String,
                 val name: String?,
+                val email: String?,
                 val avatarImagePath: String,
                 val followingCount: Int,
                 val followersCount: Int,
