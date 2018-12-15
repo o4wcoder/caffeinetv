@@ -9,7 +9,8 @@
 
         <PreferenceScreen
             android:key="change_email"
-            android:title="@string/email"/>
+            android:title="@string/email"
+            android:summary=" "/>
 
         <PreferenceScreen
             android:key="change_password"
