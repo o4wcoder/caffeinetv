@@ -58,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
             app:layout_constraintStart_toEndOf="@+id/username_text_view"
             app:layout_constraintTop_toTopOf="@+id/username_text_view"
-            tools:src="@drawable/ic_notifications_black_24dp" />
+            tools:src="@drawable/ic_digital_items" />
 
         <TextView
             android:id="@+id/gold_cost_text_view"
