@@ -1,6 +1,5 @@
 package tv.caffeine.app.settings
 
-
 import android.content.Intent
 import android.net.MailTo
 import android.os.Bundle
@@ -28,8 +27,27 @@ enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int): Parcela
 class LegalDocsFragment : Fragment() {
 
     private lateinit var legalDoc: LegalDoc
-    // TODO (david): Nick will send me a complete list of external urls that's linked from our website.
-    private val urlWhitelist = listOf("caffeine.tv", "adr.org")
+    private val hostWhitelist = listOf(
+            "caffeine.tv",
+            "policies.google.com" // host matching for Google since they may change their urls
+    )
+    // The url whitelist should be in sync with https://github.com/caffeinetv/tracer/tree/master/src/static
+    // grep -h -r -E -o "href=\"https\:\/\/[^\"]+\"" src/static/ | grep -E -v "(www|images).caffeine.tv"
+    // | grep -E -v "https://(fonts)?.google(api)?"
+    private val urlWhitelist = listOf(
+            "https://www.google.com/intl/en/policies/privacy/", // these two links redirect and they are handled by the host matching above
+            "https://www.google.com/intl/en/policies/terms/",
+            "https://link.caffeine.tv/discord",
+            "https://www.ftc.gov/sites/default/files/documents/one-stops/advertisement-endorsements/091005revisedendorsementguides.pdf",
+            "https://www.adr.org",
+            "https://suicidepreventionlifeline.org/",
+            "https://www.nhs.uk/conditions/suicide/",
+            "https://itunes.apple.com/us/app/caffeine-tv-for-gamers/id1170629931",
+            "https://www.google.com/chrome/browser/",
+            "https://www.mozilla.org/firefox",
+            "https://www.google.com/policies/privacy/partners/",
+            "https://tools.google.com/dlpage/gaoptout"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,12 +85,13 @@ class LegalDocsFragment : Fragment() {
                     // Ignore other non-network urls
                     if (!URLUtil.isNetworkUrl(urlString)) return true
 
-                    // Handle whitelisted urls
-                    for (whitelistedUrl in urlWhitelist) {
-                        if (url.host?.endsWith(whitelistedUrl) == true) {
-                            return false
-                        }
+                    // Match hosts in the whitelist
+                    for (host in hostWhitelist) {
+                        if (url.host?.endsWith(host) == true) return false
                     }
+
+                    // Match urls in the whitelist
+                    if (urlString in urlWhitelist) return false
                 }
                 return true
             }
