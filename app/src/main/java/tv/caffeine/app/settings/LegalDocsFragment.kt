@@ -1,6 +1,8 @@
 package tv.caffeine.app.settings
 
 
+import android.content.Intent
+import android.net.MailTo
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -26,6 +28,8 @@ enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int): Parcela
 class LegalDocsFragment : Fragment() {
 
     private lateinit var legalDoc: LegalDoc
+    // TODO (david): Nick will send me a complete list of external urls that's linked from our website.
+    private val urlWhitelist = listOf("caffeine.tv", "adr.org")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +55,36 @@ class LegalDocsFragment : Fragment() {
         }
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                if (!URLUtil.isNetworkUrl(request?.url?.toString())) return true
-                return request?.url?.host?.endsWith("caffeine.tv") == false
+                request?.url?.let { url ->
+                    val urlString = url.toString()
+                    // Handle email links
+                    if (urlString.startsWith("mailto:")) {
+                        activity?.let {
+                            it.startActivity(buildEmailIntent(urlString))
+                            return true
+                        }
+                    }
+                    // Ignore other non-network urls
+                    if (!URLUtil.isNetworkUrl(urlString)) return true
+
+                    // Handle whitelisted urls
+                    for (whitelistedUrl in urlWhitelist) {
+                        if (url.host?.endsWith(whitelistedUrl) == true) {
+                            return false
+                        }
+                    }
+                }
+                return true
             }
         }
         val url = getString(legalDoc.url)
         webView.loadUrl(url)
+    }
+
+    private fun buildEmailIntent(url: String): Intent {
+        return Intent(Intent.ACTION_SEND).also {
+            it.putExtra(Intent.EXTRA_EMAIL, arrayOf(MailTo.parse(url).to))
+            it.type = "message/rfc822"
+        }
     }
 }
