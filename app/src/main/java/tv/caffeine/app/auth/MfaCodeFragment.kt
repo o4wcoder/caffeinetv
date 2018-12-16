@@ -2,6 +2,8 @@ package tv.caffeine.app.auth
 
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.databinding.FragmentMfaCodeBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
+import tv.caffeine.app.util.convertLinks
 import javax.inject.Inject
 
 class MfaCodeFragment : CaffeineFragment() {
@@ -37,16 +40,28 @@ class MfaCodeFragment : CaffeineFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.submitMfaCodeButton.setOnClickListener { submitMfaCode() }
         binding.mfaCodeEditText.setOnActionGo { submitMfaCode() }
+        binding.mfaCodeSubtitle.apply {
+            text = convertLinks(R.string.mfa_code_subtitle, resources, ::resendEmailSpanFactory)
+            movementMethod = LinkMovementMethod.getInstance()
+        }
     }
 
-    private fun submitMfaCode() {
+    private fun resendEmailSpanFactory(url: String?) = ResendEmailSpan(url)
+
+    private inner class ResendEmailSpan(url: String?) : URLSpan(url) {
+        override fun onClick(widget: View) {
+            submitMfaCode(true)
+        }
+    }
+
+    private fun submitMfaCode(skipMfaCode: Boolean = false) {
         val args = MfaCodeFragmentArgs.fromBundle(arguments)
         val username = args.username
         val password = args.password
         val caid = args.caid
         val loginToken = args.loginToken
         launch {
-            val mfaCode = MfaCode(binding.mfaCodeEditText.text.toString())
+            val mfaCode = if (skipMfaCode) null else MfaCode(binding.mfaCodeEditText.text.toString())
             val signInBody = SignInBody(Account(username, password, caid, loginToken), mfaCode)
             val response = accountsService.signIn(signInBody).await()
             val signInResult = response.body()

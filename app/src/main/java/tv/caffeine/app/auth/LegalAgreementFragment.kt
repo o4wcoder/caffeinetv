@@ -2,16 +2,12 @@ package tv.caffeine.app.auth
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
-import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -31,6 +27,7 @@ import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.convertLinks
 import javax.inject.Inject
 
 class LegalAgreementFragment : CaffeineFragment() {
@@ -47,7 +44,7 @@ class LegalAgreementFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.legalAgreementTextView.apply {
-            text = buildLegalDocSpannable(findNavController())
+            text = convertLinks(R.string.must_agree_to_legal, resources, ::legalDocLinkSpanFactory)
             movementMethod = LinkMovementMethod.getInstance()
         }
         binding.agreeButton.setOnClickListener {
@@ -68,18 +65,8 @@ class LegalAgreementFragment : CaffeineFragment() {
         navController.navigate(R.id.lobbyFragment)
     }
 
-    private fun buildLegalDocSpannable(navController: NavController) : Spannable {
-        val spannable = SpannableString(HtmlCompat.fromHtml(
-                resources.getString(R.string.must_agree_to_legal), HtmlCompat.FROM_HTML_MODE_LEGACY))
-        for (urlSpan in spannable.getSpans<URLSpan>(0, spannable.length, URLSpan::class.java)) {
-            spannable.setSpan(LegalDocLinkSpan(urlSpan.url, navController, resources),
-                    spannable.getSpanStart(urlSpan),
-                    spannable.getSpanEnd(urlSpan),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannable.removeSpan(urlSpan)
-        }
-        return spannable
-    }
+    private fun legalDocLinkSpanFactory(url: String?) =
+            LegalDocLinkSpan(url, findNavController(), resources)
 
     private class LegalDocLinkSpan(url: String?, val navController: NavController, resources: Resources) : URLSpan(url) {
         val legalDoc = LegalDoc.values().find { resources.getString(it.url) == url }

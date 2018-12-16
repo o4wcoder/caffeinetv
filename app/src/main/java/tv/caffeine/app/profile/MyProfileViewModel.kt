@@ -8,6 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.MfaMethod
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
@@ -29,6 +30,7 @@ class MyProfileViewModel(
     val followersCount: LiveData<String> = Transformations.map(myProfile) { it.followersCount.toString() }
     val followingCount: LiveData<String> = Transformations.map(myProfile) { it.followingCount.toString() }
     val bio: LiveData<String> = Transformations.map(myProfile) { it.bio }
+    val mfaMethod: LiveData<MfaMethod> = Transformations.map(myProfile) { it.mfaMethod }
 
     val isVerified: LiveData<Boolean> = Transformations.map(myProfile) { it.isVerified }
 

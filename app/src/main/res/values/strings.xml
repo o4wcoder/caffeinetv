@@ -23,10 +23,13 @@
     <string name="forgot_password_subtitle">That\'s ok. We\'ll send you an email with a link to reset your password.</string>
     <string name="forgot_password_email_sent">Email Sent. Please check your inbox.</string>
     <string name="forgot_password_cannot_reset_password">We could not reset your password. Please try again later.</string>
-    <string name="mfa_code_title">MFA Code</string>
+    <string name="mfa_code_title">Code Emailed</string>
+    <string name="mfa_code_subtitle">A verification code was sent to your email. Please enter the code below or <![CDATA[<a href="resend_email">resend email</a>]]>.</string>
     <string name="enter_code_title">Enter Code</string>
-    <string name="mfa_code_hint">MFA Code</string>
+    <string name="mfa_code_hint">Verification Code</string>
     <string name="submit_mfa_code">Submit</string>
+    <string name="mfa_status_on">On</string>
+    <string name="mfa_status_off">Off</string>
     <string name="sign_out_button">Sign Out</string>
     <string name="sign_out_question">Sign out of account?</string>
     <string name="cancel">Cancel</string>

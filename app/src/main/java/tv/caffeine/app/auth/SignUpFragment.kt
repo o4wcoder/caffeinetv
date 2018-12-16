@@ -6,9 +6,6 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.LayoutInflater
@@ -17,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -36,6 +32,7 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.convertLinks
 import tv.caffeine.app.util.showSnackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,7 +58,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.signUpButton.setOnClickListener { signUpClicked() }
         binding.agreeToLegalTextView.apply {
-            text = buildLegalDocSpannable(findNavController())
+            text = convertLinks(R.string.i_agree_to_legal, resources, ::legalDocLinkSpanFactory)
             movementMethod = LinkMovementMethod.getInstance()
         }
         binding.dobEditText.apply {
@@ -183,18 +180,9 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         binding.dobTextInputLayout.error = error.dobErrorsString
     }
 
-    private fun buildLegalDocSpannable(navController: NavController) : Spannable {
-        val spannable = SpannableString(HtmlCompat.fromHtml(
-                resources.getString(R.string.i_agree_to_legal), HtmlCompat.FROM_HTML_MODE_LEGACY))
-        for (urlSpan in spannable.getSpans<URLSpan>(0, spannable.length, URLSpan::class.java)) {
-            spannable.setSpan(LegalDocLinkSpan(urlSpan.url, navController, resources),
-                    spannable.getSpanStart(urlSpan),
-                    spannable.getSpanEnd(urlSpan),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannable.removeSpan(urlSpan)
-        }
-        return spannable
-    }
+
+    private fun legalDocLinkSpanFactory(url: String?) =
+            LegalDocLinkSpan(url, findNavController(), resources)
 
     private class LegalDocLinkSpan(url: String?, val navController: NavController, resources: Resources) : URLSpan(url) {
         val legalDoc = LegalDoc.values().find { resources.getString(it.url) == url }

@@ -5,7 +5,8 @@
 
         <PreferenceScreen
             android:key="manage_2fa"
-            android:title="@string/two_step_authentication"/>
+            android:title="@string/two_step_authentication"
+            android:summary=" "/>
 
         <PreferenceScreen
             android:key="change_email"

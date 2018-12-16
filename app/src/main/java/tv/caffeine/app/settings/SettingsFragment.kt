@@ -22,6 +22,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.NotificationSettings
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.MfaMethod
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
@@ -77,6 +78,13 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
             findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdatePasswordFragment())
             true
         }
+        myProfileViewModel.mfaMethod.observe(this, Observer {
+            @StringRes val status = when(it) {
+                MfaMethod.EMAIL, MfaMethod.TOTP -> R.string.mfa_status_on
+                else -> R.string.mfa_status_off
+            }
+            findPreference("manage_2fa")?.setSummary(status)
+        })
         myProfileViewModel.email.observe(this, Observer {
             findPreference("change_email")?.summary = it ?: getString(R.string.email)
         })

@@ -2,13 +2,19 @@ package tv.caffeine.app.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.URLSpan
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -108,4 +114,21 @@ fun Activity.showSnackbar(@StringRes resId: Int) {
 fun CaffeineFragment.showSnackbar(@StringRes resId: Int) {
     val view = this.view ?: return
     Snackbar.make(view, resId, Snackbar.LENGTH_SHORT).show()
+}
+
+fun convertLinks(
+        @StringRes stringResId: Int,
+        resources: Resources,
+        spanFactory: (url: String?) -> URLSpan
+): Spannable {
+    val spannable = SpannableString(HtmlCompat.fromHtml(
+            resources.getString(stringResId), HtmlCompat.FROM_HTML_MODE_LEGACY))
+    for (urlSpan in spannable.getSpans<URLSpan>(0, spannable.length, URLSpan::class.java)) {
+        spannable.setSpan(spanFactory(urlSpan.url),
+                spannable.getSpanStart(urlSpan),
+                spannable.getSpanEnd(urlSpan),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannable.removeSpan(urlSpan)
+    }
+    return spannable
 }
