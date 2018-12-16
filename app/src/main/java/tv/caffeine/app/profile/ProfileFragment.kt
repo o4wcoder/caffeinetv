@@ -13,6 +13,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentProfileBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
+import tv.caffeine.app.util.safeNavigate
 
 class ProfileFragment : CaffeineFragment() {
 
@@ -64,16 +65,16 @@ class ProfileFragment : CaffeineFragment() {
 
     private fun showFollowingList() {
         val action = ProfileFragmentDirections.actionProfileFragmentToFollowingFragment(caid)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     private fun showFollowersList() {
         val action = ProfileFragmentDirections.actionProfileFragmentToFollowersFragment(caid)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     private fun watchBroadcast() {
         val action = ProfileFragmentDirections.actionProfileFragmentToStageFragment(caid)
-        findNavController().navigate(action, NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, false).build())
+        findNavController().safeNavigate(action, NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, false).build())
     }
 }

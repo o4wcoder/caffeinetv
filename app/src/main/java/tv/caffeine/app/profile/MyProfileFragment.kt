@@ -31,6 +31,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.navigateToLanding
+import tv.caffeine.app.util.safeNavigate
 import java.io.File
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -79,7 +80,7 @@ class MyProfileFragment : CaffeineFragment() {
         binding.signOutButton.setOnClickListener { confirmSignOut() }
         binding.infoButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToEditBioFragment()
-            findNavController().navigate(action)
+            findNavController().safeNavigate(action)
         }
         binding.nameEditText.setOnAction(EditorInfo.IME_ACTION_SEND) {
             val updatedName = binding.nameEditText.text.toString()
@@ -87,11 +88,11 @@ class MyProfileFragment : CaffeineFragment() {
         }
         binding.settingsButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToSettingsFragment()
-            findNavController().navigate(action)
+            findNavController().safeNavigate(action)
         }
         binding.goldAndCreditsButtonContainer.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToGoldAndCreditsFragment()
-            findNavController().navigate(action)
+            findNavController().safeNavigate(action)
         }
         walletViewModel.wallet.observe(viewLifecycleOwner, androidx.lifecycle.Observer { wallet ->
             if (wallet == null) return@Observer
@@ -173,13 +174,13 @@ class MyProfileFragment : CaffeineFragment() {
     private fun showFollowingList() {
         val caid = tokenStore.caid ?: return
         val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment(caid)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     private fun showFollowersList() {
         val caid = tokenStore.caid ?: return
         val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment(caid)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     private fun confirmSignOut() {

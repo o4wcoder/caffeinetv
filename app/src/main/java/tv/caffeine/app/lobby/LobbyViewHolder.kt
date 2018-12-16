@@ -25,6 +25,7 @@ import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
+import tv.caffeine.app.util.safeNavigate
 
 sealed class LobbyViewHolder(
         itemView: View,
@@ -57,7 +58,7 @@ class AvatarCard(
         itemView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToMyProfileFragment()
             action.setLaunchAvatarSelection(true)
-            Navigation.findNavController(itemView).navigate(action)
+            Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
 }
@@ -154,7 +155,7 @@ abstract class BroadcasterCard(
 
     fun viewProfile(caid: String) {
         val action = LobbyDirections.actionGlobalProfileFragment(caid)
-        Navigation.findNavController(itemView).navigate(action)
+        Navigation.findNavController(itemView).safeNavigate(action)
     }
 }
 
@@ -183,7 +184,7 @@ open class LiveBroadcastCard(
         }
         itemView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
-            Navigation.findNavController(itemView).navigate(action)
+            Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
 }
@@ -222,7 +223,7 @@ class LiveBroadcastWithFriendsCard(
         }
         itemView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
-            Navigation.findNavController(itemView).navigate(action)
+            Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
 }

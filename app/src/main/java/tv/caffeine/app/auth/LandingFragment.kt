@@ -21,6 +21,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.databinding.FragmentLandingBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 
@@ -97,12 +98,12 @@ class LandingFragment : CaffeineFragment() {
     private fun continueToSignUp(oauthCallbackResult: OAuthCallbackResult) {
         val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment()
         action.setOauthCallbackResult(oauthCallbackResult)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     private fun continueToMfaCode(oauthCallbackResult: OAuthCallbackResult) {
         val action = LandingFragmentDirections.actionLandingFragmentToMfaCodeFragment(null, null, oauthCallbackResult.caid, oauthCallbackResult.loginToken)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,7 +116,7 @@ class LandingFragment : CaffeineFragment() {
         val navController = findNavController()
         tokenStore.storeSignInResult(signInResult)
         navController.popBackStack(R.id.landingFragment, true)
-        navController.navigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbyFragment)
         authWatcher.onSignIn()
     }
 

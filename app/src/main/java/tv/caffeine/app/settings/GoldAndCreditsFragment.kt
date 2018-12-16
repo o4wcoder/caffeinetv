@@ -13,6 +13,7 @@ import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
 import tv.caffeine.app.profile.WalletViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.util.safeNavigate
 import java.text.NumberFormat
 
 @Parcelize
@@ -41,7 +42,7 @@ class GoldAndCreditsFragment : CaffeineFragment() {
         })
         binding.transactionHistoryButton.setOnClickListener {
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToTransactionHistoryFragment()
-            findNavController().navigate(action)
+            findNavController().safeNavigate(action)
         }
         binding.buyGoldButton.setOnClickListener { navigateToBuyGold(BuyGoldOption.UsingPlayStore) }
         binding.buyGoldWithCreditsButton.setOnClickListener { navigateToBuyGold(BuyGoldOption.UsingCredits) }
@@ -50,6 +51,6 @@ class GoldAndCreditsFragment : CaffeineFragment() {
 
     private fun navigateToBuyGold(buyGoldOption: BuyGoldOption) {
         val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToGoldBundlesFragment(buyGoldOption)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 }

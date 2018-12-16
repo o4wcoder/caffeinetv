@@ -26,6 +26,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -98,7 +99,7 @@ class TransactionHistoryViewHolder(
             }
             itemView.setOnClickListener {
                 val action = LobbyDirections.actionGlobalProfileFragment(userCaid)
-                itemView.findNavController().navigate(action)
+                itemView.findNavController().safeNavigate(action)
             }
         } else {
             binding.usernameTextView.text = null

@@ -19,6 +19,7 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
@@ -87,13 +88,13 @@ class TwitterAuthFragment : CaffeineFragment() {
     private fun continueToSignUp(oauthCallbackResult: OAuthCallbackResult) {
         val action = TwitterAuthFragmentDirections.actionTwitterAuthFragmentToSignUpFragment()
         action.setOauthCallbackResult(oauthCallbackResult)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     private fun continueToMfaCode(oauthCallbackResult: OAuthCallbackResult) {
         val action = TwitterAuthFragmentDirections.actionTwitterAuthFragmentToMfaCodeFragment(null, null, oauthCallbackResult.caid, oauthCallbackResult.loginToken)
         val options = NavOptions.Builder().setPopUpTo(R.id.landingFragment, false).build()
-        findNavController().navigate(action, options)
+        findNavController().safeNavigate(action, options)
     }
 
     @UiThread
@@ -101,7 +102,7 @@ class TwitterAuthFragment : CaffeineFragment() {
         val navController = findNavController()
         tokenStore.storeSignInResult(signInResult)
         navController.popBackStack(R.id.landingFragment, true)
-        navController.navigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbyFragment)
         authWatcher.onSignIn()
     }
 

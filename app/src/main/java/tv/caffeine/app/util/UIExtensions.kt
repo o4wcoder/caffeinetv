@@ -11,38 +11,14 @@ import android.text.style.URLSpan
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import com.google.android.material.snackbar.Snackbar
-import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
-
-fun NavController.navigateToLanding(message: String? = null) {
-    val action = LobbyDirections.ActionGlobalLandingFragment(message)
-    val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
-    navigate(action, navOptions)
-}
-
-fun NavController.navigateToNeedsUpdate() {
-    val action = LobbyDirections.ActionGlobalNeedsUpdateFragment()
-    val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
-    navigate(action, navOptions)
-}
-
-fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: String, shouldNavigateBackWhenDone: Boolean) {
-    ReportOrIgnoreDialogFragment().let {
-        it.arguments = LobbyDirections.ActionGlobalReportOrIgnoreDialogFragment(
-                caid, username, shouldNavigateBackWhenDone).arguments
-        it.show(this, "reportOrIgnoreUser")
-    }
-}
 
 fun Context.dismissKeyboard(view: View) {
     getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view.windowToken, 0)

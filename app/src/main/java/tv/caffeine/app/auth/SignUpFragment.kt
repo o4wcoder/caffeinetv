@@ -33,6 +33,7 @@ import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.convertLinks
+import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -157,7 +158,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         tokenStore.storeCredentials(credentials)
         val navController = findNavController()
         val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
-        navController.navigate(R.id.lobby, null, navOptions)
+        navController.safeNavigate(R.id.lobby, null, navOptions)
     }
 
     private fun clearErrors() {
@@ -189,7 +190,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
 
         override fun onClick(widget: View) {
             legalDoc?.let {
-                navController.navigate(SignUpFragmentDirections.actionSignUpFragmentToLegalDocsFragment(it))
+                navController.safeNavigate(SignUpFragmentDirections.actionSignUpFragmentToLegalDocsFragment(it))
             }
         }
     }

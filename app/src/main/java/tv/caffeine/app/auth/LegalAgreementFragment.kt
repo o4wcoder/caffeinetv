@@ -28,6 +28,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.convertLinks
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 class LegalAgreementFragment : CaffeineFragment() {
@@ -62,7 +63,7 @@ class LegalAgreementFragment : CaffeineFragment() {
     private fun onSuccess() {
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
-        navController.navigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbyFragment)
     }
 
     private fun legalDocLinkSpanFactory(url: String?) =
@@ -73,7 +74,7 @@ class LegalAgreementFragment : CaffeineFragment() {
 
         override fun onClick(widget: View) {
             legalDoc?.let {
-                navController.navigate(LegalAgreementFragmentDirections.actionLegalAgreementFragmentToLegalDocsFragment(it))
+                navController.safeNavigate(LegalAgreementFragmentDirections.actionLegalAgreementFragmentToLegalDocsFragment(it))
             }
         }
     }

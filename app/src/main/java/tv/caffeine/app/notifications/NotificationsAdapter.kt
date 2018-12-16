@@ -25,6 +25,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -93,7 +94,7 @@ class FollowNotificationViewHolder(itemView: View, private val scope: CoroutineS
         }
         itemView.setOnClickListener {
             val action = LobbyDirections.actionGlobalProfileFragment(caidRecord.caid)
-            itemView.findNavController().navigate(action)
+            itemView.findNavController().safeNavigate(action)
         }
     }
 

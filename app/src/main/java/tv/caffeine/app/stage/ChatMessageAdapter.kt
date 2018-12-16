@@ -21,6 +21,7 @@ import tv.caffeine.app.di.ThemeNotFollowedChat
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 class ChatMessageAdapter @Inject constructor(
@@ -130,7 +131,7 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
 
     private fun viewProfile(caid: String) {
         val action = LobbyDirections.actionGlobalProfileFragment(caid)
-        itemView.findNavController().navigate(action)
+        itemView.findNavController().safeNavigate(action)
     }
 
 }
@@ -181,7 +182,7 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
 
     private fun viewProfile(caid: String) {
         val action = LobbyDirections.actionGlobalProfileFragment(caid)
-        itemView.findNavController().navigate(action)
+        itemView.findNavController().safeNavigate(action)
     }
 
 }

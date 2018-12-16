@@ -20,6 +20,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.compactNumberFormat
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 abstract class UsersAdapter(
@@ -70,7 +71,7 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
         itemView.setOnClickListener {
             val action = LobbyDirections.actionGlobalProfileFragment(item.user.caid)
-            Navigation.findNavController(itemView).navigate(action)
+            Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
 }

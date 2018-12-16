@@ -32,10 +32,7 @@ import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
-import tv.caffeine.app.util.setDarkMode
-import tv.caffeine.app.util.setImmersiveSticky
-import tv.caffeine.app.util.unsetImmersiveSticky
+import tv.caffeine.app.util.*
 import javax.inject.Inject
 import kotlin.collections.set
 
@@ -146,7 +143,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             }
         }
         binding.avatarImageView.setOnClickListener {
-            findNavController().navigate(LobbyDirections.actionGlobalProfileFragment(broadcaster))
+            findNavController().safeNavigate(LobbyDirections.actionGlobalProfileFragment(broadcaster))
         }
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)

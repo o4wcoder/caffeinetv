@@ -32,6 +32,7 @@ import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector {
@@ -71,11 +72,11 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
 
     private fun configureAuthSettings() {
         findPreference("change_email")?.setOnPreferenceClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdateEmailFragment())
+            findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToUpdateEmailFragment())
             true
         }
         findPreference("change_password")?.setOnPreferenceClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUpdatePasswordFragment())
+            findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToUpdatePasswordFragment())
             true
         }
         myProfileViewModel.mfaMethod.observe(this, Observer {
@@ -169,12 +170,12 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
 
     private fun openLegalDoc(legalDoc: LegalDoc): Boolean {
         val action = SettingsFragmentDirections.actionSettingsFragmentToLegalDocsFragment(legalDoc)
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
         return true
     }
 
     private fun openIgnoredUsers(): Boolean {
-        findNavController().navigate(R.id.action_settingsFragment_to_ignoredUsersFragment)
+        findNavController().safeNavigate(R.id.action_settingsFragment_to_ignoredUsersFragment)
         return true
     }
 
@@ -182,7 +183,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
         super.onNavigateToScreen(preferenceScreen)
         preferenceScreen?.key?.let { key ->
             val args = Bundle().apply { putString(ARG_PREFERENCE_ROOT, key) }
-            findNavController().navigate(R.id.action_settingsFragment_self, args)
+            findNavController().safeNavigate(R.id.action_settingsFragment_self, args)
         }
         Timber.d("Navigating to ${preferenceScreen?.title}")
     }

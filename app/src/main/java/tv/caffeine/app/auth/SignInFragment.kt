@@ -24,6 +24,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.ui.setOnActionGo
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 class SignInFragment : CaffeineFragment() {
@@ -69,7 +70,7 @@ class SignInFragment : CaffeineFragment() {
     private fun onSuccess() {
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
-        navController.navigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbyFragment)
     }
 
     @UiThread
@@ -79,13 +80,13 @@ class SignInFragment : CaffeineFragment() {
         val password = binding.passwordEditText.text.toString()
         val action =
                 SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)
-        navController.navigate(action)
+        navController.safeNavigate(action)
     }
 
     @UiThread
     private fun onMustAcceptTerms() {
         val action = SignInFragmentDirections.actionSignInFragmentToLegalAgreementFragment()
-        findNavController().navigate(action)
+        findNavController().safeNavigate(action)
     }
 
     @UiThread

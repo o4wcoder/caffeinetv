@@ -19,6 +19,7 @@ import tv.caffeine.app.databinding.FragmentMfaCodeBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
 import tv.caffeine.app.util.convertLinks
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 class MfaCodeFragment : CaffeineFragment() {
@@ -77,7 +78,7 @@ class MfaCodeFragment : CaffeineFragment() {
         tokenStore.storeSignInResult(result)
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
-        navController.navigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbyFragment)
         authWatcher.onSignIn()
     }
 
