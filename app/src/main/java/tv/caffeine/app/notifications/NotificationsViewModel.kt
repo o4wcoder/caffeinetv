@@ -45,6 +45,16 @@ class NotificationsViewModel(
         if (timestamp == null || referenceTimestamp == null) return true
         return timestamp.isAfter(referenceTimestamp)
     }
+
+    fun markNotificationsViewed() = launch {
+        val caid = tokenStore.caid ?: return@launch
+        val result = usersService.notificationsViewed(caid).awaitAndParseErrors(gson)
+        when(result) {
+            is CaffeineResult.Success -> Timber.d("Successfully marked notifications viewed")
+            is CaffeineResult.Error -> Timber.d("Error marking notifications viewed ${result.error}")
+            is CaffeineResult.Failure -> Timber.e(Exception("Failure marking notifications viewed", result.throwable))
+        }
+    }
 }
 
 sealed class CaffeineNotification

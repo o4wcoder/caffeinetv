@@ -41,6 +41,9 @@ interface UsersService {
 
     @PATCH("v1/users/{caid}")
     fun updateUser(@Path("caid") userId: String, @Body user: UserUpdateBody): Deferred<Response<UserContainer>>
+
+    @PATCH("v1/users/{caid}/notifications-viewed")
+    fun notificationsViewed(@Path("caid") userId: String): Deferred<Response<UserContainer>>
 }
 
 class ReportUserBody(val reason: String, val description: String?)

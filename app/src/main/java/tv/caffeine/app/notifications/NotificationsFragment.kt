@@ -27,6 +27,7 @@ class NotificationsFragment : CaffeineFragment() {
         binding.userListRecyclerView.adapter = notificationsAdapter
         viewModel.notifications.observe(viewLifecycleOwner, Observer {
             notificationsAdapter.submitList(it)
+            viewModel.markNotificationsViewed()
         })
     }
 }
