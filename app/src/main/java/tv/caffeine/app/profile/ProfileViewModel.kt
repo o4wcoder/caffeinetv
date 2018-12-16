@@ -10,18 +10,22 @@ import tv.caffeine.app.api.model.isOnline
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import java.text.NumberFormat
 
 class ProfileViewModel(
         dispatchConfig: DispatchConfig,
         val followManager: FollowManager
 ) : CaffeineViewModel(dispatchConfig) {
+
+    private val numberFormat = NumberFormat.getInstance()
+
     private val user = MutableLiveData<User>()
     private val broadcast = MutableLiveData<Broadcast>()
 
     val username: LiveData<String> = Transformations.map(user) { it.username }
     val name: LiveData<String> = Transformations.map(user) { it.name }
-    val followersCount: LiveData<String> = Transformations.map(user) { it.followersCount.toString() }
-    val followingCount: LiveData<String> = Transformations.map(user) { it.followingCount.toString() }
+    val followersCount: LiveData<String> = Transformations.map(user) { numberFormat.format(it.followersCount) }
+    val followingCount: LiveData<String> = Transformations.map(user) { numberFormat.format(it.followingCount) }
     val bio: LiveData<String> = Transformations.map(user) { it.bio }
 
     val isFollowed: LiveData<Boolean> = Transformations.map(user) { followManager.isFollowing(it.caid) }

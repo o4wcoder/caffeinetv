@@ -11,111 +11,117 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
+        style="@style/NoBarScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/transaction_history_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/transaction_history"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/gold_balance_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:drawableStart="@drawable/gold_coin"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/transaction_history_button"
-            app:autoSizeTextType="uniform"
-            tools:text="42" />
+            <Button
+                android:id="@+id/transaction_history_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/transaction_history"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/buy_gold_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/buy_gold_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gold_balance_text_view" />
+            <TextView
+                android:id="@+id/gold_balance_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/gold_coin"
+                android:textAppearance="@style/GoldAndCreditsBalance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/transaction_history_button"
+                app:autoSizeTextType="uniform"
+                tools:text="42" />
 
-        <TextView
-            android:id="@+id/credit_balance_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:drawableStart="@drawable/purple_coin"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintEnd_toStartOf="@+id/cumulative_credit_balance_text_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buy_gold_button"
-            tools:text="42" />
+            <Button
+                android:id="@+id/buy_gold_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/buy_gold_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gold_balance_text_view" />
 
-        <TextView
-            android:id="@+id/credit_balance_title_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/credits_available"
-            app:layout_constraintEnd_toStartOf="@+id/credit_balance_text_view"
-            app:layout_constraintStart_toEndOf="@+id/credit_balance_text_view"
-            app:layout_constraintTop_toBottomOf="@+id/credit_balance_text_view" />
+            <TextView
+                android:id="@+id/credit_balance_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/purple_coin"
+                android:textAppearance="@style/GoldAndCreditsBalance"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintEnd_toStartOf="@+id/cumulative_credit_balance_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buy_gold_button"
+                tools:text="42" />
 
-        <TextView
-            android:id="@+id/cumulative_credit_balance_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:drawableStart="@drawable/purple_coin"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/credit_balance_text_view"
-            app:layout_constraintTop_toBottomOf="@+id/buy_gold_button"
-            tools:text="42" />
+            <TextView
+                android:id="@+id/credit_balance_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/credits_available"
+                app:layout_constraintEnd_toStartOf="@+id/credit_balance_text_view"
+                app:layout_constraintStart_toEndOf="@+id/credit_balance_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/credit_balance_text_view" />
 
-        <TextView
-            android:id="@+id/cumulative_credit_balance_title_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/credits_lifetime"
-            app:layout_constraintEnd_toStartOf="@+id/cumulative_credit_balance_text_view"
-            app:layout_constraintStart_toEndOf="@+id/cumulative_credit_balance_text_view"
-            app:layout_constraintTop_toBottomOf="@+id/cumulative_credit_balance_text_view" />
+            <TextView
+                android:id="@+id/cumulative_credit_balance_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/purple_coin"
+                android:textAppearance="@style/GoldAndCreditsBalance"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/credit_balance_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/buy_gold_button"
+                tools:text="42" />
 
-        <Button
-            android:id="@+id/buy_gold_with_credits_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/buy_gold_with_credits_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/credit_balance_title_text_view" />
+            <TextView
+                android:id="@+id/cumulative_credit_balance_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/credits_lifetime"
+                app:layout_constraintEnd_toStartOf="@+id/cumulative_credit_balance_text_view"
+                app:layout_constraintStart_toEndOf="@+id/cumulative_credit_balance_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/cumulative_credit_balance_text_view" />
 
-        <TextView
-            android:id="@+id/gold_and_credits_help_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/gold_and_credits_help"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buy_gold_with_credits_button" />
+            <Button
+                android:id="@+id/buy_gold_with_credits_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/buy_gold_with_credits_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/credit_balance_title_text_view" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/gold_and_credits_help_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/gold_and_credits_help"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buy_gold_with_credits_button" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

@@ -22,9 +22,7 @@ private val inlineImages: Map<String, ImageSpec> = mapOf(
         "checkmark" to ImageSpec(R.drawable.verified_small_white, R.dimen.checkmark_size, R.dimen.checkmark_size),
         "bluecheckmark" to ImageSpec(R.drawable.verified_large, R.dimen.checkmark_size, R.dimen.checkmark_size),
         "goldcoin" to ImageSpec(R.drawable.gold_coin, R.dimen.coin_size, R.dimen.coin_size),
-        "purplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.coin_size, R.dimen.coin_size),
-        "largegoldcoin" to ImageSpec(R.drawable.gold_coin, R.dimen.large_coin_size, R.dimen.large_coin_size),
-        "largepurplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.large_coin_size, R.dimen.large_coin_size)
+        "purplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.coin_size, R.dimen.coin_size)
 )
 
 class UserAvatarImageGetter(private val textView: TextView, isFollowed: Boolean, @DimenRes private val avatarSizeDimen: Int) : Html.ImageGetter {

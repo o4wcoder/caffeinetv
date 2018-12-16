@@ -51,6 +51,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
         return binding.root
     }
 
+    private val numberFormat = NumberFormat.getInstance()
     private var itemGoldCost: Int = 0
     private var quantity: Int = 1
     private var walletBalance: Int = 0
@@ -60,7 +61,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
         binding.messageEditText.prepopulateText(message)
         sendDigitalItemViewModel.load(digitalItemId).observe(viewLifecycleOwner, Observer { digitalItem ->
             itemGoldCost = digitalItem.goldCost
-            binding.goldCostTextView.text = total.toString()
+            binding.goldCostTextView.text = numberFormat.format(total)
             Picasso.get().load(digitalItem.staticImageUrl).into(binding.diImageView)
             binding.messageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) { sendDigitalItem(digitalItem) }
             binding.sendButton.setOnClickListener { sendDigitalItem(digitalItem) }
@@ -78,7 +79,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
             wrapSelectorWheel = false
             setOnValueChangedListener { _, _, newVal ->
                 quantity = newVal
-                binding.goldCostTextView.text = total.toString()
+                binding.goldCostTextView.text = numberFormat.format(total)
                 checkAbilityToPurchase()
             }
         }

@@ -14,6 +14,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import java.text.NumberFormat
 
 class MyProfileViewModel(
         dispatchConfig: DispatchConfig,
@@ -22,13 +23,15 @@ class MyProfileViewModel(
         private val uploadAvatarUseCase: UploadAvatarUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
+    private val numberFormat = NumberFormat.getInstance()
+
     private val myProfile = MutableLiveData<User>()
 
     val username: LiveData<String> = Transformations.map(myProfile) { it.username }
     val email: LiveData<String> = Transformations.map(myProfile) { it.email }
     val name: LiveData<String> = Transformations.map(myProfile) { it.name }
-    val followersCount: LiveData<String> = Transformations.map(myProfile) { it.followersCount.toString() }
-    val followingCount: LiveData<String> = Transformations.map(myProfile) { it.followingCount.toString() }
+    val followersCount: LiveData<String> = Transformations.map(myProfile) { numberFormat.format(it.followersCount) }
+    val followingCount: LiveData<String> = Transformations.map(myProfile) { numberFormat.format(it.followingCount) }
     val bio: LiveData<String> = Transformations.map(myProfile) { it.bio }
     val mfaMethod: LiveData<MfaMethod> = Transformations.map(myProfile) { it.mfaMethod }
 

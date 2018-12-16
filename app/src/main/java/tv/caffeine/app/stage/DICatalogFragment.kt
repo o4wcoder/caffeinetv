@@ -66,8 +66,9 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 private class DigitalItemViewHolder constructor(
         val binding: DiCatalogItemBinding,
         val callback: Callback
-)
-    : RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
+
+    private val numberFormat = NumberFormat.getInstance()
 
     interface Callback {
         fun digitalItemSelected(digitalItem: DigitalItem)
@@ -76,7 +77,7 @@ private class DigitalItemViewHolder constructor(
     fun bind(digitalItem: DigitalItem) {
         binding.digitalItem = digitalItem
         binding.nameTextView.text = digitalItem.name
-        binding.goldCostTextView.text = digitalItem.goldCost.toString()
+        binding.goldCostTextView.text = numberFormat.format(digitalItem.goldCost)
         Picasso.get()
                 .load(digitalItem.staticImageUrl)
                 .into(binding.previewImageView)

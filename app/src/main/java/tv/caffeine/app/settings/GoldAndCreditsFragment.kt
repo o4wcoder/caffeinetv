@@ -36,9 +36,9 @@ class GoldAndCreditsFragment : CaffeineFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val numberFormat = NumberFormat.getIntegerInstance()
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
-            binding.goldBalanceTextView.htmlText = getString(R.string.large_gold_formatted, numberFormat.format(wallet.gold))
-            binding.creditBalanceTextView.htmlText = getString(R.string.large_credits_formatted, numberFormat.format(wallet.credits))
-            binding.cumulativeCreditBalanceTextView.htmlText = getString(R.string.large_credits_formatted, numberFormat.format(wallet.cumulativeCredits))
+            binding.goldBalanceTextView.htmlText = getString(R.string.gold_formatted, numberFormat.format(wallet.gold))
+            binding.creditBalanceTextView.htmlText = getString(R.string.credits_formatted, numberFormat.format(wallet.credits))
+            binding.cumulativeCreditBalanceTextView.htmlText = getString(R.string.credits_formatted, numberFormat.format(wallet.cumulativeCredits))
         })
         binding.transactionHistoryButton.setOnClickListener {
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToTransactionHistoryFragment()

@@ -104,15 +104,21 @@ val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
 
 }
 
-fun TransactionHistoryItem.costString(resources: Resources) = when {
-    this is TransactionHistoryItem.Bundle && costCurrencyCode != "CREDITS" -> resources.getString(R.string.transaction_item_purchased, value.toString(), NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }.format(cost/100f))
-    this is TransactionHistoryItem.Bundle && costCurrencyCode == "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, value.toString(), cost.toString())
-    this is TransactionHistoryItem.SendDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_sent, cost)
-    this is TransactionHistoryItem.SendDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_sent, cost, quantity)
-    this is TransactionHistoryItem.ReceiveDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_received, value)
-    this is TransactionHistoryItem.ReceiveDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_received, value, quantity)
-    this is TransactionHistoryItem.Adjustment -> quantity.toString()
-    else -> cost.toString()
+fun TransactionHistoryItem.costString(resources: Resources): String? {
+    val numberFormat = NumberFormat.getNumberInstance()
+    return when {
+        this is TransactionHistoryItem.Bundle && costCurrencyCode != "CREDITS" -> {
+            val currencyFormatter = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }
+            resources.getString(R.string.transaction_item_purchased, numberFormat.format(value), currencyFormatter.format(cost/100f))
+        }
+        this is TransactionHistoryItem.Bundle && costCurrencyCode == "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, numberFormat.format(value), numberFormat.format(cost))
+        this is TransactionHistoryItem.SendDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_sent, numberFormat.format(cost))
+        this is TransactionHistoryItem.SendDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_sent, numberFormat.format(cost), numberFormat.format(quantity))
+        this is TransactionHistoryItem.ReceiveDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_received, numberFormat.format(value))
+        this is TransactionHistoryItem.ReceiveDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_received, numberFormat.format(value), numberFormat.format(quantity))
+        this is TransactionHistoryItem.Adjustment -> resources.getString(R.string.transaction_item_received, numberFormat.format(quantity))
+        else -> numberFormat.format(cost)
+    }
 }
 
 val TransactionHistoryItem.titleResId: Int get() = when(this) {

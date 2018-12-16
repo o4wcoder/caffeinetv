@@ -23,6 +23,7 @@ class MyProfileViewModelTests {
     companion object {
         private const val FOLLOWING_COUNT = 42
         private const val FOLLOWERS_COUNT = 1000
+        private const val FOLLOWERS_COUNT_FORMATTED = "1,000"
         private const val AGE = 99
     }
 
@@ -44,7 +45,7 @@ class MyProfileViewModelTests {
     fun followersCountIsLoadedCorrectly() {
         assertNotEquals(FOLLOWERS_COUNT, FOLLOWING_COUNT)
         subject.followersCount.observeForever {
-            assertEquals(FOLLOWERS_COUNT.toString(), it)
+            assertEquals(FOLLOWERS_COUNT_FORMATTED, it)
         }
     }
 

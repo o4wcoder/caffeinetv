@@ -22,6 +22,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.safeNavigate
+import java.text.NumberFormat
 import javax.inject.Inject
 
 class ChatMessageAdapter @Inject constructor(
@@ -91,6 +92,8 @@ private fun View.toggleVisibility() {
 
 class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
 
+    private val numberFormat = NumberFormat.getInstance()
+
     init {
         itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
     }
@@ -114,7 +117,7 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
         binding.speechBubbleTextView.text = message.body.text
-        binding.endorsementCountTextView.text = if (message.endorsementCount > 0) message.endorsementCount.toString() else null
+        binding.endorsementCountTextView.text = if (message.endorsementCount > 0) numberFormat.format(message.endorsementCount) else null
         binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
         val endorsementTextColor = ContextCompat.getColor(itemView.context, message.endorsementTextColorResId)
         binding.endorsementCountTextView.setTextColor(endorsementTextColor)
@@ -138,6 +141,8 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
 
 class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
 
+    private val numberFormat = NumberFormat.getInstance()
+
     init {
         itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
     }
@@ -161,7 +166,7 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
         binding.speechBubbleTextView.text = message.body.text
-        binding.endorsementCountTextView.text = if (message.endorsementCount > 0) message.endorsementCount.toString() else null
+        binding.endorsementCountTextView.text = if (message.endorsementCount > 0) numberFormat.format(message.endorsementCount) else null
         binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
         val endorsementTextColor = ContextCompat.getColor(itemView.context, message.endorsementTextColorResId)
         binding.endorsementCountTextView.setTextColor(endorsementTextColor)

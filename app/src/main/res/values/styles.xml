@@ -141,6 +141,10 @@
 
     <style name="ScreenCaption" parent="@style/TextAppearance.MaterialComponents.Caption" />
 
+    <style name="GoldAndCreditsBalance" parent="@style/TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">27sp</item>
+    </style>
+
     <style name="LinkButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeWidth">0dp</item>
     </style>
