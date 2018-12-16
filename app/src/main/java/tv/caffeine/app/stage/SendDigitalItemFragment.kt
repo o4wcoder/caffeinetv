@@ -53,6 +53,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
 
     private var itemGoldCost: Int = 0
     private var quantity: Int = 1
+    private var walletBalance: Int = 0
     private val total get() = itemGoldCost * quantity
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,20 +64,28 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
             Picasso.get().load(digitalItem.staticImageUrl).into(binding.diImageView)
             binding.messageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) { sendDigitalItem(digitalItem) }
             binding.sendButton.setOnClickListener { sendDigitalItem(digitalItem) }
+            checkAbilityToPurchase()
         })
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
+            walletBalance = wallet.gold
             val numberFormat = NumberFormat.getIntegerInstance()
             binding.walletBalanceTextView.htmlText = getString(R.string.wallet_balance, numberFormat.format(wallet.gold))
+            checkAbilityToPurchase()
         })
         binding.diQuantityNumberPicker.apply {
             minValue = 1
-            maxValue = 9
+            maxValue = 99
             wrapSelectorWheel = false
             setOnValueChangedListener { _, _, newVal ->
                 quantity = newVal
                 binding.goldCostTextView.text = total.toString()
+                checkAbilityToPurchase()
             }
         }
+    }
+
+    private fun checkAbilityToPurchase() {
+        binding.sendButton.isEnabled = walletBalance >= total
     }
 
     private fun sendDigitalItem(digitalItem: DigitalItem) {
