@@ -95,7 +95,7 @@
                 app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
                 app:layout_constraintTop_toBottomOf="@id/preview_image_view"
                 tools:drawableEnd="@drawable/verified_large"
-                tools:text="Caffeine" />
+                tools:text="@sample/usernames" />
 
             <TextView
                 android:id="@+id/dot_text_view"
@@ -146,8 +146,9 @@
                 android:background="@drawable/gray_rect_rounded_top_right"
                 app:layout_constraintBottom_toBottomOf="@+id/preview_image_view"
                 app:layout_constraintStart_toStartOf="@id/preview_image_view"
-                tools:text="FEATURED"
-                tools:backgroundTint="@color/color_accent" />
+                tools:text="@sample/tags.json/tags/name"
+                tools:backgroundTint="@sample/tags.json/tags/color"
+                tools:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/live_indicator_text_view"

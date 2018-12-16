@@ -31,7 +31,7 @@
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
         tools:drawableEnd="@drawable/verified_large"
-        tools:text="Caffeine" />
+        tools:text="@sample/usernames" />
 
     <ImageView
         android:id="@+id/avatar_image_view"

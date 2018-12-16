@@ -1,0 +1,34 @@
+{
+  "tags": [
+    {
+      "color": "#F39700",
+      "id": "DailyBroadcaster",
+      "name": "Daily Broadcaster"
+    },
+    {
+      "color": "#00C0FF",
+      "id": "Featured",
+      "name": "Featured"
+    },
+    {
+      "color": "#47CC00",
+      "id": "NewBroadcaster",
+      "name": "New Broadcaster"
+    },
+    {
+      "color": "#47CC00",
+      "id": "NewGame",
+      "name": "New Game"
+    },
+    {
+      "color": "#F39700",
+      "id": "RisingBroadcaster",
+      "name": "Rising Broadcaster"
+    },
+    {
+      "color": "#F39700",
+      "id": "WeeklyBroadcaster",
+      "name": "Weekly Broadcaster"
+    }
+  ]
+}

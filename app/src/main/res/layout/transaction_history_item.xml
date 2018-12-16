@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/transaction_title"
             tools:drawableEnd="@drawable/verified_large"
-            tools:text="@tools:sample/first_names" />
+            tools:text="@sample/usernames" />
 
         <ImageView
             android:id="@+id/digital_item_image_view"
