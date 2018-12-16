@@ -11,15 +11,19 @@
 
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".lobby.LobbyFragment">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/lobby_appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/lobby_toolbar"
@@ -98,10 +102,24 @@
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
+        <ProgressBar
+            android:id="@+id/lobby_loading_indicator"
+            android:layout_width="@dimen/stage_loading_indicator_size"
+            android:layout_height="@dimen/stage_loading_indicator_size"
+            android:indeterminate="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/lobby_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lobby_appbar">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lobby_recycler_view"
@@ -111,5 +129,5 @@
                 tools:listitem="@layout/previous_broadcast_card"/>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
