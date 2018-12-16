@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.VersionCheckError
+import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.session.FollowManager
@@ -30,7 +31,7 @@ class LobbyViewModel(
         refreshJob?.cancel()
         refreshJob = launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
-            if (!isVersionSupported) {
+            if (isVersionSupported is CaffeineEmptyResult.Error) {
                 _lobby.value = CaffeineResult.Error(VersionCheckError())
                 return@launch
             }

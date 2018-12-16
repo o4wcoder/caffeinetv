@@ -11,7 +11,6 @@ import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
-import java.lang.IllegalArgumentException
 
 fun NavController.safeNavigate(directions: NavDirections) {
     try {
@@ -80,6 +79,16 @@ fun NavController.navigateToNeedsUpdate() {
     val action = LobbyDirections.ActionGlobalNeedsUpdateFragment()
     val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
     safeNavigate(action, navOptions)
+}
+
+fun NavController.navigateToNoNetwork() {
+    if (currentDestination?.id == R.id.noNetworkFragment) return
+    val action = LobbyDirections.ActionGlobalNoNetworkFragment()
+    safeNavigate(action)
+}
+
+fun NavController.closeNoNetwork() {
+    if (currentDestination?.id == R.id.noNetworkFragment) popBackStack()
 }
 
 fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: String, shouldNavigateBackWhenDone: Boolean) {

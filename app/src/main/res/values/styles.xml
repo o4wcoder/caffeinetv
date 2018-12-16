@@ -139,6 +139,8 @@
 
     <!-- Design approved - End -->
 
+    <style name="ScreenCaption" parent="@style/TextAppearance.MaterialComponents.Caption" />
+
     <style name="LinkButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeWidth">0dp</item>
     </style>

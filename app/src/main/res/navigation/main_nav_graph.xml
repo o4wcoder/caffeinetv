@@ -441,4 +441,12 @@
     <action
         android:id="@+id/action_global_needsUpdateFragment"
         app:destination="@id/needsUpdateFragment" />
+    <fragment
+        android:id="@+id/noNetworkFragment"
+        android:name="tv.caffeine.app.util.NoNetworkFragment"
+        android:label="@string/no_network_data"
+        tools:layout="@layout/fragment_no_network"/>
+    <action
+        android:id="@+id/action_global_noNetworkFragment"
+        app:destination="@id/noNetworkFragment" />
 </navigation>

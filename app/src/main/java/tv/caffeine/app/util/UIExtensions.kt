@@ -3,6 +3,7 @@ package tv.caffeine.app.util
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
+import android.net.ConnectivityManager
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
@@ -11,7 +12,6 @@ import android.text.style.URLSpan
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
@@ -22,6 +22,11 @@ import tv.caffeine.app.ui.CaffeineFragment
 
 fun Context.dismissKeyboard(view: View) {
     getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Context.isNetworkAvailable(): Boolean {
+    val connectivityManager = getSystemService<ConnectivityManager>() ?: return false
+    return connectivityManager.activeNetworkInfo?.isConnected == true
 }
 
 fun Activity.dismissKeyboard() {

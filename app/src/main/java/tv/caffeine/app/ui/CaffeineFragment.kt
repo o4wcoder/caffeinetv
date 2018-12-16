@@ -14,9 +14,7 @@ import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.isVersionCheckError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.di.ViewModelFactory
-import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.navigateToLanding
-import tv.caffeine.app.util.navigateToNeedsUpdate
+import tv.caffeine.app.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -61,8 +59,9 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     }
 
     fun <T> handleFailure(result: CaffeineResult.Failure<T>, view: View) {
-        val e = result.throwable
-        Timber.e(e, "Failure in the LobbyFragment")
-        Snackbar.make(view, "Failure $e", Snackbar.LENGTH_SHORT).show()
+        Timber.e(result.throwable)
+        if (context?.isNetworkAvailable() == false) {
+            findNavController().navigateToNoNetwork()
+        }
     }
 }

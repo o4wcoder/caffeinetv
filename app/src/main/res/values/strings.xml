@@ -178,4 +178,8 @@
     <string name="take_me_to_play_store_button">Sweet! Take me to the Play Store to update.</string>
     <string name="time_to_update">Time to Update</string>
     <string name="new_version_awaits">A shiny new version of the app awaits you.</string>
+
+    <!-- Connectivity / No Network -->
+    <string name="no_network_data">No Network Data</string>
+    <string name="check_your_wifi_or_cellular">Check your wi-fi or cellular settings.</string>
 </resources>

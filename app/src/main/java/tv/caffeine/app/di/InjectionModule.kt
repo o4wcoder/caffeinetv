@@ -13,6 +13,7 @@ import tv.caffeine.app.update.NeedsUpdateFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowingFragment
 import tv.caffeine.app.users.IgnoredUsersFragment
+import tv.caffeine.app.util.NoNetworkFragment
 
 @Module
 abstract class InjectionModule {
@@ -48,4 +49,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun legalAgreementFragment(): LegalAgreementFragment
     @ContributesAndroidInjector abstract fun twitterAuthFragment(): TwitterAuthFragment
     @ContributesAndroidInjector abstract fun needsUpdateFragment(): NeedsUpdateFragment
+    @ContributesAndroidInjector abstract fun noNetworkFragment(): NoNetworkFragment
 }

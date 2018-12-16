@@ -1,8 +1,12 @@
 package tv.caffeine.app
 
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
@@ -14,9 +18,7 @@ import timber.log.Timber
 import tv.caffeine.app.auth.LandingFragment
 import tv.caffeine.app.databinding.ActivityMainBinding
 import tv.caffeine.app.settings.SettingsFragment
-import tv.caffeine.app.util.dismissKeyboard
-import tv.caffeine.app.util.setImmersiveSticky
-import tv.caffeine.app.util.unsetImmersiveSticky
+import tv.caffeine.app.util.*
 
 private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment, R.id.needsUpdateFragment)
 
@@ -66,6 +68,49 @@ class MainActivity : AppCompatActivity() {
                 setImmersiveSticky()
             } else {
                 unsetImmersiveSticky()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        startConnectivityMonitoring()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopConnectivityMonitoring()
+    }
+
+    private fun startConnectivityMonitoring() {
+        val connectivityManager = getSystemService<ConnectivityManager>() ?: return
+        connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+        if (!isNetworkAvailable()) openNoNetworkFragment()
+    }
+
+    private fun stopConnectivityMonitoring() {
+        val connectivityManager = getSystemService<ConnectivityManager>() ?: return
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+    private fun openNoNetworkFragment() = runOnUiThread { navController.navigateToNoNetwork() }
+
+    private fun closeNoNetworkFragment() = runOnUiThread { navController.closeNoNetwork() }
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onUnavailable() {
+            openNoNetworkFragment()
+        }
+
+        override fun onAvailable(network: Network?) {
+            if (isNetworkAvailable()) {
+                closeNoNetworkFragment()
+            }
+        }
+
+        override fun onLost(network: Network?) {
+            if (!isNetworkAvailable()) {
+                openNoNetworkFragment()
             }
         }
     }
