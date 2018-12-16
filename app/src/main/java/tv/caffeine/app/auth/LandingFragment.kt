@@ -19,9 +19,12 @@ import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentLandingBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 
@@ -38,7 +41,6 @@ class LandingFragment : CaffeineFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         binding = FragmentLandingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -48,6 +50,7 @@ class LandingFragment : CaffeineFragment() {
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         callbackManager = CallbackManager.Factory.create()
         binding.facebookSignInButton.registerCallback(callbackManager, facebookCallback)
+        binding.facebookSignInButton.fragment = this
         binding.twitterSignInButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.twitterAuthFragment))
         LandingFragmentArgs.fromBundle(arguments).message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
@@ -63,7 +66,7 @@ class LandingFragment : CaffeineFragment() {
         }
 
         override fun onError(error: FacebookException?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            activity?.showSnackbar(R.string.error_facebook_callback)
         }
     }
 
@@ -71,19 +74,25 @@ class LandingFragment : CaffeineFragment() {
         val token = result?.accessToken?.token ?: return
         launch {
             val deferred = oauthService.submitFacebookToken(FacebookTokenBody(token))
-            val oauthCallbackResult = deferred.await()
-            if (oauthCallbackResult.oauth != null) {
-                continueToSignUp(oauthCallbackResult)
-            } else if (oauthCallbackResult.next != null) {
-                when(oauthCallbackResult.next) {
-                    NextAccountAction.mfa_otp_required -> continueToMfaCode(oauthCallbackResult)
-                    else -> attemptSignIn(oauthCallbackResult)
-                }
+            val result = deferred.awaitAndParseErrors(gson)
+            when (result) {
+                is CaffeineResult.Success -> processOAuthResult(result.value)
             }
         }
     }
 
-    private suspend fun attemptSignIn(oauthCallbackResult: OAuthCallbackResult) {
+    private fun processOAuthResult(oauthCallbackResult: OAuthCallbackResult) {
+        if (oauthCallbackResult.oauth != null) {
+            continueToSignUp(oauthCallbackResult)
+        } else if (oauthCallbackResult.next != null) {
+            when(oauthCallbackResult.next) {
+                NextAccountAction.mfa_otp_required -> continueToMfaCode(oauthCallbackResult)
+                else -> attemptSignIn(oauthCallbackResult)
+            }
+        }
+    }
+
+    private fun attemptSignIn(oauthCallbackResult: OAuthCallbackResult) = launch {
         val caid = oauthCallbackResult.caid
         val loginToken = oauthCallbackResult.loginToken
         val signInBody = SignInBody(Account(null, null, caid, loginToken))

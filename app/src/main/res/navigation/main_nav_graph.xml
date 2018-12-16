@@ -377,6 +377,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_deleteAccountDialogFragment"
             app:destination="@+id/deleteAccountDialogFragment"/>
+        <action
+            android:id="@+id/action_settingsFragment_to_disconnectIdentityDialogFragment"
+            app:destination="@id/disconnectIdentityDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateEmailFragment"
@@ -405,6 +408,19 @@
         <argument
             android:name="username"
             app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/disconnectIdentityDialogFragment"
+        android:name="tv.caffeine.app.settings.DisconnectIdentityDialogFragment">
+        <argument
+            android:name="socialUid"
+            app:argType="string" />
+        <argument
+            android:name="identityProvider"
+            app:argType="tv.caffeine.app.api.model.IdentityProvider"/>
+        <argument
+            android:name="displayName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/twitterAuthFragment"

@@ -13,6 +13,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
 import tv.caffeine.app.auth.LandingFragment
 import tv.caffeine.app.databinding.ActivityMainBinding
+import tv.caffeine.app.settings.SettingsFragment
 import tv.caffeine.app.util.dismissKeyboard
 import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.unsetImmersiveSticky
@@ -52,9 +53,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         supportFragmentManager.fragments
                 .flatMap { it.childFragmentManager.fragments }
-                .find { it is LandingFragment }
-                ?.let {  landingFragment ->
-                    landingFragment.onActivityResult(requestCode, resultCode, data)
+                .find { it is LandingFragment || it is SettingsFragment }
+                ?.let {  fragment ->
+                    fragment.onActivityResult(requestCode, resultCode, data)
                 }
     }
 

@@ -1,5 +1,7 @@
 package tv.caffeine.app.api.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.ZonedDateTime
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
@@ -34,7 +36,8 @@ class UserContainer(val user: User)
 class UserUpdateBody(val user: UserUpdateDetails)
 class UserUpdateDetails(val name: String?, val bio: String?, val twitterAutoPostOnline: Boolean?)
 
-enum class IdentityProvider {
+@Parcelize
+enum class IdentityProvider: Parcelable {
     facebook, twitter
 }
 

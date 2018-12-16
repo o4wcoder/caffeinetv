@@ -2,6 +2,7 @@
     <string name="landing_signup_prompt">Sign up to watch live games and sports with friends.</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
+    <string name="error_facebook_callback">Error connecting to Facebook</string>
     <string name="new_account">New Account</string>
     <string name="sign_in_with_email">Sign In</string>
     <string name="twitter_login">Twitter Login</string>

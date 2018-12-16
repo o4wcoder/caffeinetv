@@ -15,7 +15,7 @@ interface OAuthService {
     fun callback(@Query("state") state: String)
 
     @POST("v1/oauth/facebook/callback")
-    fun submitFacebookToken(@Body body: FacebookTokenBody): Deferred<OAuthCallbackResult>
+    fun submitFacebookToken(@Body body: FacebookTokenBody): Deferred<Response<OAuthCallbackResult>>
 
     @GET
     fun longPoll(@Url url: String): Deferred<Response<OAuthCallbackResult>>

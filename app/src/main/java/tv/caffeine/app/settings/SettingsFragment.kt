@@ -1,6 +1,7 @@
 package tv.caffeine.app.settings
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.CheckBoxPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.gson.Gson
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -19,12 +25,8 @@ import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.api.NotificationSettings
-import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.MfaMethod
-import tv.caffeine.app.api.model.User
-import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
@@ -33,15 +35,22 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector {
+private const val DISCONNECT_IDENTITY = 1
+
+class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector, DisconnectIdentityDialogFragment.Callback {
+
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SettingsViewModel::class.java) }
     private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
     private lateinit var notificationSettingsViewModel: NotificationSettingsViewModel
+
+    private val callbackManager: CallbackManager = CallbackManager.Factory.create()
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
@@ -68,6 +77,11 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     override fun onStop() {
         updateNotificationSettings()
         super.onStop()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        callbackManager.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun configureAuthSettings() {
@@ -143,15 +157,55 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
                 val twitter = user?.connectedAccounts?.get("twitter")
                 @StringRes val title = if (twitter != null) R.string.disconnect_twitter_account else R.string.connect_twitter_account
                 preference.title = getString(title)
+                preference.setOnPreferenceClickListener {
+                    if (twitter != null) {
+                        val action = SettingsFragmentDirections.actionSettingsFragmentToDisconnectIdentityDialogFragment(twitter.uid, IdentityProvider.twitter, twitter.displayName)
+                        val fragment = DisconnectIdentityDialogFragment()
+                        fragment.arguments = action.arguments
+                        fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
+                        fragment.show(fragmentManager, "disconnectTwitter")
+                    }
+                    true
+                }
             })
         }
         findPreference("manage_facebook_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer { user ->
-                val twitter = user?.connectedAccounts?.get("facebook")
-                @StringRes val title = if (twitter != null) R.string.disconnect_facebook_account else R.string.connect_facebook_account
+                val facebook = user?.connectedAccounts?.get("facebook")
+                @StringRes val title = if (facebook != null) R.string.disconnect_facebook_account else R.string.connect_facebook_account
                 preference.title = getString(title)
+                preference.setOnPreferenceClickListener {
+                    if (facebook != null) {
+                        val action = SettingsFragmentDirections.actionSettingsFragmentToDisconnectIdentityDialogFragment(facebook.uid, IdentityProvider.facebook, facebook.displayName)
+                        val fragment = DisconnectIdentityDialogFragment()
+                        fragment.arguments = action.arguments
+                        fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
+                        fragment.show(fragmentManager, "disconnectFacebook")
+                    } else {
+                        val loginManager = LoginManager.getInstance()
+                        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+                            override fun onSuccess(result: LoginResult?) {
+                                viewModel.processFacebookLogin(result)
+                            }
+
+                            override fun onCancel() {
+                            }
+
+                            override fun onError(error: FacebookException?) {
+                                activity?.showSnackbar(R.string.error_facebook_callback)
+                            }
+
+                        })
+                        loginManager.logInWithReadPermissions(this, listOf("email", "public_profile", "user_friends"))
+                    }
+                    true
+                }
             })
         }
+    }
+
+    override fun confirmDisconnectIdentity(socialUid: String, identityProvider: IdentityProvider) {
+        viewModel.disconnectIdentity(identityProvider, socialUid)
     }
 
     private fun configureDeleteAccount() {
@@ -192,7 +246,10 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
 class SettingsViewModel(
         dispatchConfig: DispatchConfig,
         private val tokenStore: TokenStore,
-        private val followManager: FollowManager
+        private val followManager: FollowManager,
+        private val usersService: UsersService,
+        private val oauthService: OAuthService,
+        private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
     private val _userDetails = MutableLiveData<User>()
     val userDetails: LiveData<User> = Transformations.map(_userDetails) { it }
@@ -207,6 +264,29 @@ class SettingsViewModel(
             val userDetails = followManager.userDetails(caid)
             _userDetails.value = userDetails
         }
+    }
+
+    fun processFacebookLogin(result: LoginResult?) = launch {
+        val token = result?.accessToken?.token ?: return@launch
+        val deferred = oauthService.submitFacebookToken(FacebookTokenBody(token))
+        val result = deferred.awaitAndParseErrors(gson)
+        when(result) {
+            is CaffeineResult.Success -> Timber.d("Successful Facebook login")
+            is CaffeineResult.Error -> Timber.d("Error attempting Facebook login ${result.error}")
+            is CaffeineResult.Failure -> Timber.d("Failure attempting Facebook login ${result.throwable}")
+        }
+        load()
+    }
+
+    fun disconnectIdentity(identityProvider: IdentityProvider, socialUid: String) = launch {
+        val caid = tokenStore.caid ?: return@launch
+        val result = usersService.disconnectIdentity(caid, socialUid, identityProvider).awaitAndParseErrors(gson)
+        when(result) {
+            is CaffeineResult.Success -> Timber.d("Successfully disconnected identity")
+            is CaffeineResult.Error -> Timber.d("Error disconnecting identity ${result.error}")
+            is CaffeineResult.Failure -> Timber.d("Failure disconnecting identity ${result.throwable}")
+        }
+        load()
     }
 }
 

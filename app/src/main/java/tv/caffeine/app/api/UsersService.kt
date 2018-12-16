@@ -36,8 +36,8 @@ interface UsersService {
     @GET("v1/users/{caid}/ignores")
     fun listIgnoredUsers(@Path("caid") userId: String): Deferred<Response<List<CaidRecord.IgnoreRecord>>>
 
-    @DELETE("v1/users/{caid}/connected_accounts/{connectedAccount}")
-    fun disconnectIdentity(@Path("caid") userId: String, @Path("connectedAccount") identityProvider: IdentityProvider): Deferred<Response<Any>>
+    @DELETE("v1/users/{caid}/identities/{socialUid},{identityProvider}")
+    fun disconnectIdentity(@Path("caid") userId: String, @Path("socialUid") socialUid: String, @Path("identityProvider") identityProvider: IdentityProvider): Deferred<Response<Any>>
 
     @PATCH("v1/users/{caid}")
     fun updateUser(@Path("caid") userId: String, @Body user: UserUpdateBody): Deferred<Response<UserContainer>>

@@ -71,7 +71,8 @@ data class ApiError(
         val email: List<String>? = null,
         val otp: List<String>? = null,
         val _token: List<String>? = null,
-        val _expired: List<String>? = null
+        val _expired: List<String>? = null,
+        val _identity: List<String>? = null
 )
 
 val ApiErrorResult.generalErrorsString get() = errors?._error?.joinToString("\n")

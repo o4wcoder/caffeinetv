@@ -46,6 +46,7 @@ class ViewModelFactory @Inject constructor(
         private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val digitalItemRepository: DigitalItemRepository,
         private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
+        private val oauthService: OAuthService,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -64,7 +65,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(ReportUserViewModel::class.java) -> ReportUserViewModel(dispatchConfig, usersService, gson)
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(dispatchConfig, gson, usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(dispatchConfig, gson, usersService)
-            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(dispatchConfig, tokenStore, followManager)
+            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(dispatchConfig, tokenStore, followManager, usersService, oauthService, gson)
             modelClass.isAssignableFrom(NotificationSettingsViewModel::class.java) -> NotificationSettingsViewModel(dispatchConfig, accountsService, gson)
             modelClass.isAssignableFrom(DeleteAccountViewModel::class.java) -> DeleteAccountViewModel(dispatchConfig, accountsService, tokenStore, gson)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(dispatchConfig, tokenStore, followManager, uploadAvatarUseCase)
