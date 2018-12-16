@@ -27,6 +27,18 @@
             app:srcCompat="@drawable/logo" />
 
         <TextView
+            style="@style/DigitalItemQuantity"
+            android:id="@+id/quantity_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:gravity="center"
+            android:textAppearance="@style/ChatMessageText"
+            app:layout_constraintBottom_toTopOf="@+id/speech_bubble_text_view"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="x2" />
+
+        <TextView
             android:id="@+id/speech_bubble_text_view"
             android:layout_width="0dp"
             android:layout_height="0dp"

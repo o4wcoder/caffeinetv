@@ -163,6 +163,7 @@
     <string name="message">Message</string>
     <string name="send">Send</string>
     <string name="send_with_digital_item">Send with digital item</string>
+    <string name="digital_item_quantity">x<xliff:g example="2" id="digital_item_quantity">%d</xliff:g></string>
     <string name="must_accept_terms_error">You must accept terms and conditions</string>
     <string name="i_agree_button">I Agree</string>
     <string name="unfollow_question">Unfollow %s?</string>

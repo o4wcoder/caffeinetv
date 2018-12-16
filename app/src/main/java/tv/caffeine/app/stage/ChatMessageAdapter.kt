@@ -167,8 +167,21 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         binding.endorsementCountTextView.setTextColor(endorsementTextColor)
         binding.endorsementCountTextView.setBackgroundResource(message.endorsementCountBackgroundResId)
         when(val digitalItem = message.body.digitalItem) {
-            null -> binding.digitalItemImageView.setImageDrawable(null)
-            else -> Picasso.get().load(digitalItem.previewImageUrl).into(binding.digitalItemImageView)
+            null -> {
+                binding.digitalItemImageView.setImageDrawable(null)
+                binding.quantityTextView.text = null
+                binding.quantityTextView.isVisible = false
+            }
+            else -> {
+                Picasso.get().load(digitalItem.previewImageUrl).into(binding.digitalItemImageView)
+                if (digitalItem.count > 1) {
+                    binding.quantityTextView.text = itemView.resources.getString(R.string.digital_item_quantity, digitalItem.count)
+                    binding.quantityTextView.isVisible = true
+                } else {
+                    binding.quantityTextView.text = null
+                    binding.quantityTextView.isVisible = false
+                }
+            }
         }
         binding.replyTextView.setOnClickListener {
             hideInteractionOverlay()

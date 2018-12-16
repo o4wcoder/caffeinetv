@@ -198,6 +198,18 @@
         <item name="android:letterSpacing">0.05</item>
     </style>
 
+    <style name="DigitalItemQuantity">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:background">@drawable/digital_item_counter</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
     <style name="BroadcastCardUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
         <item name="android:textStyle">bold</item>
         <item name="android:drawablePadding">4dp</item>
