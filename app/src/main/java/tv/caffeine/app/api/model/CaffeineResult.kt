@@ -11,6 +11,12 @@ sealed class CaffeineResult<T> {
     class Failure<T>(val throwable: Throwable) : CaffeineResult<T>()
 }
 
+fun <T, U> CaffeineResult<T>.map(transform: (from: T) -> U): CaffeineResult<U> = when(this) {
+    is CaffeineResult.Success -> CaffeineResult.Success(transform(value))
+    is CaffeineResult.Error -> CaffeineResult.Error(error)
+    is CaffeineResult.Failure -> CaffeineResult.Failure(throwable)
+}
+
 sealed class CaffeineEmptyResult {
     object Success : CaffeineEmptyResult()
     class Error(val error: ApiErrorResult) : CaffeineEmptyResult()

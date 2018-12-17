@@ -96,6 +96,13 @@
     <string name="share_chooser_title">Share</string>
     <string name="buy_gold_button">Buy Gold</string>
     <string name="buy_gold_with_credits_button">Buy Gold with Credits</string>
+    <string name="buy_gold">Buy Gold</string>
+    <string name="buy">Buy</string>
+    <string name="buy_gold_for_credits"><xliff:g example="2" id="gold">%1$s</xliff:g> for <xliff:g example="9" id="credits">%2$s</xliff:g></string>
+    <string name="buy_gold_for_credits_html"><![CDATA[<img src="goldcoin">]]> <xliff:g example="2" id="gold">%1$s</xliff:g> for <![CDATA[<img src="purplecoin">]]> <xliff:g example="9" id="credits">%2$s</xliff:g></string>
+    <string name="error_loading_gold_bundles">Error loading gold bundles</string>
+    <string name="error_buying_gold_using_credits">Error buying gold using credits</string>
+    <string name="success_buying_gold_using_credits">Success buying gold using credits</string>
     <string name="send_gold_to_user">Send to %s</string>
     <string name="friends_watching_title">Friends watching</string>
     <string name="settings_button">Settings</string>

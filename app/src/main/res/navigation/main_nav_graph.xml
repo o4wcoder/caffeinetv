@@ -321,7 +321,8 @@
     <fragment
         android:id="@+id/goldAndCreditsFragment"
         android:name="tv.caffeine.app.settings.GoldAndCreditsFragment"
-        android:label="@string/gold_and_credits_title" >
+        android:label="@string/gold_and_credits_title"
+        tools:layout="@layout/fragment_gold_and_credits">
         <action
             android:id="@+id/action_goldAndCreditsFragment_to_transactionHistoryFragment"
             app:destination="@+id/transactionHistoryFragment"/>
@@ -332,13 +333,18 @@
     <fragment
         android:id="@+id/transactionHistoryFragment"
         android:name="tv.caffeine.app.settings.TransactionHistoryFragment"
-        android:label="@string/transaction_history"/>
+        android:label="@string/transaction_history"
+        tools:layout="@layout/fragment_transaction_history"/>
     <fragment
         android:id="@+id/goldBundlesFragment"
         android:name="tv.caffeine.app.settings.GoldBundlesFragment"
-        android:label="@string/gold_bundles_title" >
+        android:label="@string/gold_bundles_title"
+        tools:layout="@layout/fragment_gold_bundles">
         <argument android:name="buyGoldOption"
             app:argType="tv.caffeine.app.settings.BuyGoldOption"/>
+        <action
+            android:id="@+id/action_goldBundlesFragment_to_buyGoldUsingCreditsDialogFragment"
+            app:destination="@id/buyGoldUsingCreditsDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/digitalItemListDialogFragment"
@@ -352,6 +358,23 @@
             android:name="message"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_digitalItemListDialogFragment_to_goldBundlesFragment"
+            app:destination="@id/goldBundlesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/buyGoldUsingCreditsDialogFragment"
+        android:name="tv.caffeine.app.settings.BuyGoldUsingCreditsDialogFragment"
+        android:label="@string/buy_gold">
+        <argument
+            android:name="goldBundleId"
+            app:argType="string"/>
+        <argument
+            android:name="gold"
+            app:argType="integer"/>
+        <argument
+            android:name="credits"
+            app:argType="integer"/>
     </fragment>
 
     <!-- Settings -->

@@ -19,7 +19,7 @@ import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSendDigitalItemBinding
-import tv.caffeine.app.profile.WalletViewModel
+import tv.caffeine.app.wallet.WalletViewModel
 import tv.caffeine.app.ui.*
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.DigitalItemRepository

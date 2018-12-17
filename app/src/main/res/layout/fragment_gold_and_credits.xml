@@ -7,7 +7,7 @@
 
         <variable
             name="walletViewModel"
-            type="tv.caffeine.app.profile.WalletViewModel"/>
+            type="tv.caffeine.app.wallet.WalletViewModel"/>
 
     </data>
 
@@ -25,6 +25,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
                 android:text="@string/transaction_history"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +36,7 @@
                 android:id="@+id/gold_balance_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_double"
                 android:drawableStart="@drawable/gold_coin"
                 android:textAppearance="@style/GoldAndCreditsBalance"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -48,6 +50,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
                 android:text="@string/buy_gold_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +61,7 @@
                 android:id="@+id/credit_balance_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_double"
                 android:drawableStart="@drawable/purple_coin"
                 android:textAppearance="@style/GoldAndCreditsBalance"
                 app:autoSizeTextType="uniform"
@@ -80,7 +84,7 @@
                 android:id="@+id/cumulative_credit_balance_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_double"
                 android:drawableStart="@drawable/purple_coin"
                 android:textAppearance="@style/GoldAndCreditsBalance"
                 app:autoSizeTextType="uniform"
@@ -104,6 +108,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
                 android:text="@string/buy_gold_with_credits_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

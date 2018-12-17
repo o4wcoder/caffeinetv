@@ -23,6 +23,8 @@ import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.DigitalItemRepository
+import tv.caffeine.app.wallet.WalletRepository
+import tv.caffeine.app.wallet.WalletViewModel
 import javax.inject.Inject
 
 class ViewModelFactory @Inject constructor(
@@ -45,6 +47,7 @@ class ViewModelFactory @Inject constructor(
         private val realtime: Realtime,
         private val uploadAvatarUseCase: UploadAvatarUseCase,
         private val digitalItemRepository: DigitalItemRepository,
+        private val walletRepository: WalletRepository,
         private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
         private val oauthService: OAuthService,
         private val gson: Gson
@@ -58,7 +61,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, gson, usersService, followManager, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, digitalItemRepository)
-            modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(dispatchConfig, gson, paymentsClientService)
+            modelClass.isAssignableFrom(WalletViewModel::class.java) -> WalletViewModel(dispatchConfig, walletRepository)
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> ProfileViewModel(dispatchConfig, followManager)
             modelClass.isAssignableFrom(IgnoredUsersViewModel::class.java) -> IgnoredUsersViewModel(dispatchConfig, gson, tokenStore, usersService)
             modelClass.isAssignableFrom(IgnoreUserViewModel::class.java) -> IgnoreUserViewModel(dispatchConfig, tokenStore, usersService, gson)
@@ -70,7 +73,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(DeleteAccountViewModel::class.java) -> DeleteAccountViewModel(dispatchConfig, accountsService, tokenStore, gson)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(dispatchConfig, tokenStore, followManager, uploadAvatarUseCase)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
-            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
+            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)

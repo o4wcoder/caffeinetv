@@ -32,6 +32,7 @@ import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.navigateToLanding
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.wallet.WalletViewModel
 import java.io.File
 import java.text.NumberFormat
 import java.text.SimpleDateFormat

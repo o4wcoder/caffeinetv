@@ -36,6 +36,7 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun followersFragment(): FollowersFragment
     @ContributesAndroidInjector abstract fun followingFragment(): FollowingFragment
     @ContributesAndroidInjector abstract fun goldAndCreditsFragment(): GoldAndCreditsFragment
+    @ContributesAndroidInjector abstract fun buyGoldUsingCreditsDialogFragment(): BuyGoldUsingCreditsDialogFragment
     @ContributesAndroidInjector abstract fun settingsFragment(): SettingsFragment
     @ContributesAndroidInjector abstract fun disconnectIdentityDialogFragment(): DisconnectIdentityDialogFragment
     @ContributesAndroidInjector abstract fun transactionHistoryFragment(): TransactionHistoryFragment

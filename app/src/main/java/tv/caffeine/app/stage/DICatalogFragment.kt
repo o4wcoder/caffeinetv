@@ -14,9 +14,11 @@ import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.databinding.DiCatalogItemBinding
 import tv.caffeine.app.databinding.FragmentDiCatalogBinding
 import tv.caffeine.app.profile.ProfileViewModel
-import tv.caffeine.app.profile.WalletViewModel
+import tv.caffeine.app.settings.BuyGoldOption
+import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
 
 class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
@@ -59,6 +61,12 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it.digitalItems.state)
         })
+        binding.buyGoldButton.setOnClickListener {
+            val action = DICatalogFragmentDirections.actionDigitalItemListDialogFragmentToGoldBundlesFragment(BuyGoldOption.UsingPlayStore)
+            val fragment = GoldBundlesFragment()
+            fragment.arguments = action.arguments
+            fragment.show(fragmentManager, "buyGold")
+        }
     }
 
 }

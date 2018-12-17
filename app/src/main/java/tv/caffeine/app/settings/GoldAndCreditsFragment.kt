@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.android.parcel.Parcelize
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
-import tv.caffeine.app.profile.WalletViewModel
+import tv.caffeine.app.wallet.WalletViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.safeNavigate

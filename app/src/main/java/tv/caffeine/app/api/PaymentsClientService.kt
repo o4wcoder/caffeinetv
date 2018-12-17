@@ -28,7 +28,7 @@ interface PaymentsClientService {
     fun getGoldBundles(@Body body: GetGoldBundlesBody): Deferred<Response<PaymentsEnvelope<GoldBundlesPayload>>>
 
     @POST("store/buy-gold-using-credits")
-    fun buyGoldUsingCredits(@Body body: BuyGoldUsingCreditsBody): Deferred<Response<PaymentsEnvelope<GoldBundlesPayload>>>
+    fun buyGoldUsingCredits(@Body body: BuyGoldUsingCreditsBody): Deferred<Response<Any>>
 }
 
 class GetDigitalItemsBody

@@ -5,32 +5,35 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.*
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.databinding.FragmentGoldBundlesBinding
 import tv.caffeine.app.di.BillingClientFactory
-import tv.caffeine.app.profile.WalletViewModel
-import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.util.showSnackbar
 import java.text.NumberFormat
 
-class GoldBundlesFragment : CaffeineFragment() {
+class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
 
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel by lazy { viewModelProvider.get(GoldBundlesViewModel::class.java) }
-    private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
-    private val goldBundlesAdapter = GoldBundlesAdapter(object : GoldBundleClickListener {
-        override fun onClick(goldBundle: GoldBundle) {
-            purchaseGoldBundle(goldBundle)
-        }
-    })
+    private val goldBundlesAdapter by lazy {
+        GoldBundlesAdapter(buyGoldOption, object : GoldBundleClickListener {
+            override fun onClick(goldBundle: GoldBundle) {
+                purchaseGoldBundle(goldBundle)
+            }
+        })
+    }
 
     private lateinit var billingClient: BillingClient
     private val buyGoldOption by lazy { GoldBundlesFragmentArgs.fromBundle(arguments).buyGoldOption }
+
+    override fun getTheme() = R.style.DarkBottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +62,7 @@ class GoldBundlesFragment : CaffeineFragment() {
                 if (responseCode == BillingClient.BillingResponse.OK) {
                     Timber.d("Successfully started billing connection")
                 } else {
-                    Timber.d("Failed to start billing connection")
+                    Timber.e("Failed to start billing connection")
                 }
             }
         })
@@ -67,7 +70,6 @@ class GoldBundlesFragment : CaffeineFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         binding = FragmentGoldBundlesBinding.inflate(inflater, container, false).apply {
             setLifecycleOwner(viewLifecycleOwner)
             goldBundlesRecyclerView.adapter = goldBundlesAdapter
@@ -76,7 +78,7 @@ class GoldBundlesFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
+        viewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             val goldCount = NumberFormat.getIntegerInstance().format(wallet.gold)
             val creditBalance = NumberFormat.getIntegerInstance().format(wallet.credits)
             binding.currentBalanceTextView.htmlText = when(buyGoldOption) {
@@ -86,22 +88,30 @@ class GoldBundlesFragment : CaffeineFragment() {
         })
         val handler = Handler()
         viewModel.goldBundles.observe(viewLifecycleOwner, Observer { result ->
-            handle(result, view) { paymentsEnvelope ->
-                val list = paymentsEnvelope.payload.goldBundles.state.filter { it.usingInAppBilling != null }
-                val skuList = list.mapNotNull { it.usingInAppBilling }.map { it.productId }
-                when(buyGoldOption) {
-                    BuyGoldOption.UsingCredits -> goldBundlesAdapter.submitList(list)
-                    BuyGoldOption.UsingPlayStore -> {
-                        val params = SkuDetailsParams.newBuilder().setSkusList(skuList).setType(BillingClient.SkuType.INAPP).build()
-                        billingClient.querySkuDetailsAsync(params) { responseCode, skuDetailsList ->
-                            Timber.d("Results: $skuDetailsList")
-                            list.forEach {  goldBundle ->
-                                goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingInAppBilling?.productId }
+            when(result) {
+                is CaffeineResult.Success -> {
+                    val goldBundles = result.value
+                    val list = goldBundles.filter { it.usingInAppBilling != null }
+                    val skuList = list.mapNotNull { it.usingInAppBilling }.map { it.productId }
+                    when (buyGoldOption) {
+                        BuyGoldOption.UsingCredits -> goldBundlesAdapter.submitList(list)
+                        BuyGoldOption.UsingPlayStore -> {
+                            val params = SkuDetailsParams.newBuilder().setSkusList(skuList).setType(BillingClient.SkuType.INAPP).build()
+                            billingClient.querySkuDetailsAsync(params) { responseCode, skuDetailsList ->
+                                if (responseCode != BillingClient.BillingResponse.OK) {
+                                    Timber.e("Error loading SKU details, $responseCode")
+                                    return@querySkuDetailsAsync
+                                }
+                                Timber.d("Results: $skuDetailsList")
+                                list.forEach { goldBundle ->
+                                    goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingInAppBilling?.productId }
+                                }
+                                handler.post { goldBundlesAdapter.submitList(list) }
                             }
-                            handler.post { goldBundlesAdapter.submitList(list) }
                         }
                     }
                 }
+                else -> activity?.showSnackbar(R.string.error_loading_gold_bundles)
             }
         })
     }
@@ -114,18 +124,21 @@ class GoldBundlesFragment : CaffeineFragment() {
     }
 
     private fun promptPurchaseGoldBundleUsingCredits(goldBundle: GoldBundle) {
-        val context = context ?: return
-        val alertDialog = AlertDialog.Builder(context)
-                .setTitle("Buy Gold")
-                .setMessage("${goldBundle.amount} for ${goldBundle.usingCredits?.cost}")
-                .setPositiveButton("Buy") { _, _ -> purchaseGoldBundleUsingCredits(goldBundle) }
-                .setNegativeButton("Cancel") { _, _ -> }
-                .create()
-        alertDialog.show()
+        val usingCredits = goldBundle.usingCredits ?: return
+        val goldBundleId = usingCredits.id
+        val gold = goldBundle.amount
+        val credits = usingCredits.cost
+        val action = GoldBundlesFragmentDirections.actionGoldBundlesFragmentToBuyGoldUsingCreditsDialogFragment(goldBundleId, gold, credits)
+        val fragment = BuyGoldUsingCreditsDialogFragment()
+        fragment.arguments = action.arguments
+        fragment.setTargetFragment(this, 0)
+        fragment.show(fragmentManager, "buyGoldUsingCredits")
     }
 
-    private fun purchaseGoldBundleUsingCredits(goldBundle: GoldBundle) {
-        viewModel.purchaseGoldBundleUsingCredits(goldBundle)
+    override fun buyGoldBundle(goldBundleId: String) {
+        viewModel.purchaseGoldBundleUsingCredits(goldBundleId).observe(viewLifecycleOwner, Observer { success ->
+            activity?.showSnackbar(if (success) R.string.success_buying_gold_using_credits else R.string.error_buying_gold_using_credits)
+        })
     }
 
     private fun purchaseGoldBundleUsingPlayStore(goldBundle: GoldBundle) {
