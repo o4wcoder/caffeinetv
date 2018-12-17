@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:minHeight="300dp"
-        android:background="@color/white"
-        tools:context=".stage.FriendsWatchingFragment">
+        tools:context=".stage.FriendsWatchingFragment"
+        tools:background="@color/dark_gray">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/friends_watching_toolbar"
@@ -31,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/friends_watching_title"
-                    android:textColor="#000000"
+                    android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

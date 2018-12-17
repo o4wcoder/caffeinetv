@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.webrtc.*
 import timber.log.Timber
@@ -82,6 +84,34 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             }
             launch(dispatchConfig.main) {
                 connectMessages(userDetails.stageId)
+            }
+            val broadcastId = userDetails.broadcastId ?: return@launch
+            launch {
+                val profileAvatarTransform = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
+                        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
+                while(isActive) {
+                    val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
+                    when (result) {
+                        is CaffeineResult.Success -> {
+                            val friendAvatarImageUrl = result.value.firstOrNull()?.let { followManager.userDetails(it.caid)?.avatarImageUrl }
+                            if (friendAvatarImageUrl == null) {
+                                binding.friendsWatchingButton?.isEnabled = false
+                                binding.friendsWatchingButton?.setImageDrawable(null)
+                            } else {
+                                binding.friendsWatchingButton?.isEnabled = true
+                                binding.friendsWatchingButton?.imageTintList = null
+                                Picasso.get().load(friendAvatarImageUrl)
+                                        .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
+                                        .placeholder(R.drawable.ic_profile)
+                                        .transform(profileAvatarTransform)
+                                        .into(binding.friendsWatchingButton)
+                            }
+                        }
+                        is CaffeineResult.Error -> Timber.e("Failed to fetch friends watching ${result.error}")
+                        is CaffeineResult.Failure -> Timber.e(result.throwable)
+                    }
+                    delay(10000L)
+                }
             }
         }
     }
