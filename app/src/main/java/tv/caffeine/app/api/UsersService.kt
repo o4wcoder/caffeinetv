@@ -13,10 +13,10 @@ interface UsersService {
     fun listFollowing(@Path("caid") userId: String): Deferred<Response<List<CaidRecord.FollowRecord>>>
 
     @POST("v1/users/{caid1}/follow/{caid2}")
-    fun follow(@Path("caid1") follower: String, @Path("caid2") toFollow: String): Deferred<Response<Any>>
+    fun follow(@Path("caid1") follower: String, @Path("caid2") toFollow: String): Deferred<Response<Void>>
 
     @DELETE("v1/users/{caid1}/unfollow/{caid2}")
-    fun unfollow(@Path("caid1") follower: String, @Path("caid2") toUnfollow: String): Deferred<Response<Any>>
+    fun unfollow(@Path("caid1") follower: String, @Path("caid2") toUnfollow: String): Deferred<Response<Void>>
 
     @POST("v1/users/{caid1}/ignore/{caid2}")
     fun ignore(@Path("caid1") ignorer: String, @Path("caid2") ignoree: String): Deferred<Response<Void>>

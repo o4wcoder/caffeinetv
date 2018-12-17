@@ -25,10 +25,7 @@ import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
-import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.Message
-import tv.caffeine.app.api.model.awaitAndParseErrors
-import tv.caffeine.app.api.model.iconImageUrl
+import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
@@ -56,7 +53,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private lateinit var binding: FragmentStageBinding
     private lateinit var broadcaster: String
-    private lateinit var broadcasterCaid: String
     private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
     private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<StageHandshake.Stream.Type, ProgressBar> = mutableMapOf()
@@ -71,6 +67,8 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private val chatViewModel: ChatViewModel by lazy { viewModelProvider.get(ChatViewModel::class.java) }
     private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
 
+    private var isFollowingBroadcaster = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
@@ -78,7 +76,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         broadcaster = args.broadcaster
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
-            broadcasterCaid = userDetails.caid
+            launch {
+                followManager.refreshFollowedUsers()
+                isFollowingBroadcaster = followManager.isFollowing(broadcaster)
+            }
             launch(dispatchConfig.main) {
                 connectStreams(userDetails.stageId)
             }
@@ -172,9 +173,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
-        binding.avatarImageView.setOnClickListener {
-            findNavController().safeNavigate(LobbyDirections.actionGlobalProfileFragment(broadcaster))
-        }
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
         title = broadcastName
@@ -245,16 +243,19 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             viewsToToggle.forEach {
                 it.visibility = View.VISIBLE
             }
+            if (!isFollowingBroadcaster) binding.followButton.isVisible = true
             appBarVisibilityJob = launch {
                 delay(3000)
                 viewsToToggle.forEach {
                     it.visibility = View.INVISIBLE
                 }
+                binding.followButton.isVisible = false
             }
         } else {
             viewsToToggle.forEach {
                 it.visibility = View.INVISIBLE
             }
+            binding.followButton.isVisible = false
         }
     }
 
@@ -370,6 +371,21 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         binding.giftButton?.setOnClickListener {
             sendDigitalItemWithMessage(null)
         }
+        binding.avatarImageView.setOnClickListener {
+            findNavController().safeNavigate(LobbyDirections.actionGlobalProfileFragment(broadcaster))
+        }
+        binding.followButton.setOnClickListener {
+            launch {
+                val result = followManager.followUser(broadcaster)
+                when(result) {
+                    is CaffeineEmptyResult.Success -> {
+                        isFollowingBroadcaster = true
+                        binding.followButton.isVisible = false
+                    }
+                    else -> Timber.e("Failed to follow $broadcaster from stage")
+                }
+            }
+        }
     }
 
     override fun sendDigitalItemWithMessage(message: String?) {
@@ -398,7 +414,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     override fun digitalItemSelected(digitalItem: DigitalItem, message: String?) {
         fragmentManager?.let { fm ->
             val fragment = SendDigitalItemFragment()
-            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, broadcasterCaid, message)
+            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, broadcaster, message)
             fragment.arguments = action.arguments
             fragment.show(fm, "sendDigitalItem")
         }

@@ -43,16 +43,20 @@ class FollowManager @Inject constructor(
 
     suspend fun followUser(caid: String): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
-        followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
         val result = usersService.follow(self, caid).awaitEmptyAndParseErrors(gson)
+        if (result is CaffeineEmptyResult.Success) {
+            followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
+        }
         refreshFollowedUsers()
         return result
     }
 
     suspend fun unfollowUser(caid: String): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
-        followedUsers[self] = followedUsers[self]?.toMutableSet()?.apply { remove(caid) }?.toSet() ?: setOf()
         val result = usersService.unfollow(self, caid).awaitEmptyAndParseErrors(gson)
+        if (result is CaffeineEmptyResult.Success) {
+            followedUsers[self] = followedUsers[self]?.toMutableSet()?.apply { remove(caid) }?.toSet() ?: setOf()
+        }
         refreshFollowedUsers()
         return result
     }
