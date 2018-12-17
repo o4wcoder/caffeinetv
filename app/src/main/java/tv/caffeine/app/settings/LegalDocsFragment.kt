@@ -1,8 +1,14 @@
 package tv.caffeine.app.settings
 
+import android.Manifest
+import android.app.DownloadManager
+import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.MailTo
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +19,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import kotlinx.android.parcel.Parcelize
 import tv.caffeine.app.R
+import java.io.File
 
 @Parcelize
 enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int): Parcelable {
@@ -29,24 +39,18 @@ class LegalDocsFragment : Fragment() {
     private lateinit var legalDoc: LegalDoc
     private val hostWhitelist = listOf(
             "caffeine.tv",
-            "policies.google.com" // host matching for Google since they may change their urls
+            "google.com",
+            "apple.com",
+            "mozilla.org"
     )
     // The url whitelist should be in sync with https://github.com/caffeinetv/tracer/tree/master/src/static
     // grep -h -r -E -o "href=\"https\:\/\/[^\"]+\"" src/static/ | grep -E -v "(www|images).caffeine.tv"
     // | grep -E -v "https://(fonts)?.google(api)?"
     private val urlWhitelist = listOf(
-            "https://www.google.com/intl/en/policies/privacy/", // these two links redirect and they are handled by the host matching above
-            "https://www.google.com/intl/en/policies/terms/",
-            "https://link.caffeine.tv/discord",
             "https://www.ftc.gov/sites/default/files/documents/one-stops/advertisement-endorsements/091005revisedendorsementguides.pdf",
-            "https://www.adr.org",
+            "https://www.adr.org/",
             "https://suicidepreventionlifeline.org/",
-            "https://www.nhs.uk/conditions/suicide/",
-            "https://itunes.apple.com/us/app/caffeine-tv-for-gamers/id1170629931",
-            "https://www.google.com/chrome/browser/",
-            "https://www.mozilla.org/firefox",
-            "https://www.google.com/policies/privacy/partners/",
-            "https://tools.google.com/dlpage/gaoptout"
+            "https://www.nhs.uk/conditions/suicide/"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,6 +98,26 @@ class LegalDocsFragment : Fragment() {
                     if (urlString in urlWhitelist) return false
                 }
                 return true
+            }
+        }
+        webView.setDownloadListener { url, _, _, _, _ ->
+            activity?.let {
+                val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+                if (ContextCompat.checkSelfPermission(it, permission)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(it, permission)) {
+                        // Do nothing since it's quite obvious that the user initiates the download.
+                    } else {
+                        ActivityCompat.requestPermissions(it, arrayOf(permission), 0)
+                    }
+                } else {
+                    DownloadManager.Request(Uri.parse(url)).apply {
+                        allowScanningByMediaScanner()
+                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, File(url).name)
+                        it.getSystemService<DownloadManager>()?.enqueue(this)
+                    }
+                }
             }
         }
         val url = getString(legalDoc.url)
