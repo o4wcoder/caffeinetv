@@ -41,6 +41,12 @@
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
 
+    <!-- Lobby toolbar -->
+    <string name="camera_button_content_description">Broadcast</string>
+    <string name="search_button_content_description">Search</string>
+    <string name="activity_button_content_description">Activity</string>
+    <string name="profile_button_content_description">My Profile</string>
+
     <string name="hint_current_password">Current Password</string>
     <string name="update_button">Update</string>
 

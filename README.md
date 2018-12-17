@@ -8,7 +8,7 @@ The Android app for Caffeine.
 
 ### Setup
 
-1. Install Android Studio 3.3 Beta 4 (latest 3.3 version)
+1. Install Android Studio 3.3 RC 2 (latest 3.3 version)
 2. Configure an emulator.
 3. Run unit tests.
 4. Run android tests.
@@ -16,16 +16,14 @@ The Android app for Caffeine.
 ### About
 
 * Development is done in Kotlin and Android Studio
-  * Current version of Kotlin is 1.3.0
-  * Current version of Android Studio is 3.3 Beta 4.
+  * Current version of Kotlin is 1.3.11
+  * Current version of Android Studio is 3.3 RC 2
 * The app uses the following libraries:
   * AndroidX, JetPack, Support Libraries
     * AppCompat
     * Material design
     * Navigation
   * Dagger
-    * Must use version 2.16
-    * Versions 2.17 and 2.18 causes build problems due to Jetifier (it pins Dagger to 2.16)
   * Retrofit
   * OkHttp
   * Picasso
@@ -33,13 +31,6 @@ The Android app for Caffeine.
   * Must use version 1.0.24277
   * Versions 1.0.24465, 1.0.24616 and later cause crashes
 * Play Services
-  * Must use version 4.0.1
-  * Version 4.1.0 causes build problems, as Crashlytics and Firebase initialization isn't reconciled.
-  ```
-  Crashlytics found an invalid API key: null. 
-  Check the Crashlytics plugin to make sure that the application has been added successfully! 
-  Contact support@fabric.io for assistance.
-  ```
 
 ### Releasing
 

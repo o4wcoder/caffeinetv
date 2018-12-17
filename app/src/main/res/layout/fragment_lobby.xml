@@ -42,6 +42,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/caffeine_text"
+                        android:contentDescription="@string/caffeine_logo_content_description"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/activityButton"
                         app:layout_constraintStart_toEndOf="@+id/searchButton"
@@ -56,6 +57,7 @@
                         android:background="@android:color/transparent"
                         android:src="@drawable/ic_camera_light"
                         android:tint="@color/medium_gray"
+                        android:contentDescription="@string/camera_button_content_description"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -69,6 +71,7 @@
                         android:background="@android:color/transparent"
                         android:src="@drawable/ic_search_light"
                         android:tint="@color/medium_gray"
+                        android:contentDescription="@string/search_button_content_description"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/cameraButton"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -81,6 +84,7 @@
                         android:layout_marginEnd="8dp"
                         android:background="@android:color/transparent"
                         android:src="@drawable/ic_profile_light"
+                        android:contentDescription="@string/profile_button_content_description"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -94,6 +98,7 @@
                         android:background="@android:color/transparent"
                         android:src="@drawable/ic_alert_light"
                         android:tint="@color/medium_gray"
+                        android:contentDescription="@string/activity_button_content_description"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/profileButton"
                         app:layout_constraintTop_toTopOf="parent" />
