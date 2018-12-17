@@ -22,6 +22,8 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.FollowButtonDecorator
+import tv.caffeine.app.ui.FollowButtonDecorator.Style
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
@@ -104,7 +106,7 @@ class FollowNotificationViewHolder(itemView: View, private val scope: CoroutineS
         usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
         followButton.apply {
             isVisible = false
-            setText(R.string.follow_button)
+            FollowButtonDecorator(Style.FOLLOW).decorate(this)
             setOnClickListener(null)
         }
         itemView.setOnClickListener(null)

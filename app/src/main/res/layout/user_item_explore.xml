@@ -48,7 +48,7 @@
         tools:text="2k following" />
 
     <Button
-        style="@style/Button.TextButton"
+        style="@style/Button.Follow"
         android:id="@+id/follow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

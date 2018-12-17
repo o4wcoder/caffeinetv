@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.FollowButtonDecorator
+import tv.caffeine.app.ui.FollowButtonDecorator.*
 
 class UserTheme(val avatarImageTransformation: Transformation, @StyleRes val usernameTextAppearance: Int)
 
@@ -31,18 +33,18 @@ fun User.configure(
     val transformation = theme.avatarImageTransformation
     followButton?.let { followButton ->
         if (followManager.followersLoaded() && !following) {
+            FollowButtonDecorator(Style.FOLLOW).decorate(followButton)
             followButton.isVisible = true
-            followButton.setText(R.string.follow_button)
             followButton.setOnClickListener {
+                FollowButtonDecorator(Style.FOLLOWING).decorate(followButton)
                 followButton.isVisible = allowUnfollowing
-                followButton.setText(R.string.following_button)
                 GlobalScope.launch {
                     followManager.followUser(caid)
                 }
             }
         } else if (allowUnfollowing && followManager.followersLoaded() && following) {
+            FollowButtonDecorator(Style.FOLLOWING).decorate(followButton)
             followButton.isVisible = true
-            followButton.setText(R.string.following_button)
             followButton.setOnClickListener {
                 followButton.isVisible = allowUnfollowing
                 GlobalScope.launch {

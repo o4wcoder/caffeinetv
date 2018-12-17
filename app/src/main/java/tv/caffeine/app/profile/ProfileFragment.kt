@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentProfileBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.FollowButtonDecorator
+import tv.caffeine.app.ui.FollowButtonDecorator.Style
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
 
@@ -43,7 +45,7 @@ class ProfileFragment : CaffeineFragment() {
             this.isFollowed = isFollowed
             binding.followButton.apply {
                 visibility = View.VISIBLE
-                setText(if (isFollowed) R.string.following_button else R.string.follow_button)
+                FollowButtonDecorator(if (isFollowed) Style.FOLLOWING else Style.FOLLOW).decorate(this)
             }
         })
         binding.followButton.setOnClickListener { if (isFollowed) promptToUnfollow() else viewModel.follow(caid) }
