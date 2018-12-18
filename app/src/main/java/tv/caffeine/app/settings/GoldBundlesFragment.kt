@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.*
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
@@ -45,14 +46,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
         val activity = activity ?: return
         billingClient = BillingClientFactory.createBillingClient(activity, PurchasesUpdatedListener { responseCode, purchases ->
             Timber.d("Connected")
-            if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
-                purchases.forEach {
-                    // TODO post to server
-                    Timber.d("Purchased ${it.sku}: ${it.orderId}, ${it.purchaseToken}")
-                }
-            } else {
-                Timber.d("Failed to make a purchase $responseCode")
-            }
+            processInAppPurchases(responseCode, purchases)
         })
         billingClient.startConnection(object: BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
@@ -66,6 +60,33 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
                 }
             }
         })
+    }
+
+    private fun processInAppPurchases(responseCode: Int, purchases: MutableList<Purchase>?) {
+        if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
+            launch(dispatchConfig.main) {
+                viewModel.processInAppPurchases(purchases).observe(this@GoldBundlesFragment, Observer { purchaseStatuses ->
+                    purchaseStatuses.filter { it.result is CaffeineResult.Success }
+                            .forEach {
+                                billingClient.consumeAsync(it.purchaseToken) { responseCode, purchaseToken ->
+                                    if (responseCode == BillingClient.BillingResponse.OK) {
+                                        Timber.d("Successfully consumed the purchase $purchaseToken")
+                                    } else {
+                                        Timber.e("Failed to consume the purchase $purchaseToken")
+                                    }
+                                }
+                            }
+                    purchaseStatuses.filter { it.result !is CaffeineResult.Success }
+                            .forEach {
+                                Timber.e("Failed to process in-app purchase ${it.purchaseToken}")
+                            }
+                })
+            }
+        } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
+            Timber.d("User canceled purchase")
+        } else {
+            Timber.e("Failed to make a purchase $responseCode")
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -107,6 +128,11 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
                                     goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingInAppBilling?.productId }
                                 }
                                 handler.post { goldBundlesAdapter.submitList(list) }
+                            }
+                            for (sku in skuList) {
+                                billingClient.queryPurchaseHistoryAsync(sku) { responseCode, purchasesList ->
+                                    processInAppPurchases(responseCode, purchasesList)
+                                }
                             }
                         }
                     }

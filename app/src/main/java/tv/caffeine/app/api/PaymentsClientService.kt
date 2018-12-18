@@ -29,6 +29,9 @@ interface PaymentsClientService {
 
     @POST("store/buy-gold-using-credits")
     fun buyGoldUsingCredits(@Body body: BuyGoldUsingCreditsBody): Deferred<Response<Any>>
+
+    @POST("store/process-play-store-purchase")
+    fun processPlayStorePurchase(@Body body: ProcessPlayStorePurchaseBody): Deferred<Response<Any>>
 }
 
 class GetDigitalItemsBody
@@ -162,3 +165,5 @@ class PurchaseLimitsEnvelope(val goldBundles: PurchaseLimits)
 class PurchaseLimits(val canPurchaseAtLeastOne: Boolean, val displayMessage: DisplayMessage)
 
 class DisplayMessage(val body: String)
+
+class ProcessPlayStorePurchaseBody(val productId: String, val purchaseToken: String)
