@@ -30,6 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+                android:paddingStart="0dp"
+                android:paddingEnd="16dp"
                 app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,8 +46,8 @@
                         android:src="@drawable/caffeine_text"
                         android:contentDescription="@string/caffeine_logo_content_description"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/activityButton"
-                        app:layout_constraintStart_toEndOf="@+id/searchButton"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
@@ -81,7 +83,6 @@
                         style="@android:style/Widget.Material.ActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
                         android:background="@android:color/transparent"
                         android:src="@drawable/ic_profile_light"
                         android:contentDescription="@string/profile_button_content_description"
