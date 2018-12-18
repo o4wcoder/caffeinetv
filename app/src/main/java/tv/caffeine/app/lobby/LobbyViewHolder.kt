@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -103,7 +104,7 @@ abstract class BroadcasterCard(
         followedThemeLight: UserTheme,
         notFollowedThemeLight: UserTheme
 ) : LobbyViewHolder(view, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
-    private val previewImageView: ImageView = view.findViewById(R.id.preview_image_view)
+    protected val previewImageView: ImageView = view.findViewById(R.id.preview_image_view)
     private val avatarImageView: ImageView = view.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = view.findViewById(R.id.username_text_view)
     private val broadcastTitleTextView: TextView = view.findViewById(R.id.broadcast_title_text_view)
@@ -183,7 +184,7 @@ open class LiveBroadcastCard(
         liveBroadcastItem.broadcaster.user.let {
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
-        itemView.setOnClickListener {
+        previewImageView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
@@ -222,7 +223,7 @@ class LiveBroadcastWithFriendsCard(
         liveBroadcastItem.broadcaster.user.let {
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
-        itemView.setOnClickListener {
+        previewImageView.setOnClickListener {
             val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
@@ -256,6 +257,7 @@ class PreviousBroadcastCard(
         binding.nameTextView.text = previousBroadcastItem.broadcaster.user.name
         binding.lastBroadcastTextView.text = broadcast.dateText
         itemView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
+        binding.followButton.setTextColor(ContextCompat.getColor(binding.followButton.context, R.color.white))
     }
 }
 

@@ -35,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/message"
-            android:inputType="textPersonName"
+            android:inputType="textCapSentences"
             android:imeOptions="actionSend"
             app:layout_constraintEnd_toStartOf="@+id/send_button"
             app:layout_constraintStart_toEndOf="@id/digital_item_button"

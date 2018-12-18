@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
-import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.model.CaffeineEmptyResult
+import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.databinding.FragmentForgotBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnAction
@@ -43,14 +43,14 @@ class ForgotFragment : CaffeineFragment() {
         clearErrorMessages()
         launch {
             val email = binding.emailEditText.text.toString()
-            val result = accountsService.forgotPassword(ForgotPasswordBody(email)).awaitAndParseErrors(gson)
+            val result = accountsService.forgotPassword(ForgotPasswordBody(email)).awaitEmptyAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> {
+                is CaffeineEmptyResult.Success -> {
                     activity?.showSnackbar(R.string.forgot_password_email_sent)
                     findNavController().navigateUp()
                 }
-                is CaffeineResult.Error -> onError(result.error)
-                is CaffeineResult.Failure -> onFailure(result.throwable)
+                is CaffeineEmptyResult.Error -> onError(result.error)
+                is CaffeineEmptyResult.Failure -> onFailure(result.throwable)
             }
         }
     }

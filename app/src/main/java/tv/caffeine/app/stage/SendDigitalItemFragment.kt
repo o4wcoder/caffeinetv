@@ -19,10 +19,10 @@ import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSendDigitalItemBinding
-import tv.caffeine.app.wallet.WalletViewModel
 import tv.caffeine.app.ui.*
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.DigitalItemRepository
+import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
 
 class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
@@ -65,6 +65,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
             Picasso.get().load(digitalItem.staticImageUrl).into(binding.diImageView)
             binding.messageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) { sendDigitalItem(digitalItem) }
             binding.sendButton.setOnClickListener { sendDigitalItem(digitalItem) }
+            binding.diImageView.contentDescription = digitalItem.name
             checkAbilityToPurchase()
         })
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
