@@ -102,7 +102,7 @@ class NotificationsAdapter @Inject constructor(
 
 sealed class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class FollowNotificationViewHolder(itemView: View, val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope)
+class FollowNotificationViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope)
     : NotificationViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)

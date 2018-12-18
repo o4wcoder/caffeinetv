@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import tv.caffeine.app.databinding.FragmentExploreBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.clearItemDecoration
+import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
 class ExploreFragment : CaffeineFragment() {
@@ -34,13 +37,20 @@ class ExploreFragment : CaffeineFragment() {
                 when (findings) {
                     is Findings.Explore -> {
                         adapter = exploreAdapter
-                        binding.exploreRecyclerView.layoutManager = GridLayoutManager(context, 3)
+                        binding.exploreRecyclerView.apply {
+                            layoutManager = GridLayoutManager(context, 3)
+                            clearItemDecoration()
+                        }
                     }
                     is Findings.Search -> {
                         adapter = searchUsersAdapter
-                        binding.exploreRecyclerView.layoutManager = LinearLayoutManager(context)
+                        binding.exploreRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(context)
+                            setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+                        }
                     }
                 }
+                adapter.fragmentManager = fragmentManager
                 adapter.submitList(findings.data.toList())
                 binding.exploreRecyclerView.adapter = adapter
             }

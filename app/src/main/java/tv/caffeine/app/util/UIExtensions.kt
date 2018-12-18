@@ -16,6 +16,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import tv.caffeine.app.R
 import tv.caffeine.app.ui.CaffeineFragment
@@ -112,4 +113,15 @@ fun convertLinks(
         spannable.removeSpan(urlSpan)
     }
     return spannable
+}
+
+fun RecyclerView.clearItemDecoration() {
+    for (i in 0 until itemDecorationCount) {
+        removeItemDecorationAt(i)
+    }
+}
+
+fun RecyclerView.setItemDecoration(itemDecoration: RecyclerView.ItemDecoration) {
+    clearItemDecoration()
+    addItemDecoration(itemDecoration)
 }

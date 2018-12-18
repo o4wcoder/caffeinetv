@@ -8,6 +8,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.clearItemDecoration
+import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
 class NotificationsFragment : CaffeineFragment() {
@@ -28,7 +30,7 @@ class NotificationsFragment : CaffeineFragment() {
         notificationsAdapter.fragmentManager = fragmentManager
         binding.userListRecyclerView.apply {
             adapter = notificationsAdapter
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
         viewModel.notifications.observe(viewLifecycleOwner, Observer {
             notificationsAdapter.submitList(it)

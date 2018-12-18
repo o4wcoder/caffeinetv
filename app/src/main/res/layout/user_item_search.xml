@@ -4,18 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin"
+    android:layout_marginEnd="@dimen/margin_list">
 
     <TextView
         android:id="@+id/username_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/margin_list"
         android:textAppearance="@style/ExploreUsername.NotFollowing"
         android:drawablePadding="@dimen/verified_icon_padding"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
         app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
-        app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
+        app:layout_constraintEnd_toStartOf="@+id/follow_button"
         tools:drawableEnd="@drawable/verified_large"
         tools:text="@sample/usernames"/>
 
@@ -23,13 +27,13 @@
         android:id="@+id/avatar_image_view"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="@dimen/margin_list"
+        android:layout_marginBottom="@dimen/margin_list"
+        android:contentDescription="@string/user_avatar_content_description"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"/>
 
     <Button
         style="@style/Button.Follow"
@@ -39,9 +43,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/follow_button"
+        app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
         app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/username_text_view"
-        app:layout_constraintTop_toTopOf="@+id/avatar_image_view" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

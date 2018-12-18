@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -19,6 +20,7 @@ import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
 class FollowersFragment : CaffeineFragment() {
@@ -31,7 +33,11 @@ class FollowersFragment : CaffeineFragment() {
                               savedInstanceState: Bundle?): View? {
         val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
         binding.setLifecycleOwner(viewLifecycleOwner)
-        binding.userListRecyclerView.adapter = caidListAdapter
+        caidListAdapter.fragmentManager = fragmentManager
+        binding.userListRecyclerView.apply {
+            adapter = caidListAdapter
+            setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
         viewModel.caid = FollowersFragmentArgs.fromBundle(arguments).caid
         viewModel.followers.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)
