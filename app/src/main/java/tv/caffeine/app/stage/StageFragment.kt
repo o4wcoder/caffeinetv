@@ -31,6 +31,7 @@ import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.*
 import javax.inject.Inject
 import kotlin.collections.set
@@ -86,34 +87,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             launch(dispatchConfig.main) {
                 connectMessages(userDetails.stageId)
             }
-            val broadcastId = userDetails.broadcastId ?: return@launch
-            launch {
-                val profileAvatarTransform = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
-                        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
-                while(isActive) {
-                    val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
-                    when (result) {
-                        is CaffeineResult.Success -> {
-                            val friendAvatarImageUrl = result.value.firstOrNull()?.let { followManager.userDetails(it.caid)?.avatarImageUrl }
-                            if (friendAvatarImageUrl == null) {
-                                binding.friendsWatchingButton?.isEnabled = false
-                                binding.friendsWatchingButton?.setImageDrawable(null)
-                            } else {
-                                binding.friendsWatchingButton?.isEnabled = true
-                                binding.friendsWatchingButton?.imageTintList = null
-                                Picasso.get().load(friendAvatarImageUrl)
-                                        .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
-                                        .placeholder(R.drawable.ic_profile)
-                                        .transform(profileAvatarTransform)
-                                        .into(binding.friendsWatchingButton)
-                            }
-                        }
-                        is CaffeineResult.Error -> Timber.e("Failed to fetch friends watching ${result.error}")
-                        is CaffeineResult.Failure -> Timber.e(result.throwable)
-                    }
-                    delay(10000L)
-                }
-            }
         }
     }
 
@@ -140,37 +113,43 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         return binding.root
     }
 
+    private var viewJob: Job? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        launch {
-            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
+        val profileAvatarTransform = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
+        viewJob = launch {
             launch(dispatchConfig.main) {
-                profileViewModel.load(userDetails.caid)
-                binding.profileViewModel = profileViewModel
-                binding.stageToolbar.apply {
-                    inflateMenu(R.menu.stage_menu)
-                    menu.findItem(R.id.stage_overflow_menu).setOnMenuItemClickListener {
-                        if (it.itemId == R.id.stage_overflow_menu) {
-                            fragmentManager?.navigateToReportOrIgnoreDialog(
-                                    userDetails.caid, userDetails.username, true
-                            )
+                val userDetails = followManager.userDetails(broadcaster)
+                if (userDetails != null) {
+                    profileViewModel.load(userDetails.caid)
+                    binding.profileViewModel = profileViewModel
+                    binding.stageToolbar.apply {
+                        inflateMenu(R.menu.stage_menu)
+                        menu.findItem(R.id.stage_overflow_menu).setOnMenuItemClickListener {
+                            if (it.itemId == R.id.stage_overflow_menu) {
+                                fragmentManager?.navigateToReportOrIgnoreDialog(
+                                        userDetails.caid, userDetails.username, true
+                                )
+                            }
+                            true
                         }
-                        true
                     }
+                    profileViewModel.username.observe(viewLifecycleOwner, Observer { username ->
+                        binding.showIsOverTextView.htmlText = getString(R.string.broadcaster_show_is_over, username)
+                    })
                 }
             }
-            val broadcastId = userDetails.broadcastId ?: return@launch
-            val result = broadcastsService.broadcastDetails(broadcastId).awaitAndParseErrors(gson)
-            when(result) {
-                is CaffeineResult.Success -> {
-                    val broadcast = result.value.broadcast
-                    broadcastName = broadcast.name
-                    title = broadcastName
-                    Picasso.get()
-                            .load(broadcast.game?.iconImageUrl)
-                            .into(binding.gameLogoImageView)
+            launch {
+                while(isActive) {
+                    val userDetails = followManager.loadUserDetails(broadcaster)
+                    if (userDetails != null) {
+                        val broadcastId = userDetails.broadcastId ?: break
+                        updateBroadcastDetails(broadcastId)
+                        updateFriendsWatching(broadcastId, profileAvatarTransform)
+                    }
+                    delay(5000L)
                 }
-                is CaffeineResult.Error -> Timber.e("Error loading broadcast details ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
         val navController = findNavController()
@@ -192,6 +171,8 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     override fun onDestroyView() {
+        viewJob?.cancel()
+        viewJob = null
         deinitSurfaceViewRenderers()
         activity?.apply {
             unsetImmersiveSticky()
@@ -265,6 +246,52 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             }
             binding.followButton.isVisible = false
         }
+    }
+
+    private suspend fun updateBroadcastDetails(broadcastId: String) {
+        val result = broadcastsService.broadcastDetails(broadcastId).awaitAndParseErrors(gson)
+        when (result) {
+            is CaffeineResult.Success -> {
+                val broadcast = result.value.broadcast
+                broadcastName = broadcast.name
+                title = broadcastName
+                Picasso.get()
+                        .load(broadcast.game?.iconImageUrl)
+                        .into(binding.gameLogoImageView)
+                updateShowIsOverVisibility(broadcast.isOnline())
+            }
+            is CaffeineResult.Error -> Timber.e("Error loading broadcast details ${result.error}")
+            is CaffeineResult.Failure -> Timber.e(result.throwable)
+        }
+    }
+
+    private suspend fun updateFriendsWatching(broadcastId: String, profileAvatarTransform: CropBorderedCircleTransformation) {
+        val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
+        when (result) {
+            is CaffeineResult.Success -> {
+                val friendAvatarImageUrl = result.value.firstOrNull()?.let { followManager.userDetails(it.caid)?.avatarImageUrl }
+                if (friendAvatarImageUrl == null) {
+                    binding.friendsWatchingButton?.isEnabled = false
+                    binding.friendsWatchingButton?.setImageDrawable(null)
+                } else {
+                    binding.friendsWatchingButton?.isEnabled = true
+                    binding.friendsWatchingButton?.imageTintList = null
+                    Picasso.get().load(friendAvatarImageUrl)
+                            .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
+                            .placeholder(R.drawable.ic_profile)
+                            .transform(profileAvatarTransform)
+                            .into(binding.friendsWatchingButton)
+                }
+            }
+            is CaffeineResult.Error -> Timber.e("Failed to fetch friends watching ${result.error}")
+            is CaffeineResult.Failure -> Timber.e(result.throwable)
+        }
+    }
+
+    private fun updateShowIsOverVisibility(broadcastIsOnline: Boolean) {
+        binding.largeAvatarImageView.isVisible = !broadcastIsOnline
+        binding.showIsOverTextView.isVisible = !broadcastIsOnline
+        binding.backToLobbyButton.isVisible = !broadcastIsOnline
     }
 
     private fun configureRenderer(renderer: SurfaceViewRenderer, stream: StageHandshake.Stream?, videoTrack: VideoTrack?) {
@@ -394,6 +421,9 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 }
             }
         }
+        binding.backToLobbyButton.setOnClickListener {
+            findNavController().popBackStack(R.id.lobbyFragment, false)
+        }
     }
 
     override fun sendDigitalItemWithMessage(message: String?) {
@@ -443,4 +473,3 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         audioTracks.values.forEach { it.setEnabled(enabled) }
     }
 }
-
