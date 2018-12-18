@@ -4,25 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:paddingTop="25dp"
+    android:paddingBottom="20dp"
+    android:paddingStart="3dp"
+    android:paddingEnd="3dp">
 
     <ImageView
         android:id="@+id/avatar_image_view"
-        android:layout_width="@dimen/explore_avatar_size"
-        android:layout_height="@dimen/explore_avatar_size"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="@dimen/avatar_explore"
+        android:layout_height="@dimen/avatar_explore"
+        android:contentDescription="@string/user_avatar_content_description"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"/>
 
     <TextView
         android:id="@+id/username_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:drawablePadding="@dimen/verified_icon_padding"
         android:textAppearance="@style/ExploreUsername.NotFollowing"
         android:lines="1"
@@ -37,8 +38,6 @@
         android:id="@+id/number_of_followers_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:drawablePadding="@dimen/verified_icon_padding"
         android:textAppearance="@style/ExploreFollowerCount"
         android:gravity="center"
@@ -52,8 +51,6 @@
         android:id="@+id/follow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:text="@string/follow_button"
         app:layout_constraintTop_toBottomOf="@+id/number_of_followers_text_view"
         app:layout_constraintStart_toStartOf="parent"
