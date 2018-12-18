@@ -11,7 +11,6 @@ import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.ProcessPlayStorePurchaseBody
 import tv.caffeine.app.api.Wallet
-import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.map
@@ -57,16 +56,13 @@ class GoldBundlesViewModel(
         return Transformations.map(resultLiveData) { it }
     }
 
-    fun processInAppPurchases(purchases: List<Purchase>): LiveData<List<PurchaseStatus>> {
-        val resultLiveData = MutableLiveData<List<PurchaseStatus>>()
+    fun processInAppPurchase(purchase: Purchase): LiveData<PurchaseStatus> {
+        val resultLiveData = MutableLiveData<PurchaseStatus>()
         launch {
-            val purchasStatuses = purchases.map { purchase ->
-                Timber.d("Purchased ${purchase.sku}: ${purchase.orderId}, ${purchase.purchaseToken}")
-                val body = ProcessPlayStorePurchaseBody(purchase.sku, purchase.purchaseToken)
-                val result = paymentsClientService.processPlayStorePurchase(body).awaitAndParseErrors(gson)
-                PurchaseStatus(purchase.purchaseToken, result)
-            }
-            resultLiveData.value = purchasStatuses
+            Timber.d("Purchased ${purchase.sku}: ${purchase.orderId}, ${purchase.purchaseToken}")
+            val body = ProcessPlayStorePurchaseBody(purchase.sku, purchase.purchaseToken)
+            val result = paymentsClientService.processPlayStorePurchase(body).awaitAndParseErrors(gson)
+            resultLiveData.value = PurchaseStatus(purchase.purchaseToken, result)
         }
         return Transformations.map(resultLiveData) { it }
     }

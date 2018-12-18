@@ -112,6 +112,10 @@
     <string name="buy_gold_for_credits_html"><![CDATA[<img src="goldcoin">]]> <xliff:g example="2" id="gold">%1$s</xliff:g> for <![CDATA[<img src="purplecoin">]]> <xliff:g example="9" id="credits">%2$s</xliff:g></string>
     <string name="error_loading_gold_bundles">Error loading gold bundles</string>
     <string name="error_buying_gold_using_credits">Error buying gold using credits</string>
+    <string name="success_buying_gold_using_in_app_billing">Success buying gold</string>
+    <string name="user_cancel_buying_gold_using_in_app_billing">Canceled buying gold</string>
+    <string name="failure_buying_gold_using_in_app_billing">Failure buying gold</string>
+    <string name="failure_processing_in_app_purchase">Failure processing in-app purchase</string>
     <string name="success_buying_gold_using_credits">Success buying gold using credits</string>
     <string name="send_gold_to_user">Send to %s</string>
     <string name="friends_watching_title">Friends watching</string>

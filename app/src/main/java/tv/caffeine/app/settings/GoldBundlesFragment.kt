@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.*
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
@@ -46,10 +45,11 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
         val activity = activity ?: return
         billingClient = BillingClientFactory.createBillingClient(activity, PurchasesUpdatedListener { responseCode, purchases ->
             Timber.d("Connected")
-            processInAppPurchases(responseCode, purchases)
+            consumeInAppPurchases(responseCode, purchases)
         })
         billingClient.startConnection(object: BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
+                Timber.e("Billing service disconnected")
             }
 
             override fun onBillingSetupFinished(responseCode: Int) {
@@ -62,31 +62,66 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
         })
     }
 
-    private fun processInAppPurchases(responseCode: Int, purchases: MutableList<Purchase>?) {
-        if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
-            launch(dispatchConfig.main) {
-                viewModel.processInAppPurchases(purchases).observe(this@GoldBundlesFragment, Observer { purchaseStatuses ->
-                    purchaseStatuses.filter { it.result is CaffeineResult.Success }
-                            .forEach {
-                                billingClient.consumeAsync(it.purchaseToken) { responseCode, purchaseToken ->
-                                    if (responseCode == BillingClient.BillingResponse.OK) {
-                                        Timber.d("Successfully consumed the purchase $purchaseToken")
-                                    } else {
-                                        Timber.e("Failed to consume the purchase $purchaseToken")
-                                    }
-                                }
-                            }
-                    purchaseStatuses.filter { it.result !is CaffeineResult.Success }
-                            .forEach {
-                                Timber.e("Failed to process in-app purchase ${it.purchaseToken}")
-                            }
-                })
+    private fun consumeInAppPurchases(responseCode: Int, purchases: List<Purchase>?) {
+        when {
+            responseCode == BillingClient.BillingResponse.OK && purchases != null -> {
+                for (purchase in purchases) {
+                    consumeInAppPurchase(purchase)
+                }
             }
-        } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
-            Timber.d("User canceled purchase")
-        } else {
-            Timber.e("Failed to make a purchase $responseCode")
+            responseCode == BillingClient.BillingResponse.USER_CANCELED -> {
+                Timber.d("User canceled")
+                activity?.showSnackbar(R.string.user_cancel_buying_gold_using_in_app_billing)
+            }
+            else -> {
+                Timber.e("Billing client error $responseCode")
+                activity?.showSnackbar(R.string.failure_buying_gold_using_in_app_billing)
+            }
         }
+    }
+
+    private fun consumeInAppPurchase(purchase: Purchase) {
+        try {
+            billingClient.consumeAsync(purchase.purchaseToken) { responseCode, purchaseToken ->
+                when (responseCode) {
+                    BillingClient.BillingResponse.OK -> {
+                        processInAppPurchase(purchase)
+                        Timber.d("Successfully consumed the purchase $purchaseToken")
+                    }
+                    BillingClient.BillingResponse.USER_CANCELED -> {
+                        Timber.d("User canceled purchase")
+                        activity?.showSnackbar(R.string.user_cancel_buying_gold_using_in_app_billing)
+                    }
+                    else -> {
+                        Timber.e("Failed to consume the purchase $purchaseToken")
+                        activity?.showSnackbar(R.string.failure_buying_gold_using_in_app_billing)
+                    }
+                }
+            }
+        } catch (nee: NotImplementedError) {
+            // This will happen when using BillingX testing library,
+            // since v 0.8.0 doesn't implement consuming IAB purchases
+            Timber.d("Debug build, using BillingX library, consuming purchases isn't supported")
+            processInAppPurchase(purchase)
+        } catch (t: Throwable) {
+            Timber.e(t)
+        }
+    }
+
+    private fun processInAppPurchase(purchase: Purchase) {
+        viewModel.processInAppPurchase(purchase).observe(this@GoldBundlesFragment, Observer { purchaseStatus ->
+            when(purchaseStatus.result) {
+                is CaffeineResult.Success -> {
+                    Timber.d("Successfully processed purchase")
+                    activity?.showSnackbar(R.string.success_buying_gold_using_in_app_billing)
+                    // TODO remove purchase token
+                }
+                else -> {
+                    Timber.e("Failed to process purchase")
+                    activity?.showSnackbar(R.string.failure_processing_in_app_purchase)
+                }
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -131,7 +166,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
                             }
                             for (sku in skuList) {
                                 billingClient.queryPurchaseHistoryAsync(sku) { responseCode, purchasesList ->
-                                    processInAppPurchases(responseCode, purchasesList)
+                                    consumeInAppPurchases(responseCode, purchasesList)
                                 }
                             }
                         }
