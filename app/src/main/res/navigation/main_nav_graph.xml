@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_landingFragment_to_mfaCodeFragment"
             app:destination="@+id/mfaCodeFragment"/>
+        <action
+            android:id="@+id/action_landingFragment_to_twitterAuthFragment"
+            app:destination="@id/twitterAuthFragment" />
         <argument
             android:name="message"
             app:argType="string"
@@ -74,9 +77,6 @@
             android:name="loginToken"
             app:argType="string"
             app:nullable="true"/>
-        <action
-            android:id="@+id/action_landingFragment_to_twitterAuthFragment"
-            app:destination="@id/twitterAuthFragment" />
     </fragment>
     <fragment
         android:id="@+id/forgotFragment"
@@ -403,6 +403,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_disconnectIdentityDialogFragment"
             app:destination="@id/disconnectIdentityDialogFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_twitterAuthFragment"
+            app:destination="@id/twitterAuthFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateEmailFragment"
@@ -449,12 +452,6 @@
         android:id="@+id/twitterAuthFragment"
         android:name="tv.caffeine.app.auth.TwitterAuthFragment"
         android:label="@string/twitter_login">
-        <action
-            android:id="@+id/action_twitterAuthFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
-        <action
-            android:id="@+id/action_twitterAuthFragment_to_mfaCodeFragment"
-            app:destination="@id/mfaCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/needsUpdateFragment"

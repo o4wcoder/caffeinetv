@@ -7,23 +7,26 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.annotation.UiThread
-import androidx.navigation.NavOptions
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.OAuthCallbackResult
+import tv.caffeine.app.api.OAuthService
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.safeNavigate
-import tv.caffeine.app.util.showSnackbar
+import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class TwitterAuthFragment : CaffeineFragment() {
+
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var oauthService: OAuthService
@@ -47,76 +50,27 @@ class TwitterAuthFragment : CaffeineFragment() {
     }
 
     private fun twitterLogin() {
+        val viewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(TwitterViewModel::class.java)
         launch {
             val result = oauthService.authenticateWith(IdentityProvider.twitter).awaitAndParseErrors(gson)
             handle(result, view!!) { oauthResponse ->
                 webView.loadUrl(oauthResponse.authUrl)
                 launch {
                     val longPollResult = oauthService.longPoll(oauthResponse.longpollUrl).awaitAndParseErrors(gson)
-                    handle(longPollResult, view!!) { longPollResponse ->
-                        Timber.d("OAuth login success, $longPollResponse")
-                        launch {
-                            processOAuthCallbackResult(longPollResponse)
-                        }
-                    }
+                    viewModel.postTwitterOAuthResult(longPollResult)
+                    findNavController().popBackStack()
                 }
             }
         }
     }
 
-    private suspend fun processOAuthCallbackResult(result: OAuthCallbackResult) {
-        if (result.oauth != null) return continueToSignUp(result)
-        when(result.next) {
-            null -> return
-            NextAccountAction.mfa_otp_required -> continueToMfaCode(result)
-            else -> attemptSignIn(result)
-        }
-    }
+}
 
-    private suspend fun attemptSignIn(oauthCallbackResult: OAuthCallbackResult) {
-        val caid = oauthCallbackResult.caid
-        val loginToken = oauthCallbackResult.loginToken
-        val signInBody = SignInBody(Account(null, null, caid, loginToken))
-        val result = accountsService.signIn(signInBody).awaitAndParseErrors(gson)
-        when(result) {
-            is CaffeineResult.Success -> onSuccess(result.value)
-            is CaffeineResult.Error -> onError(result.error)
-            is CaffeineResult.Failure -> onFailure(result.throwable)
-        }
-    }
+class TwitterViewModel(dispatchConfig: DispatchConfig) : CaffeineViewModel(dispatchConfig) {
+    private val _twitterOAuthResult = MutableLiveData<CaffeineResult<OAuthCallbackResult>>()
+    val twitterOAuthResult = Transformations.map(_twitterOAuthResult) { it }
 
-    private fun continueToSignUp(oauthCallbackResult: OAuthCallbackResult) {
-        val action = TwitterAuthFragmentDirections.actionTwitterAuthFragmentToSignUpFragment()
-        action.setOauthCallbackResult(oauthCallbackResult)
-        findNavController().safeNavigate(action)
-    }
-
-    private fun continueToMfaCode(oauthCallbackResult: OAuthCallbackResult) {
-        val action = TwitterAuthFragmentDirections.actionTwitterAuthFragmentToMfaCodeFragment(null, null, oauthCallbackResult.caid, oauthCallbackResult.loginToken)
-        val options = NavOptions.Builder().setPopUpTo(R.id.landingFragment, false).build()
-        findNavController().safeNavigate(action, options)
-    }
-
-    @UiThread
-    private fun onSuccess(signInResult: SignInResult) {
-        val navController = findNavController()
-        tokenStore.storeSignInResult(signInResult)
-        navController.popBackStack(R.id.landingFragment, true)
-        navController.safeNavigate(R.id.lobbyFragment)
-        authWatcher.onSignIn()
-    }
-
-    @UiThread
-    private fun onError(error: ApiErrorResult) {
-        Timber.e("Twitter login error: $error")
-        findNavController().popBackStack()
-        activity?.showSnackbar(R.string.twitter_login_failed)
-    }
-
-    @UiThread
-    private fun onFailure(throwable: Throwable) {
-        Timber.e(throwable)
-        findNavController().popBackStack()
-        activity?.showSnackbar(R.string.twitter_login_failed)
+    fun postTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
+        _twitterOAuthResult.value = result
     }
 }

@@ -77,6 +77,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
+            modelClass.isAssignableFrom(TwitterViewModel::class.java) -> TwitterViewModel(dispatchConfig)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }

@@ -28,6 +28,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.auth.TwitterViewModel
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.profile.MyProfileViewModel
@@ -160,6 +161,15 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     }
 
     private fun configureSocialAccounts() {
+        val twitterViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(TwitterViewModel::class.java)
+        twitterViewModel.twitterOAuthResult.observe(this, Observer { result ->
+            if (result == null) return@Observer
+            when(result) {
+                is CaffeineResult.Success -> Timber.d("Successfully connected Twitter, ${result.value}")
+                is CaffeineResult.Error -> Timber.e("Error connecting Twitter, ${result.error}")
+                is CaffeineResult.Failure -> Timber.e(result.throwable)
+            }
+        })
         findPreference("manage_twitter_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer { user ->
                 val twitter = user?.connectedAccounts?.get("twitter")
@@ -172,6 +182,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         fragment.arguments = action.arguments
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
                         fragment.show(fragmentManager, "disconnectTwitter")
+                    } else {
+                        val action = SettingsFragmentDirections.actionSettingsFragmentToTwitterAuthFragment()
+                        findNavController().safeNavigate(action)
                     }
                     true
                 }

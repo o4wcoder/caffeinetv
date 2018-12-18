@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
@@ -55,6 +57,14 @@ class LandingFragment : CaffeineFragment() {
         LandingFragmentArgs.fromBundle(arguments).message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
         }
+        val viewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(TwitterViewModel::class.java)
+        viewModel.twitterOAuthResult.observe(viewLifecycleOwner, Observer { result ->
+            if (result == null) return@Observer
+            handle(result, view) { oauthCallbackResult ->
+                Timber.d("Twitter OAuth login success, $oauthCallbackResult")
+                processOAuthResult(oauthCallbackResult)
+            }
+        })
     }
 
     private val facebookCallback = object : FacebookCallback<LoginResult?> {
