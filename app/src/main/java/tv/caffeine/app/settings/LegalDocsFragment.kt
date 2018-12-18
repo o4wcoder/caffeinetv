@@ -96,7 +96,12 @@ class LegalDocsFragment : Fragment() {
 
                     // Match urls in the whitelist
                     if (urlString in urlWhitelist) return false
+
+                    // Open unsupported and insecure links in Chrome
+                    startActivity(buildUrlIntent(url))
+                    return true
                 }
+
                 return true
             }
         }
@@ -130,4 +135,6 @@ class LegalDocsFragment : Fragment() {
             it.type = "message/rfc822"
         }
     }
+
+    private fun buildUrlIntent(uri: Uri) = Intent(Intent.ACTION_VIEW).also { it.data = uri }
 }
