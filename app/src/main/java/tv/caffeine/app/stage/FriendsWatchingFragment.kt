@@ -135,7 +135,8 @@ class FriendWatchingViewHolder(
         job = scope.launch {
             val user = followManager.userDetails(item.caid) ?: return@launch
             followButton.isVisible = false
-            user.configure(avatarImageView, usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+            user.configure(avatarImageView, usernameTextView, null, followManager, false, null, R.dimen.avatar_size,
+                    followedTheme, notFollowedTheme)
         }
         itemView.setOnClickListener { callback(item.caid) }
     }

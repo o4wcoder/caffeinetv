@@ -129,6 +129,16 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="ListTitle" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="ListSubtitle" parent="@style/TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/medium_gray</item>
+    </style>
+
     <style name="FormErrorText">
         <item name="android:textColor">@color/warning_red</item>
         <item name="android:textStyle">bold</item>
@@ -136,6 +146,15 @@
     <style name="FollowCount" parent="@style/TextAppearance.MaterialComponents.Headline5">
         <item name="android:textSize">27sp</item>
     </style>
+
+    <style name="ExploreUsername" parent="@style/ListTitle">
+        <item name="android:drawablePadding">4dp</item>
+    </style>
+    <style name="ExploreUsername.Following">
+        <item name="android:textColor">@color/caffeine_blue</item>
+    </style>
+    <style name="ExploreUsername.NotFollowing"/>
+    <style name="ExploreFollowerCount" parent="@style/TextAppearance.MaterialComponents.Caption"/>
 
     <!-- Design approved - End -->
 
@@ -235,20 +254,6 @@
     </style>
 
     <style name="BroadcastCardUsername.Following.Previous">
-    </style>
-
-    <style name="ExploreUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
-        <item name="android:drawablePadding">4dp</item>
-    </style>
-
-    <style name="ExploreUsername.NotFollowing" parent="@style/TextAppearance.MaterialComponents.Body1">
-    </style>
-
-    <style name="ExploreFollowerCount" parent="@style/TextAppearance.MaterialComponents.Caption">
-    </style>
-
-    <style name="ExploreUsername.Following">
-        <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
     <style name="ChatMessageUsername" parent="@style/TextAppearance.MaterialComponents.Caption">

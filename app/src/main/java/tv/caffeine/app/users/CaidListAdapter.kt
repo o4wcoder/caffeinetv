@@ -78,7 +78,8 @@ class CaidViewHolder(itemView: View, private val scope: CoroutineScope) : Recycl
             val user = followManager.userDetails(item.caid) ?: return@launch
             followButton.isVisible = item !is CaidRecord.IgnoreRecord
             val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton
-            user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+            user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, null, R.dimen.avatar_size,
+                    followedTheme, notFollowedTheme)
         }
         itemView.setOnClickListener {
             val action = LobbyDirections.actionGlobalProfileFragment(item.caid)

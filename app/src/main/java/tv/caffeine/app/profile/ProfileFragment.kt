@@ -1,7 +1,6 @@
 package tv.caffeine.app.profile
 
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +10,12 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentProfileBinding
+import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
+import tv.caffeine.app.util.navigateToUnfollowUserDialog
 import tv.caffeine.app.util.safeNavigate
 
 class ProfileFragment : CaffeineFragment() {
@@ -22,8 +23,16 @@ class ProfileFragment : CaffeineFragment() {
     private val viewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
     private lateinit var caid: String
     private lateinit var binding: FragmentProfileBinding
-    private var username: String? = null
     private var isFollowed: Boolean = false
+    private val callback = object: FollowManager.Callback() {
+        override fun follow(caid: String) {
+            viewModel.follow(caid)
+        }
+
+        override fun unfollow(caid: String) {
+            viewModel.unfollow(caid)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +44,16 @@ class ProfileFragment : CaffeineFragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         viewModel.load(caid)
         viewModel.username.observe(this, Observer { username ->
-            this.username = username
             binding.moreButton.apply {
                 visibility = View.VISIBLE
                 setOnClickListener { fragmentManager?.navigateToReportOrIgnoreDialog(caid, username, true) }
+            }
+            binding.followButton.setOnClickListener {
+                if (isFollowed) {
+                    fragmentManager?.navigateToUnfollowUserDialog(caid, username, callback)
+                } else {
+                    callback.follow(caid)
+                }
             }
         })
         viewModel.isFollowed.observe(this, Observer { isFollowed ->
@@ -48,21 +63,12 @@ class ProfileFragment : CaffeineFragment() {
                 FollowButtonDecorator(if (isFollowed) Style.FOLLOWING else Style.FOLLOW).decorate(this)
             }
         })
-        binding.followButton.setOnClickListener { if (isFollowed) promptToUnfollow() else viewModel.follow(caid) }
         binding.profileViewModel = viewModel
         binding.setLifecycleOwner(viewLifecycleOwner)
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }
         binding.stageImageView.setOnClickListener { watchBroadcast() }
         return binding.root
-    }
-
-    private fun promptToUnfollow() {
-        val action = ProfileFragmentDirections.actionProfileFragmentToUnfollowUserDialogFragment(username ?: "user")
-        val fragment = UnfollowUserDialogFragment()
-        fragment.positiveClickListener = DialogInterface.OnClickListener { _, _ -> viewModel.unfollow(caid) }
-        fragment.arguments = action.arguments
-        fragment.show(fragmentManager, "unfollowUser")
     }
 
     private fun showFollowingList() {

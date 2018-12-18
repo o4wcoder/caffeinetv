@@ -112,7 +112,8 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
 
     override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         hideInteractionOverlay()
-        message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
+                R.dimen.avatar_size, followedTheme, notFollowedTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
@@ -161,7 +162,8 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
 
     override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         hideInteractionOverlay()
-        message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, R.dimen.avatar_size, followedTheme, notFollowedTheme)
+        message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
+                R.dimen.avatar_size, followedTheme, notFollowedTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }

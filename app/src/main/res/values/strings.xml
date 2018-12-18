@@ -84,6 +84,8 @@
     <string name="followed_you">followed you</string>
     <string name="following">Following</string>
     <string name="followers">Followers</string>
+    <string name="unread_notification_badge_content_description">unread notification badge</string>
+    <string name="read_notification_badge_content_description">read notification badge</string>
     <plurals name="user_and_friends_watching">
         <item quantity="one"><![CDATA[<img src="%2$s"> %1$s and one other are watching]]></item>
         <item quantity="other"><![CDATA[<img src="%2$s"> %1$s and %3$s others are watching]]></item>

@@ -24,6 +24,7 @@ fun User.configure(
         followButton: Button?,
         followManager: FollowManager,
         allowUnfollowing: Boolean = false,
+        followHandler: FollowManager.FollowHandler? = null,
         @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
         followedTheme: UserTheme,
         notFollowedTheme: UserTheme
@@ -36,19 +37,22 @@ fun User.configure(
             FollowButtonDecorator(Style.FOLLOW).decorate(followButton)
             followButton.isVisible = true
             followButton.setOnClickListener {
-                FollowButtonDecorator(Style.FOLLOWING).decorate(followButton)
-                followButton.isVisible = allowUnfollowing
-                GlobalScope.launch {
-                    followManager.followUser(caid)
+                if (followHandler != null) {
+                    followHandler.callback.follow(caid)
+                } else {
+                    FollowButtonDecorator(Style.FOLLOWING).decorate(followButton)
+                    followButton.isVisible = allowUnfollowing
+                    GlobalScope.launch {
+                        followManager.followUser(caid)
+                    }
                 }
             }
         } else if (allowUnfollowing && followManager.followersLoaded() && following) {
             FollowButtonDecorator(Style.FOLLOWING).decorate(followButton)
             followButton.isVisible = true
             followButton.setOnClickListener {
-                followButton.isVisible = allowUnfollowing
-                GlobalScope.launch {
-                    followManager.unfollowUser(caid)
+                followHandler?.let { handler ->
+                    handler.fragmentManager?.navigateToUnfollowUserDialog(caid, username, handler.callback)
                 }
             }
         } else {

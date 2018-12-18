@@ -132,6 +132,7 @@ abstract class BroadcasterCard(
                 followButton,
                 followManager,
                 false,
+                null,
                 R.dimen.avatar_size,
                 if (isLight) followedThemeLight else followedTheme,
                 if (isLight) notFollowedThemeLight else notFollowedTheme

@@ -1,5 +1,6 @@
 package tv.caffeine.app.session
 
+import androidx.fragment.app.FragmentManager
 import com.google.gson.Gson
 import timber.log.Timber
 import tv.caffeine.app.api.BroadcastsService
@@ -93,6 +94,12 @@ class FollowManager @Inject constructor(
             is CaffeineResult.Error -> Timber.e("Failure loading broadcast details ${result.error}").let { null }
             is CaffeineResult.Failure -> Timber.e(result.throwable).let { null }
         }
+    }
+
+    class FollowHandler(val fragmentManager: FragmentManager?, val callback: Callback)
+    abstract class Callback {
+        abstract fun follow(caid: String)
+        abstract fun unfollow(caid: String)
     }
 }
 

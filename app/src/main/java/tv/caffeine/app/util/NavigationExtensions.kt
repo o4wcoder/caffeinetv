@@ -1,5 +1,6 @@
 package tv.caffeine.app.util
 
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager
@@ -11,6 +12,8 @@ import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
+import tv.caffeine.app.profile.UnfollowUserDialogFragment
+import tv.caffeine.app.session.FollowManager
 
 fun NavController.safeNavigate(directions: NavDirections) {
     try {
@@ -92,9 +95,17 @@ fun NavController.closeNoNetwork() {
 }
 
 fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: String, shouldNavigateBackWhenDone: Boolean) {
-    ReportOrIgnoreDialogFragment().let {
-        it.arguments = LobbyDirections.ActionGlobalReportOrIgnoreDialogFragment(
+    ReportOrIgnoreDialogFragment().apply {
+        arguments = LobbyDirections.ActionGlobalReportOrIgnoreDialogFragment(
                 caid, username, shouldNavigateBackWhenDone).arguments
-        it.show(this, "reportOrIgnoreUser")
+        show(this@navigateToReportOrIgnoreDialog, "reportOrIgnoreUser")
+    }
+}
+
+fun FragmentManager.navigateToUnfollowUserDialog(caid: String, username: String, callback: FollowManager.Callback) {
+    UnfollowUserDialogFragment().apply {
+        positiveClickListener = DialogInterface.OnClickListener { _, _ -> callback.unfollow(caid) }
+        arguments = LobbyDirections.ActionGlobalUnfollowUserDialogFragment(username).arguments
+        show(this@navigateToUnfollowUserDialog, "unfollowUser")
     }
 }

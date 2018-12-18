@@ -207,6 +207,9 @@
     <action
         android:id="@+id/action_global_reportOrIgnoreDialogFragment"
         app:destination="@+id/reportOrIgnoreDialogFragment"/>
+    <action
+        android:id="@+id/action_global_unfollowUserDialogFragment"
+        app:destination="@+id/unfollowUserDialogFragment"/>
     <fragment
         android:id="@+id/myProfileFragment"
         android:name="tv.caffeine.app.profile.MyProfileFragment"
@@ -255,9 +258,6 @@
         <action
             android:id="@+id/action_profileFragment_to_stageFragment"
             app:destination="@+id/stageFragment"/>
-        <action
-            android:id="@+id/action_profileFragment_to_unfollowUserDialogFragment"
-            app:destination="@+id/unfollowUserDialogFragment"/>
     </fragment>
     <fragment
         android:id="@+id/reportOrIgnoreDialogFragment"

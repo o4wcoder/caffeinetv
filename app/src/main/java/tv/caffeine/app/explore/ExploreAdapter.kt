@@ -62,7 +62,8 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val numberOfFollowersTextView: TextView? = itemView.findViewById(R.id.number_of_followers_text_view)
 
     fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
-        item.user.configure(avatarImageView, usernameTextView, followButton, followManager, false, R.dimen.explore_avatar_size, followedTheme, notFollowedTheme)
+        item.user.configure(avatarImageView, usernameTextView, followButton, followManager, false, null, R.dimen.explore_avatar_size,
+                followedTheme, notFollowedTheme)
         numberOfFollowersTextView?.apply {
             val followersCount = item.user.followersCount
             val compactFollowersCount = compactNumberFormat(followersCount)
