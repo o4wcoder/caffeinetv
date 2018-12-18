@@ -1,5 +1,6 @@
 package tv.caffeine.app
 
+import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
@@ -64,6 +65,19 @@ class MainActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (navController.currentDestination?.id == R.id.stageFragment) {
+            /**
+             * Samsung Galaxy S9 has an overlay as a part of the fullscreen NUX (new user expereince) that
+             * constantly takes focus from the foreground app. It results in a flickering screen on stage
+             * because we rely on Activity.onWindowFocusChanged() to detect the system dialog and keyboard,
+             * and adjust the immersive mode. We disable this function when the user first enters the stage
+             * and hopefully they finish the Samsung NUX.
+             */
+            getPreferences(Context.MODE_PRIVATE)?.let {
+                val key = getString(R.string.is_first_time_on_stage)
+                if (it.getBoolean(key, true)) {
+                    return
+                }
+            }
             if (hasFocus) {
                 setImmersiveSticky()
             } else {

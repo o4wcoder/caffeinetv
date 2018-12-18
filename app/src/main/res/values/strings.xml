@@ -195,4 +195,7 @@
     <!-- Connectivity / No Network -->
     <string name="no_network_data">No Network Data</string>
     <string name="check_your_wifi_or_cellular">Check your wi-fi or cellular settings.</string>
+
+    <!-- Shared preference keys -->
+    <string name="is_first_time_on_stage" translatable="false">is_first_time_on_stage</string>
 </resources>

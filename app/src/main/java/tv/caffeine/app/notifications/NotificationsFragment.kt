@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.clearItemDecoration
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 

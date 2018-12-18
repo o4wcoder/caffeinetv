@@ -196,6 +196,14 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         activity?.apply {
             unsetImmersiveSticky()
             setDarkMode(false)
+
+            getPreferences(Context.MODE_PRIVATE)?.let {
+                val key = getString(R.string.is_first_time_on_stage)
+                if (it.getBoolean(key, true)) {
+                    // This will re-enable the immersive mode function in MainActivity.onWindowFocusChanged().
+                    it.edit().putBoolean(key, false).apply()
+                }
+            }
         }
         super.onDestroyView()
     }
