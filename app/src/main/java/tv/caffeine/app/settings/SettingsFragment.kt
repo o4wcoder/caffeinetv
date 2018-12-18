@@ -32,6 +32,7 @@ import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.safeNavigate
@@ -98,7 +99,14 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                 MfaMethod.EMAIL, MfaMethod.TOTP -> R.string.mfa_status_on
                 else -> R.string.mfa_status_off
             }
-            findPreference("manage_2fa")?.setSummary(status)
+            findPreference("manage_2fa")?.apply {
+                setSummary(status)
+                setOnPreferenceClickListener {
+                    val fragment = AlertDialogFragment.withMessage(R.string.manage_mfa_coming_soon)
+                    fragment.show(fragmentManager, "mfaSoonDialog")
+                    true
+                }
+            }
         })
         myProfileViewModel.email.observe(this, Observer {
             findPreference("change_email")?.summary = it ?: getString(R.string.email)
