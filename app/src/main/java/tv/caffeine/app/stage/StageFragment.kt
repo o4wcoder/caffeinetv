@@ -33,6 +33,7 @@ import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.receiver.HeadsetBroadcastReceiver
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.*
@@ -429,7 +430,15 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                         isFollowingBroadcaster = true
                         binding.followButton.isVisible = false
                     }
-                    else -> Timber.e("Failed to follow $broadcaster from stage")
+                    is CaffeineEmptyResult.Error -> {
+                        if (result.error.isMustVerifyEmailError()) {
+                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                            fragment.show(fragmentManager, "verifyEmail")
+                        } else {
+                            Timber.e("Couldn't follow user ${result.error}")
+                        }
+                    }
+                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
                 }
             }
         }

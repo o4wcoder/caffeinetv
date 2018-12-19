@@ -41,6 +41,9 @@ interface AccountsService {
 
     @POST("v1/legal-acceptance")
     fun acceptLegalAgreement(): Deferred<Response<LegalAcceptanceResult>>
+
+    @POST("v1/account/resend-verification")
+    fun resendVerification(): Deferred<Response<Void>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
@@ -61,6 +64,7 @@ fun ApiErrorResult.isTokenExpirationError() = errors?._token?.isNullOrEmpty() ==
 fun ApiErrorResult.isVersionCheckError() = errors?._expired?.contains("version") == true
 fun VersionCheckError() = ApiErrorResult(ApiError(_expired = listOf("version")))
 fun ApiErrorResult.isIdentityRateLimitExceeded() = errors?._identity?.contains("Rate Limit Exceeded") == true
+fun ApiErrorResult.isMustVerifyEmailError() = errors?._unverifiedEmail?.isNullOrEmpty() == false
 
 
 data class ApiError(
@@ -74,7 +78,8 @@ data class ApiError(
         val otp: List<String>? = null,
         val _token: List<String>? = null,
         val _expired: List<String>? = null,
-        val _identity: List<String>? = null
+        val _identity: List<String>? = null,
+        val _unverifiedEmail: List<String>? = null
 )
 
 val ApiErrorResult.generalErrorsString get() = errors?._error?.joinToString("\n")

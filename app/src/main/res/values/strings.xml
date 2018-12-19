@@ -125,6 +125,7 @@
     <string name="settings_button">Settings</string>
     <string name="add_your_full_name">Add your full name</string>
     <string name="verify_email_to_follow_and_comment">Verify your email to follow and comment</string>
+    <string name="verify_email_to_follow_more_users">Verify your email to follow more users</string>
 
     <string name="user_avatar_content_description">User avatar</string>
     <string name="user_avatar_username_not_verified"><![CDATA[<img src="%2$s">]]> <xliff:g example="Caffeine" id="username">%1$s</xliff:g></string>

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
@@ -20,14 +19,19 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -57,9 +61,19 @@ class NotificationsAdapter @Inject constructor(
     val callback = object: FollowManager.Callback() {
         override fun follow(caid: String) {
              launch {
-                if (followManager.followUser(caid) is CaffeineEmptyResult.Success) {
-                    updateItem(caid)
-                }
+                 val result = followManager.followUser(caid)
+                 when (result) {
+                     is CaffeineEmptyResult.Success -> updateItem(caid)
+                     is CaffeineEmptyResult.Error -> {
+                         if (result.error.isMustVerifyEmailError()) {
+                             val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                             fragment.show(fragmentManager, "verifyEmail")
+                         } else {
+                             Timber.e("Couldn't follow user ${result.error}")
+                         }
+                     }
+                     is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+                 }
             }
         }
         override fun unfollow(caid: String) {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.Broadcast
+import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.isOnline
 import tv.caffeine.app.session.FollowManager
@@ -46,9 +47,14 @@ class ProfileViewModel(
         user.value = userDetails
     }
 
-    fun follow(caid: String) = launch {
-        val result = followManager.followUser(caid)
-        forceLoad(caid)
+    fun follow(caid: String): LiveData<CaffeineEmptyResult> {
+        val liveData = MutableLiveData<CaffeineEmptyResult>()
+        launch {
+            val result = followManager.followUser(caid)
+            forceLoad(caid)
+            liveData.value = result
+        }
+        return Transformations.map(liveData) { it }
     }
 
     fun unfollow(caid: String) = launch {

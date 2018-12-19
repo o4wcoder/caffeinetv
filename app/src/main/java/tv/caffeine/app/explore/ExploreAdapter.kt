@@ -20,10 +20,12 @@ import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
+import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -52,8 +54,18 @@ abstract class UsersAdapter(
     val callback = object: FollowManager.Callback() {
         override fun follow(caid: String) {
             launch {
-                if (followManager.followUser(caid) is CaffeineEmptyResult.Success) {
-                    updateItem(caid)
+                val result = followManager.followUser(caid)
+                when (result) {
+                    is CaffeineEmptyResult.Success -> updateItem(caid)
+                    is CaffeineEmptyResult.Error -> {
+                        if (result.error.isMustVerifyEmailError()) {
+                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                            fragment.show(fragmentManager, "verifyEmail")
+                        } else {
+                            Timber.e("Couldn't follow user ${result.error}")
+                        }
+                    }
+                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
                 }
             }
         }
