@@ -2,6 +2,7 @@ package tv.caffeine.app.stage
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
 import android.util.TypedValue
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -29,6 +31,7 @@ import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
+import tv.caffeine.app.receiver.HeadsetBroadcastReceiver
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.htmlText
@@ -64,6 +67,9 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
     private var streams: Map<String, StageHandshake.Stream> = mapOf()
     private var broadcastName: String? = null
+    private val broadcastReceiver = HeadsetBroadcastReceiver()
+    private var audioManager: AudioManager? = null
+    private var wasSpeakerOn = false
 
     private val chatViewModel: ChatViewModel by lazy { viewModelProvider.get(ChatViewModel::class.java) }
     private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
@@ -75,6 +81,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster
+        audioManager = context?.getSystemService()
+        wasSpeakerOn = audioManager?.isSpeakerphoneOn ?: false
+        audioManager?.isSpeakerphoneOn = true
+        context?.registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             launch {
@@ -97,8 +107,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
 
     override fun onDestroy() {
-        super.onDestroy()
         disconnectStreams()
+        context?.unregisterReceiver(broadcastReceiver)
+        audioManager?.isSpeakerphoneOn = wasSpeakerOn
+        super.onDestroy()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
