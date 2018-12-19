@@ -38,10 +38,14 @@ class GoldBundlesViewModel(
     }
 
     private fun load() {
-        walletRepository.refresh()
+        refreshWallet()
         launch {
             _goldBundles.value = loadGoldBundlesUseCase().map { it.payload.goldBundles.state }
         }
+    }
+
+    private fun refreshWallet() {
+        walletRepository.refresh()
     }
 
     fun purchaseGoldBundleUsingCredits(goldBundleId: String): LiveData<Boolean> {
@@ -49,7 +53,7 @@ class GoldBundlesViewModel(
         launch {
             val result = purchaseGoldBundleUseCase(goldBundleId)
             when (result) {
-                is CaffeineResult.Success -> walletRepository.refresh().also { resultLiveData.value = true }
+                is CaffeineResult.Success -> refreshWallet().also { resultLiveData.value = true }
                 else -> resultLiveData.value = false
             }
         }
@@ -62,6 +66,7 @@ class GoldBundlesViewModel(
             Timber.d("Purchased ${purchase.sku}: ${purchase.orderId}, ${purchase.purchaseToken}")
             val body = ProcessPlayStorePurchaseBody(purchase.sku, purchase.purchaseToken)
             val result = paymentsClientService.processPlayStorePurchase(body).awaitAndParseErrors(gson)
+            refreshWallet()
             resultLiveData.value = PurchaseStatus(purchase.purchaseToken, result)
         }
         return Transformations.map(resultLiveData) { it }

@@ -118,7 +118,6 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
                 is CaffeineResult.Success -> {
                     Timber.d("Successfully processed purchase")
                     activity?.showSnackbar(R.string.success_buying_gold_using_in_app_billing)
-                    // TODO remove purchase token
                 }
                 else -> {
                     Timber.e("Failed to process purchase")
@@ -167,11 +166,6 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
                                     goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingInAppBilling?.productId }
                                 }
                                 handler.post { goldBundlesAdapter.submitList(list) }
-                            }
-                            for (sku in skuList) {
-                                billingClient.queryPurchaseHistoryAsync(sku) { responseCode, purchasesList ->
-                                    consumeInAppPurchases(responseCode, purchasesList)
-                                }
                             }
                         }
                     }
