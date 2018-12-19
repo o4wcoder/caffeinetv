@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.gson.Gson
@@ -85,7 +86,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         audioManager = context?.getSystemService()
         wasSpeakerOn = audioManager?.isSpeakerphoneOn ?: false
         audioManager?.isSpeakerphoneOn = true
-        context?.registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
+        context?.let { LocalBroadcastManager.getInstance(it).registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG)) }
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             launch {
@@ -109,7 +110,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onDestroy() {
         disconnectStreams()
-        context?.unregisterReceiver(broadcastReceiver)
+        context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(broadcastReceiver) }
         audioManager?.isSpeakerphoneOn = wasSpeakerOn
         super.onDestroy()
     }
