@@ -37,6 +37,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.*
 import javax.inject.Inject
 import kotlin.collections.set
@@ -56,6 +57,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     @Inject lateinit var usersService: UsersService
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
     @Inject lateinit var gson: Gson
+    @Inject lateinit var isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
 
     private lateinit var binding: FragmentStageBinding
     private lateinit var broadcaster: String
@@ -88,6 +90,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         audioManager?.isSpeakerphoneOn = true
         context?.let { LocalBroadcastManager.getInstance(it).registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG)) }
         launch {
+            val isVersionSupported = isVersionSupportedCheckUseCase()
+            if (isVersionSupported is CaffeineEmptyResult.Error) {
+                handleError(CaffeineResult.Error<ApiErrorResult>(VersionCheckError()))
+                return@launch
+            }
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             launch {
                 followManager.refreshFollowedUsers()
