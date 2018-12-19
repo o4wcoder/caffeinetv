@@ -280,6 +280,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private suspend fun updateFriendsWatching(broadcastId: String, profileAvatarTransform: CropBorderedCircleTransformation) {
         val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
+        if (binding.friendsWatchingButton == null) return
         when (result) {
             is CaffeineResult.Success -> {
                 val friendAvatarImageUrl = result.value.firstOrNull()?.let { followManager.userDetails(it.caid)?.avatarImageUrl }
