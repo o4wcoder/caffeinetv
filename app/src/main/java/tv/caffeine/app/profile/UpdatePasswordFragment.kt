@@ -32,7 +32,7 @@ class UpdatePasswordFragment : CaffeineFragment() {
                 when (result) {
                     is CaffeineResult.Success -> findNavController().navigateUp()
                     is CaffeineResult.Error -> onError(result, view)
-                    is CaffeineResult.Failure -> handleFailure(result, view)
+                    is CaffeineResult.Failure -> handleFailure(result)
                 }
             })
         }
@@ -43,7 +43,7 @@ class UpdatePasswordFragment : CaffeineFragment() {
         binding.formErrorTextView.text = error.generalErrorsString
         binding.password1TextInputLayout.error = error.passwordErrorsString
         binding.currentPasswordTextInputLayout.error = error.currentPasswordErrorsString
-        super.handleError(result, view)
+        super.handleError(result)
     }
 
 }

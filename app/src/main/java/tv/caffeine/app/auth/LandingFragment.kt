@@ -15,7 +15,6 @@ import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
@@ -115,11 +114,11 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
         val caid = oauthCallbackResult.caid
         val loginToken = oauthCallbackResult.loginToken
         val signInBody = SignInBody(Account(null, null, caid, loginToken))
-        val response = accountsService.signIn(signInBody).await()
-        val signInResult = response.body()
-        when {
-            response.isSuccessful && signInResult != null -> onSuccess(signInResult)
-            else -> onError(response)
+        val result = accountsService.signIn(signInBody).awaitAndParseErrors(gson)
+        when(result) {
+            is CaffeineResult.Success -> onSuccess(result.value)
+            is CaffeineResult.Error -> onError(result.error)
+            is CaffeineResult.Failure -> handleFailure(result)
         }
     }
 
@@ -157,9 +156,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     }
 
     @UiThread
-    private fun onError(response: Response<SignInResult>) {
-        val errorBody = response.errorBody() ?: return
-        val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
+    private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
         binding.formErrorTextView.text = listOfNotNull(error.generalErrorsString, error.usernameErrorsString, error.passwordErrorsString)
                 .joinToString("\n")

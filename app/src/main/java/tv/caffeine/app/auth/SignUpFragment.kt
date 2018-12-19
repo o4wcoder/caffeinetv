@@ -25,10 +25,11 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
-import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
@@ -145,12 +146,11 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         val signUpBody = SignUpBody(account, iid, agreedToTos, token)
         // TODO: better error handling before calling the API
         launch {
-            val response = accountsService.signUp(signUpBody).await()
-            Timber.d("Sign up API call succeeded $response")
-            val credentials = response.body()?.credentials
-            when {
-                response.isSuccessful && credentials != null -> onSuccess(credentials)
-                else -> onError(response)
+            val result = accountsService.signUp(signUpBody).awaitAndParseErrors(gson)
+            when(result) {
+                is CaffeineResult.Success -> onSuccess(result.value.credentials)
+                is CaffeineResult.Error -> onError(result.error)
+                is CaffeineResult.Failure -> handleFailure(result)
             }
         }
     }
@@ -170,9 +170,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         binding.dobTextInputLayout.error = null
     }
 
-    private fun onError(response: Response<SignUpResult>) {
-        val errorBody = response.errorBody() ?: return
-        val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
+    private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
         binding.formErrorTextView.text = listOfNotNull(error.generalErrorsString, error.deniedErrorsString)
                 .joinToString("\n")

@@ -32,7 +32,7 @@ class ExploreFragment : CaffeineFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.data.observe(viewLifecycleOwner, Observer { result ->
-            handle(result, view) { findings ->
+            handle(result) { findings ->
                 val adapter: UsersAdapter
                 when (findings) {
                     is Findings.Explore -> {

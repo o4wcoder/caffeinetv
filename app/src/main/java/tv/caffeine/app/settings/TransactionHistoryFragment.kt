@@ -32,7 +32,7 @@ class TransactionHistoryFragment : CaffeineFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.transactionHistory.observe(viewLifecycleOwner, Observer { result ->
             Timber.d("Got transaction history results")
-            handle(result, view) { paymentsEnvelope ->
+            handle(result) { paymentsEnvelope ->
                 val list = paymentsEnvelope.payload.transactions.state.mapNotNull { it.convert() }
                 Timber.d("Transaction history $list")
                 adapter.submitList(list)

@@ -37,7 +37,7 @@ class UpdateEmailFragment : CaffeineFragment() {
                         findNavController().navigateUp()
                     }
                     is CaffeineResult.Error -> onError(result, view)
-                    is CaffeineResult.Failure -> handleFailure(result, view)
+                    is CaffeineResult.Failure -> handleFailure(result)
                 }
             })
         }
@@ -48,7 +48,7 @@ class UpdateEmailFragment : CaffeineFragment() {
         binding.formErrorTextView.text = error.generalErrorsString
         binding.emailTextInputLayout.error = error.emailErrorsString
         binding.currentPasswordTextInputLayout.error = error.currentPasswordErrorsString
-        super.handleError(result, view)
+        super.handleError(result)
     }
 
 }

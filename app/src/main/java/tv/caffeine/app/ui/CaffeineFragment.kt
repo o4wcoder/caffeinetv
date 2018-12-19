@@ -1,10 +1,8 @@
 package tv.caffeine.app.ui
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -42,23 +40,23 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
         job.cancel()
     }
 
-    inline fun <T> handle(result: CaffeineResult<T>, view: View, crossinline block: (value: T) -> Unit) {
+    inline fun <T> handle(result: CaffeineResult<T>, crossinline block: (value: T) -> Unit) {
         when (result) {
             is CaffeineResult.Success -> block(result.value)
-            is CaffeineResult.Error -> handleError(result, view)
-            is CaffeineResult.Failure -> handleFailure(result, view)
+            is CaffeineResult.Error -> handleError(result)
+            is CaffeineResult.Failure -> handleFailure(result)
         }
     }
 
-    fun <T> handleError(result: CaffeineResult.Error<T>, view: View) {
+    fun <T> handleError(result: CaffeineResult.Error<T>) {
         when {
             result.error.isTokenExpirationError() -> findNavController().navigateToLanding()
             result.error.isVersionCheckError() -> findNavController().navigateToNeedsUpdate()
-            else -> Snackbar.make(view, "Error ${result.error}", Snackbar.LENGTH_SHORT).show()
+            else -> Timber.e("Error ${result.error}")
         }
     }
 
-    fun <T> handleFailure(result: CaffeineResult.Failure<T>, view: View) {
+    fun <T> handleFailure(result: CaffeineResult.Failure<T>) {
         Timber.e(result.throwable)
         if (context?.isNetworkAvailable() == false) {
             findNavController().navigateToNoNetwork()

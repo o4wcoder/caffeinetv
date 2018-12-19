@@ -11,10 +11,11 @@ import androidx.annotation.UiThread
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentMfaCodeBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
@@ -64,11 +65,11 @@ class MfaCodeFragment : CaffeineFragment() {
         launch {
             val mfaCode = if (skipMfaCode) null else MfaCode(binding.mfaCodeEditText.text.toString())
             val signInBody = SignInBody(Account(username, password, caid, loginToken), mfaCode)
-            val response = accountsService.signIn(signInBody).await()
-            val signInResult = response.body()
-            when {
-                response.isSuccessful && signInResult != null -> onSuccess(signInResult)
-                else -> onError(response)
+            val result = accountsService.signIn(signInBody).awaitAndParseErrors(gson)
+            when(result) {
+                is CaffeineResult.Success -> onSuccess(result.value)
+                is CaffeineResult.Error -> onError(result.error)
+                is CaffeineResult.Failure -> handleFailure(result)
             }
         }
     }
@@ -83,9 +84,7 @@ class MfaCodeFragment : CaffeineFragment() {
     }
 
     @UiThread
-    private fun onError(response: Response<SignInResult>) {
-        val errorBody = response.errorBody() ?: return
-        val error = gson.fromJson(errorBody.string(), ApiErrorResult::class.java)
+    private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
         binding.formErrorTextView.text = error.generalErrorsString
         binding.mfaCodeTextInputLayout.error = error.otpErrorsString
