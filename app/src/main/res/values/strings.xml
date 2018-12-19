@@ -7,6 +7,9 @@
     <string name="sign_in_with_email">Sign In</string>
     <string name="twitter_login">Twitter Login</string>
     <string name="twitter_login_failed">Twitter login failed</string>
+    <string name="success_disconnecting_social_account">Social account disconnected</string>
+    <string name="failure_disconnecting_social_account">Failed to disconnect social account</string>
+    <string name="social_account_rate_limit_exceeded">Social account rate limit exceeded</string>
 
     <string name="sign_in_hint_username">Username</string>
     <string name="sign_in_hint_password">Password</string>
@@ -51,7 +54,7 @@
     <string name="hint_current_password">Current Password</string>
     <string name="update_button">Update</string>
 
-    <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s <img src="checkmark"/> is watching]]></string>
+    <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s is watching]]></string>
     <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> is watching]]></string>
     <string name="live_indicator">LIVE</string>
     <string name="follow_button">Follow</string>

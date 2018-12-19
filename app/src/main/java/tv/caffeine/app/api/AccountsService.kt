@@ -60,6 +60,8 @@ data class ApiErrorResult(val errors: ApiError?)
 fun ApiErrorResult.isTokenExpirationError() = errors?._token?.isNullOrEmpty() == false
 fun ApiErrorResult.isVersionCheckError() = errors?._expired?.contains("version") == true
 fun VersionCheckError() = ApiErrorResult(ApiError(_expired = listOf("version")))
+fun ApiErrorResult.isIdentityRateLimitExceeded() = errors?._identity?.contains("Rate Limit Exceeded") == true
+
 
 data class ApiError(
         val _error: List<String>? = null,

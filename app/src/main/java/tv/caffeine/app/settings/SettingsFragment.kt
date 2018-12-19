@@ -28,7 +28,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.*
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.auth.TwitterViewModel
+import tv.caffeine.app.auth.TwitterAuthFragment
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.profile.MyProfileViewModel
@@ -42,7 +42,8 @@ import javax.inject.Inject
 
 private const val DISCONNECT_IDENTITY = 1
 
-class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector, DisconnectIdentityDialogFragment.Callback {
+class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
+        DisconnectIdentityDialogFragment.Callback, TwitterAuthFragment.Callback {
 
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelFactory
@@ -160,16 +161,21 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         }
     }
 
-    private fun configureSocialAccounts() {
-        val twitterViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(TwitterViewModel::class.java)
-        twitterViewModel.twitterOAuthResult.observe(this, Observer { result ->
-            if (result == null) return@Observer
-            when(result) {
-                is CaffeineResult.Success -> Timber.d("Successfully connected Twitter, ${result.value}")
-                is CaffeineResult.Error -> Timber.e("Error connecting Twitter, ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
+    override fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
+        when(result) {
+            is CaffeineResult.Success -> viewModel.processTwitterAuth(result.value)
+            is CaffeineResult.Error -> {
+                Timber.e("Error connecting Twitter, ${result.error}")
+                activity?.showSnackbar(R.string.twitter_login_failed)
             }
-        })
+            is CaffeineResult.Failure -> {
+                Timber.e(result.throwable)
+                activity?.showSnackbar(R.string.twitter_login_failed)
+            }
+        }
+    }
+
+    private fun configureSocialAccounts() {
         findPreference("manage_twitter_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer { user ->
                 val twitter = user?.connectedAccounts?.get("twitter")
@@ -183,8 +189,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
                         fragment.show(fragmentManager, "disconnectTwitter")
                     } else {
-                        val action = SettingsFragmentDirections.actionSettingsFragmentToTwitterAuthFragment()
-                        findNavController().safeNavigate(action)
+                        val fragment = TwitterAuthFragment()
+                        fragment.setTargetFragment(this, 0)
+                        fragment.show(fragmentManager, "twitterAuth")
                     }
                     true
                 }
@@ -226,7 +233,14 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     }
 
     override fun confirmDisconnectIdentity(socialUid: String, identityProvider: IdentityProvider) {
-        viewModel.disconnectIdentity(identityProvider, socialUid)
+        viewModel.disconnectIdentity(identityProvider, socialUid).observe(this, Observer { result ->
+            val snackbar = when {
+                result is CaffeineResult.Success -> R.string.success_disconnecting_social_account
+                result is CaffeineResult.Error && result.error.isIdentityRateLimitExceeded() -> R.string.social_account_rate_limit_exceeded
+                else -> R.string.failure_disconnecting_social_account
+            }
+            activity?.showSnackbar(snackbar)
+        })
     }
 
     private fun configureDeleteAccount() {
@@ -282,13 +296,13 @@ class SettingsViewModel(
     private fun load() {
         val caid = tokenStore.caid ?: return
         launch {
-            val userDetails = followManager.userDetails(caid)
+            val userDetails = followManager.loadUserDetails(caid)
             _userDetails.value = userDetails
         }
     }
 
-    fun processFacebookLogin(result: LoginResult?) = launch {
-        val token = result?.accessToken?.token ?: return@launch
+    fun processFacebookLogin(loginResult: LoginResult?) = launch {
+        val token = loginResult?.accessToken?.token ?: return@launch
         val deferred = oauthService.submitFacebookToken(FacebookTokenBody(token))
         val result = deferred.awaitAndParseErrors(gson)
         when(result) {
@@ -299,15 +313,32 @@ class SettingsViewModel(
         load()
     }
 
-    fun disconnectIdentity(identityProvider: IdentityProvider, socialUid: String) = launch {
-        val caid = tokenStore.caid ?: return@launch
-        val result = usersService.disconnectIdentity(caid, socialUid, identityProvider).awaitAndParseErrors(gson)
-        when(result) {
-            is CaffeineResult.Success -> Timber.d("Successfully disconnected identity")
-            is CaffeineResult.Error -> Timber.d("Error disconnecting identity ${result.error}")
-            is CaffeineResult.Failure -> Timber.d("Failure disconnecting identity ${result.throwable}")
-        }
+    fun processTwitterAuth(result: OAuthCallbackResult) {
+        Timber.d("Successfully connected Twitter, ${result}")
         load()
+    }
+
+    fun disconnectIdentity(identityProvider: IdentityProvider, socialUid: String): LiveData<CaffeineResult<Any>> {
+        val liveData = MutableLiveData<CaffeineResult<Any>>()
+        launch {
+            val caid = tokenStore.caid ?: return@launch
+            val result = usersService.disconnectIdentity(caid, socialUid, identityProvider).awaitAndParseErrors(gson)
+            when(result) {
+                is CaffeineResult.Success -> {
+                    Timber.d("Successfully disconnected identity")
+                    when(identityProvider) {
+                        IdentityProvider.facebook -> {
+                            LoginManager.getInstance().logOut()
+                        }
+                    }
+                }
+                is CaffeineResult.Error -> Timber.d("Error disconnecting identity ${result.error}")
+                is CaffeineResult.Failure -> Timber.d("Failure disconnecting identity ${result.throwable}")
+            }
+            load()
+            liveData.value = result
+        }
+        return Transformations.map(liveData) { it }
     }
 }
 

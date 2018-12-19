@@ -69,10 +69,9 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
             setOnClickListener { setDate() }
             setOnKeyListener { _, _, _ -> true }
         }
-        arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.let { oauthCallbackResult ->
-            binding.usernameEditText.setText(oauthCallbackResult.possibleUsername)
-            binding.emailEditText.setText(oauthCallbackResult.oauth?.email)
-        }
+        val args = SignUpFragmentArgs.fromBundle(arguments)
+        binding.usernameEditText.setText(args.possibleUsername)
+        binding.emailEditText.setText(args.email)
     }
 
     private fun setDate() {
@@ -110,7 +109,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun signUpClicked() {
-        val iid: String? = arguments?.let { SignUpFragmentArgs.fromBundle(it) }?.oauthCallbackResult?.oauth?.iid
+        val iid: String? = SignUpFragmentArgs.fromBundle(arguments).iid
         if (iid != null) return signUp(null, iid)
         val context = context ?: return
         SafetyNet.getClient(context)

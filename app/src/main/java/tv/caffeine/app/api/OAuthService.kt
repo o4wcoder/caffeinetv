@@ -25,8 +25,7 @@ class CaffeineOAuthResponse(val authUrl: String, val longpollUrl: String)
 
 class FacebookTokenBody(val token: String)
 
-@Parcelize
-class OAuthCallbackResult(val oauth: OAuthDetails?, val possibleUsername: String?, val redirectUrl: String?, val signUpPageUrl: String?, val next: NextAccountAction?, val mfaOtpMethod: String?, val caid: String?, val loginToken: String?, val errors: Map<String, List<String>>?): Parcelable
+class OAuthCallbackResult(val oauth: OAuthDetails?, val possibleUsername: String?, val redirectUrl: String?, val signUpPageUrl: String?, val next: NextAccountAction?, val mfaOtpMethod: String?, val caid: String?, val loginToken: String?, val errors: Map<String, List<String>>?, val credentials: CaffeineCredentials?)
 
 @Parcelize
 data class OAuthDetails(val uid: String, val provider: IdentityProvider, val displayName: String, val username: String?, val email: String?, val iid: String) : Parcelable

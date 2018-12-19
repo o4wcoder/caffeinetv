@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
+import com.facebook.login.LoginManager
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -194,6 +195,7 @@ class MyProfileFragment : CaffeineFragment() {
     private fun signOut() {
         tokenStore.clear()
         findNavController().navigateToLanding()
+        LoginManager.getInstance().logOut()
         accountsService.signOut().enqueue(object : Callback<Unit?> {
             override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                 Timber.e(t, "Failed to sign out")

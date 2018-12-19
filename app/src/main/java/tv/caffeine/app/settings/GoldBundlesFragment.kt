@@ -11,14 +11,18 @@ import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentGoldBundlesBinding
 import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.showSnackbar
 import java.text.NumberFormat
+import javax.inject.Inject
 
 class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
+
+    @Inject lateinit var tokenStore: TokenStore
 
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel by lazy { viewModelProvider.get(GoldBundlesViewModel::class.java) }
@@ -205,7 +209,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
     private fun purchaseGoldBundleUsingPlayStore(goldBundle: GoldBundle) {
         val activity = activity ?: return
         val sku = goldBundle.skuDetails?.sku ?: return
-        val params = BillingFlowParams.newBuilder().setSku(sku).setType(BillingClient.SkuType.INAPP).build()
+        val params = BillingFlowParams.newBuilder().setSku(sku).setAccountId(tokenStore.caid).setType(BillingClient.SkuType.INAPP).build()
         billingClient.launchBillingFlow(activity, params)
     }
 

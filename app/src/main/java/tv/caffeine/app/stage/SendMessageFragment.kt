@@ -10,6 +10,7 @@ import tv.caffeine.app.databinding.FragmentSendMessageBinding
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.prepopulateText
 import tv.caffeine.app.ui.setOnAction
+import tv.caffeine.app.util.dismissKeyboard
 
 class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
 
@@ -40,12 +41,14 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
     }
 
     private fun sendMessage() {
+        context?.dismissKeyboard(binding.sendButton)
         val message = binding.messageEditText.text.toString()
         callback?.sendMessage(message)
         dismiss()
     }
 
     private fun sendDigitalItem() {
+        context?.dismissKeyboard(binding.sendButton)
         val message = binding.messageEditText.text.toString()
         callback?.sendDigitalItemWithMessage(message)
         dismiss()

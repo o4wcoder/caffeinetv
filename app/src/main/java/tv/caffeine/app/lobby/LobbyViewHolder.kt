@@ -205,8 +205,9 @@ class LiveBroadcastWithFriendsCard(
         super.configure(item)
         val liveBroadcastItem = item as LiveBroadcastWithFriends
         binding.previewImageView.clipToOutline = true
-        val singleFriendWatchingResId = if (item.broadcaster.user.isVerified) R.string.verified_user_watching else R.string.user_watching
-        val multipleFriendsWatchingResId = if (item.broadcaster.user.isVerified) R.plurals.verified_user_and_friends_watching else R.plurals.user_and_friends_watching
+        val firstFriendVerified = item.broadcaster.followingViewers.firstOrNull()?.isVerified == true
+        val singleFriendWatchingResId = if (firstFriendVerified) R.string.verified_user_watching else R.string.user_watching
+        val multipleFriendsWatchingResId = if (firstFriendVerified) R.plurals.verified_user_and_friends_watching else R.plurals.user_and_friends_watching
         val friendsWatchingString = when(item.broadcaster.followingViewersCount) {
             0 -> null
             1 -> itemView.context.getString(singleFriendWatchingResId, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl)

@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
@@ -30,7 +28,7 @@ import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 
-class LandingFragment : CaffeineFragment() {
+class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
@@ -53,18 +51,14 @@ class LandingFragment : CaffeineFragment() {
         callbackManager = CallbackManager.Factory.create()
         binding.facebookSignInButton.registerCallback(callbackManager, facebookCallback)
         binding.facebookSignInButton.fragment = this
-        binding.twitterSignInButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.twitterAuthFragment))
+        binding.twitterSignInButton.setOnClickListener {
+            val fragment = TwitterAuthFragment()
+            fragment.setTargetFragment(this, 0)
+            fragment.show(fragmentManager, "twitterAuth")
+        }
         LandingFragmentArgs.fromBundle(arguments).message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
         }
-        val viewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(TwitterViewModel::class.java)
-        viewModel.twitterOAuthResult.observe(viewLifecycleOwner, Observer { result ->
-            if (result == null) return@Observer
-            handle(result, view) { oauthCallbackResult ->
-                Timber.d("Twitter OAuth login success, $oauthCallbackResult")
-                processOAuthResult(oauthCallbackResult)
-            }
-        })
     }
 
     private val facebookCallback = object : FacebookCallback<LoginResult?> {
@@ -80,6 +74,23 @@ class LandingFragment : CaffeineFragment() {
         }
     }
 
+    override fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
+        when(result) {
+            is CaffeineResult.Success -> {
+                Timber.d("Twitter OAuth login success, ${result.value}")
+                processOAuthResult(result.value)
+            }
+            is CaffeineResult.Error -> {
+                activity?.showSnackbar(R.string.twitter_login_failed)
+                Timber.e("Error logging in with Twitter ${result.error}")
+            }
+            is CaffeineResult.Failure -> {
+                activity?.showSnackbar(R.string.twitter_login_failed)
+                Timber.e(result.throwable)
+            }
+        }
+    }
+
     private fun processFacebookLogin(result: LoginResult?) {
         val token = result?.accessToken?.token ?: return
         launch {
@@ -92,13 +103,11 @@ class LandingFragment : CaffeineFragment() {
     }
 
     private fun processOAuthResult(oauthCallbackResult: OAuthCallbackResult) {
-        if (oauthCallbackResult.oauth != null) {
-            continueToSignUp(oauthCallbackResult)
-        } else if (oauthCallbackResult.next != null) {
-            when(oauthCallbackResult.next) {
-                NextAccountAction.mfa_otp_required -> continueToMfaCode(oauthCallbackResult)
-                else -> attemptSignIn(oauthCallbackResult)
-            }
+        when {
+            oauthCallbackResult.credentials != null -> onSuccess(oauthCallbackResult.credentials)
+            oauthCallbackResult.next == NextAccountAction.mfa_otp_required -> continueToMfaCode(oauthCallbackResult)
+            oauthCallbackResult.oauth != null -> continueToSignUp(oauthCallbackResult)
+            else -> attemptSignIn(oauthCallbackResult)
         }
     }
 
@@ -115,8 +124,7 @@ class LandingFragment : CaffeineFragment() {
     }
 
     private fun continueToSignUp(oauthCallbackResult: OAuthCallbackResult) {
-        val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment()
-        action.setOauthCallbackResult(oauthCallbackResult)
+        val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment(oauthCallbackResult.possibleUsername, oauthCallbackResult.oauth?.email, oauthCallbackResult.oauth?.iid)
         findNavController().safeNavigate(action)
     }
 
@@ -128,6 +136,15 @@ class LandingFragment : CaffeineFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         callbackManager.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    @UiThread
+    private fun onSuccess(credentials: CaffeineCredentials) {
+        val navController = findNavController()
+        tokenStore.storeCredentials(credentials)
+        navController.popBackStack(R.id.landingFragment, true)
+        navController.safeNavigate(R.id.lobbyFragment)
+        authWatcher.onSignIn()
     }
 
     @UiThread

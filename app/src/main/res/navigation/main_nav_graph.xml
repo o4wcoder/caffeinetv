@@ -92,10 +92,17 @@
             android:id="@+id/action_signUpFragment_to_legalDocsFragment"
             app:destination="@+id/legalDocsFragment"/>
         <argument
-            android:name="oauthCallbackResult"
-            app:argType="tv.caffeine.app.api.OAuthCallbackResult"
-            app:nullable="true"
-            android:defaultValue="@null"/>
+            android:name="possibleUsername"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="iid"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
     <!-- Lobby & Stage -->
