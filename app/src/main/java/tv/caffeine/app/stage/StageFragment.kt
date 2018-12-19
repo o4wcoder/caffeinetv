@@ -88,7 +88,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         audioManager = context?.getSystemService()
         wasSpeakerOn = audioManager?.isSpeakerphoneOn ?: false
         audioManager?.isSpeakerphoneOn = true
-        context?.let { LocalBroadcastManager.getInstance(it).registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG)) }
+        context?.registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
         launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
             if (isVersionSupported is CaffeineEmptyResult.Error) {
@@ -117,7 +117,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onDestroy() {
         disconnectStreams()
-        context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(broadcastReceiver) }
+        context?.safeUnregisterReceiver(broadcastReceiver)
         audioManager?.isSpeakerphoneOn = wasSpeakerOn
         super.onDestroy()
     }

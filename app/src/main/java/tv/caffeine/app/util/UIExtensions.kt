@@ -1,6 +1,7 @@
 package tv.caffeine.app.util
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.res.Resources
 import android.net.ConnectivityManager
@@ -18,8 +19,10 @@ import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.ui.CaffeineFragment
+import java.lang.IllegalArgumentException
 
 fun Context.dismissKeyboard(view: View) {
     getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view.windowToken, 0)
@@ -28,6 +31,14 @@ fun Context.dismissKeyboard(view: View) {
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = getSystemService<ConnectivityManager>() ?: return false
     return connectivityManager.activeNetworkInfo?.isConnected == true
+}
+
+fun Context.safeUnregisterReceiver(receiver: BroadcastReceiver) {
+    try {
+        unregisterReceiver(receiver)
+    } catch(e: IllegalArgumentException) {
+        Timber.d(e)
+    }
 }
 
 fun Activity.dismissKeyboard() {
