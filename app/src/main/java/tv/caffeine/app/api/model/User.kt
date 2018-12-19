@@ -26,7 +26,8 @@ data class User(
         val isFeatured: Boolean,
         val isOnline: Boolean,
         val notificationsLastViewedAt: ZonedDateTime?,
-        val mfaMethod: MfaMethod?
+        val mfaMethod: MfaMethod?,
+        val emailVerified: Boolean?
 ) {
     val avatarImageUrl get() = "$IMAGES_BASE_URL$avatarImagePath"
 }

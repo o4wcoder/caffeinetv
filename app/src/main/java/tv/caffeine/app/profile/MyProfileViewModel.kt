@@ -36,6 +36,7 @@ class MyProfileViewModel(
     val mfaMethod: LiveData<MfaMethod> = Transformations.map(myProfile) { it.mfaMethod }
 
     val isVerified: LiveData<Boolean> = Transformations.map(myProfile) { it.isVerified }
+    val emailVerified: LiveData<Boolean> = Transformations.map(myProfile) { it.emailVerified }
 
     val avatarImageUrl: LiveData<String> = Transformations.map(myProfile) { it.avatarImageUrl }
 
