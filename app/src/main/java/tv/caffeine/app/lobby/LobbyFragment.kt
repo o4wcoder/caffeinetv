@@ -70,6 +70,9 @@ class LobbyFragment : CaffeineFragment() {
                     .transform(CropCircleTransformation())
                     .into(binding.profileButton)
         })
+        myProfileViewModel.isVerified.observe(viewLifecycleOwner, Observer { isVerified ->
+            binding.unverifiedMessageTextView.isVisible = isVerified == false
+        })
     }
 
     private fun refreshLobby() {
