@@ -104,6 +104,7 @@ sealed class WebViewFragment : Fragment() {
             setSupportZoom(true)
             displayZoomControls = false
             javaScriptEnabled = enableJavaScript
+            domStorageEnabled = true
         }
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {

@@ -29,7 +29,7 @@
             app:uri="https://www.caffeine.tv/guidelines.html" />
         <deepLink
             android:id="@+id/deepLink6"
-            app:uri="https://www.caffeine.tv/account/reset-password/{rest}" />
+            app:uri="https://www.caffeine.tv/account/reset-password{rest}" />
         <deepLink
             android:id="@+id/deepLink7"
             app:uri="https://www.caffeine.tv/account/claim-gold/{rest}" />
