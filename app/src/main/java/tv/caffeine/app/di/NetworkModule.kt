@@ -5,6 +5,7 @@ import com.google.gson.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
+import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.threeten.bp.ZonedDateTime
@@ -21,6 +22,7 @@ import tv.caffeine.app.net.AppMetaDataInterceptor
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
 import java.lang.reflect.Type
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 enum class Service {
@@ -77,6 +79,7 @@ class NetworkModule {
             .addInterceptor(appMetaDataInterceptor)
             .addInterceptor(authorizationInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
+            .connectionPool(ConnectionPool(0, 1, TimeUnit.NANOSECONDS))
             .build()
 
     @Provides

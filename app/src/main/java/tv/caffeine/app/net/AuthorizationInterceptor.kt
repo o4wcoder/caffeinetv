@@ -3,7 +3,6 @@ package tv.caffeine.app.net
 import okhttp3.Interceptor
 import okhttp3.Response
 import tv.caffeine.app.auth.TokenStore
-import java.io.IOException
 
 class AuthorizationInterceptor(private val tokenStore: TokenStore) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -14,10 +13,6 @@ class AuthorizationInterceptor(private val tokenStore: TokenStore) : Interceptor
                 build()
             }
         }
-        try {
-            return chain.proceed(request)
-        } catch (e: Exception) {
-            throw IOException("AuthorizationInterceptor", e)
-        }
+        return chain.proceed(request)
     }
 }
