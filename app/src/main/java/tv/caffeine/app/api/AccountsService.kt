@@ -44,6 +44,9 @@ interface AccountsService {
 
     @POST("v1/account/resend-verification")
     fun resendVerification(): Deferred<Response<Void>>
+
+    @POST("v1/account/email/confirm")
+    fun confirmEmail(@Body confirmEmailBody: ConfirmEmailBody): Deferred<Response<ConfirmEmailResponse>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
@@ -65,6 +68,8 @@ fun ApiErrorResult.isVersionCheckError() = errors?._expired?.contains("version")
 fun VersionCheckError() = ApiErrorResult(ApiError(_expired = listOf("version")))
 fun ApiErrorResult.isIdentityRateLimitExceeded() = errors?._identity?.contains("Rate Limit Exceeded") == true
 fun ApiErrorResult.isMustVerifyEmailError() = errors?._unverifiedEmail?.isNullOrEmpty() == false
+fun ApiErrorResult.isRecordNotFoundError() = errors?._record?.contains("could not be found") == true
+fun ApiErrorResult.isVerificationFailedError() = errors?.code?.contains("Verification failed.") == true
 
 
 data class ApiError(
@@ -76,7 +81,9 @@ data class ApiError(
         val currentPassword: List<String>? = null,
         val email: List<String>? = null,
         val otp: List<String>? = null,
+        val code: List<String>? = null,
         val _token: List<String>? = null,
+        val _record: List<String>? = null,
         val _expired: List<String>? = null,
         val _identity: List<String>? = null,
         val _unverifiedEmail: List<String>? = null
@@ -175,6 +182,10 @@ class NotificationSettings(
 }
 
 class LegalAcceptanceResult(val success: Boolean)
+
+class ConfirmEmailBody(val code: String, val caid: String)
+
+class ConfirmEmailResponse(val emailConfirmed: Boolean)
 
 enum class NextAccountAction {
     email_verification, mfa_otp_required, legal_acceptance_required

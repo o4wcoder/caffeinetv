@@ -206,6 +206,13 @@
     <string name="no_network_data">No Network Data</string>
     <string name="check_your_wifi_or_cellular">Check your wi-fi or cellular settings.</string>
 
+    <!-- Confirm email -->
+    <string name="verifying_your_email">Verifying your email…</string>
+    <string name="continue_to_use_app">Continue</string>
+    <string name="email_verification_success">Email verification succeeded</string>
+    <string name="email_verification_record_not_found">Record not found</string>
+    <string name="email_verification_failed">Email verification failed</string>
+
     <!-- Shared preference keys -->
     <string name="is_first_time_on_stage" translatable="false">is_first_time_on_stage</string>
 

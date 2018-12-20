@@ -2,7 +2,6 @@ package tv.caffeine.app.settings
 
 import android.Manifest
 import android.app.DownloadManager
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.MailTo
@@ -34,29 +33,59 @@ enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int): Parcela
     CommunityGuidelines(R.string.community_guidelines, R.string.url_guidelines)
 }
 
-class LegalDocsFragment : Fragment() {
-
+class LegalDocsFragment : WebViewFragment() {
     private lateinit var legalDoc: LegalDoc
-    private val hostWhitelist = listOf(
+
+    override val hostWhitelist = listOf(
             "caffeine.tv",
             "google.com",
             "apple.com",
             "mozilla.org"
     )
+
     // The url whitelist should be in sync with https://github.com/caffeinetv/tracer/tree/master/src/static
     // grep -h -r -E -o "href=\"https\:\/\/[^\"]+\"" src/static/ | grep -E -v "(www|images).caffeine.tv"
     // | grep -E -v "https://(fonts)?.google(api)?"
-    private val urlWhitelist = listOf(
+    override val urlWhitelist = listOf(
             "https://www.ftc.gov/sites/default/files/documents/one-stops/advertisement-endorsements/091005revisedendorsementguides.pdf",
             "https://www.adr.org/",
             "https://suicidepreventionlifeline.org/",
             "https://www.nhs.uk/conditions/suicide/"
     )
 
+    override val enableJavaScript = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         legalDoc = LegalDocsFragmentArgs.fromBundle(arguments).document
+        webViewTitle = getString(legalDoc.title)
+        webViewUrl = getString(legalDoc.url)
     }
+
+}
+
+class CaffeineLinksFragment : WebViewFragment() {
+
+    override val hostWhitelist: List<String> = listOf("caffeine.tv")
+    override val urlWhitelist: List<String> = listOf()
+    override val enableJavaScript = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        webViewTitle = getString(R.string.welcome_to_caffeine)
+        webViewUrl = activity?.intent?.data?.toString() ?: "https://www.caffeine.tv/tos.html"
+    }
+
+}
+
+sealed class WebViewFragment : Fragment() {
+
+    abstract val hostWhitelist: List<String>
+    abstract val urlWhitelist: List<String>
+    abstract val enableJavaScript: Boolean
+
+    protected lateinit var webViewTitle: String
+    protected lateinit var webViewUrl: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -67,13 +96,14 @@ class LegalDocsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val webView = view.findViewById<WebView>(R.id.web_view)
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(legalDoc.title)
+        (activity as? AppCompatActivity)?.supportActionBar?.title = webViewTitle
         webView.settings.apply {
             loadWithOverviewMode = true
             useWideViewPort = true
             builtInZoomControls = true
             setSupportZoom(true)
             displayZoomControls = false
+            javaScriptEnabled = enableJavaScript
         }
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -125,7 +155,7 @@ class LegalDocsFragment : Fragment() {
                 }
             }
         }
-        val url = getString(legalDoc.url)
+        val url = webViewUrl
         webView.loadUrl(url)
     }
 

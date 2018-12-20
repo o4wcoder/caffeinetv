@@ -5,6 +5,42 @@
     android:id="@+id/lobby"
     app:startDestination="@+id/lobbyFragment">
 
+    <!-- Confirm email and general Caffeine link -->
+    <fragment
+        android:id="@+id/confirmEmailFragment"
+        android:name="tv.caffeine.app.auth.ConfirmEmailFragment"
+        android:label="Confirm Email">
+        <deepLink
+            android:id="@+id/deepLink7"
+            app:uri="https://www.caffeine.tv/account/email-confirmation/{rest}" />
+    </fragment>
+    <fragment
+        android:id="@+id/caffeineLinksFragment"
+        android:name="tv.caffeine.app.settings.CaffeineLinksFragment"
+        android:label="Caffeine Links">
+        <deepLink
+            android:id="@+id/deepLink3"
+            app:uri="https://www.caffeine.tv/tos.html" />
+        <deepLink
+            android:id="@+id/deepLink4"
+            app:uri="https://www.caffeine.tv/privacy.html" />
+        <deepLink
+            android:id="@+id/deepLink5"
+            app:uri="https://www.caffeine.tv/guidelines.html" />
+        <deepLink
+            android:id="@+id/deepLink6"
+            app:uri="https://www.caffeine.tv/account/reset-password/{rest}" />
+        <deepLink
+            android:id="@+id/deepLink7"
+            app:uri="https://www.caffeine.tv/account/claim-gold/{rest}" />
+        <deepLink
+            android:id="@+id/deepLink8"
+            app:uri="https://www.caffeine.tv/auth/{rest}" />
+        <deepLink
+            android:id="@+id/deepLink9"
+            app:uri="https://www.caffeine.tv/*.html" />
+    </fragment>
+
     <!-- Unauth -->
     <action
         android:id="@+id/action_global_landingFragment"

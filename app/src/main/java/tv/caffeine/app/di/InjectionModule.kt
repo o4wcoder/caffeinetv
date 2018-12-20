@@ -51,4 +51,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun twitterAuthFragment(): TwitterAuthFragment
     @ContributesAndroidInjector abstract fun needsUpdateFragment(): NeedsUpdateFragment
     @ContributesAndroidInjector abstract fun noNetworkFragment(): NoNetworkFragment
+    @ContributesAndroidInjector abstract fun confirmEmailFragment(): ConfirmEmailFragment
 }
