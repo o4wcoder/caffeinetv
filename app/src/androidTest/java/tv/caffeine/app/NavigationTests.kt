@@ -2,6 +2,7 @@ package tv.caffeine.app
 
 import android.content.Intent
 import androidx.annotation.IdRes
+import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.get
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit
 //@RunWith(AndroidJUnit4::class)
 class NavigationTests {
     private lateinit var navigator: FragmentNavigator
+    private lateinit var navController: NavController
 
 //    @Before
     fun prep() {
@@ -23,7 +25,8 @@ class NavigationTests {
         val mainActivity = activityTestRule.launchActivity(Intent())
         val fragmentManager = mainActivity.supportFragmentManager
         val navHostFragment = fragmentManager.primaryNavigationFragment as NavHostFragment
-        navigator = navHostFragment.navController.navigatorProvider[FragmentNavigator::class]
+        navController = navHostFragment.navController
+        navigator = navController.navigatorProvider[FragmentNavigator::class]
     }
 
 //    @Test
@@ -38,8 +41,8 @@ class NavigationTests {
 
     private fun check(@IdRes click: Int, @IdRes destination: Int) {
         val countDownLatch = CountDownLatch(1)
-        navigator.addOnNavigatorNavigatedListener { _, destId, _ ->
-            assertEquals(destId, destination)
+        navController.addOnDestinationChangedListener { _, actualDestination, _ ->
+            assertEquals(actualDestination.id, destination)
             countDownLatch.countDown()
         }
         onView(withId(click)).perform(click())
