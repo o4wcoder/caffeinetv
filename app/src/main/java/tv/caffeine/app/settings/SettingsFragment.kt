@@ -235,8 +235,8 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     override fun confirmDisconnectIdentity(socialUid: String, identityProvider: IdentityProvider) {
         viewModel.disconnectIdentity(identityProvider, socialUid).observe(this, Observer { result ->
             val snackbar = when {
-                result is CaffeineResult.Success -> R.string.success_disconnecting_social_account
-                result is CaffeineResult.Error && result.error.isIdentityRateLimitExceeded() -> R.string.social_account_rate_limit_exceeded
+                result is CaffeineEmptyResult.Success -> R.string.success_disconnecting_social_account
+                result is CaffeineEmptyResult.Error && result.error.isIdentityRateLimitExceeded() -> R.string.social_account_rate_limit_exceeded
                 else -> R.string.failure_disconnecting_social_account
             }
             activity?.showSnackbar(snackbar)
@@ -320,22 +320,25 @@ class SettingsViewModel(
         load()
     }
 
-    fun disconnectIdentity(identityProvider: IdentityProvider, socialUid: String): LiveData<CaffeineResult<Any>> {
-        val liveData = MutableLiveData<CaffeineResult<Any>>()
+    fun disconnectIdentity(identityProvider: IdentityProvider, socialUid: String): LiveData<CaffeineEmptyResult> {
+        val liveData = MutableLiveData<CaffeineEmptyResult>()
         launch {
             val caid = tokenStore.caid ?: return@launch
-            val result = usersService.disconnectIdentity(caid, socialUid, identityProvider).awaitAndParseErrors(gson)
+            val result = usersService.disconnectIdentity(caid, socialUid, identityProvider).awaitEmptyAndParseErrors(gson)
             when(result) {
-                is CaffeineResult.Success -> {
+                is CaffeineEmptyResult.Success -> {
                     Timber.d("Successfully disconnected identity")
                     when(identityProvider) {
                         IdentityProvider.facebook -> {
                             LoginManager.getInstance().logOut()
                         }
+                        IdentityProvider.twitter -> {
+                            // TODO clear out web view cache, in case the user checked "remember me on this device"
+                        }
                     }
                 }
-                is CaffeineResult.Error -> Timber.d("Error disconnecting identity ${result.error}")
-                is CaffeineResult.Failure -> Timber.d("Failure disconnecting identity ${result.throwable}")
+                is CaffeineEmptyResult.Error -> Timber.d("Error disconnecting identity ${result.error}")
+                is CaffeineEmptyResult.Failure -> Timber.d("Failure disconnecting identity ${result.throwable}")
             }
             load()
             liveData.value = result
