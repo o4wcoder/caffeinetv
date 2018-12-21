@@ -34,4 +34,5 @@
     <dimen name="lobby_subtitle_top_margin">0dp</dimen>
     <dimen name="lobby_subtitle_bottom_margin">0dp</dimen>
     <dimen name="stage_loading_indicator_size">48dp</dimen>
+    <dimen name="twitter_auth_web_view_height">0dp</dimen>
 </resources>

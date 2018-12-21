@@ -48,6 +48,8 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.FullscreenDialogTheme)
+        // prevent the long poll from holding onto the old dialog and dismissing it on screen rotation
+        retainInstance = true
         job = SupervisorJob()
     }
 
