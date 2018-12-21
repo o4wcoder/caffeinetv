@@ -57,7 +57,7 @@ androidExtensions {
 }
 
 ext {
-    daggerVersion = '2.19'
+    daggerVersion = '2.20'
 }
 
 dependencies {
