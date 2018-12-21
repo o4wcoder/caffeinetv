@@ -46,13 +46,15 @@ class GoldBundleViewHolder(
         binding.goldCostTextView.text = numberFormat.format(goldBundle.amount)
         val skuDetails = goldBundle.skuDetails
         when {
-            buyGoldOption == BuyGoldOption.UsingPlayStore && skuDetails != null -> {
+            buyGoldOption == BuyGoldOption.UsingPlayStore && goldBundle.usingInAppBilling != null && skuDetails != null -> {
                 val currencyFormat = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(skuDetails.priceCurrencyCode) }
                 binding.dollarCostTextView.text = currencyFormat.format(skuDetails.priceAmountMicros/1000000f)
+                binding.dollarCostTextView.alpha = if (goldBundle.usingInAppBilling.canPurchase) 1.0f else 0.5f
             }
             buyGoldOption == BuyGoldOption.UsingCredits && goldBundle.usingCredits != null -> {
                 val amount = numberFormat.format(goldBundle.usingCredits.cost)
                 binding.dollarCostTextView.htmlText = itemView.resources.getString(R.string.credits_formatted, amount)
+                binding.dollarCostTextView.alpha = if (goldBundle.usingCredits.canPurchase) 1.0f else 0.5f
             }
             else -> binding.dollarCostTextView.text = null
         }

@@ -120,6 +120,10 @@
     <string name="failure_buying_gold_using_in_app_billing">Failure buying gold</string>
     <string name="failure_processing_in_app_purchase">Failure processing in-app purchase</string>
     <string name="success_buying_gold_using_credits">Success buying gold using credits</string>
+    <string name="cannot_purchase_using_play_store">You cannot buy this bundle at this time.</string>
+    <string name="cannot_purchase_using_credits">You cannot buy this bundle at this time.</string>
+    <string name="cannot_purchase_not_enough_credits">You do not have enough credits to buy this bundle.</string>
+
     <string name="send_gold_to_user">Send to %s</string>
     <string name="friends_watching_title">Friends watching</string>
     <string name="settings_button">Settings</string>

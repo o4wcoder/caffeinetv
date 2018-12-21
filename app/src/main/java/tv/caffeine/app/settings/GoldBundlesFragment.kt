@@ -14,6 +14,7 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentGoldBundlesBinding
 import tv.caffeine.app.di.BillingClientFactory
+import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.util.showSnackbar
@@ -34,6 +35,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
         })
     }
 
+    private var availableCredits = 0
     private lateinit var billingClient: BillingClient
     private val buyGoldOption by lazy { GoldBundlesFragmentArgs.fromBundle(arguments).buyGoldOption }
 
@@ -138,6 +140,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
+            availableCredits = wallet.credits
             val goldCount = NumberFormat.getIntegerInstance().format(wallet.gold)
             val creditBalance = NumberFormat.getIntegerInstance().format(wallet.credits)
             binding.currentBalanceTextView.htmlText = when(buyGoldOption) {
@@ -176,9 +179,26 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
     }
 
     private fun purchaseGoldBundle(goldBundle: GoldBundle) {
+        // TODO wallet balance check
         when(buyGoldOption) {
-            BuyGoldOption.UsingCredits -> promptPurchaseGoldBundleUsingCredits(goldBundle)
-            BuyGoldOption.UsingPlayStore -> purchaseGoldBundleUsingPlayStore(goldBundle)
+            BuyGoldOption.UsingCredits -> {
+                if (goldBundle.usingCredits?.canPurchase == true ) {
+                    if (availableCredits >= goldBundle.usingCredits.cost) {
+                        promptPurchaseGoldBundleUsingCredits(goldBundle)
+                    } else {
+                        AlertDialogFragment.withMessage(R.string.cannot_purchase_not_enough_credits).show(fragmentManager, "cannotPurchase")
+                    }
+                } else {
+                    AlertDialogFragment.withMessage(R.string.cannot_purchase_using_credits).show(fragmentManager, "cannotPurchase")
+                }
+            }
+            BuyGoldOption.UsingPlayStore -> {
+                if (goldBundle.usingInAppBilling?.canPurchase == true) {
+                    purchaseGoldBundleUsingPlayStore(goldBundle)
+                } else {
+                    AlertDialogFragment.withMessage(R.string.cannot_purchase_using_play_store).show(fragmentManager, "cannotPurchase")
+                }
+            }
         }
     }
 

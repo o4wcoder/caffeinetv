@@ -52,7 +52,7 @@ class NotificationsViewModel(
         when(result) {
             is CaffeineResult.Success -> Timber.d("Successfully marked notifications viewed")
             is CaffeineResult.Error -> Timber.d("Error marking notifications viewed ${result.error}")
-            is CaffeineResult.Failure -> Timber.e(Exception("Failure marking notifications viewed", result.throwable))
+            is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
     }
 }

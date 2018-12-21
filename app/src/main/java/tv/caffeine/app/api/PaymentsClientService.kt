@@ -155,7 +155,7 @@ data class GoldBundle(
 )
 
 sealed class PurchaseOption {
-    data class PurchaseWithCredits(val id: String, val cost: Int) : PurchaseOption()
+    data class PurchaseWithCredits(val id: String, val cost: Int, val canPurchase: Boolean) : PurchaseOption()
     data class PurchaseUsingStoreKit(val productId: String, val canPurchase: Boolean) : PurchaseOption()
     data class PurchaseUsingInAppBilling(val productId: String, val canPurchase: Boolean) : PurchaseOption()
     data class PurchaseUsingStripe(val id: String, val cost: Int, val canPurchase: Boolean) : PurchaseOption()
