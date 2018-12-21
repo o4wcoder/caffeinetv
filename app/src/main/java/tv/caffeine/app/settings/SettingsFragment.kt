@@ -244,16 +244,18 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     }
 
     private fun configureDeleteAccount() {
-        findPreference("delete_caffeine_account")?.setOnPreferenceClickListener {
+        findPreference("delete_caffeine_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer { user ->
-                fragmentManager?.let { fm ->
-                    DeleteAccountDialogFragment().apply {
-                        arguments = SettingsFragmentDirections.actionSettingsFragmentToDeleteAccountDialogFragment(user.username).arguments
-                        show(fm, "deleteAccount")
+                preference.setOnPreferenceClickListener {
+                    fragmentManager?.let { fm ->
+                        DeleteAccountDialogFragment().apply {
+                            arguments = SettingsFragmentDirections.actionSettingsFragmentToDeleteAccountDialogFragment(user.username).arguments
+                            show(fm, "deleteAccount")
+                        }
                     }
+                    true
                 }
             })
-            true
         }
     }
 

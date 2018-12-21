@@ -66,7 +66,7 @@ data class ApiErrorResult(val errors: ApiError?)
 fun ApiErrorResult.isTokenExpirationError() = errors?._token?.isNullOrEmpty() == false
 fun ApiErrorResult.isVersionCheckError() = errors?._expired?.contains("version") == true
 fun VersionCheckError() = ApiErrorResult(ApiError(_expired = listOf("version")))
-fun ApiErrorResult.isIdentityRateLimitExceeded() = errors?._identity?.contains("Rate Limit Exceeded") == true
+fun ApiErrorResult.isIdentityRateLimitExceeded() = errors?._identity?.contains("Rate Limit Exceeded.") == true
 fun ApiErrorResult.isMustVerifyEmailError() = errors?._unverifiedEmail?.isNullOrEmpty() == false
 fun ApiErrorResult.isRecordNotFoundError() = errors?._record?.contains("could not be found") == true
 fun ApiErrorResult.isVerificationFailedError() = errors?.code?.contains("Verification failed.") == true
