@@ -1,6 +1,5 @@
 package tv.caffeine.app
 
-import com.facebook.FacebookSdk
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
@@ -21,7 +20,6 @@ class CaffeineApplication : DaggerApplication() {
         LeakCanary.install(this)
         AndroidThreeTen.init(this)
         Timber.plant(timberTree)
-        FacebookSdk.sdkInitialize(applicationContext)
         BillingClientFactory.loadBillingStore(this)
     }
 

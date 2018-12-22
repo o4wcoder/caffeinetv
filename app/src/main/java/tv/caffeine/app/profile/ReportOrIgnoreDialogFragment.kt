@@ -1,6 +1,5 @@
 package tv.caffeine.app.profile
 
-import tv.caffeine.app.R
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -13,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.R
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
@@ -56,7 +56,7 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
         val alert = AlertDialog.Builder(activity)
                 .setItems(text, null)
                 .create()
-        alert.listView.setOnItemClickListener { parent, view, position, id ->
+        alert.listView.setOnItemClickListener { _, _, position, _ ->
             when(position) {
                 0 -> reportUser(caid, username)
                 1 -> viewModel.ignoreUser(caid)

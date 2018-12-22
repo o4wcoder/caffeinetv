@@ -90,8 +90,8 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
         }
     }
 
-    private fun processFacebookLogin(result: LoginResult?) {
-        val token = result?.accessToken?.token ?: return
+    private fun processFacebookLogin(loginResult: LoginResult?) {
+        val token = loginResult?.accessToken?.token ?: return
         launch {
             val deferred = oauthService.submitFacebookToken(FacebookTokenBody(token))
             val result = deferred.awaitAndParseErrors(gson)

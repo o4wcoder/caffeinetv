@@ -68,7 +68,7 @@ class NetworkModule {
     fun providesTokenAuthenticator(refreshTokenService: RefreshTokenService, tokenStore: TokenStore) = TokenAuthenticator(refreshTokenService, tokenStore)
 
     @Provides
-    fun providesAppMetaDataInterceptor(tokenStore: TokenStore) = AppMetaDataInterceptor()
+    fun providesAppMetaDataInterceptor() = AppMetaDataInterceptor()
 
     @Provides
     fun providesAuthorizationInterceptor(tokenStore: TokenStore) = AuthorizationInterceptor(tokenStore)

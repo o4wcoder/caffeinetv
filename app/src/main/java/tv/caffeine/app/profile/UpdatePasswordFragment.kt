@@ -31,14 +31,14 @@ class UpdatePasswordFragment : CaffeineFragment() {
             viewModel.updatePassword(currentPassword, password1, password2).observe(viewLifecycleOwner, Observer { result ->
                 when (result) {
                     is CaffeineResult.Success -> findNavController().navigateUp()
-                    is CaffeineResult.Error -> onError(result, view)
+                    is CaffeineResult.Error -> onError(result)
                     is CaffeineResult.Failure -> handleFailure(result)
                 }
             })
         }
     }
 
-    private fun <T> onError(result: CaffeineResult.Error<T>, view: View) {
+    private fun <T> onError(result: CaffeineResult.Error<T>) {
         val error = result.error
         binding.formErrorTextView.text = error.generalErrorsString
         binding.password1TextInputLayout.error = error.passwordErrorsString

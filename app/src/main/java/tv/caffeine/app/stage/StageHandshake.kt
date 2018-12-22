@@ -62,7 +62,7 @@ class StageHandshake(
     private fun parseEvent(input: String): Event? {
         return try {
             val eventEnvelope = gsonForEvents.fromJson(input, EventEnvelope::class.java)
-            eventEnvelope.v2 ?: null
+            eventEnvelope.v2
         } catch (e: Exception) {
             Timber.e(e)
             null

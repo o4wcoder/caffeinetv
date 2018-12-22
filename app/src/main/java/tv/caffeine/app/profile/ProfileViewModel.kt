@@ -58,7 +58,7 @@ class ProfileViewModel(
     }
 
     fun unfollow(caid: String) = launch {
-        val result = followManager.unfollowUser(caid)
+        followManager.unfollowUser(caid)
         forceLoad(caid)
     }
 

@@ -36,14 +36,14 @@ class UpdateEmailFragment : CaffeineFragment() {
                         activity?.showSnackbar(R.string.forgot_password_email_sent)
                         findNavController().navigateUp()
                     }
-                    is CaffeineResult.Error -> onError(result, view)
+                    is CaffeineResult.Error -> onError(result)
                     is CaffeineResult.Failure -> handleFailure(result)
                 }
             })
         }
     }
 
-    private fun <T> onError(result: CaffeineResult.Error<T>, view: View) {
+    private fun <T> onError(result: CaffeineResult.Error<T>) {
         val error = result.error
         binding.formErrorTextView.text = error.generalErrorsString
         binding.emailTextInputLayout.error = error.emailErrorsString
