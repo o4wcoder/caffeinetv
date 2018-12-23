@@ -122,9 +122,9 @@
 
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="mailto:contact@caffeine.tv?subject=Howdy">
+                android:data="mailto:support@caffeine.tv">
                 <extra android:name="android.intent.extra.TEXT"
-                    android:value="Dear Caffeine"/>
+                    android:value="Dear Caffeine,"/>
             </intent>
 
         </Preference>
