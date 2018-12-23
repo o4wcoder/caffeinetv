@@ -2,6 +2,7 @@ package tv.caffeine.app.navigation
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -36,6 +37,7 @@ class DeepLinkTests {
             "https://www.caffeine.tv/ESL" to R.id.stageFragment,
             "https://www.caffeine.tv/ESL/profile" to R.id.profileFragment,
             "https://www.caffeine.tv/caffeine" to R.id.stageFragment,
+            "https://www.caffeine.tv/caffeine?bst=sharing" to R.id.stageFragment,
             "https://www.caffeine.tv/caffeine/profile" to R.id.profileFragment
     )
 
@@ -75,10 +77,16 @@ class DeepLinkTests {
     }
 
     private fun deepLinkNavigatesCorrectly(url: String, expectedDestination: NavDestination) {
+        navigateToDeepLink(url) { actualDestination, _ ->
+            assertEquals("Deep link: $url; Destinations: Expected: ${expectedDestination.label}, actual: ${actualDestination.label}", expectedDestination.id, actualDestination.id)
+        }
+    }
+
+    private fun navigateToDeepLink(url: String, block: (NavDestination, Bundle?) -> Unit) {
         val result = navigateToDeepLink(url)
         val countDownLatch = CountDownLatch(1)
-        val listener = NavController.OnDestinationChangedListener { _, actualDestination, _ ->
-            assertEquals("Deep link: $url; Destinations: Expected: ${expectedDestination.label}, actual: ${actualDestination.label}", expectedDestination.id, actualDestination.id)
+        val listener = NavController.OnDestinationChangedListener { _, actualDestination, arguments ->
+            block(actualDestination, arguments)
             countDownLatch.countDown()
         }
         navController.addOnDestinationChangedListener(listener)

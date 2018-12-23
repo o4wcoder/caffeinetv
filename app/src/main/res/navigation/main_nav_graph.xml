@@ -36,9 +36,6 @@
         <deepLink
             android:id="@+id/deepLink8"
             app:uri="https://www.caffeine.tv/auth/{rest}" />
-        <deepLink
-            android:id="@+id/deepLink9"
-            app:uri="https://www.caffeine.tv/*.html" />
     </fragment>
 
     <!-- Unauth -->

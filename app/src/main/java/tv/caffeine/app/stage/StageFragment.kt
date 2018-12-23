@@ -13,7 +13,6 @@ import android.widget.ProgressBar
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.gson.Gson
@@ -84,7 +83,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         super.onCreate(savedInstanceState)
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
-        broadcaster = args.broadcaster
+        broadcaster = args.broadcaster.substringBefore('?').substringBefore('/')
         audioManager = context?.getSystemService()
         wasSpeakerOn = audioManager?.isSpeakerphoneOn ?: false
         audioManager?.isSpeakerphoneOn = true
