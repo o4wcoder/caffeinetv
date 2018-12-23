@@ -14,7 +14,7 @@ android {
         applicationId "tv.caffeine.app"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 43
+        versionCode 44
         versionName "0.8 ($versionCode)"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
