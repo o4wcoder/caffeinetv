@@ -160,7 +160,10 @@ class StreamController(
                             .filter { stat.value.members.containsKey(it) }
                             .mapNotNull { metricName ->
                                 Timber.d("Stats available: $metricName = ${stat.value.members[metricName]}")
-                                stat.value.members[metricName]?.toString()?.toInt()?.let { metricValue ->
+                                stat.value.members[metricName]?.toString()?.let { metricStringValue ->
+                                    // The absolute value of a cumulative counter is irrelevant. Reset if it exceeds the maximum int.
+                                    // https://docs.signalfx.com/en/latest/getting-started/concepts/metric-types.html
+                                    val metricValue = metricStringValue.toIntOrNull() ?: 0
                                     StatsSnippet(StatsDimensions(mediaType, sourceName, stageIdentifier), "rtc.$metricName", metricValue)
                                 }
                             }
