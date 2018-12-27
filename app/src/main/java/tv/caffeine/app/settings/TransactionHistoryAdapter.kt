@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -42,7 +43,7 @@ class TransactionHistoryAdapter @Inject constructor(
                     oldItem == newItem
         }
 ), CoroutineScope {
-    private val job = Job()
+    private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = job + dispatchConfig.main
 

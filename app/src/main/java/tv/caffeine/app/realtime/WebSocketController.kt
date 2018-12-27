@@ -28,7 +28,7 @@ class WebSocketController(
     private val gsonForHandshake: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     private var messageNumber: Int = 0
 
-    private val job = Job()
+    private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = job + dispatchConfig.main
 

@@ -12,10 +12,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
@@ -43,7 +40,7 @@ abstract class UsersAdapter(
 ), CoroutineScope {
     abstract val userItemLayout: Int
 
-    private val job = Job()
+    private val job = SupervisorJob()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable, "Coroutine throwable")
     }

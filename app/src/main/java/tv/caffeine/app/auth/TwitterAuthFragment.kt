@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.StreamResetException
-import retrofit2.Response
 import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.OAuthCallbackResult
@@ -39,7 +38,6 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
     @Inject lateinit var dispatchConfig: DispatchConfig
 
     private lateinit var webView: WebView
-    private var longPollDeferred: Deferred<Response<OAuthCallbackResult>>? = null
 
     private lateinit var job: Job
     override val coroutineContext: CoroutineContext
@@ -55,7 +53,6 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
 
     override fun onDestroy() {
         // TODO: rethink how we cancel jobs, whether we should check isActive, etc.
-        longPollDeferred?.cancel()
         job.cancel()
         super.onDestroy()
     }
@@ -104,8 +101,7 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
         launch {
             var longPollResult: CaffeineResult<OAuthCallbackResult>?
             do {
-                longPollDeferred = oauthService.longPoll(longPollUrl)
-                longPollResult = longPollDeferred?.awaitAndParseErrors(gson)
+                longPollResult = oauthService.longPoll(longPollUrl).awaitAndParseErrors(gson)
             } while(isActive && shouldRetry(longPollResult))
             longPollResult?.let { callback?.processTwitterOAuthResult(it) }
             dismiss()

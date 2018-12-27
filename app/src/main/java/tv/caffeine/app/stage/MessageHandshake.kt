@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ class MessageHandshake(
     private var webSocketController: WebSocketController? = null
     private val webSocketGson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
-    private val job = Job()
+    private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = job + dispatchConfig.main
 

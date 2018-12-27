@@ -14,10 +14,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
@@ -89,7 +86,7 @@ class FriendsWatchingAdapter @Inject constructor(
 
     var callback: ((String) -> Unit)? = null
 
-    private val job = Job()
+    private val job = SupervisorJob()
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         Timber.e(throwable, "Coroutine throwable")
     }

@@ -2,6 +2,7 @@ package tv.caffeine.app.api.model
 
 import com.google.gson.Gson
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.coroutineScope
 import retrofit2.Response
 import tv.caffeine.app.api.ApiErrorResult
 
@@ -24,7 +25,11 @@ sealed class CaffeineEmptyResult {
 }
 
 suspend fun <T> Deferred<Response<T>>.awaitAndParseErrors(gson: Gson): CaffeineResult<T> {
-    val response = runCatching { await() }.getOrElse { return CaffeineResult.Failure(it) }
+    val response = try {
+        coroutineScope { await() }
+    } catch(t: Throwable) {
+        return CaffeineResult.Failure(t)
+    }
     val body = response.body()
     val errorBody = response.errorBody()
     return when {
@@ -35,7 +40,11 @@ suspend fun <T> Deferred<Response<T>>.awaitAndParseErrors(gson: Gson): CaffeineR
 }
 
 suspend fun <T> Deferred<Response<T>>.awaitEmptyAndParseErrors(gson: Gson): CaffeineEmptyResult {
-    val response = runCatching { await() }.getOrElse { return CaffeineEmptyResult.Failure(it) }
+    val response = try {
+        coroutineScope { await() }
+    } catch(t: Throwable) {
+        return CaffeineEmptyResult.Failure(t)
+    }
     val errorBody = response.errorBody()
     return when {
         response.isSuccessful -> CaffeineEmptyResult.Success

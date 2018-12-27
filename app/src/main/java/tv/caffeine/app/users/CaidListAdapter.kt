@@ -12,10 +12,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
@@ -45,7 +42,7 @@ class CaidListAdapter @Inject constructor(
         }
 ), CoroutineScope {
 
-    private val job = Job()
+    private val job = SupervisorJob()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable, "Coroutine throwable")
     }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
@@ -21,7 +22,7 @@ open class CaffeineBottomSheetDialogFragment : DaggerBottomSheetDialogFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        job = Job()
+        job = SupervisorJob()
     }
 
     override fun onDestroy() {

@@ -7,6 +7,7 @@ import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import timber.log.Timber
 import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.isVersionCheckError
@@ -32,7 +33,7 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        job = Job()
+        job = SupervisorJob()
     }
 
     override fun onDestroy() {

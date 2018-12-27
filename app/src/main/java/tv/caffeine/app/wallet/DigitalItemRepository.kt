@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.api.DigitalItemsPayload
@@ -23,7 +23,7 @@ class DigitalItemRepository @Inject constructor(
         private val paymentsClientService: PaymentsClientService
 ) : CoroutineScope {
 
-    private val job = Job()
+    private val job = SupervisorJob()
     override val coroutineContext get() = dispatchConfig.main + job
 
     private val _items = MutableLiveData<DigitalItemsPayload>()
