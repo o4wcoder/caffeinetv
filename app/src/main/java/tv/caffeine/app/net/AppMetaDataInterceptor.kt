@@ -4,8 +4,11 @@ import android.os.Build
 import okhttp3.Interceptor
 import okhttp3.Response
 import tv.caffeine.app.BuildConfig
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AppMetaDataInterceptor : Interceptor {
+@Singleton
+class AppMetaDataInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder().run {
             header("User-Agent", "Caffeine/${BuildConfig.VERSION_CODE} Android/${Build.VERSION.SDK_INT}")

@@ -20,6 +20,7 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.net.AppMetaDataInterceptor
 import tv.caffeine.app.net.AuthorizationInterceptor
+import tv.caffeine.app.net.LongPollInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
@@ -68,14 +69,15 @@ class NetworkModule {
     fun providesTokenAuthenticator(refreshTokenService: RefreshTokenService, tokenStore: TokenStore) = TokenAuthenticator(refreshTokenService, tokenStore)
 
     @Provides
-    fun providesAppMetaDataInterceptor() = AppMetaDataInterceptor()
-
-    @Provides
-    fun providesAuthorizationInterceptor(tokenStore: TokenStore) = AuthorizationInterceptor(tokenStore)
-
-    @Provides
-    fun providesOkHttpClient(tokenAuthenticator: TokenAuthenticator, appMetaDataInterceptor: AppMetaDataInterceptor, authorizationInterceptor: AuthorizationInterceptor, loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
+    fun providesOkHttpClient(
+            tokenAuthenticator: TokenAuthenticator,
+            longPollInterceptor: LongPollInterceptor,
+            appMetaDataInterceptor: AppMetaDataInterceptor,
+            authorizationInterceptor: AuthorizationInterceptor,
+            loggingInterceptor: HttpLoggingInterceptor
+    ) = OkHttpClient.Builder()
             .authenticator(tokenAuthenticator)
+            .addInterceptor(longPollInterceptor)
             .addInterceptor(appMetaDataInterceptor)
             .addInterceptor(authorizationInterceptor)
             .addNetworkInterceptor(loggingInterceptor)

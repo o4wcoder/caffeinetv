@@ -28,7 +28,6 @@ import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.*
-import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.receiver.HeadsetBroadcastReceiver
@@ -49,26 +48,21 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     @Inject lateinit var realtime: Realtime
     @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
     @Inject lateinit var eglBase: EglBase
-    @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var eventsService: EventsService
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var broadcastsService: BroadcastsService
-    @Inject lateinit var usersService: UsersService
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
     @Inject lateinit var gson: Gson
     @Inject lateinit var isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
 
     private lateinit var binding: FragmentStageBinding
     private lateinit var broadcaster: String
-    private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
-    private val renderers: MutableMap<StageHandshake.Stream.Type, SurfaceViewRenderer> = mutableMapOf()
-    private val loadingIndicators: MutableMap<StageHandshake.Stream.Type, ProgressBar> = mutableMapOf()
-    private val sinks: MutableMap<String, StageHandshake.Stream.Type> = mutableMapOf()
-    private var stageHandshake: StageHandshake? = null
-    private var streamController: StreamController? = null
+    private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
+    private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
+    private var newReyesController: NewReyesController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
-    private var streams: Map<String, StageHandshake.Stream> = mapOf()
+    private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private var broadcastName: String? = null
     private val broadcastReceiver = HeadsetBroadcastReceiver()
     private var audioManager: AudioManager? = null
@@ -99,9 +93,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 followManager.refreshFollowedUsers()
                 isFollowingBroadcaster = followManager.isFollowing(broadcaster)
             }
-            launch(dispatchConfig.main) {
-                connectStreams(userDetails.stageId)
-            }
+            connectStreams(userDetails.username)
             launch(dispatchConfig.main) {
                 connectMessages(userDetails.stageId)
             }
@@ -225,18 +217,18 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     private fun initSurfaceViewRenderer() {
-        renderers[StageHandshake.Stream.Type.primary] = binding.primaryViewRenderer
-        renderers[StageHandshake.Stream.Type.secondary] = binding.secondaryViewRenderer
-        loadingIndicators[StageHandshake.Stream.Type.primary] = binding.primaryLoadingIndicator
-        loadingIndicators[StageHandshake.Stream.Type.secondary] = binding.secondaryLoadingIndicator
+        renderers[NewReyes.Feed.Role.primary] = binding.primaryViewRenderer
+        renderers[NewReyes.Feed.Role.secondary] = binding.secondaryViewRenderer
+        loadingIndicators[NewReyes.Feed.Role.primary] = binding.primaryLoadingIndicator
+        loadingIndicators[NewReyes.Feed.Role.secondary] = binding.secondaryLoadingIndicator
         renderers.forEach { entry ->
             val key = entry.key
             val renderer = entry.value
             renderer.init(eglBase.eglBaseContext, null)
             renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
             renderer.setEnableHardwareScaler(true)
-            streams.values.firstOrNull { it.type == key }?.let { stream ->
-                configureRenderer(renderer, stream, videoTracks[stream.id])
+            feeds.values.firstOrNull { it.role == key }?.let { feed ->
+                configureRenderer(renderer, feed, videoTracks[feed.stream.id])
             }
             renderer.setOnClickListener { toggleAppBarVisibility() }
         }
@@ -315,8 +307,8 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         binding.backToLobbyButton.isVisible = !broadcastIsOnline
     }
 
-    private fun configureRenderer(renderer: SurfaceViewRenderer, stream: StageHandshake.Stream?, videoTrack: VideoTrack?) {
-        val hasVideo = videoTrack != null && stream?.capabilities?.video ?: false
+    private fun configureRenderer(renderer: SurfaceViewRenderer, feed: NewReyes.Feed?, videoTrack: VideoTrack?) {
+        val hasVideo = videoTrack != null && (feed?.capabilities?.video ?: false)
         renderer.visibility = if (hasVideo) View.VISIBLE else View.INVISIBLE
         if (hasVideo) {
             videoTrack?.addSink(renderer)
@@ -325,67 +317,67 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
     }
 
-    private suspend fun connectStreams(stageIdentifier: String) {
-        stageHandshake = StageHandshake(dispatchConfig, tokenStore, stageIdentifier)
-        streamController = StreamController(dispatchConfig, realtime, peerConnectionFactory, eventsService, gson, stageIdentifier)
-        stageHandshake?.channel?.consumeEach { event ->
-            Timber.d("Streams: ${event.streams.map { it.type }}")
-            binding.liveIndicatorTextView.isVisible = event.streams.isNotEmpty()
-            val newStreams = event.streams.associateBy { stream -> stream.id }
-            Timber.d("StreamState - New streams: $newStreams")
-            val oldStreams = streams
-            streams = newStreams
-            Timber.d("StreamState - Old streams: $oldStreams")
-            val removedStreamIds = oldStreams.keys.subtract(newStreams.keys)
-            removedStreamIds.forEach { streamId ->
-                val stream = oldStreams[streamId]
-                Timber.d("StreamState - Removed stream $streamId, ${stream?.type}, ${stream?.label}")
-                peerConnections.remove(streamId)?.close()
-                videoTracks.remove(streamId)?.apply {
-                    val renderer = renderers[sinks[streamId]] ?: return@apply
-                    removeSink(renderer)
-                    renderer.visibility = View.INVISIBLE
-//                    dispose()
-                }
-                audioTracks.remove(streamId)//?.dispose()
-                sinks.remove(streamId)
-            }
-            val addedStreamIds = newStreams.keys.subtract(oldStreams.keys)
-            val updatedStreamIds = newStreams.keys.intersect(oldStreams.keys)
-            newStreams.values.filter { it.id in updatedStreamIds }.forEach { Timber.d("Updated stream ${it.id}, ${it.type}, ${it.label}") }
-            newStreams.values
-                    .filter { newStream ->
-                        oldStreams[newStream.id]?.let { oldStream ->
-                            oldStream.type != newStream.type
-                        } ?: false
+    private fun connectStreams(username: String) {
+        val controller = NewReyesController(dispatchConfig, gson, realtime, eventsService, peerConnectionFactory, username)
+        newReyesController = controller
+        manageFeeds(controller)
+        manageStateChange(controller)
+        manageConnections(controller)
+    }
+
+    private fun manageFeeds(controller: NewReyesController) = launch {
+        controller.feedChannel.consumeEach {
+            feeds = it
+        }
+    }
+
+    private fun manageStateChange(controller: NewReyesController) = launch {
+        controller.stateChangeChannel.consumeEach { list ->
+            list.forEach { stateChange ->
+                when (stateChange) {
+                    is NewReyesController.StateChange.FeedRemoved -> {
+                        videoTracks.remove(stateChange.streamId)?.apply {
+                            val renderer = renderers[stateChange.role] ?: return@apply
+                            removeSink(renderer)
+                            renderer.visibility = View.INVISIBLE
+                        }
+                        audioTracks.remove(stateChange.feedId)
                     }
-                    .forEach { stream ->
-                        Timber.d("StreamState - Switching stream ${stream.id}, ${stream.label} from ${oldStreams[stream.id]?.type} to ${stream.type}")
-                        videoTracks[stream.id]?.removeSink(renderers[sinks[stream.id]])
-                        sinks[stream.id] = stream.type
-                        renderers[stream.type]?.let {
-                            configureRenderer(it, stream, videoTracks[stream.id])
+                    is NewReyesController.StateChange.FeedAdded -> {
+                        loadingIndicators[stateChange.feed.role]?.isVisible = true
+                    }
+                    is NewReyesController.StateChange.FeedRoleChanged -> {
+                        val oldRenderer = renderers[stateChange.oldRole]
+                        videoTracks[stateChange.newFeed.stream.id]?.removeSink(oldRenderer)
+                        oldRenderer?.visibility = View.INVISIBLE
+                        renderers[stateChange.newFeed.role]?.let { renderer ->
+                            configureRenderer(renderer, stateChange.newFeed, videoTracks[stateChange.newFeed.stream.id])
                         }
                     }
-            newStreams.values.filter { it.id in addedStreamIds }.forEach { stream ->
-                Timber.d("StreamState - Configuring new stream ${stream.id}, ${stream.type}, ${stream.label}")
-                val streamType = stream.type
-                loadingIndicators[streamType]?.isVisible = true
-                val connectionInfoNullable = streamController?.connect(stream)
-                loadingIndicators[streamType]?.isVisible = false
-                val connectionInfo = connectionInfoNullable ?: return@forEach
-                val peerConnection = connectionInfo.peerConnection
-                val videoTrack = connectionInfo.videoTrack
-                val audioTrack = connectionInfo.audioTrack
-                val streamId = stream.id
-                peerConnections[streamId] = peerConnection
-                videoTrack?.let { videoTracks[streamId] = it }
-                audioTrack?.let { audioTracks[streamId] = it }
-                sinks[streamId] = streamType
-                renderers[streamType]?.let {
-                    configureRenderer(it, stream, videoTrack)
-                    it.visibility = View.VISIBLE
+                    is NewReyesController.StateChange.FeedStreamChanged -> {
+                        videoTracks[stateChange.oldStreamId]?.removeSink(renderers[stateChange.role])
+                    }
                 }
+            }
+        }
+    }
+
+    private fun manageConnections(controller: NewReyesController) = launch {
+        controller.connectionChannel.consumeEach { feedInfo ->
+            loadingIndicators[feedInfo.role]?.isVisible = false
+            val connectionInfo = feedInfo.connectionInfo
+            val videoTrack = connectionInfo.videoTrack
+            val audioTrack = connectionInfo.audioTrack
+            renderers[feedInfo.role]?.let {
+                configureRenderer(it, feedInfo.feed, videoTrack)
+                it.visibility = View.VISIBLE
+            }
+            val streamId = feedInfo.streamId
+            videoTrack?.let { videoTracks[streamId] = it }
+            audioTrack?.let { audioTracks[streamId] = it }
+            renderers[feedInfo.role]?.let {
+                configureRenderer(it, feedInfo.feed, videoTrack)
+                it.visibility = View.VISIBLE
             }
         }
     }
@@ -398,11 +390,8 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     private fun disconnectStreams() {
-        stageHandshake?.close()
-        stageHandshake = null
-        streamController?.close()
-        streamController = null
-        peerConnections.values.onEach { it.dispose() }
+        newReyesController?.close()
+        newReyesController = null
     }
 
     private fun configureButtons() {
