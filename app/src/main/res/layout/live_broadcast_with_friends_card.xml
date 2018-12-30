@@ -74,6 +74,25 @@
                 app:layout_constraintTop_toBottomOf="@id/friends_watching_text_view" />
 
             <ImageView
+                android:id="@+id/pip_image_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:foreground="@drawable/gradient_overlay_pip"
+                android:layout_marginBottom="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
+                app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
+                app:layout_constraintEnd_toEndOf="@id/preview_image_view"
+                app:layout_constraintStart_toStartOf="@id/preview_image_view"
+                app:layout_constraintTop_toTopOf="@id/preview_image_view"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.25"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.25"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintVertical_bias="1.0"
+                />
+
+            <ImageView
                 android:id="@+id/avatar_image_view"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"

@@ -120,7 +120,7 @@ abstract class BroadcasterCard(
         val singleCard = item as SingleCard
         val broadcast = singleCard.broadcaster.broadcast ?: singleCard.broadcaster.lastBroadcast ?: error("Unexpected lobby item state")
         Picasso.get()
-                .load(broadcast.previewImageUrl)
+                .load(broadcast.mainPreviewImageUrl)
                 .fit()
                 .centerCrop()
                 .placeholder(R.drawable.default_lobby_image)
@@ -171,6 +171,9 @@ open class LiveBroadcastCard(
         followedThemeLight: UserTheme,
         notFollowedThemeLight: UserTheme
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    private val pipImageView: ImageView = itemView.findViewById(R.id.pip_image_view)
+    private val roundedCornersTransformation by lazy { RoundedCornersTransformation(itemView.resources.getDimension(R.dimen.lobby_card_pip_radius).toInt(), 0) }
+
     override fun configure(item: LobbyItem) {
         super.configure(item)
         val liveBroadcastItem = item as LiveBroadcast
@@ -180,6 +183,16 @@ open class LiveBroadcastCard(
             Picasso.get().load(game.iconImageUrl).into(binding.gameLogoImageView)
         } else {
             binding.gameLogoImageView.setImageDrawable(null)
+        }
+        pipImageView.isVisible = broadcast.hasLiveHostedBroadcaster
+        if (broadcast.hasLiveHostedBroadcaster) {
+            Picasso.get()
+                    .load(broadcast.pictureInPictureImageUrl)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.default_lobby_image)
+                    .transform(roundedCornersTransformation)
+                    .into(pipImageView)
         }
         liveBroadcastItem.broadcaster.user.let {
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
