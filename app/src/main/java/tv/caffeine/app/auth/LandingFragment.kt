@@ -55,8 +55,10 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
             fragment.setTargetFragment(this, 0)
             fragment.show(fragmentManager, "twitterAuth")
         }
-        LandingFragmentArgs.fromBundle(arguments).message?.let {
-            Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
+        arguments?.let { args ->
+            LandingFragmentArgs.fromBundle(args).message?.let {
+                Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
