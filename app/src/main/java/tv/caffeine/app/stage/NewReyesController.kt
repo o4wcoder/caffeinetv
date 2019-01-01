@@ -9,11 +9,9 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.webrtc.createAnswer
-import tv.caffeine.app.webrtc.getStats
-import tv.caffeine.app.webrtc.setLocalDescription
-import tv.caffeine.app.webrtc.setRemoteDescription
+import tv.caffeine.app.webrtc.*
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -51,9 +49,9 @@ class NewReyesController(
     val connectionChannel = Channel<NewReyesFeedInfo>()
     val stateChangeChannel = Channel<List<StateChange>>()
 
-    private val peerConnections: MutableMap<String, PeerConnection> = mutableMapOf()
-    private val peerConnectionStreamLabels: MutableMap<String, String> = mutableMapOf()
-    private val heartbeatUrls: MutableMap<String, String> = mutableMapOf()
+    private val peerConnections: MutableMap<String, PeerConnection> = ConcurrentHashMap()
+    private val peerConnectionStreamLabels: MutableMap<String, String> = ConcurrentHashMap()
+    private val heartbeatUrls: MutableMap<String, String> = ConcurrentHashMap()
 
     init {
         connect()

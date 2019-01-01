@@ -119,9 +119,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
     // Crash Reporting, Performance
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.7'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
     implementation 'com.google.firebase:firebase-core:16.0.6'
-    implementation 'com.google.firebase:firebase-perf:16.2.2'
+    implementation 'com.google.firebase:firebase-perf:16.2.3'
 
     // Logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
