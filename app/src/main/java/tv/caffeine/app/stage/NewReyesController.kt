@@ -52,6 +52,7 @@ class NewReyesController(
     private val peerConnections: MutableMap<String, PeerConnection> = ConcurrentHashMap()
     private val peerConnectionStreamLabels: MutableMap<String, String> = ConcurrentHashMap()
     private val heartbeatUrls: MutableMap<String, String> = ConcurrentHashMap()
+    private val audioTracks: MutableMap<String, AudioTrack> = ConcurrentHashMap()
 
     init {
         connect()
@@ -146,6 +147,12 @@ class NewReyesController(
         val oldFeeds = feeds
         val newFeeds = message.payload?.feeds ?: mapOf()
         feedChannel.send(newFeeds)
+        newFeeds.values.forEach { feed ->
+            audioTracks[feed.stream.id]?.let { audioTrack ->
+                Timber.d("DIFF: feed volume changed ${feed.id}, new ${feed.volume}")
+                audioTrack.setVolume(feed.volume)
+            }
+        }
         val diff = diff(oldFeeds, newFeeds)
         diff.forEach {
             when(it) {
@@ -167,6 +174,7 @@ class NewReyesController(
                 .forEach { streamId ->
                     peerConnections.remove(streamId)?.dispose()
                     peerConnectionStreamLabels.remove(streamId)
+                    audioTracks.remove(streamId)
                     heartbeatUrls.remove(streamId)
                 }
         feeds = newFeeds
@@ -183,6 +191,10 @@ class NewReyesController(
                     connectStream(stream)?.let { connectionInfo ->
                         peerConnections[stream.id] = connectionInfo.peerConnection
                         peerConnectionStreamLabels[stream.id] = feed.streamLabel()
+                        connectionInfo.audioTrack?.let {
+                            audioTracks[stream.id] = it
+                            it.setVolume(feed.volume)
+                        }
                         connectionChannel.send(NewReyesFeedInfo(connectionInfo, feed, stream.id, feed.role))
                     }
                 }
@@ -226,6 +238,18 @@ class NewReyesController(
         return configureConnections(peerConnection)
     }
 
+    fun mute() {
+        audioTracks.values.forEach {
+            it.setEnabled(false)
+        }
+    }
+
+    fun unmute() {
+        audioTracks.values.forEach {
+            it.setEnabled(true)
+        }
+    }
+
     fun close() {
         job.cancel()
         feedChannel.close()
@@ -236,6 +260,9 @@ class NewReyesController(
         }
         peerConnectionStreamLabels.keys.forEach {
             peerConnectionStreamLabels.remove(it)
+        }
+        audioTracks.keys.forEach {
+            audioTracks.remove(it)
         }
         heartbeatUrls.keys.forEach {
             heartbeatUrls.remove(it)

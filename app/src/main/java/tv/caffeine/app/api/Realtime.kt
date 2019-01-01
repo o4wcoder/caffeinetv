@@ -62,7 +62,7 @@ class NewReyes {
 
     class Payload(val id: String, val username: String, val title: String, val live: Boolean, val broadcast_id: String, val feeds: Map<String, Feed>)
 
-    class Feed(val id: String, val client_id: String, val role: Role, val description: String, val volume: Float, val is_hostable: Boolean, val source_connection_quality: String, val content: Content?, val capabilities: Capabilities, val hostable_address: String, val external_address: String, val stream: Stream) {
+    class Feed(val id: String, val client_id: String, val role: Role, val description: String, val volume: Double, val is_hostable: Boolean, val source_connection_quality: String, val content: Content?, val capabilities: Capabilities, val hostable_address: String, val external_address: String, val stream: Stream) {
         enum class Role { primary, secondary }
         class Content(val id: String, val type: Type) {
             enum class Type { game, user }

@@ -61,7 +61,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
     private var newReyesController: NewReyesController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
-    private val audioTracks: MutableMap<String, AudioTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private var broadcastName: String? = null
     private val broadcastReceiver = HeadsetBroadcastReceiver()
@@ -209,11 +208,13 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     override fun onStart() {
         super.onStart()
         setMediaTracksEnabled(true)
+        newReyesController?.unmute()
     }
 
     override fun onStop() {
         super.onStop()
         setMediaTracksEnabled(false)
+        newReyesController?.mute()
     }
 
     private fun initSurfaceViewRenderer() {
@@ -341,7 +342,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                             removeSink(renderer)
                             renderer.visibility = View.INVISIBLE
                         }
-                        audioTracks.remove(stateChange.feedId)
                     }
                     is NewReyesController.StateChange.FeedAdded -> {
                         loadingIndicators[stateChange.feed.role]?.isVisible = true
@@ -367,14 +367,12 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             loadingIndicators[feedInfo.role]?.isVisible = false
             val connectionInfo = feedInfo.connectionInfo
             val videoTrack = connectionInfo.videoTrack
-            val audioTrack = connectionInfo.audioTrack
             renderers[feedInfo.role]?.let {
                 configureRenderer(it, feedInfo.feed, videoTrack)
                 it.visibility = View.VISIBLE
             }
             val streamId = feedInfo.streamId
             videoTrack?.let { videoTracks[streamId] = it }
-            audioTrack?.let { audioTracks[streamId] = it }
             renderers[feedInfo.role]?.let {
                 configureRenderer(it, feedInfo.feed, videoTrack)
                 it.visibility = View.VISIBLE
@@ -488,6 +486,5 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private fun setMediaTracksEnabled(enabled: Boolean) {
         videoTracks.values.forEach { it.setEnabled(enabled) }
-        audioTracks.values.forEach { it.setEnabled(enabled) }
     }
 }
