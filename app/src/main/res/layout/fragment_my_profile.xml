@@ -44,6 +44,7 @@
                 android:singleLine="true"
                 android:imeOptions="actionSend"
                 android:inputType="textCapWords"
+                android:maxLength="@integer/max_name_length"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"

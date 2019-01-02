@@ -48,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
+                    android:maxLength="@integer/max_username_length"
                     android:imeOptions="actionNext" />
             </com.google.android.material.textfield.TextInputLayout>
 
