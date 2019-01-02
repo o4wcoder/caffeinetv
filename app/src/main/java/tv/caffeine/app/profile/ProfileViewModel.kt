@@ -34,6 +34,7 @@ class ProfileViewModel(
 
     val avatarImageUrl: LiveData<String> = Transformations.map(user) { it.avatarImageUrl }
     val stageImageUrl: LiveData<String> = Transformations.map(broadcast) { it?.mainPreviewImageUrl }
+    val isLive: LiveData<Boolean> = Transformations.map(broadcast) { it?.mainPreviewImageUrl != null }
 
     fun load(caid: String) = launch {
         val userDetails = followManager.userDetails(caid) ?: return@launch

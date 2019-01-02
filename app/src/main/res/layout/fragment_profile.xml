@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="profileViewModel"
             type="tv.caffeine.app.profile.ProfileViewModel"/>
@@ -31,6 +32,7 @@
                 android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                 android:contentDescription="@string/user_avatar_content_description"
                 app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
+                app:placeholder="@{@drawable/default_avatar_round}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -152,12 +154,26 @@
                 android:layout_marginTop="25dp"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/stage_image_content_description"
+                android:visibility="@{profileViewModel.isLive ? View.VISIBLE : View.GONE}"
                 app:imageUrl="@{profileViewModel.stageImageUrl}"
+                app:placeholder="@{@drawable/default_lobby_image}"
+                app:cornerRadius="@{@dimen/lobby_card_rounding_radius}"
                 app:layout_constraintTop_toBottomOf="@+id/following_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintDimensionRatio="4:3"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+                tools:src="@drawable/default_lobby_image"/>
+
+            <TextView
+                android:id="@+id/live_indicator_text_view"
+                style="@style/LiveIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/live_indicator"
+                android:visibility="@{profileViewModel.isLive ? View.VISIBLE : View.GONE}"
+                app:layout_constraintStart_toStartOf="@+id/stage_image_view"
+                app:layout_constraintTop_toTopOf="@+id/stage_image_view" />
 
             <TextView
                 android:id="@+id/bio_text_view"

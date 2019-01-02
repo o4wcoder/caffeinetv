@@ -74,6 +74,7 @@
             android:padding="2dp"
             android:visibility="gone"
             app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
+            app:placeholder="@{@drawable/default_avatar_round}"
             app:layout_constraintTop_toTopOf="@id/primary_view_renderer"
             app:layout_constraintStart_toStartOf="@id/primary_view_renderer"
             app:layout_constraintEnd_toEndOf="@id/primary_view_renderer"
@@ -273,6 +274,7 @@
                 android:padding="2dp"
                 android:layout_gravity="top|end"
                 app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
+                app:placeholder="@{@drawable/default_avatar_round}"
                 tools:background="@drawable/circle_white_with_blue_rim"
                 tools:src="@drawable/default_avatar_round" />
 
