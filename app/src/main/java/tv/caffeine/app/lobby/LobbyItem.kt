@@ -15,8 +15,8 @@ interface LobbyItem {
         fun parse(result: Lobby): List<LobbyItem> {
             return (result.header.avatarCard?.let { listOf(WelcomeCard("username", it.username)) } ?: listOf()).plus(
             result.sections.flatMap { section ->
-                mutableListOf<LobbyItem>(Header(section.id, section.name)).apply {
-                    section.emptyMessage?.let { add(Subtitle(section.id + ".msg", it)) }
+                mutableListOf<LobbyItem>(Header(section.name, section.name)).apply {
+                    section.emptyMessage?.let { add(Subtitle(it, it)) }
                     section.broadcasters?.map(::convert)?.let { addAll(it) }
                     section.categories?.forEach { category ->
                         add(Subtitle(category.id, category.name))
