@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
+import android.os.Handler
+import android.provider.Settings
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +32,7 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.*
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
+import tv.caffeine.app.receiver.AudioContentObserver
 import tv.caffeine.app.receiver.HeadsetBroadcastReceiver
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
@@ -64,6 +67,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private var broadcastName: String? = null
     private val broadcastReceiver = HeadsetBroadcastReceiver()
+    private var audioContentObserver: AudioContentObserver? = null
     private var audioManager: AudioManager? = null
     private var wasSpeakerOn = false
 
@@ -80,7 +84,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         audioManager = context?.getSystemService()
         wasSpeakerOn = audioManager?.isSpeakerphoneOn ?: false
         audioManager?.isSpeakerphoneOn = true
-        context?.registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
         launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
             if (isVersionSupported is CaffeineEmptyResult.Error) {
@@ -107,7 +110,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onDestroy() {
         disconnectStreams()
-        context?.safeUnregisterReceiver(broadcastReceiver)
+        context?.apply {
+            safeUnregisterReceiver(broadcastReceiver)
+            audioContentObserver?.let { contentResolver.unregisterContentObserver(it) }
+        }
         audioManager?.isSpeakerphoneOn = wasSpeakerOn
         super.onDestroy()
     }
@@ -324,6 +330,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         manageFeeds(controller)
         manageStateChange(controller)
         manageConnections(controller)
+        manageAudio(controller)
     }
 
     private fun manageFeeds(controller: NewReyesController) = launch {
@@ -377,6 +384,14 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 configureRenderer(it, feedInfo.feed, videoTrack)
                 it.visibility = View.VISIBLE
             }
+        }
+    }
+
+    private fun manageAudio(controller: NewReyesController) {
+        context?.apply {
+            audioContentObserver = AudioContentObserver(controller, this, Handler())
+            contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, audioContentObserver!!)
+            registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
         }
     }
 
