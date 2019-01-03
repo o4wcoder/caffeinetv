@@ -111,6 +111,7 @@ abstract class BroadcasterCard(
     private val tagTextView: TextView = view.findViewById(R.id.tag_text_view)
     private val followButton: Button = view.findViewById(R.id.follow_button)
     private val dotTextView: TextView? = view.findViewById(R.id.dot_text_view)
+    private val pipImageView: ImageView? = itemView.findViewById(R.id.pip_image_view)
 
     protected open val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.TOP
     protected open val isLight: Boolean = false
@@ -153,6 +154,18 @@ abstract class BroadcasterCard(
                 tagTextView.setTextColor(tag.color.toColorInt())
             }
         }
+        pipImageView?.apply {
+            isVisible = broadcast.hasLiveHostedBroadcaster
+            if (broadcast.hasLiveHostedBroadcaster) {
+                Picasso.get()
+                        .load(broadcast.pictureInPictureImageUrl)
+                        .fit()
+                        .centerCrop()
+                        .placeholder(R.drawable.default_lobby_image)
+                        .transform(roundedCornersTransformation)
+                        .into(this)
+            }
+        }
     }
 
     fun viewProfile(caid: String) {
@@ -171,7 +184,6 @@ open class LiveBroadcastCard(
         followedThemeLight: UserTheme,
         notFollowedThemeLight: UserTheme
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
-    private val pipImageView: ImageView = itemView.findViewById(R.id.pip_image_view)
     private val roundedCornersTransformation by lazy { RoundedCornersTransformation(itemView.resources.getDimension(R.dimen.lobby_card_pip_radius).toInt(), 0) }
 
     override fun configure(item: LobbyItem) {
@@ -183,16 +195,6 @@ open class LiveBroadcastCard(
             Picasso.get().load(game.iconImageUrl).into(binding.gameLogoImageView)
         } else {
             binding.gameLogoImageView.setImageDrawable(null)
-        }
-        pipImageView.isVisible = broadcast.hasLiveHostedBroadcaster
-        if (broadcast.hasLiveHostedBroadcaster) {
-            Picasso.get()
-                    .load(broadcast.pictureInPictureImageUrl)
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.drawable.default_lobby_image)
-                    .transform(roundedCornersTransformation)
-                    .into(pipImageView)
         }
         liveBroadcastItem.broadcaster.user.let {
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
