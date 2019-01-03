@@ -219,7 +219,26 @@ class NewReyesController(
         val mediaConstraints = MediaConstraints()
         val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, sdpOffer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
-        val observer = SimplePeerConnectionObserver()
+        val observer = object : SimplePeerConnectionObserver() {
+            override fun onIceCandidate(iceCandidate: IceCandidate?) {
+                super.onIceCandidate(iceCandidate)
+                if (!isActive) {
+                    Timber.e("Ice candidate received after closing the stream controller")
+                    return
+                }
+                if (iceCandidate == null) return
+                val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
+                val iceCandidates = NewReyes.ConnectToStream(ice_candidates = arrayOf(candidate))
+                launch {
+                    val result = realtime.connectToStream(stream.url, iceCandidates).awaitAndParseErrors(gson)
+                    when (result) {
+                        is CaffeineResult.Success -> Timber.d("ICE candidate sent, ${result.value}")
+                        is CaffeineResult.Error -> Timber.e("Failed to send ICE candidate")
+                        is CaffeineResult.Failure -> Timber.e(result.throwable)
+                    }
+                }
+            }
+        }
         val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, observer) ?: return null
         val result1 = peerConnection.setRemoteDescription(sessionDescription)
         val localSessionDescription = peerConnection.createAnswer(mediaConstraints) ?: return peerConnection.disposeAndReturnNull()
