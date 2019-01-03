@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -394,10 +393,8 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private fun manageAudio(controller: NewReyesController) {
         context?.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                audioContentObserver = AudioContentObserver(controller, this, Handler())
-                contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, audioContentObserver!!)
-            }
+            audioContentObserver = AudioContentObserver(controller, this, Handler())
+            contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, audioContentObserver!!)
             registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
         }
     }
