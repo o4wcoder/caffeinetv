@@ -214,7 +214,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     override fun onStart() {
         super.onStart()
         setMediaTracksEnabled(true)
-        newReyesController?.unmute()
+        audioManager?.apply {
+            if (getStreamVolume(AudioManager.STREAM_VOICE_CALL) != getStreamMinVolume(AudioManager.STREAM_VOICE_CALL)) {
+                newReyesController?.unmute()
+            }
+        }
     }
 
     override fun onStop() {
