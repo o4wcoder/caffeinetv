@@ -1,5 +1,6 @@
 package tv.caffeine.app.auth
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import kotlinx.coroutines.*
@@ -45,7 +47,10 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullscreenDialogTheme)
+        if (resources.isFullscreenDialog()) {
+            // On Lenovo Tab 4 plus, none of the themes works with this dialog due to dynamic sizing.
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.FullscreenDialogTheme)
+        }
         // prevent the long poll from holding onto the old dialog and dismissing it on screen rotation
         retainInstance = true
         job = SupervisorJob()
@@ -64,6 +69,7 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<DialogActionBar>(R.id.action_bar).apply {
+            isVisible = resources.isFullscreenDialog()
             setTitle(getString(R.string.sign_in_with_twitter))
             setDismissListener { dismiss() }
         }
@@ -110,5 +116,9 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
 
     private fun shouldRetry(result: CaffeineResult<OAuthCallbackResult>?): Boolean {
         return result is CaffeineResult.Failure && result.throwable is StreamResetException
+    }
+
+    private fun Resources.isFullscreenDialog(): Boolean {
+        return getBoolean(R.bool.isFullscreenDialog)
     }
 }

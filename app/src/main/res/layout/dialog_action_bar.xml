@@ -23,13 +23,12 @@
         <TextView
             style="@style/ActionBarTitle"
             android:id="@+id/title_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:maxLines="1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/close_image_view"
             app:layout_constraintEnd_toStartOf="@+id/action_text_view"
             tools:text="Title"/>
@@ -44,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="@+id/title_text_view"
+            app:layout_constraintStart_toEndOf="@+id/title_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Submit"/>
 
