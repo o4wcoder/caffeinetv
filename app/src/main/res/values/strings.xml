@@ -209,6 +209,7 @@
     <!-- Connectivity / No Network -->
     <string name="no_network_data">No Network Data</string>
     <string name="check_your_wifi_or_cellular">Check your wi-fi or cellular settings.</string>
+    <string name="peer_connection_error_message">Failed to connect to the stream. Please try again later.</string>
 
     <!-- Confirm email -->
     <string name="verifying_your_email">Verifying your email…</string>

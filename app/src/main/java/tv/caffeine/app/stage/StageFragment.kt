@@ -334,6 +334,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         manageFeeds(controller)
         manageStateChange(controller)
         manageConnections(controller)
+        manageErrors(controller)
         manageAudio(controller)
     }
 
@@ -387,6 +388,14 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             renderers[feedInfo.role]?.let {
                 configureRenderer(it, feedInfo.feed, videoTrack)
                 it.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun manageErrors(controller: NewReyesController) = launch {
+        controller.errorChannel.consumeEach { error ->
+            when(error) {
+                is NewReyesController.Error.PeerConnectionError -> activity?.showSnackbar(R.string.peer_connection_error_message)
             }
         }
     }

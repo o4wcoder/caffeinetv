@@ -41,6 +41,10 @@ class NewReyesController(
         private val username: String
 ): CoroutineScope {
 
+    sealed class Error {
+        object PeerConnectionError : Error()
+    }
+
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = job + dispatchConfig.main
@@ -48,6 +52,7 @@ class NewReyesController(
     val feedChannel = Channel<Map<String, NewReyes.Feed>>()
     val connectionChannel = Channel<NewReyesFeedInfo>()
     val stateChangeChannel = Channel<List<StateChange>>()
+    val errorChannel = Channel<Error>()
 
     private val peerConnections: MutableMap<String, PeerConnection> = ConcurrentHashMap()
     private val peerConnectionStreamLabels: MutableMap<String, String> = ConcurrentHashMap()
@@ -240,7 +245,10 @@ class NewReyesController(
             }
         }
         val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, observer) ?: return null
-        val result1 = peerConnection.setRemoteDescription(sessionDescription)
+        if (!peerConnection.setRemoteDescription(sessionDescription)) {
+            errorChannel.send(Error.PeerConnectionError)
+            return peerConnection.disposeAndReturnNull()
+        }
         val localSessionDescription = peerConnection.createAnswer(mediaConstraints) ?: return peerConnection.disposeAndReturnNull()
         val answer = NewReyes.ConnectToStream(answer = localSessionDescription.description)
         val result = realtime.connectToStream(stream.url, answer).awaitAndParseErrors(gson)
@@ -274,6 +282,7 @@ class NewReyesController(
         feedChannel.close()
         stateChangeChannel.close()
         connectionChannel.close()
+        errorChannel.close()
         peerConnections.keys.forEach {
             peerConnections.remove(it)?.dispose()
         }
