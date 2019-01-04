@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.content.getSystemService
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -250,22 +251,21 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private fun toggleAppBarVisibility() {
         val viewsToToggle = listOf(binding.stageAppbar, binding.gameLogoImageView, binding.liveIndicatorAndAvatarContainer)
         appBarVisibilityJob?.cancel()
-        val currentVisibility = binding.stageAppbar.visibility
-        if (currentVisibility != View.VISIBLE) {
+        if (!binding.stageAppbar.isVisible) {
             viewsToToggle.forEach {
-                it.visibility = View.VISIBLE
+                it.isVisible = true
             }
             if (!isFollowingBroadcaster) binding.followButton.isVisible = true
             appBarVisibilityJob = launch {
                 delay(3000)
                 viewsToToggle.forEach {
-                    it.visibility = View.INVISIBLE
+                    it.isInvisible = true
                 }
                 binding.followButton.isVisible = false
             }
         } else {
             viewsToToggle.forEach {
-                it.visibility = View.INVISIBLE
+                it.isInvisible = true
             }
             binding.followButton.isVisible = false
         }
@@ -320,7 +320,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private fun configureRenderer(renderer: SurfaceViewRenderer, feed: NewReyes.Feed?, videoTrack: VideoTrack?) {
         val hasVideo = videoTrack != null && (feed?.capabilities?.video ?: false)
-        renderer.visibility = if (hasVideo) View.VISIBLE else View.INVISIBLE
+        renderer.isInvisible = !hasVideo
         if (hasVideo) {
             videoTrack?.addSink(renderer)
         } else {
@@ -339,8 +339,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     private fun manageFeeds(controller: NewReyesController) = launch {
-        controller.feedChannel.consumeEach {
-            feeds = it
+        controller.feedChannel.consumeEach { mapOfFeeds ->
+            feeds = mapOfFeeds
+            val activeRoles = feeds.values.map { it.role }.toList()
+            renderers[NewReyes.Feed.Role.primary]?.isInvisible = NewReyes.Feed.Role.primary !in activeRoles
+            renderers[NewReyes.Feed.Role.secondary]?.isInvisible = NewReyes.Feed.Role.secondary !in activeRoles
         }
     }
 
@@ -352,7 +355,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                         videoTracks.remove(stateChange.streamId)?.apply {
                             val renderer = renderers[stateChange.role] ?: return@apply
                             removeSink(renderer)
-                            renderer.visibility = View.INVISIBLE
+                            renderer.clearImage()
                         }
                     }
                     is NewReyesController.StateChange.FeedAdded -> {
@@ -361,13 +364,15 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                     is NewReyesController.StateChange.FeedRoleChanged -> {
                         val oldRenderer = renderers[stateChange.oldRole]
                         videoTracks[stateChange.newFeed.stream.id]?.removeSink(oldRenderer)
-                        oldRenderer?.visibility = View.INVISIBLE
+                        oldRenderer?.clearImage()
                         renderers[stateChange.newFeed.role]?.let { renderer ->
                             configureRenderer(renderer, stateChange.newFeed, videoTracks[stateChange.newFeed.stream.id])
                         }
                     }
                     is NewReyesController.StateChange.FeedStreamChanged -> {
-                        videoTracks[stateChange.oldStreamId]?.removeSink(renderers[stateChange.role])
+                        val oldRenderer = renderers[stateChange.role]
+                        videoTracks[stateChange.oldStreamId]?.removeSink(oldRenderer)
+                        oldRenderer?.clearImage()
                     }
                 }
             }
@@ -381,13 +386,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             val videoTrack = connectionInfo.videoTrack
             renderers[feedInfo.role]?.let {
                 configureRenderer(it, feedInfo.feed, videoTrack)
-                it.visibility = View.VISIBLE
             }
             val streamId = feedInfo.streamId
             videoTrack?.let { videoTracks[streamId] = it }
             renderers[feedInfo.role]?.let {
                 configureRenderer(it, feedInfo.feed, videoTrack)
-                it.visibility = View.VISIBLE
             }
         }
     }
