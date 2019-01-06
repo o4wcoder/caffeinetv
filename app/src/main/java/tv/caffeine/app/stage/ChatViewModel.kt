@@ -92,6 +92,16 @@ class ChatViewModel(
 
     private fun processMessage(messageWrapper: MessageWrapper) {
         val message = messageWrapper.message
+        when(message.type) {
+            Message.Type.reaction, Message.Type.digital_item, Message.Type.share -> processReaction(messageWrapper)
+            Message.Type.join, Message.Type.leave, Message.Type.follow -> processPresence(messageWrapper)
+            Message.Type.rescind -> processRescind(messageWrapper)
+            Message.Type.dummy -> Timber.e("Not possible")
+        }
+    }
+
+    private fun processReaction(messageWrapper: MessageWrapper) {
+        val message = messageWrapper.message
         Timber.d("Received message (${message.type}) from ${message.publisher.username} (${message.publisher.name}): ${message.body.text}")
         val currentTime = System.currentTimeMillis()
         val position = stageReducer.determineReactionPosition(latestMessages, messageWrapper, preferredPositions, maxVisibleReactions, currentTime)
@@ -99,6 +109,18 @@ class ChatViewModel(
             latestMessages.removeAll { it.position == position }
             latestMessages.add(messageWrapper.copy(position = position))
         }
+        displayMessages()
+    }
+
+    private fun processPresence(messageWrapper: MessageWrapper) {
+        val message = messageWrapper.message
+        Timber.d("Received presence (${message.type}) from ${message.publisher.username} (${message.publisher.name}): ${message.body.text}")
+    }
+
+    private fun processRescind(messageWrapper: MessageWrapper) {
+        val message = messageWrapper.message
+        Timber.d("Received rescind (${message.type}) from ${message.publisher.username} (${message.publisher.name}): ${message.body.text}")
+        latestMessages.removeAll { it.message.publisher.caid == message.publisher.caid }
         displayMessages()
     }
 
