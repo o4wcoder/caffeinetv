@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/confirmEmailFragment"
         android:name="tv.caffeine.app.auth.ConfirmEmailFragment"
-        android:label="Confirm Email">
+        android:label="@string/confirm_email">
         <deepLink
             android:id="@+id/deepLink7"
             app:uri="https://www.caffeine.tv/account/email-confirmation/{rest}" />
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/caffeineLinksFragment"
         android:name="tv.caffeine.app.settings.CaffeineLinksFragment"
-        android:label="Caffeine Links">
+        android:label="@string/caffeine_links">
         <deepLink
             android:id="@+id/deepLink3"
             app:uri="https://www.caffeine.tv/tos.html" />
@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/landingFragment"
         android:name="tv.caffeine.app.auth.LandingFragment"
-        android:label="@string/app_name"
+        android:label="@string/landing"
         tools:layout="@layout/fragment_landing">
         <action
             android:id="@+id/action_landingFragment_to_signUpFragment"
@@ -142,7 +142,7 @@
     <fragment
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"
-        android:label="@string/app_name"
+        android:label="@string/lobby"
         tools:layout="@layout/fragment_lobby">
         <action
             android:id="@+id/action_lobbyFragment_to_broadcastFragment"
@@ -163,7 +163,7 @@
     <fragment
         android:id="@+id/stageFragment"
         android:name="tv.caffeine.app.stage.StageFragment"
-        android:label="@string/app_name"
+        android:label="@string/stage"
         tools:layout="@layout/fragment_stage" >
         <argument
             android:name="broadcaster"
@@ -199,7 +199,7 @@
     <fragment
         android:id="@+id/sendMessageFragment"
         android:name="tv.caffeine.app.stage.SendMessageFragment"
-        android:label="SendMessageFragment" >
+        android:label="@string/send_message" >
         <argument
             android:name="message"
             app:argType="string"
@@ -208,7 +208,7 @@
     <fragment
         android:id="@+id/sendDigitalItemFragment"
         android:name="tv.caffeine.app.stage.SendDigitalItemFragment"
-        android:label="SendDigitalItemFragment" >
+        android:label="@string/send_digital_item" >
         <argument
             android:name="digitalItemId"
             app:argType="string" />
@@ -224,7 +224,7 @@
     <!-- Broadcast -->
     <fragment
         android:id="@+id/broadcastFragment"
-        android:label="tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment"/>
+        android:label="@string/broardcast_placeholder_dialog_title"/>
 
     <!-- Explore -->
     <fragment
@@ -496,7 +496,7 @@
     <fragment
         android:id="@+id/needsUpdateFragment"
         android:name="tv.caffeine.app.update.NeedsUpdateFragment"
-        android:label="NeedsUpdateFragment"
+        android:label="@string/time_to_update"
         tools:layout="@layout/fragment_needs_update"/>
     <action
         android:id="@+id/action_global_needsUpdateFragment"

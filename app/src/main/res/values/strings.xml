@@ -1,4 +1,13 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- screen labels -->
+    <string name="landing">Landing</string>
+    <string name="lobby">Lobby</string>
+    <string name="stage">Stage</string>
+    <string name="confirm_email">Confirm Email</string>
+    <string name="caffeine_links">Caffeine Links</string>
+    <string name="send_message">Send Message</string>
+    <string name="send_digital_item">Send Digital Item</string>
+
     <string name="landing_signup_prompt">Sign up to watch live games and sports with friends.</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
