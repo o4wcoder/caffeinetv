@@ -10,10 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import org.webrtc.DefaultVideoDecoderFactory
-import org.webrtc.EglBase
-import org.webrtc.PeerConnectionFactory
-import org.webrtc.createEglBase14
+import org.webrtc.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.api.*
@@ -154,9 +151,11 @@ class NetworkModule {
                 .createInitializationOptions()
         PeerConnectionFactory.initialize(initializationOptions)
         val options = PeerConnectionFactory.Options()
+        val videoEncoderFactory = DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
         val videoDecoderFactory = DefaultVideoDecoderFactory(eglBase.eglBaseContext)
         return PeerConnectionFactory.builder()
                 .setOptions(options)
+                .setVideoEncoderFactory(videoEncoderFactory)
                 .setVideoDecoderFactory(videoDecoderFactory)
                 .createPeerConnectionFactory()
     }

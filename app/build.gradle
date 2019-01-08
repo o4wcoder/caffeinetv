@@ -113,7 +113,7 @@ dependencies {
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
 
     // WebRTC
-    implementation 'org.webrtc:google-webrtc:1.0.24277'
+    implementation 'org.webrtc:google-webrtc:1.0.26131'
 
     // Push notifications
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
