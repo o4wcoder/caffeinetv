@@ -71,47 +71,45 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
         view.findViewById<DialogActionBar>(R.id.action_bar).apply {
             isVisible = resources.isFullscreenDialog()
             setTitle(getString(R.string.sign_in_with_twitter))
-            setDismissListener { dismiss() }
+            setDismissListener { dismissAllowingStateLoss() }
         }
         webView = view.findViewById(R.id.web_view)
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?) = false
         }
-        twitterLogin()
+        launch {
+            twitterLogin()
+        }
     }
 
-    private fun twitterLogin() {
-        launch {
-            val result = oauthService.authenticateWith(IdentityProvider.twitter).awaitAndParseErrors(gson)
-            val callback = targetFragment as? Callback
-            when(result) {
-                is CaffeineResult.Success -> {
-                    val oauthResponse = result.value
-                    webView.loadUrl(oauthResponse.authUrl)
-                    longPoll(oauthResponse.longpollUrl, callback)
-                }
-                is CaffeineResult.Error -> {
-                    callback?.processTwitterOAuthResult(CaffeineResult.Error(result.error))
-                    dismiss()
-                }
-                is CaffeineResult.Failure -> {
-                    callback?.processTwitterOAuthResult(CaffeineResult.Failure(result.throwable))
-                    dismiss()
-                }
+    private suspend fun twitterLogin() {
+        val result = oauthService.authenticateWith(IdentityProvider.twitter).awaitAndParseErrors(gson)
+        val callback = targetFragment as? Callback
+        when(result) {
+            is CaffeineResult.Success -> {
+                val oauthResponse = result.value
+                webView.loadUrl(oauthResponse.authUrl)
+                longPoll(oauthResponse.longpollUrl, callback)
+            }
+            is CaffeineResult.Error -> {
+                callback?.processTwitterOAuthResult(CaffeineResult.Error(result.error))
+                dismissAllowingStateLoss()
+            }
+            is CaffeineResult.Failure -> {
+                callback?.processTwitterOAuthResult(CaffeineResult.Failure(result.throwable))
+                dismissAllowingStateLoss()
             }
         }
     }
 
-    private fun longPoll(longPollUrl: String, callback: Callback?) {
-        launch {
-            var longPollResult: CaffeineResult<OAuthCallbackResult>?
-            do {
-                longPollResult = oauthService.longPoll(longPollUrl).awaitAndParseErrors(gson)
-            } while(isActive && shouldRetry(longPollResult))
-            longPollResult?.let { callback?.processTwitterOAuthResult(it) }
-            dismiss()
-        }
+    private suspend fun longPoll(longPollUrl: String, callback: Callback?) {
+        var longPollResult: CaffeineResult<OAuthCallbackResult>?
+        do {
+            longPollResult = oauthService.longPoll(longPollUrl).awaitAndParseErrors(gson)
+        } while(isActive && shouldRetry(longPollResult))
+        longPollResult?.let { callback?.processTwitterOAuthResult(it) }
+        dismissAllowingStateLoss()
     }
 
     private fun shouldRetry(result: CaffeineResult<OAuthCallbackResult>?): Boolean {
