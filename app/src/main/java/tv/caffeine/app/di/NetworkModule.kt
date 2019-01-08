@@ -145,9 +145,10 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun providesPeerConnectionFactory(context: Context, eglBase: EglBase): PeerConnectionFactory {
+    fun providesPeerConnectionFactory(context: Context, eglBase: EglBase, webRtcLoggable: Loggable?, webRtcLogLevel: Logging.Severity): PeerConnectionFactory {
         val initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(context)
+                .setInjectableLogger(webRtcLoggable, webRtcLogLevel)
                 .createInitializationOptions()
         PeerConnectionFactory.initialize(initializationOptions)
         val options = PeerConnectionFactory.Options()
