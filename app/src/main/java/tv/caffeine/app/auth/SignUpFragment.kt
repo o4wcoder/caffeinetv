@@ -27,6 +27,8 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.Analytics
+import tv.caffeine.app.analytics.AnalyticsEvent
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
@@ -46,6 +48,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var gson: Gson
+    @Inject lateinit var analytics: Analytics
 
     private lateinit var binding: FragmentSignUpBinding
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -156,6 +159,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun onSuccess(credentials: CaffeineCredentials) {
+        analytics.trackEvent(AnalyticsEvent.NewRegistration(credentials.caid))
         tokenStore.storeCredentials(credentials)
         val navController = findNavController()
         val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()

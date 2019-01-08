@@ -146,6 +146,9 @@ dependencies {
     // recaptcha
     implementation 'com.google.android.gms:play-services-safetynet:16.0.0'
 
+    // Kochava
+    stagingImplementation 'com.kochava.base:tracker:3.5.0'
+
     // Tests
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'

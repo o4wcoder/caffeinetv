@@ -19,6 +19,7 @@ import javax.inject.Singleton
     UIModule::class,
     CoroutinesModule::class,
     ServerConfigModule::class,
+    AnalyticsModule::class,
     DataModule::class
 ])
 interface CaffeineComponent : AndroidInjector<CaffeineApplication> {
