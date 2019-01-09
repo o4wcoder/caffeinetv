@@ -3,8 +3,9 @@ package tv.caffeine.app.stage
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -22,14 +23,20 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.DispatchConfig
 import kotlin.coroutines.CoroutineContext
 
-class MessageHandshake(
+class MessageHandshake @AssistedInject constructor(
         private val dispatchConfig: DispatchConfig,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
         private val usersService: UsersService,
         private val gson: Gson,
-        private val stageIdentifier: String
+        @Assisted private val stageIdentifier: String
 ): CoroutineScope {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(stageIdentifier: String): MessageHandshake
+    }
+
     private var webSocketController: WebSocketController? = null
     private val webSocketGson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 

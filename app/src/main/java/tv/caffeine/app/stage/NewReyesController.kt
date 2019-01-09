@@ -1,6 +1,8 @@
 package tv.caffeine.app.stage
 
 import com.google.gson.Gson
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import org.webrtc.*
@@ -32,14 +34,19 @@ private const val HEARTBEAT_PERIOD_SECONDS = 15L
 private const val STATS_REPORTING_PERIOD_SECONDS = 3L
 private const val DEFAULT_RETRY_DELAY_SECONDS = 10L
 
-class NewReyesController(
+class NewReyesController @AssistedInject constructor(
         private val dispatchConfig: DispatchConfig,
         private val gson: Gson,
         private val realtime: Realtime,
         private val eventsService: EventsService,
         private val peerConnectionFactory: PeerConnectionFactory,
-        private val username: String
+        @Assisted private val username: String
 ): CoroutineScope {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(username: String): NewReyesController
+    }
 
     sealed class Error {
         object PeerConnectionError : Error()

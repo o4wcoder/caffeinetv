@@ -16,6 +16,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.*
 import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
+import tv.caffeine.app.stage.MessageHandshake
 import tv.caffeine.app.stage.SendDigitalItemViewModel
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.users.FollowersViewModel
@@ -50,6 +51,7 @@ class ViewModelFactory @Inject constructor(
         private val walletRepository: WalletRepository,
         private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
         private val oauthService: OAuthService,
+        private val messageHandshakeFactory: MessageHandshake.Factory,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -75,7 +77,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, gson, walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, paymentsClientService)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
-            modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, gson)
+            modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, messageHandshakeFactory, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T

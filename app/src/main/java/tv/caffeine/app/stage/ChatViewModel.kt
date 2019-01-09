@@ -29,6 +29,7 @@ class ChatViewModel(
         private val tokenStore: TokenStore,
         private val usersService: UsersService,
         private val followManager: FollowManager,
+        private val messageHandshakeFactory: MessageHandshake.Factory,
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
     private var messageHandshake: MessageHandshake? = null
@@ -44,7 +45,7 @@ class ChatViewModel(
     val messages: LiveData<List<Message>> = Transformations.map(_messages) { it }
 
     fun load(stageIdentifier: String) {
-        messageHandshake = MessageHandshake(dispatchConfig, tokenStore, followManager, usersService, gson, stageIdentifier)
+        messageHandshake = messageHandshakeFactory.create(stageIdentifier)
         launch {
             while (isActive) {
                 displayMessages()

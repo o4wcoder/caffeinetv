@@ -49,10 +49,8 @@ private const val SEND_MESSAGE = 1
 
 class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessageFragment.Callback {
 
-    @Inject lateinit var realtime: Realtime
-    @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
+    @Inject lateinit var factory: NewReyesController.Factory
     @Inject lateinit var eglBase: EglBase
-    @Inject lateinit var eventsService: EventsService
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var broadcastsService: BroadcastsService
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
@@ -329,7 +327,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     private fun connectStreams(username: String) {
-        val controller = NewReyesController(dispatchConfig, gson, realtime, eventsService, peerConnectionFactory, username)
+        val controller = factory.create(username)
         newReyesController = controller
         manageFeeds(controller)
         manageStateChange(controller)
