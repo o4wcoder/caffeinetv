@@ -5,7 +5,6 @@ import com.google.gson.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
-import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.threeten.bp.ZonedDateTime
@@ -20,16 +19,21 @@ import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.LongPollInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
 import java.lang.reflect.Type
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 enum class Service {
     MainApi, RefreshToken, Payments, Realtime, Events, RealtimeWebSocket
 }
 
-@Module
-class NetworkModule {
+enum class AuthorizationType {
+    Required, NoAuthorization
+}
 
+@Module(includes = [GsonModule::class, OkHttpModule::class, RetrofitModule::class, ApiModule::class, WebRtcModule::class, ServerConfigModule::class])
+class NetworkModule
+
+@Module
+class GsonModule {
     @Provides
     fun providesZonedDateTimeConverter(): JsonDeserializer<ZonedDateTime> = object : JsonDeserializer<ZonedDateTime> {
         private val formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
@@ -47,26 +51,31 @@ class NetworkModule {
 
     @Provides
     fun providesGsonConverterFactory(gson: Gson): GsonConverterFactory = GsonConverterFactory.create(gson)
+}
 
+@Module
+class OkHttpModule {
     @Provides
     fun providesHttpLoggingInterceptor(level: HttpLoggingInterceptor.Level) = HttpLoggingInterceptor().apply { setLevel(level) }
-
-    @Provides
-    fun providesRefreshTokenService(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.MainApi) baseUrl: String, loggingInterceptor: HttpLoggingInterceptor): RefreshTokenService {
-        val okHttpClient = OkHttpClient.Builder().addNetworkInterceptor(loggingInterceptor).build()
-        val retrofit = Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(okHttpClient)
-                .addConverterFactory(gsonConverterFactory)
-                .build()
-        return retrofit.create(RefreshTokenService::class.java)
-    }
 
     @Provides
     fun providesTokenAuthenticator(refreshTokenService: RefreshTokenService, tokenStore: TokenStore) = TokenAuthenticator(refreshTokenService, tokenStore)
 
     @Provides
-    fun providesOkHttpClient(
+    @ClientType(AuthorizationType.NoAuthorization)
+    fun providesOkHttpClientWithoutAuthorization(
+            longPollInterceptor: LongPollInterceptor,
+            appMetaDataInterceptor: AppMetaDataInterceptor,
+            loggingInterceptor: HttpLoggingInterceptor
+    ) = OkHttpClient.Builder()
+            .addInterceptor(longPollInterceptor)
+            .addInterceptor(appMetaDataInterceptor)
+            .addNetworkInterceptor(loggingInterceptor)
+            .build()
+
+    @Provides
+    @ClientType(AuthorizationType.Required)
+    fun providesOkHttpClientAuthorizationRequired(
             tokenAuthenticator: TokenAuthenticator,
             longPollInterceptor: LongPollInterceptor,
             appMetaDataInterceptor: AppMetaDataInterceptor,
@@ -78,12 +87,15 @@ class NetworkModule {
             .addInterceptor(appMetaDataInterceptor)
             .addInterceptor(authorizationInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
-            .connectionPool(ConnectionPool(0, 1, TimeUnit.NANOSECONDS))
             .build()
 
+}
+
+@Module
+class RetrofitModule {
     @Provides
     @CaffeineApi(Service.MainApi)
-    fun providesRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.MainApi) baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
+    fun providesRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.MainApi) baseUrl: String, @ClientType(AuthorizationType.Required) client: OkHttpClient) = Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(gsonConverterFactory)
@@ -92,7 +104,7 @@ class NetworkModule {
 
     @Provides
     @CaffeineApi(Service.Payments)
-    fun providesPaymentsRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Payments) baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
+    fun providesPaymentsRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Payments) baseUrl: String, @ClientType(AuthorizationType.Required) client: OkHttpClient) = Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(gsonConverterFactory)
@@ -101,13 +113,34 @@ class NetworkModule {
 
     @Provides
     @CaffeineApi(Service.Events)
-    fun providesEventsRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Events) baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
+    fun providesEventsRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Events) baseUrl: String, @ClientType(AuthorizationType.Required) client: OkHttpClient) = Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(gsonConverterFactory)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
 
+    @Provides
+    @CaffeineApi(Service.RefreshToken)
+    fun providesRefreshTokenRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.MainApi) baseUrl: String, @ClientType(AuthorizationType.NoAuthorization) client: OkHttpClient) = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+
+    @Provides
+    @CaffeineApi(Service.Realtime)
+    fun providesRealtimeRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Realtime) baseUrl: String, @ClientType(AuthorizationType.Required) client: OkHttpClient) = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+}
+
+@Module
+class ApiModule {
     @Provides fun providesAccountsService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(AccountsService::class.java)
 
     @Provides fun providesLobbyService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(LobbyService::class.java)
@@ -128,17 +161,13 @@ class NetworkModule {
 
     @Provides fun providesVersionCheckService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(VersionCheckService::class.java)
 
-    @Provides
-    @CaffeineApi(Service.Realtime)
-    fun providesRealtimeRetrofit(client: OkHttpClient, @CaffeineApi(Service.Realtime) baseUrl: String) = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .build()
+    @Provides fun providesRefreshTokenService(@CaffeineApi(Service.RefreshToken) retrofit: Retrofit) = retrofit.create(RefreshTokenService::class.java)
 
     @Provides fun providesRealtimeService(@CaffeineApi(Service.Realtime) retrofit: Retrofit) = retrofit.create(Realtime::class.java)
+}
 
+@Module
+class WebRtcModule {
     @Provides
     @Singleton
     fun providesEglBase() = createEglBase14()

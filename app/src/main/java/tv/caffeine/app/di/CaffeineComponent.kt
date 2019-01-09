@@ -13,12 +13,10 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     InjectionModule::class,
     AppModule::class,
-    ViewModelModule::class,
     LoggingModule::class,
     NetworkModule::class,
     UIModule::class,
     CoroutinesModule::class,
-    ServerConfigModule::class,
     AnalyticsModule::class,
     CaffeineAssistedModule::class,
     DataModule::class

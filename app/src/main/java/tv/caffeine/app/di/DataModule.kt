@@ -13,7 +13,6 @@ import tv.caffeine.app.settings.SharedPrefsStorage
 import java.security.KeyStore
 import javax.inject.Singleton
 
-const val REFRESH_TOKEN = "REFRESH_TOKEN"
 private const val CAFFEINE_SHARED_PREFERENCES = "caffeine"
 
 @Module

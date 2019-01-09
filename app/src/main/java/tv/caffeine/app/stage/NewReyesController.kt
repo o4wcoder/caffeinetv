@@ -82,7 +82,7 @@ class NewReyesController @AssistedInject constructor(
                 is CaffeineResult.Success -> {
                     onSuccess(result.value)
                     message = result.value.copy()
-                    retryIn = message.retry_in?.toLong()
+                    retryIn = message.retryIn?.toLong()
                 }
                 is CaffeineResult.Error -> onError(result.error)
                 is CaffeineResult.Failure -> onFailure(result.throwable)
@@ -227,7 +227,7 @@ class NewReyesController @AssistedInject constructor(
     }
 
     private suspend fun connectStream(stream: NewReyes.Feed.Stream): NewReyesConnectionInfo? {
-        val sdpOffer = stream.sdp_offer
+        val sdpOffer = stream.sdpOffer
         val mediaConstraints = MediaConstraints()
         val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, sdpOffer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
@@ -240,7 +240,7 @@ class NewReyesController @AssistedInject constructor(
                 }
                 if (iceCandidate == null) return
                 val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
-                val iceCandidates = NewReyes.ConnectToStream(ice_candidates = arrayOf(candidate))
+                val iceCandidates = NewReyes.ConnectToStream(iceCandidates = arrayOf(candidate))
                 launch {
                     val result = realtime.connectToStream(stream.url, iceCandidates).awaitAndParseErrors(gson)
                     when (result) {
