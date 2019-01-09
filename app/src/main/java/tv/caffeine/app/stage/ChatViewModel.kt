@@ -31,7 +31,7 @@ class ChatViewModel(
         private val followManager: FollowManager,
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
-    private lateinit var messageHandshake: MessageHandshake
+    private var messageHandshake: MessageHandshake? = null
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
 
     private val columns = context.resources.getInteger(R.integer.chat_column_count)
@@ -52,7 +52,7 @@ class ChatViewModel(
             }
         }
         launch {
-            messageHandshake.channel.consumeEach { processMessage(it) }
+            messageHandshake?.channel?.consumeEach { processMessage(it) }
         }
     }
 
@@ -144,7 +144,7 @@ class ChatViewModel(
     }
 
     override fun onCleared() {
-        messageHandshake.close()
+        messageHandshake?.close()
         super.onCleared()
     }
 
