@@ -1,0 +1,4 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('libwebrtc-1.0.26131.aar'))
+dependencies {
+}

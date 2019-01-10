@@ -2,11 +2,8 @@ package tv.caffeine.app.stage
 
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Bundle
-import android.os.Handler
-import android.provider.Settings
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -33,8 +30,6 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.*
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
-import tv.caffeine.app.receiver.AudioContentObserver
-import tv.caffeine.app.receiver.HeadsetBroadcastReceiver
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
@@ -65,10 +60,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private var broadcastName: String? = null
-    private val broadcastReceiver = HeadsetBroadcastReceiver()
-    private var audioContentObserver: AudioContentObserver? = null
-    private var audioManager: AudioManager? = null
-    private var wasSpeakerOn = false
 
     private val chatViewModel: ChatViewModel by lazy { viewModelProvider.get(ChatViewModel::class.java) }
     private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
@@ -80,9 +71,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
         broadcaster = args.broadcaster.substringBefore('?').substringBefore('/')
-        audioManager = context?.getSystemService()
-        wasSpeakerOn = audioManager?.isSpeakerphoneOn ?: false
-        audioManager?.isSpeakerphoneOn = true
         launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
             if (isVersionSupported is CaffeineEmptyResult.Error) {
@@ -109,11 +97,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onDestroy() {
         disconnectStreams()
-        context?.apply {
-            safeUnregisterReceiver(broadcastReceiver)
-            audioContentObserver?.let { contentResolver.unregisterContentObserver(it) }
-        }
-        audioManager?.isSpeakerphoneOn = wasSpeakerOn
         super.onDestroy()
     }
 
@@ -205,19 +188,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         super.onDestroyView()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        activity?.volumeControlStream = AudioManager.STREAM_VOICE_CALL
-    }
-
     override fun onStart() {
         super.onStart()
         setMediaTracksEnabled(true)
-        audioManager?.apply {
-            if (getStreamVolume(AudioManager.STREAM_VOICE_CALL) != getStreamMinVolume(AudioManager.STREAM_VOICE_CALL)) {
-                newReyesController?.unmute()
-            }
-        }
+        newReyesController?.unmute()
     }
 
     override fun onStop() {
@@ -333,7 +307,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         manageStateChange(controller)
         manageConnections(controller)
         manageErrors(controller)
-        manageAudio(controller)
     }
 
     private fun manageFeeds(controller: NewReyesController) = launch {
@@ -398,14 +371,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             when(error) {
                 is NewReyesController.Error.PeerConnectionError -> activity?.showSnackbar(R.string.peer_connection_error_message)
             }
-        }
-    }
-
-    private fun manageAudio(controller: NewReyesController) {
-        context?.apply {
-            audioContentObserver = AudioContentObserver(controller, this, Handler())
-            contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, audioContentObserver!!)
-            registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
         }
     }
 
