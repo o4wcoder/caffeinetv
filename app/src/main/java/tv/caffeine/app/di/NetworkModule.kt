@@ -12,6 +12,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.webrtc.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import tv.caffeine.app.analytics.ProfilingInterceptor
 import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.net.AppMetaDataInterceptor
@@ -66,10 +67,12 @@ class OkHttpModule {
     fun providesOkHttpClientWithoutAuthorization(
             longPollInterceptor: LongPollInterceptor,
             appMetaDataInterceptor: AppMetaDataInterceptor,
+            profilingInterceptor: ProfilingInterceptor,
             loggingInterceptor: HttpLoggingInterceptor
     ) = OkHttpClient.Builder()
             .addInterceptor(longPollInterceptor)
             .addInterceptor(appMetaDataInterceptor)
+            .addInterceptor(profilingInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
             .build()
 
@@ -80,12 +83,14 @@ class OkHttpModule {
             longPollInterceptor: LongPollInterceptor,
             appMetaDataInterceptor: AppMetaDataInterceptor,
             authorizationInterceptor: AuthorizationInterceptor,
+            profilingInterceptor: ProfilingInterceptor,
             loggingInterceptor: HttpLoggingInterceptor
     ) = OkHttpClient.Builder()
             .authenticator(tokenAuthenticator)
             .addInterceptor(longPollInterceptor)
             .addInterceptor(appMetaDataInterceptor)
             .addInterceptor(authorizationInterceptor)
+            .addInterceptor(profilingInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
             .build()
 

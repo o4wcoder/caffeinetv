@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -15,16 +14,21 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
+import dagger.android.support.DaggerAppCompatActivity
 import timber.log.Timber
+import tv.caffeine.app.analytics.Profiling
 import tv.caffeine.app.auth.LandingFragment
 import tv.caffeine.app.databinding.ActivityMainBinding
 import tv.caffeine.app.settings.SettingsFragment
 import tv.caffeine.app.util.*
+import javax.inject.Inject
 
 private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment, R.id.needsUpdateFragment)
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
+    @Inject
+    lateinit var profiling: Profiling
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +51,9 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Timber.e("Couldn't get the FCM registration token")
             }
+        }
+        if (savedInstanceState == null) {
+            profiling.initialize()
         }
     }
 

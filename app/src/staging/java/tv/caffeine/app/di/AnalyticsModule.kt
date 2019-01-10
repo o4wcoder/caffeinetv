@@ -4,8 +4,7 @@ import android.content.Context
 import com.kochava.base.Tracker
 import dagger.Module
 import dagger.Provides
-import tv.caffeine.app.analytics.Analytics
-import tv.caffeine.app.analytics.KochavaAnalytics
+import tv.caffeine.app.analytics.*
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -35,6 +34,13 @@ class AnalyticsModule {
     @Provides
     @Named(KOCHAVA_LOG_LEVEL)
     fun providesKochavaLoggingLevel() = Tracker.LOG_LEVEL_DEBUG
+
+    @Provides
+    @Singleton
+    fun providesProfiling(threatMetrixProfiling: ThreatMetrixProfiling): Profiling = threatMetrixProfiling
+
+    @Provides
+    fun providesProfilingInterceptor(threatMetrixInterceptor: ThreatMetrixInterceptor): ProfilingInterceptor = threatMetrixInterceptor
 }
 
 // Configuration for production

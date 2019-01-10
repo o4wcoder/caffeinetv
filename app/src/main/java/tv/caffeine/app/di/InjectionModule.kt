@@ -2,6 +2,7 @@ package tv.caffeine.app.di
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import tv.caffeine.app.MainActivity
 import tv.caffeine.app.auth.*
 import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.LobbyFragment
@@ -17,6 +18,7 @@ import tv.caffeine.app.util.NoNetworkFragment
 
 @Module
 abstract class InjectionModule {
+    @ContributesAndroidInjector abstract fun mainActivity(): MainActivity
     @ContributesAndroidInjector abstract fun signInFragment(): SignInFragment
     @ContributesAndroidInjector abstract fun signUpFragment(): SignUpFragment
     @ContributesAndroidInjector abstract fun landingFragment(): LandingFragment

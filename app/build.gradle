@@ -151,6 +151,11 @@ dependencies {
     // Kochava
     stagingImplementation 'com.kochava.base:tracker:3.5.0'
 
+    // ThreatMetrix
+    stagingImplementation 'commons-io:commons-io:2.6'
+    stagingImplementation 'commons-codec:commons-codec:1.11'
+    stagingImplementation fileTree(dir: 'libs', include: ['TrustDefender-5.3-91.aar'])
+
     // Tests
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
