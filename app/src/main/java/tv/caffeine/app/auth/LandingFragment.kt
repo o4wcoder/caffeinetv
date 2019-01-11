@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -38,6 +39,12 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     private lateinit var binding: FragmentLandingBinding
     private lateinit var callbackManager: CallbackManager
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        callbackManager = CallbackManager.Factory.create()
+        LoginManager.getInstance().registerCallback(callbackManager, facebookCallback)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentLandingBinding.inflate(inflater, container, false)
@@ -47,9 +54,9 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.newAccountButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signUpFragment))
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
-        callbackManager = CallbackManager.Factory.create()
-        binding.facebookSignInButton.registerCallback(callbackManager, facebookCallback)
-        binding.facebookSignInButton.fragment = this
+        binding.facebookSignInButton.setOnClickListener {
+            LoginManager.getInstance().logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
+        }
         binding.twitterSignInButton.setOnClickListener {
             val fragment = TwitterAuthFragment()
             fragment.setTargetFragment(this, 0)

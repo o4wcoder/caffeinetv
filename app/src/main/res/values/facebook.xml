@@ -2,4 +2,9 @@
 <resources>
     <string name="facebook_app_id">278354532550167</string>
     <string name="fb_login_protocol_scheme">fb278354532550167</string>
+    <string-array name="facebook_permissions">
+        <item>email</item>
+        <item>public_profile</item>
+        <item>user_friends</item>
+    </string-array>
 </resources>

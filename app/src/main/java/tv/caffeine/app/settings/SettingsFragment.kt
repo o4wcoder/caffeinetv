@@ -224,7 +224,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                             }
 
                         })
-                        loginManager.logInWithReadPermissions(this, listOf("email", "public_profile", "user_friends"))
+                        loginManager.logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
                     }
                     true
                 }
