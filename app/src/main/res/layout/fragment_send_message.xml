@@ -3,13 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
         <import type="java.lang.Integer" />
-
         <variable
             name="digitalItem"
             type="tv.caffeine.app.api.DigitalItem"/>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,11 +21,11 @@
             android:src="@drawable/ic_digital_items"
             android:tint="@color/caffeine_blue"
             android:backgroundTint="@color/transparent"
+            android:contentDescription="@string/send_with_digital_item"
             app:layout_constraintTop_toTopOf="@+id/message_edit_text"
             app:layout_constraintBottom_toBottomOf="@+id/message_edit_text"
             app:layout_constraintEnd_toStartOf="@id/message_edit_text"
-            app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@string/send_with_digital_item" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <EditText
             android:id="@+id/message_edit_text"
@@ -47,6 +44,7 @@
             android:layout_height="wrap_content"
             android:text="@string/send"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintBaseline_toBaselineOf="@+id/message_edit_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/message_edit_text" />

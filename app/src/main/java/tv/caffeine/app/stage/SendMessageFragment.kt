@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams
 import android.view.inputmethod.EditorInfo
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentSendMessageBinding
@@ -28,6 +29,9 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSendMessageBinding.inflate(inflater, container, false)
         binding.setLifecycleOwner(viewLifecycleOwner)
+        // The following 2 lines must be executed before before we return@onCreateView().
+        binding.messageEditText.requestFocus()
+        dialog?.window?.setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         return binding.root
     }
 
