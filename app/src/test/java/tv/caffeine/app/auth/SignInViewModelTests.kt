@@ -1,7 +1,9 @@
 package tv.caffeine.app.auth
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -17,7 +19,7 @@ class SignInViewModelTests {
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var subject: SignInViewModel
-    private lateinit var signInUseCase: SignInUseCase
+    @MockK lateinit var signInUseCase: SignInUseCase
 
     companion object {
         private val emptyCredentials = CaffeineCredentials("", "", "", "")
@@ -30,7 +32,7 @@ class SignInViewModelTests {
 
     @Before
     fun setup() {
-        signInUseCase = mockk()
+        MockKAnnotations.init(this)
         subject = SignInViewModel(TestDispatchConfig, signInUseCase)
     }
 

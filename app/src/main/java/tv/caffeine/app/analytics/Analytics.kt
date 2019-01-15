@@ -21,7 +21,7 @@ class LogAnalytics : Analytics {
 }
 
 sealed class AnalyticsEvent {
-    class NewRegistration(val userId: String) : AnalyticsEvent()
-    class SocialSignInClicked(val identityProvider: IdentityProvider) : AnalyticsEvent()
+    data class NewRegistration(val userId: String) : AnalyticsEvent()
+    data class SocialSignInClicked(val identityProvider: IdentityProvider) : AnalyticsEvent()
     object NewAccountClicked : AnalyticsEvent()
 }
