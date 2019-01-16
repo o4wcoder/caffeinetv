@@ -2,14 +2,12 @@ package tv.caffeine.app.stage
 
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -22,7 +20,10 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.webrtc.*
+import org.webrtc.EglBase
+import org.webrtc.RendererCommon
+import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoTrack
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
@@ -203,6 +204,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private fun initSurfaceViewRenderer() {
         renderers[NewReyes.Feed.Role.primary] = binding.primaryViewRenderer
         renderers[NewReyes.Feed.Role.secondary] = binding.secondaryViewRenderer
+        binding.secondaryViewRenderer.setZOrderMediaOverlay(true)
         loadingIndicators[NewReyes.Feed.Role.primary] = binding.primaryLoadingIndicator
         loadingIndicators[NewReyes.Feed.Role.secondary] = binding.secondaryLoadingIndicator
         renderers.forEach { entry ->
