@@ -19,7 +19,7 @@ class ThreatMetrixInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val sessionId = profiling.sessionId
-        val request = chain.request().newBuilder().header("x-tmx-session-id", sessionId).build()
+        val request = chain.request().newBuilder().header("X-TMX-Session-ID", sessionId).build()
         return chain.proceed(request)
     }
 }

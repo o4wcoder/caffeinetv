@@ -14,8 +14,8 @@ class AnalyticsModule {
 
     @Provides
     @Singleton
-    fun providesProfiling(logProfiling: LogProfiling): Profiling = logProfiling
+    fun providesProfiling(threatMetrixProfiling: ThreatMetrixProfiling): Profiling = threatMetrixProfiling
 
     @Provides
-    fun providesProfilingInterceptor(passThruProfilingInterceptor: PassThruProfilingInterceptor): ProfilingInterceptor = passThruProfilingInterceptor
+    fun providesProfilingInterceptor(threatMetrixInterceptor: ThreatMetrixInterceptor): ProfilingInterceptor = threatMetrixInterceptor
 }
