@@ -50,6 +50,7 @@ class NewReyesController @AssistedInject constructor(
 
     sealed class Error {
         object PeerConnectionError : Error()
+        object OutOfCapacity : Error()
     }
 
     private val job = SupervisorJob()
@@ -214,8 +215,11 @@ class NewReyesController @AssistedInject constructor(
 
     fun NewReyes.Feed.streamLabel() = if (content != null) "content" else "camera"
 
-    private fun onError(error: ApiErrorResult) {
+    private suspend fun onError(error: ApiErrorResult) {
         Timber.e("Error: $error")
+        if (error.isOutOfCapacityError()) {
+            errorChannel.send(Error.OutOfCapacity)
+        }
     }
 
     private fun onFailure(throwable: Throwable) {

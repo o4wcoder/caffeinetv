@@ -317,6 +317,9 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             val activeRoles = feeds.values.map { it.role }.toList()
             renderers[NewReyes.Feed.Role.primary]?.isInvisible = NewReyes.Feed.Role.primary !in activeRoles
             renderers[NewReyes.Feed.Role.secondary]?.isInvisible = NewReyes.Feed.Role.secondary !in activeRoles
+            if (feeds.isNotEmpty()) {
+                binding.outOfCapacityTextView.isVisible = false
+            }
         }
     }
 
@@ -372,6 +375,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         controller.errorChannel.consumeEach { error ->
             when(error) {
                 is NewReyesController.Error.PeerConnectionError -> activity?.showSnackbar(R.string.peer_connection_error_message)
+                is NewReyesController.Error.OutOfCapacity -> binding.outOfCapacityTextView.isVisible = true
             }
         }
     }
