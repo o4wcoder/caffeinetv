@@ -2,6 +2,7 @@ package tv.caffeine.app
 
 import org.junit.Assert
 import org.junit.Test
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.settings.EncryptedSettingsStorage
 import tv.caffeine.app.settings.KeyStoreHelper
 import tv.caffeine.app.settings.SettingsStorage
@@ -33,4 +34,4 @@ class EncryptedSettingsStorageTests {
     }
 }
 
-class InMemorySettingsStorage(override var refreshToken: String? = null, override var caid: String? = null) : SettingsStorage
+class InMemorySettingsStorage(override var refreshToken: String? = null, override var caid: CAID? = null) : SettingsStorage

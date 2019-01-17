@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import tv.caffeine.app.R
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.di.ASSETS_BASE_URL
 import java.text.NumberFormat
 import java.util.*
@@ -36,7 +37,7 @@ interface PaymentsClientService {
 
 class GetDigitalItemsBody
 
-class BuyDigitalItemBody(val id: String, val quantity: Int, val recipient: String, val message: String)
+class BuyDigitalItemBody(val id: String, val quantity: Int, val recipient: CAID, val message: String)
 
 class GetWalletBody
 
@@ -62,7 +63,7 @@ class Wallet(val gold: Int, val credits: Int, val cumulativeCredits: Int, val ma
 
 class TransactionHistoryPayload(val transactions: PaymentsCollection<HugeTransactionHistoryItem>)
 
-class HugeTransactionHistoryItem(val id: String, val type: String, val createdAt: Int, val cost: Int?, val value: Int?, val costCurrencyCode: String?, val bundleId: String?, val quantity: Int?, val recipient: String?, val sender: String?, val pluralName: String?, val name: String?, val assets: DigitalItemAssets?, val state: String?, val currencyCode: String?)
+class HugeTransactionHistoryItem(val id: String, val type: String, val createdAt: Int, val cost: Int?, val value: Int?, val costCurrencyCode: String?, val bundleId: String?, val quantity: Int?, val recipient: CAID?, val sender: CAID?, val pluralName: String?, val name: String?, val assets: DigitalItemAssets?, val state: String?, val currencyCode: String?)
 
 val HugeTransactionHistoryItem.staticImageUrl get() = assets?.let { "$ASSETS_BASE_URL${it.staticImagePath}" }
 
@@ -84,8 +85,8 @@ fun HugeTransactionHistoryItem.convert(): TransactionHistoryItem? {
 
 sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost: Int, val value: Int) {
     class Bundle(val costCurrencyCode: String, val bundleId: String, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
-    class SendDigitalItem(val quantity: Int, val recipient: String, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
-    class ReceiveDigitalItem(val quantity: Int, val sender: String, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
+    class SendDigitalItem(val quantity: Int, val recipient: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
+    class ReceiveDigitalItem(val quantity: Int, val sender: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
     class CashOut(val state: State, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
         enum class State {
             pending, deposited, failed

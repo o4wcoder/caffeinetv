@@ -166,14 +166,14 @@
         android:label="@string/stage"
         tools:layout="@layout/fragment_stage" >
         <argument
-            android:name="broadcaster"
+            android:name="broadcastLink"
             app:argType="string"/>
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="caffeine.tv/{broadcaster}"/>
+            app:uri="caffeine.tv/{broadcastLink}"/>
         <deepLink
             android:id="@+id/deepLink2"
-            app:uri="www.caffeine.tv/{broadcaster}"/>
+            app:uri="www.caffeine.tv/{broadcastLink}"/>
         <action
             android:id="@+id/action_stageFragment_to_friendsWatchingFragment"
             app:destination="@+id/friendsWatchingFragment"/>
@@ -392,7 +392,7 @@
         android:label="@string/digital_items"
         tools:layout="@layout/fragment_di_catalog">
         <argument
-            android:name="broadcaster"
+            android:name="broadcasterUsername"
             app:argType="string"/>
         <argument
             android:name="message"

@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.launch
-import tv.caffeine.app.api.model.Broadcast
-import tv.caffeine.app.api.model.CaffeineEmptyResult
-import tv.caffeine.app.api.model.User
-import tv.caffeine.app.api.model.isOnline
+import tv.caffeine.app.api.model.*
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
@@ -36,19 +33,19 @@ class ProfileViewModel(
     val stageImageUrl: LiveData<String> = Transformations.map(broadcast) { it?.mainPreviewImageUrl }
     val isLive: LiveData<Boolean> = Transformations.map(broadcast) { it?.mainPreviewImageUrl != null }
 
-    fun load(caid: String) = launch {
+    fun load(caid: CAID) = launch {
         val userDetails = followManager.userDetails(caid) ?: return@launch
         val broadcastDetails = followManager.broadcastDetails(userDetails)
         user.value = userDetails
         broadcast.value = if (broadcastDetails?.isOnline() == true) broadcastDetails else null
     }
 
-    private fun forceLoad(caid: String) = launch {
+    private fun forceLoad(caid: CAID) = launch {
         val userDetails = followManager.loadUserDetails(caid) ?: return@launch
         user.value = userDetails
     }
 
-    fun follow(caid: String): LiveData<CaffeineEmptyResult> {
+    fun follow(caid: CAID): LiveData<CaffeineEmptyResult> {
         val liveData = MutableLiveData<CaffeineEmptyResult>()
         launch {
             val result = followManager.followUser(caid)
@@ -58,7 +55,7 @@ class ProfileViewModel(
         return Transformations.map(liveData) { it }
     }
 
-    fun unfollow(caid: String) = launch {
+    fun unfollow(caid: CAID) = launch {
         followManager.unfollowUser(caid)
         forceLoad(caid)
     }

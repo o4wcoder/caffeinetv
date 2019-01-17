@@ -54,7 +54,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     @Inject lateinit var isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
 
     private lateinit var binding: FragmentStageBinding
-    private lateinit var broadcaster: String
+    private lateinit var broadcasterUsername: String
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
     private var newReyesController: NewReyesController? = null
@@ -71,17 +71,17 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         super.onCreate(savedInstanceState)
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
-        broadcaster = args.broadcaster.substringBefore('?').substringBefore('/')
+        broadcasterUsername = args.broadcasterUsername()
         launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
             if (isVersionSupported is CaffeineEmptyResult.Error) {
                 handleError(CaffeineResult.Error<ApiErrorResult>(VersionCheckError()))
                 return@launch
             }
-            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
+            val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
             launch {
                 followManager.refreshFollowedUsers()
-                isFollowingBroadcaster = followManager.isFollowing(broadcaster)
+                isFollowingBroadcaster = followManager.isFollowing(userDetails.caid)
             }
             connectStreams(userDetails.username)
             launch(dispatchConfig.main) {
@@ -120,7 +120,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
         viewJob = launch {
             launch(dispatchConfig.main) {
-                val userDetails = followManager.userDetails(broadcaster)
+                val userDetails = followManager.userDetails(broadcasterUsername)
                 if (userDetails != null) {
                     profileViewModel.load(userDetails.caid)
                     binding.profileViewModel = profileViewModel
@@ -142,7 +142,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             }
             launch {
                 while(isActive) {
-                    val userDetails = followManager.loadUserDetails(broadcaster)
+                    val userDetails = followManager.loadUserDetails(broadcasterUsername)
                     if (userDetails != null) {
                         val broadcastId = userDetails.broadcastId ?: break
                         updateBroadcastDetails(broadcastId)
@@ -407,7 +407,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         binding.friendsWatchingButton?.setOnClickListener {
             val fragmentManager = fragmentManager ?: return@setOnClickListener
             val fragment = FriendsWatchingFragment()
-            val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcaster)
+            val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcasterUsername)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "FW")
         }
@@ -415,11 +415,12 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             sendDigitalItemWithMessage(null)
         }
         binding.avatarImageView.setOnClickListener {
-            findNavController().safeNavigate(LobbyDirections.actionGlobalProfileFragment(broadcaster))
+            findNavController().safeNavigate(LobbyDirections.actionGlobalProfileFragment(broadcasterUsername))
         }
         binding.followButton.setOnClickListener {
             launch {
-                val result = followManager.followUser(broadcaster)
+                val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
+                val result = followManager.followUser(userDetails.caid)
                 when(result) {
                     is CaffeineEmptyResult.Success -> {
                         isFollowingBroadcaster = true
@@ -445,7 +446,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     override fun sendDigitalItemWithMessage(message: String?) {
         val fragmentManager = fragmentManager ?: return
         val fragment = DICatalogFragment()
-        val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcaster, message)
+        val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcasterUsername, message)
         fragment.setTargetFragment(this, PICK_DIGITAL_ITEM)
         fragment.arguments = action.arguments
         fragment.show(fragmentManager, "DI")
@@ -453,7 +454,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun sendMessage(message: String?) {
         val text = message ?: return
-        chatViewModel.sendMessage(text, broadcaster)
+        chatViewModel.sendMessage(text, broadcasterUsername)
     }
 
     private fun openSendMessage(message: String? = null) {
@@ -466,9 +467,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     override fun digitalItemSelected(digitalItem: DigitalItem, message: String?) {
-        fragmentManager?.let { fm ->
+        val fm = fragmentManager ?: return
+        launch {
+            val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
             val fragment = SendDigitalItemFragment()
-            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, broadcaster, message)
+            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, userDetails.caid, message)
             fragment.arguments = action.arguments
             fragment.show(fm, "sendDigitalItem")
         }

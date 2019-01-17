@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.*
 import tv.caffeine.app.session.FollowManager
@@ -168,7 +169,7 @@ abstract class BroadcasterCard(
         }
     }
 
-    fun viewProfile(caid: String) {
+    fun viewProfile(caid: CAID) {
         val action = LobbyDirections.actionGlobalProfileFragment(caid)
         Navigation.findNavController(itemView).safeNavigate(action)
     }
@@ -200,7 +201,7 @@ open class LiveBroadcastCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
+            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
@@ -240,13 +241,13 @@ class LiveBroadcastWithFriendsCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.caid)
+            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
 }
 
-private class MoreButtonClickListener(val caid: String, val username: String) : View.OnClickListener {
+private class MoreButtonClickListener(val caid: CAID, val username: String) : View.OnClickListener {
     override fun onClick(v: View?) {
         (v?.context as? FragmentActivity)?.supportFragmentManager?.navigateToReportOrIgnoreDialog(caid, username, false)
     }

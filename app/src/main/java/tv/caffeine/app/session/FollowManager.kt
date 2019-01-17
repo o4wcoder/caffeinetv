@@ -20,14 +20,13 @@ class FollowManager @Inject constructor(
         private val tokenStore: TokenStore
 ) {
 
-    private val followedUsers: MutableMap<String, Set<String>> = mutableMapOf()
-    private val userDetails: MutableMap<String, User> = mutableMapOf()
+    private val followedUsers: MutableMap<CAID, Set<String>> = mutableMapOf()
+    private val userDetails: MutableMap<CAID, User> = mutableMapOf()
+    private val usernameToCAID: MutableMap<String, CAID> = mutableMapOf()
 
     fun followers() = tokenStore.caid?.let { followedUsers[it] } ?: setOf()
 
-    fun isFollowing(caidFollower: String) = tokenStore.caid?.let { followedUsers[it]?.contains(caidFollower) } ?: false
-
-    fun isDefinitelyNotFollowing(caidFollower: String) = tokenStore.caid?.let { followedUsers[it]?.contains(caidFollower) == false } ?: false
+    fun isFollowing(caidFollower: CAID) = tokenStore.caid?.let { followedUsers[it]?.contains(caidFollower) } ?: false
 
     fun followersLoaded() = tokenStore.caid?.let { followedUsers.containsKey(it) } == true
 
@@ -42,7 +41,7 @@ class FollowManager @Inject constructor(
         }
     }
 
-    suspend fun followUser(caid: String): CaffeineEmptyResult {
+    suspend fun followUser(caid: CAID): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
         val result = usersService.follow(self, caid).awaitEmptyAndParseErrors(gson)
         if (result is CaffeineEmptyResult.Success) {
@@ -52,7 +51,7 @@ class FollowManager @Inject constructor(
         return result
     }
 
-    suspend fun unfollowUser(caid: String): CaffeineEmptyResult {
+    suspend fun unfollowUser(caid: CAID): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
         val result = usersService.unfollow(self, caid).awaitEmptyAndParseErrors(gson)
         if (result is CaffeineEmptyResult.Success) {
@@ -62,22 +61,36 @@ class FollowManager @Inject constructor(
         return result
     }
 
-    suspend fun userDetails(caid: String): User? {
+    /// can be called with CAID or username
+    suspend fun userDetails(userHandle: String): User? {
+        val caid = if (userHandle.isCAID()) {
+            userHandle
+        } else {
+           usernameToCAID[userHandle]
+        }
         userDetails[caid]?.let { return it }
-        return loadUserDetails(caid)
+        return loadUserDetails(userHandle)
     }
 
-    suspend fun loadUserDetails(caid: String): User? {
-        val result = usersService.userDetails(caid).awaitAndParseErrors(gson)
+    /// can be called with CAID or username
+    suspend fun loadUserDetails(userHandle: String): User? {
+        val result = usersService.userDetails(userHandle).awaitAndParseErrors(gson)
         when(result) {
-            is CaffeineResult.Success -> userDetails[caid] = result.value.user
+            is CaffeineResult.Success -> {
+                val user = result.value.user
+                userDetails[user.caid] = user
+                if (!userHandle.isCAID()) {
+                    usernameToCAID[userHandle] = user.caid
+                }
+                return user
+            }
             is CaffeineResult.Error -> Timber.e(result.error.toString())
             is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
-        return userDetails[caid]
+        return null
     }
 
-    suspend fun updateUser(caid: String, name: String? = null, bio: String? = null): CaffeineResult<UserContainer> {
+    suspend fun updateUser(caid: CAID, name: String? = null, bio: String? = null): CaffeineResult<UserContainer> {
         val userUpdateBody = UserUpdateBody(UserUpdateDetails(name, bio, null))
         val result = usersService.updateUser(caid, userUpdateBody).awaitAndParseErrors(gson)
         if (result is CaffeineResult.Success) {
@@ -98,8 +111,8 @@ class FollowManager @Inject constructor(
 
     class FollowHandler(val fragmentManager: FragmentManager?, val callback: Callback)
     abstract class Callback {
-        abstract fun follow(caid: String)
-        abstract fun unfollow(caid: String)
+        abstract fun follow(caid: CAID)
+        abstract fun unfollow(caid: CAID)
     }
 }
 

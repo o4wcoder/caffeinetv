@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
@@ -66,7 +67,7 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
         return alert
     }
 
-    private fun reportUser(caid: String, username: String) {
+    private fun reportUser(caid: CAID, username: String) {
         dismiss()
         fragmentManager?.let { fm ->
             ReportDialogFragment().apply {

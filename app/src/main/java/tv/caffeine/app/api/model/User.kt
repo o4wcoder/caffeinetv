@@ -5,8 +5,12 @@ import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.ZonedDateTime
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
+typealias CAID = String
+
+fun String.isCAID() = length == 36 && startsWith("CAID")
+
 data class User(
-        val caid: String,
+        val caid: CAID,
         val username: String,
         val name: String?,
         val email: String?,
@@ -42,10 +46,10 @@ enum class IdentityProvider: Parcelable {
     facebook, twitter
 }
 
-sealed class CaidRecord(val caid: String) {
-    class FriendWatching(caid: String) : CaidRecord(caid)
-    class FollowRecord(caid: String, val followedAt: ZonedDateTime?) : CaidRecord(caid)
-    class IgnoreRecord(caid: String, val ignoredAt: ZonedDateTime?) : CaidRecord(caid)
+sealed class CaidRecord(val caid: CAID) {
+    class FriendWatching(caid: CAID) : CaidRecord(caid)
+    class FollowRecord(caid: CAID, val followedAt: ZonedDateTime?) : CaidRecord(caid)
+    class IgnoreRecord(caid: CAID, val ignoredAt: ZonedDateTime?) : CaidRecord(caid)
 }
 
 class ConnectedAccount(val uid: String, val provider: IdentityProvider, val displayName: String)

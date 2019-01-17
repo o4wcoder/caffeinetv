@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.MfaMethod
 import tv.caffeine.app.api.model.User
@@ -59,9 +60,9 @@ class MyProfileViewModel(
         }
     }
 
-    private suspend fun getUserProfile(caid: String) = followManager.userDetails(caid)
+    private suspend fun getUserProfile(caid: CAID) = followManager.userDetails(caid)
 
-    private suspend fun loadUserProfile(caid: String) = followManager.loadUserDetails(caid)
+    private suspend fun loadUserProfile(caid: CAID) = followManager.loadUserDetails(caid)
 
     private suspend fun updateViewModel(user: User) = withContext(dispatchConfig.main) {
         myProfile.value = user

@@ -5,6 +5,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
 interface AccountsService {
@@ -37,7 +38,7 @@ interface AccountsService {
 
     // Non-body HTTP method like DELETE cannot contain @Body, a workaround for @DELETE("v1/account/{caid}")
     @HTTP(method = "DELETE", path = "v1/account/{caid}", hasBody = true)
-    fun deleteAccount(@Path("caid") userId: String, @Body deleteAccountBody: DeleteAccountBody): Deferred<Response<Unit>>
+    fun deleteAccount(@Path("caid") userId: CAID, @Body deleteAccountBody: DeleteAccountBody): Deferred<Response<Unit>>
 
     @POST("v1/legal-acceptance")
     fun acceptLegalAgreement(): Deferred<Response<LegalAcceptanceResult>>
@@ -50,16 +51,16 @@ interface AccountsService {
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
-class Account(val username: String? = null, val password: String? = null, val caid: String? = null, val loginToken: String? = null)
+class Account(val username: String? = null, val password: String? = null, val caid: CAID? = null, val loginToken: String? = null)
 
 class MfaCode(val otp: String)
 
-class SignInResult(val accessToken: String, val caid: String, val credentials: CaffeineCredentials, val refreshToken: String, val next: NextAccountAction?, val mfaOtpMethod: String?)
+class SignInResult(val accessToken: String, val caid: CAID, val credentials: CaffeineCredentials, val refreshToken: String, val next: NextAccountAction?, val mfaOtpMethod: String?)
 
 class RefreshTokenBody(val refreshToken: String)
 class RefreshTokenResult(val credentials: CaffeineCredentials, val next: NextAccountAction)
 
-class CaffeineCredentials(val accessToken: String, val caid: String, val credential: String, val refreshToken: String)
+class CaffeineCredentials(val accessToken: String, val caid: CAID, val credential: String, val refreshToken: String)
 
 class ForgotPasswordBody(val email: String)
 
@@ -146,7 +147,7 @@ class NotificationSettings(
 
 class LegalAcceptanceResult(val success: Boolean)
 
-class ConfirmEmailBody(val code: String, val caid: String)
+class ConfirmEmailBody(val code: String, val caid: CAID)
 
 class ConfirmEmailResponse(val emailConfirmed: Boolean)
 

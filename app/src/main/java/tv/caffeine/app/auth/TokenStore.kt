@@ -2,6 +2,7 @@ package tv.caffeine.app.auth
 
 import okhttp3.Request
 import tv.caffeine.app.api.*
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.settings.SettingsStorage
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -12,8 +13,8 @@ class TokenStore @Inject constructor(
 ) {
     private var accessToken: String? = null
     private var credential: String? = null
-    private var _caid: String? = null
-    var caid: String?
+    private var _caid: CAID? = null
+    var caid: CAID?
         get() = _caid ?: settingsStorage.caid?.apply { _caid = this }
         set(value) {
             _caid = value

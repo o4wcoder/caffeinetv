@@ -16,6 +16,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.BuyDigitalItemBody
 import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.PaymentsClientService
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSendDigitalItemBinding
@@ -29,7 +30,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
     private lateinit var binding: FragmentSendDigitalItemBinding
 
     private lateinit var digitalItemId: String
-    private lateinit var recipientCaid: String
+    private lateinit var recipientCaid: CAID
     private var message: String? = null
 
     private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
@@ -117,7 +118,7 @@ class SendDigitalItemViewModel(
         }
     }
 
-    fun send(digitalItem: DigitalItem, quantity: Int, recipientCaid: String, message: String) = launch {
+    fun send(digitalItem: DigitalItem, quantity: Int, recipientCaid: CAID, message: String) = launch {
         val body = BuyDigitalItemBody(digitalItem.id, quantity, recipientCaid, message)
         val result = paymentsClientService.buyDigitalItem(body).awaitAndParseErrors(gson)
         when(result) {

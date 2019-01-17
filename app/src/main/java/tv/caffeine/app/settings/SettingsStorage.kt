@@ -5,6 +5,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.core.content.edit
 import okio.ByteString
+import tv.caffeine.app.api.model.CAID
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 interface SettingsStorage {
     var refreshToken: String?
-    var caid: String?
+    var caid: CAID?
 }
 
 private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
@@ -32,7 +33,7 @@ class SharedPrefsStorage @Inject constructor(
             }
         }
 
-    override var caid: String?
+    override var caid: CAID?
         get() = sharedPreferences.getString(CAID_KEY, null)
         set(value) = sharedPreferences.edit {
             if (value == null) {
@@ -63,7 +64,7 @@ class EncryptedSettingsStorage @Inject constructor(
             settingsStorage.refreshToken = encryptedValue
         }
 
-    override var caid: String?
+    override var caid: CAID?
         get() {
             val encryptedValue = settingsStorage.caid ?: return null
             return decryptValue(encryptedValue)

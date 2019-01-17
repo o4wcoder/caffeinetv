@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.awaitAndParseErrors
@@ -55,7 +56,7 @@ class FollowingViewModel(
 
     val following: LiveData<List<CaidRecord.FollowRecord>> = Transformations.map(_following) { it }
 
-    var caid: String = ""
+    var caid: CAID = ""
         set(value) {
             field = value
             load()

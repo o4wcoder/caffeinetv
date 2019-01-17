@@ -11,6 +11,7 @@ import androidx.navigation.Navigator
 import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
 import tv.caffeine.app.profile.UnfollowUserDialogFragment
 import tv.caffeine.app.session.FollowManager
@@ -94,7 +95,7 @@ fun NavController.closeNoNetwork() {
     if (currentDestination?.id == R.id.noNetworkFragment) popBackStack()
 }
 
-fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: String, shouldNavigateBackWhenDone: Boolean) {
+fun FragmentManager.navigateToReportOrIgnoreDialog(caid: CAID, username: String, shouldNavigateBackWhenDone: Boolean) {
     ReportOrIgnoreDialogFragment().apply {
         arguments = LobbyDirections.ActionGlobalReportOrIgnoreDialogFragment(
                 caid, username, shouldNavigateBackWhenDone).arguments
@@ -102,7 +103,7 @@ fun FragmentManager.navigateToReportOrIgnoreDialog(caid: String, username: Strin
     }
 }
 
-fun FragmentManager.navigateToUnfollowUserDialog(caid: String, username: String, callback: FollowManager.Callback) {
+fun FragmentManager.navigateToUnfollowUserDialog(caid: CAID, username: String, callback: FollowManager.Callback) {
     UnfollowUserDialogFragment().apply {
         positiveClickListener = DialogInterface.OnClickListener { _, _ -> callback.unfollow(caid) }
         arguments = LobbyDirections.ActionGlobalUnfollowUserDialogFragment(username).arguments

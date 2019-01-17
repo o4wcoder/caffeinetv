@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.isMustVerifyEmailError
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentProfileBinding
 import tv.caffeine.app.session.FollowManager
@@ -26,11 +27,11 @@ import tv.caffeine.app.util.safeNavigate
 class ProfileFragment : CaffeineFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
-    private lateinit var caid: String
+    private lateinit var caid: CAID
     private lateinit var binding: FragmentProfileBinding
     private var isFollowed: Boolean = false
     private val callback = object: FollowManager.Callback() {
-        override fun follow(caid: String) {
+        override fun follow(caid: CAID) {
             viewModel.follow(caid).observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is CaffeineEmptyResult.Error -> {
@@ -46,7 +47,7 @@ class ProfileFragment : CaffeineFragment() {
             })
         }
 
-        override fun unfollow(caid: String) {
+        override fun unfollow(caid: CAID) {
             viewModel.unfollow(caid)
         }
     }

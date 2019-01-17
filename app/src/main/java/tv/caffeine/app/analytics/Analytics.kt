@@ -1,6 +1,7 @@
 package tv.caffeine.app.analytics
 
 import timber.log.Timber
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.IdentityProvider
 
 interface Analytics {
@@ -21,7 +22,7 @@ class LogAnalytics : Analytics {
 }
 
 sealed class AnalyticsEvent {
-    data class NewRegistration(val userId: String) : AnalyticsEvent()
+    data class NewRegistration(val userId: CAID) : AnalyticsEvent()
     data class SocialSignInClicked(val identityProvider: IdentityProvider) : AnalyticsEvent()
     object NewAccountClicked : AnalyticsEvent()
 }

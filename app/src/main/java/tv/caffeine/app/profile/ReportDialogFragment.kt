@@ -20,6 +20,7 @@ import timber.log.Timber
 import tv.caffeine.app.api.ReasonKey
 import tv.caffeine.app.api.ReportUserBody
 import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.ui.CaffeineDialogFragment
@@ -33,7 +34,7 @@ class ReportDialogFragment : CaffeineDialogFragment() {
 
     @Inject lateinit var usersService: UsersService
     private val viewModel by lazy { viewModelProvider.get(ReportUserViewModel::class.java) }
-    private lateinit var caid: String
+    private lateinit var caid: CAID
     private lateinit var username: String
     private var shouldNavigateBackWhenDone = false
 
@@ -88,7 +89,7 @@ class ReportUserViewModel(
     private val _reportUserResult = MutableLiveData<Boolean>()
     val reportUserResult: LiveData<Boolean> = Transformations.map(_reportUserResult) { it }
 
-    fun reportUser(caid: String, reason: ReasonKey, description: String?) {
+    fun reportUser(caid: CAID, reason: ReasonKey, description: String?) {
         launch {
             val result = usersService.report(caid, ReportUserBody(reason.name, description))
                     .awaitEmptyAndParseErrors(gson)

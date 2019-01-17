@@ -17,6 +17,7 @@ import timber.log.Timber
 import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.isMustVerifyEmailError
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.di.ThemeFollowedExplore
@@ -51,7 +52,7 @@ class CaidListAdapter @Inject constructor(
 
     var fragmentManager: FragmentManager? = null
     val callback = object: FollowManager.Callback() {
-        override fun follow(caid: String) {
+        override fun follow(caid: CAID) {
             launch {
                 val result = followManager.followUser(caid)
                 when (result) {
@@ -68,7 +69,7 @@ class CaidListAdapter @Inject constructor(
                 }
             }
         }
-        override fun unfollow(caid: String) {
+        override fun unfollow(caid: CAID) {
             launch {
                 if (followManager.unfollowUser(caid) is CaffeineEmptyResult.Success) {
                     updateItem(caid)
@@ -76,7 +77,7 @@ class CaidListAdapter @Inject constructor(
             }
         }
 
-        private fun updateItem(caid: String) {
+        private fun updateItem(caid: CAID) {
             for (i in 0 until itemCount) {
                 if ((getItem(i) as CaidRecord).caid == caid) {
                     notifyItemChanged(i)

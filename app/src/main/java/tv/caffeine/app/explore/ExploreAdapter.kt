@@ -18,6 +18,7 @@ import tv.caffeine.app.LobbyDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.api.isMustVerifyEmailError
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
@@ -49,7 +50,7 @@ abstract class UsersAdapter(
 
     var fragmentManager: FragmentManager? = null
     val callback = object: FollowManager.Callback() {
-        override fun follow(caid: String) {
+        override fun follow(caid: CAID) {
             launch {
                 val result = followManager.followUser(caid)
                 when (result) {
@@ -66,7 +67,7 @@ abstract class UsersAdapter(
                 }
             }
         }
-        override fun unfollow(caid: String) {
+        override fun unfollow(caid: CAID) {
             launch {
                 if (followManager.unfollowUser(caid) is CaffeineEmptyResult.Success) {
                     updateItem(caid)
@@ -74,7 +75,7 @@ abstract class UsersAdapter(
             }
         }
 
-        private fun updateItem(caid: String) {
+        private fun updateItem(caid: CAID) {
             for (i in 0 until itemCount) {
                 if ((getItem(i) as SearchUserItem).user.caid == caid) {
                     notifyItemChanged(i)
