@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import tv.caffeine.app.LobbyDirections
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Message
@@ -135,7 +135,7 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
     }
 
     private fun viewProfile(caid: CAID) {
-        val action = LobbyDirections.actionGlobalProfileFragment(caid)
+        val action = MainNavDirections.actionGlobalProfileFragment(caid)
         itemView.findNavController().safeNavigate(action)
     }
 
@@ -202,7 +202,7 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
     }
 
     private fun viewProfile(caid: CAID) {
-        val action = LobbyDirections.actionGlobalProfileFragment(caid)
+        val action = MainNavDirections.actionGlobalProfileFragment(caid)
         itemView.findNavController().safeNavigate(action)
     }
 

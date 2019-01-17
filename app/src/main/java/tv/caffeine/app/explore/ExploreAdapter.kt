@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import timber.log.Timber
-import tv.caffeine.app.LobbyDirections
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.api.isMustVerifyEmailError
@@ -129,7 +129,7 @@ class UserViewHolder(itemView: View, private val followHandler: FollowManager.Fo
             text = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
         itemView.setOnClickListener {
-            val action = LobbyDirections.actionGlobalProfileFragment(item.user.caid)
+            val action = MainNavDirections.actionGlobalProfileFragment(item.user.caid)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }

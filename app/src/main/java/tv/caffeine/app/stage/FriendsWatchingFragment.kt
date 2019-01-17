@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import timber.log.Timber
-import tv.caffeine.app.LobbyDirections
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.model.CaffeineResult
@@ -52,7 +52,7 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         usersAdapter.callback = { caid ->
             val navController = activity?.findNavController(R.id.activity_main)
-            val action = LobbyDirections.actionGlobalProfileFragment(caid)
+            val action = MainNavDirections.actionGlobalProfileFragment(caid)
             navController?.safeNavigate(action)
             dismiss()
         }

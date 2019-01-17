@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import timber.log.Timber
-import tv.caffeine.app.LobbyDirections
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
@@ -139,7 +139,7 @@ class FollowNotificationViewHolder(itemView: View, private val followHandler: Fo
                     followedTheme, notFollowedTheme)
         }
         itemView.setOnClickListener {
-            val action = LobbyDirections.actionGlobalProfileFragment(caidRecord.caid)
+            val action = MainNavDirections.actionGlobalProfileFragment(caidRecord.caid)
             itemView.findNavController().safeNavigate(action)
         }
     }

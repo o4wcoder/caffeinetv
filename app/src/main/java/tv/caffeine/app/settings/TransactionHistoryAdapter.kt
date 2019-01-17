@@ -16,7 +16,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
-import tv.caffeine.app.LobbyDirections
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.TransactionHistoryItem
 import tv.caffeine.app.api.costString
@@ -99,7 +99,7 @@ class TransactionHistoryViewHolder(
                 binding.usernameTextView.formatUsernameAsHtml(itemView.resources.getString(usernameStringResId, user.username, user.avatarImageUrl), followManager.isFollowing(userCaid), R.dimen.tx_history_avatar_size)
             }
             itemView.setOnClickListener {
-                val action = LobbyDirections.actionGlobalProfileFragment(userCaid)
+                val action = MainNavDirections.actionGlobalProfileFragment(userCaid)
                 itemView.findNavController().safeNavigate(action)
             }
         } else {

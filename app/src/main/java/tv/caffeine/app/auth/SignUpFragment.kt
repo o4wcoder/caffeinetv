@@ -163,7 +163,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         tokenStore.storeCredentials(credentials)
         val navController = findNavController()
         val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
-        navController.safeNavigate(R.id.lobby, null, navOptions)
+        navController.safeNavigate(R.id.main_nav, null, navOptions)
     }
 
     private fun clearErrors() {

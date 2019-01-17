@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import timber.log.Timber
-import tv.caffeine.app.LobbyDirections
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
@@ -121,7 +121,7 @@ class CaidViewHolder(itemView: View, private val followHandler: FollowManager.Fo
                     followedTheme, notFollowedTheme)
         }
         itemView.setOnClickListener {
-            val action = LobbyDirections.actionGlobalProfileFragment(item.caid)
+            val action = MainNavDirections.actionGlobalProfileFragment(item.caid)
             itemView.findNavController().safeNavigate(action)
         }
     }

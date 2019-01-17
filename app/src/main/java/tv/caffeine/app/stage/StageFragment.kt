@@ -25,7 +25,7 @@ import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
 import timber.log.Timber
-import tv.caffeine.app.LobbyDirections
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.*
@@ -415,7 +415,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             sendDigitalItemWithMessage(null)
         }
         binding.avatarImageView.setOnClickListener {
-            findNavController().safeNavigate(LobbyDirections.actionGlobalProfileFragment(broadcasterUsername))
+            findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(broadcasterUsername))
         }
         binding.followButton.setOnClickListener {
             launch {
