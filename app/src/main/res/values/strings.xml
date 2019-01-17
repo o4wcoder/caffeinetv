@@ -145,6 +145,7 @@
     <string name="user_avatar_username_verified"><![CDATA[<img src="%2$s">]]> <xliff:g example="Caffeine" id="username">%1$s</xliff:g> <![CDATA[<img src="bluecheckmark">]]></string>
 
     <string name="error_out_of_capacity">Caffeine servers are full.\nCheck back later.</string>
+    <string name="out_of_capacity_title">Caffeine servers are full</string>
 
     <!-- Gold and Credits -->
     <string name="gold_and_credits_button">Gold &amp; Credits</string>
