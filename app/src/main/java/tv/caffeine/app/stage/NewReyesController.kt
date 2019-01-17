@@ -325,18 +325,7 @@ class NewReyesController @AssistedInject constructor(
 
     private suspend fun reportStats(peerConnection: PeerConnection, viewerId: String, streamLabel: String) {
         val rtcStats = peerConnection.getStats()
-//        sendEventInfo(rtcStats, viewerId)
         sendPerformanceStats(rtcStats, streamLabel)
-    }
-
-    private suspend fun sendEventInfo(rtcStats: RTCStatsReport, viewerId: String) {
-        val data = collectEventInfo(rtcStats, viewerId)
-        val sendEventResult = eventsService.sendEvent(EventBody("webrtc_stats", data = data)).awaitAndParseErrors(gson)
-        when (sendEventResult) {
-            is CaffeineResult.Success -> Timber.d("Successfully sent event")
-            is CaffeineResult.Error -> Timber.e("Error sending event webrtc_stats")
-            is CaffeineResult.Failure -> Timber.e(sendEventResult.throwable)
-        }
     }
 
     private suspend fun sendPerformanceStats(rtcStats: RTCStatsReport, streamLabel: String) {
@@ -372,30 +361,6 @@ class NewReyesController @AssistedInject constructor(
                 .flatten()
         val stats = CumulativeCounters(statsToSend)
         return stats
-    }
-
-    private fun collectEventInfo(rtcStats: RTCStatsReport, viewerId: String): Map<String, Any> {
-        val relevantStats = rtcStats.statsMap
-                .filter { it.value != null }
-                .filter { relevantStatsTypes.contains(it.value.type) }
-        val eventsToSend = relevantStats
-                .map {
-                    it.value.members.plus(
-                            mapOf(
-                                    "id" to it.value.id,
-                                    "timestamp" to (it.value.timestampUs / 1000.0),
-                                    "type" to it.value.type,
-                                    "kind" to it.value.id.substringBefore("_")
-                            )
-                    )
-                }
-        val data = mapOf(
-                "mode" to "viewer", // TODO: support broadcasts
-                "stage_id" to username, // TODO: stage ID
-                "viewer_id" to viewerId,
-                "stats" to eventsToSend
-        )
-        return data
     }
 
 }

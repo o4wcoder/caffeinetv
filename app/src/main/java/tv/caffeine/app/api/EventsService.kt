@@ -8,17 +8,12 @@ import retrofit2.http.POST
 import tv.caffeine.app.di.ApiConfig
 
 interface EventsService {
-    @POST(ApiConfig.EVENTS_SERVICE_EVENTS_PATH)
-    fun sendEvent(@Body eventBody: EventBody): Deferred<Response<Any>>
-
     @POST(ApiConfig.EVENTS_SERVICE_STATS_PATH)
     fun sendStats(@Body cumulativeCounters: CumulativeCounters): Deferred<Response<Any>>
 
     @POST(ApiConfig.EVENTS_SERVICE_STATS_PATH)
     fun sendCounters(@Body counters: Counters): Deferred<Response<Any>>
 }
-
-class EventBody(val eventType: String, val eventSource: String = "android", val environment: String = "production", val data: Map<String, Any>)
 
 sealed class StatsBody
 class CumulativeCounters(val cumulativeCounters: List<StatsSnippet>) : StatsBody()
