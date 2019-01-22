@@ -3,10 +3,9 @@ package tv.caffeine.app.domain
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import io.mockk.mockk
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -21,15 +20,15 @@ import tv.caffeine.app.profile.UpdatePasswordUseCase
 class UpdatePasswordUseCaseTests {
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
+    @MockK lateinit var accountsService: AccountsService
+    @MockK lateinit var tokenStore: TokenStore
+    @MockK lateinit var resources: Resources
     private lateinit var subject: UpdatePasswordUseCase
 
     @Before
     fun setup() {
-        val accountsService = mock<AccountsService> {}
-        val tokenStore = mockk<TokenStore> {}
-        val resources = mock<Resources> {
-            on { getString(any()) } doReturn "Passwords don't match"
-        }
+        MockKAnnotations.init(this)
+        every { resources.getString(any()) } returns "Passwords don't match"
         val gson = Gson()
         subject = UpdatePasswordUseCase(accountsService, tokenStore, resources, gson)
     }

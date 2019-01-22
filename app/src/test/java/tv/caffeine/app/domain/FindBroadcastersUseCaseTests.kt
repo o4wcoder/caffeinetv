@@ -1,10 +1,10 @@
 package tv.caffeine.app.domain
 
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import io.mockk.mockk
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -20,27 +20,24 @@ import tv.caffeine.app.explore.FindBroadcastersUseCase
 import tv.caffeine.app.explore.Findings
 
 class FindBroadcastersUseCaseTests {
+    @MockK lateinit var user1: SearchUserItem
+    @MockK lateinit var user2: SearchUserItem
+    @MockK lateinit var user3: SearchUserItem
+    @MockK lateinit var mockSearchUsersResponse: Deferred<Response<SearchUsersResult>>
+    @MockK lateinit var fakeSearchService: SearchService
+    @MockK lateinit var mockListSuggestionsResponse: Deferred<Response<List<SearchUserItem>>>
+    @MockK lateinit var fakeUsersService: UsersService
     private lateinit var subject: FindBroadcastersUseCase
 
     @Before
     fun setup() {
-        val user1 = mockk<SearchUserItem>()
-        val user2 = mockk<SearchUserItem>()
-        val user3 = mockk<SearchUserItem>()
+        MockKAnnotations.init(this)
         val searchResultList = SearchUsersResult(arrayOf(user1, user2, user3))
-        val mockSearchUsersResponse = mock<Deferred<Response<SearchUsersResult>>> {
-            onBlocking { await() } doReturn Response.success(searchResultList)
-        }
-        val fakeSearchService = mock<SearchService> {
-            on { searchUsers(any()) } doReturn mockSearchUsersResponse
-        }
+        coEvery { mockSearchUsersResponse.await() } returns Response.success(searchResultList)
+        coEvery { fakeSearchService.searchUsers(any()) } returns  mockSearchUsersResponse
         val resultList = listOf(user1, user2)
-        val mockListSuggestionsResponse = mock<Deferred<Response<List<SearchUserItem>>>> {
-            onBlocking { await() } doReturn Response.success(resultList)
-        }
-        val fakeUsersService = mock<UsersService> {
-            on { listSuggestions() } doReturn mockListSuggestionsResponse
-        }
+        coEvery { mockListSuggestionsResponse.await() } returns Response.success(resultList)
+        every { fakeUsersService.listSuggestions() } returns mockListSuggestionsResponse
         val gson = Gson()
         subject = FindBroadcastersUseCase(fakeSearchService, fakeUsersService, gson)
     }
