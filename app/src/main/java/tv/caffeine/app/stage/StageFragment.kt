@@ -374,7 +374,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         controller.errorChannel.consumeEach { error ->
             when(error) {
                 is NewReyesController.Error.PeerConnectionError -> activity?.showSnackbar(R.string.peer_connection_error_message)
-                is NewReyesController.Error.OutOfCapacity -> findNavController().navigateToOutOfCapacity()
+                is NewReyesController.Error.OutOfCapacity -> findNavController().safeNavigate(MainNavDirections.ActionGlobalOutOfCapacityFragment())
             }
         }
     }

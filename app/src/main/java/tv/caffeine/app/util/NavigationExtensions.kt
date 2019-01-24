@@ -85,12 +85,6 @@ fun NavController.navigateToNeedsUpdate() {
     safeNavigate(action, navOptions)
 }
 
-fun NavController.navigateToOutOfCapacity() {
-    val action = MainNavDirections.ActionGlobalOutOfCapacityFragment()
-    val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, false).build()
-    safeNavigate(action, navOptions)
-}
-
 fun NavController.navigateToNoNetwork() {
     if (currentDestination?.id == R.id.noNetworkFragment) return
     val action = MainNavDirections.ActionGlobalNoNetworkFragment()
