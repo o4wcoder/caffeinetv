@@ -20,10 +20,7 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.webrtc.EglBase
-import org.webrtc.RendererCommon
-import org.webrtc.SurfaceViewRenderer
-import org.webrtc.VideoTrack
+import org.webrtc.*
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -69,6 +66,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!MediaCodecVideoDecoder.isH264HwSupported()) {
+            Timber.e(Exception("Failed to decode H264"))
+            findNavController().safeNavigate(MainNavDirections.ActionGlobalHardwareNotSupportedFragment())
+            return
+        }
         retainInstance = true
         val args = StageFragmentArgs.fromBundle(arguments)
         broadcasterUsername = args.broadcasterUsername()

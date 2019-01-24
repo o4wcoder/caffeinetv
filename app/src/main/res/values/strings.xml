@@ -146,6 +146,8 @@
 
     <string name="error_out_of_capacity">Caffeine servers are full.\nCheck back later.</string>
     <string name="out_of_capacity_title">Caffeine servers are full</string>
+    <string name="hardware_not_supported_title">Hardware not supported</string>
+    <string name="hardware_not_supported_message"><![CDATA[Your hardware is currently not supported. For more information, please contact <a href=\"mailto:support@caffeine.tv?subject=Android Hardware Issue\">support@caffeine.tv</a>.]]></string>
 
     <!-- Gold and Credits -->
     <string name="gold_and_credits_button">Gold &amp; Credits</string>
