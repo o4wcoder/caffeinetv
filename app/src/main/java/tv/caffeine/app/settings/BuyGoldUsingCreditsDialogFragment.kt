@@ -3,6 +3,7 @@ package tv.caffeine.app.settings
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.navArgs
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.ui.CaffeineDialogFragment
@@ -14,6 +15,8 @@ class BuyGoldUsingCreditsDialogFragment : CaffeineDialogFragment() {
         fun buyGoldBundle(goldBundleId: String)
     }
 
+    private val args by navArgs<BuyGoldUsingCreditsDialogFragmentArgs>()
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val activity = this.activity ?: IllegalStateException("Activity cannot be null").let {
             Timber.e(it)
@@ -23,7 +26,6 @@ class BuyGoldUsingCreditsDialogFragment : CaffeineDialogFragment() {
             Timber.e(it)
             throw it
         }
-        val args = BuyGoldUsingCreditsDialogFragmentArgs.fromBundle(arguments)
         val goldBundleId = args.goldBundleId
         val gold = args.gold
         val credits = args.credits

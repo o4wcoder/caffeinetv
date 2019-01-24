@@ -74,20 +74,20 @@ fun NavController.safeNavigate(@IdRes resId: Int, args: Bundle?, navOptions: Nav
 }
 
 fun NavController.navigateToLanding(message: String? = null) {
-    val action = MainNavDirections.ActionGlobalLandingFragment(message)
+    val action = MainNavDirections.actionGlobalLandingFragment(message)
     val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
     safeNavigate(action, navOptions)
 }
 
 fun NavController.navigateToNeedsUpdate() {
-    val action = MainNavDirections.ActionGlobalNeedsUpdateFragment()
+    val action = MainNavDirections.actionGlobalNeedsUpdateFragment()
     val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
     safeNavigate(action, navOptions)
 }
 
 fun NavController.navigateToNoNetwork() {
     if (currentDestination?.id == R.id.noNetworkFragment) return
-    val action = MainNavDirections.ActionGlobalNoNetworkFragment()
+    val action = MainNavDirections.actionGlobalNoNetworkFragment()
     safeNavigate(action)
 }
 
@@ -97,7 +97,7 @@ fun NavController.closeNoNetwork() {
 
 fun FragmentManager.navigateToReportOrIgnoreDialog(caid: CAID, username: String, shouldNavigateBackWhenDone: Boolean) {
     ReportOrIgnoreDialogFragment().apply {
-        arguments = MainNavDirections.ActionGlobalReportOrIgnoreDialogFragment(
+        arguments = MainNavDirections.actionGlobalReportOrIgnoreDialogFragment(
                 caid, username, shouldNavigateBackWhenDone).arguments
         show(this@navigateToReportOrIgnoreDialog, "reportOrIgnoreUser")
     }
@@ -106,7 +106,7 @@ fun FragmentManager.navigateToReportOrIgnoreDialog(caid: CAID, username: String,
 fun FragmentManager.navigateToUnfollowUserDialog(caid: CAID, username: String, callback: FollowManager.Callback) {
     UnfollowUserDialogFragment().apply {
         positiveClickListener = DialogInterface.OnClickListener { _, _ -> callback.unfollow(caid) }
-        arguments = MainNavDirections.ActionGlobalUnfollowUserDialogFragment(username).arguments
+        arguments = MainNavDirections.actionGlobalUnfollowUserDialogFragment(username).arguments
         show(this@navigateToUnfollowUserDialog, "unfollowUser")
     }
 }

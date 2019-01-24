@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ class FollowersFragment : CaffeineFragment() {
     @Inject lateinit var caidListAdapter: CaidListAdapter
 
     private val viewModel by lazy { viewModelProvider.get(FollowersViewModel::class.java) }
+    private val args by navArgs<FollowersFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -39,7 +41,7 @@ class FollowersFragment : CaffeineFragment() {
             adapter = caidListAdapter
             setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
-        viewModel.caid = FollowersFragmentArgs.fromBundle(arguments).caid
+        viewModel.caid = args.caid
         viewModel.followers.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)
         })

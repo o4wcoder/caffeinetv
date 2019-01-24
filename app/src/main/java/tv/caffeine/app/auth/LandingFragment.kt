@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -42,6 +43,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
 
     private lateinit var binding: FragmentLandingBinding
     private lateinit var callbackManager: CallbackManager
+    private val args by navArgs<LandingFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,10 +73,8 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
             fragment.setTargetFragment(this, 0)
             fragment.show(fragmentManager, "twitterAuth")
         }
-        arguments?.let { args ->
-            LandingFragmentArgs.fromBundle(args).message?.let {
-                Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
-            }
+        args.message?.let {
+            Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
         }
     }
 

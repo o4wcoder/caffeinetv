@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -26,10 +27,12 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
         fun digitalItemSelected(digitalItem: DigitalItem, message: String? = null)
     }
 
+    private val args by navArgs<DICatalogFragmentArgs>()
+
     private val adapter = DigitalItemAdapter(object: DigitalItemViewHolder.Callback {
         override fun digitalItemSelected(digitalItem: DigitalItem) {
             val callback = targetFragment as? Callback ?: return
-            val message = DICatalogFragmentArgs.fromBundle(arguments).message
+            val message = args.message
             callback.digitalItemSelected(digitalItem, message)
             dismiss()
         }
@@ -51,7 +54,7 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
             val numberFormat = NumberFormat.getIntegerInstance()
             binding.walletBalanceTextView.htmlText = getString(R.string.wallet_balance, numberFormat.format(wallet.gold))
         })
-        binding.username = DICatalogFragmentArgs.fromBundle(arguments).broadcasterUsername
+        binding.username = args.broadcasterUsername
         binding.list.adapter = adapter
         binding.setLifecycleOwner(viewLifecycleOwner)
         viewModel.items.observe(viewLifecycleOwner, Observer {

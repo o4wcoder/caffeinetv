@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +40,7 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
     @Inject lateinit var broadcastsService: BroadcastsService
     @Inject lateinit var usersAdapter: FriendsWatchingAdapter
     @Inject lateinit var gson: Gson
+    private val args by navArgs<FriendsWatchingFragmentArgs>()
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
@@ -56,7 +58,6 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
             navController?.safeNavigate(action)
             dismiss()
         }
-        val args = FriendsWatchingFragmentArgs.fromBundle(arguments)
         val broadcaster = args.broadcaster
         launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
