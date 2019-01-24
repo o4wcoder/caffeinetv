@@ -4,7 +4,6 @@ package tv.caffeine.app.profile
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,6 +13,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import androidx.exifinterface.media.ExifInterface
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.facebook.login.LoginManager
@@ -32,8 +32,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.htmlText
 import tv.caffeine.app.ui.setOnAction
-import tv.caffeine.app.util.navigateToLanding
-import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.*
 import tv.caffeine.app.wallet.WalletViewModel
 import java.io.File
 import java.text.NumberFormat
@@ -138,11 +137,26 @@ class MyProfileFragment : CaffeineFragment() {
 
     private fun uploadPhotoFromUri(uri: Uri) {
         launch(dispatchConfig.io) {
-            val inputStream = context?.contentResolver?.openInputStream(uri) ?: return@launch
-            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val contentResolver = context?.contentResolver ?: return@launch
+            // Sample the bitmap
+            var inputStream = contentResolver.openInputStream(uri) ?: return@launch
+            val inSampleSize = inputStream.getBitmapInSampleSize(1024)
             inputStream.close()
+
+            // Open the stream again to create the bitmap since it doesn't support reset()
+            inputStream = contentResolver.openInputStream(uri) ?: return@launch
+            val bitmap = inputStream.decodeToBitmap(inSampleSize)
+            inputStream.close()
+            if (bitmap == null) return@launch
+
+            // Rotate if needed
+            inputStream = contentResolver.openInputStream(uri) ?: return@launch
+            val rotationDegrees = ExifInterface(inputStream).rotationDegrees.toFloat()
+            inputStream.close()
+            val editedBitmap = bitmap.rotate(rotationDegrees)
+
             withContext(dispatchConfig.main) {
-                viewModel.uploadAvatar(bitmap)
+                viewModel.uploadAvatar(editedBitmap)
             }
         }
     }

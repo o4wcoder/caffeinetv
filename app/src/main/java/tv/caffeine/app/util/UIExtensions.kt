@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.ConnectivityManager
 import android.os.Build
 import android.text.Spannable
@@ -16,12 +19,14 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import androidx.core.graphics.scale
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.ui.CaffeineFragment
+import java.io.InputStream
 import java.lang.IllegalArgumentException
 
 fun Context.dismissKeyboard(view: View) {
@@ -135,4 +140,41 @@ fun RecyclerView.clearItemDecoration() {
 fun RecyclerView.setItemDecoration(itemDecoration: RecyclerView.ItemDecoration) {
     clearItemDecoration()
     addItemDecoration(itemDecoration)
+}
+
+fun Bitmap.rotate(degrees: Float): Bitmap {
+    return if (degrees != 0f) {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+    } else {
+        this
+    }
+}
+
+/**
+ * Reference https://developer.android.com/topic/performance/graphics/load-bitmap
+ */
+fun InputStream.getBitmapInSampleSize(maxLength: Int): Int {
+    val options = BitmapFactory.Options().apply {
+        inJustDecodeBounds = true
+    }
+    BitmapFactory.decodeStream(this, null, options)
+    var inSampleSize = 1
+    if (options.outHeight > maxLength || options.outWidth > maxLength) {
+        val halfHeight = options.outHeight / 2
+        val halfWidth = options.outWidth / 2
+        while (halfHeight / inSampleSize >= maxLength || halfWidth / inSampleSize >= maxLength) {
+            inSampleSize *= 2
+        }
+    }
+    return inSampleSize
+}
+
+fun InputStream.decodeToBitmap(inSampleSize: Int): Bitmap? {
+    val options = BitmapFactory.Options().apply {
+        this.inSampleSize = inSampleSize
+    }
+    return BitmapFactory.decodeStream(this, null, options)?.run {
+        scale(width / inSampleSize, height / inSampleSize)
+    }
 }

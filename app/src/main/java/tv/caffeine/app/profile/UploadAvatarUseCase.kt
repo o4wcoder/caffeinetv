@@ -17,15 +17,10 @@ class UploadAvatarUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(bitmap: Bitmap): CaffeineResult<UploadAvatarResult> {
-        val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
-        val width = (1024 * aspectRatio).toInt()
-        val height = 1024
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
         val stream = ByteArrayOutputStream()
-        scaledBitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-        val body = RequestBody.create(MediaType.get("image/png"), stream.toByteArray())
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream)
+        val body = RequestBody.create(MediaType.get("image/jpeg"), stream.toByteArray())
         stream.close()
-        val result = accountsService.uploadAvatar(body).awaitAndParseErrors(gson)
-        return result
+        return accountsService.uploadAvatar(body).awaitAndParseErrors(gson)
     }
 }
