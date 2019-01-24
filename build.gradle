@@ -2,11 +2,16 @@
 
 buildscript {
     ext.kotlin_version = "1.3.20"
-    ext.android_plugin_version = '3.3.0'
+    ext.android_plugin_version = '3.4.0-beta01'
     repositories {
         google()
         jcenter()
-        maven { url 'https://maven.fabric.io/public' }
+        maven {
+            url 'https://maven.fabric.io/public'
+            content {
+                includeGroupByRegex "io\\.fabric.*"
+            }
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$android_plugin_version"
@@ -27,7 +32,12 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url 'https://kochava.bintray.com/maven' }
+        maven {
+            url 'https://kochava.bintray.com/maven'
+            content {
+                includeGroupByRegex "com\\.kochava.*"
+            }
+        }
     }
 }
 
