@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -23,7 +24,6 @@ import tv.caffeine.app.ui.CaffeineDialogFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.navigateToLanding
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class DeleteAccountDialogFragment : CaffeineDialogFragment() {
@@ -32,6 +32,7 @@ class DeleteAccountDialogFragment : CaffeineDialogFragment() {
     private lateinit var username: String
     private lateinit var passwordEditText: EditText
     private val viewModel by lazy { viewModelProvider.get(DeleteAccountViewModel::class.java) }
+    private val args by navArgs<DeleteAccountDialogFragmentArgs>()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity == null) {
@@ -40,7 +41,7 @@ class DeleteAccountDialogFragment : CaffeineDialogFragment() {
                 throw it
             }
         }
-        username = DeleteAccountDialogFragmentArgs.fromBundle(arguments).username
+        username = args.username
         viewModel.deleteAccountResult.observe(this, Observer { result ->
             if (result.isSuccessful) {
                 dismiss()

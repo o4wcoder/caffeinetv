@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,6 +30,7 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
     @Inject lateinit var usersService: UsersService
     private val viewModel by lazy { viewModelProvider.get(IgnoreUserViewModel::class.java) }
     private var shouldNavigateBackWhenDone = false
+    private val args by navArgs<ReportOrIgnoreDialogFragmentArgs>()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity == null) {
@@ -45,7 +47,6 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
             }
         })
 
-        val args=  ReportOrIgnoreDialogFragmentArgs.fromBundle(arguments)
         val caid = args.caid
         val username = args.username
         shouldNavigateBackWhenDone = args.shouldNavigateBackWhenDone

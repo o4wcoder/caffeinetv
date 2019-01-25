@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.safetynet.SafetyNet
@@ -52,6 +53,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var binding: FragmentSignUpBinding
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    private val args by navArgs<SignUpFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -74,7 +76,6 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
             setOnKeyListener { _, _, _ -> true }
         }
         arguments?.let { arguments ->
-            val args = SignUpFragmentArgs.fromBundle(arguments)
             binding.usernameEditText.setText(args.possibleUsername)
             binding.emailEditText.setText(args.email)
         }
@@ -115,7 +116,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun signUpClicked() {
-        val iid: String? = arguments?.let { SignUpFragmentArgs.fromBundle(it).iid }
+        val iid: String? = args.iid
         if (iid != null) return signUp(null, iid)
         val context = context ?: return
         SafetyNet.getClient(context)
