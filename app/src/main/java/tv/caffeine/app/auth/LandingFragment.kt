@@ -60,7 +60,8 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.newAccountButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.NewAccountClicked)
-            findNavController().safeNavigate(R.id.signUpFragment)
+            val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment()
+            findNavController().safeNavigate(action)
         }
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         binding.facebookSignInButton.setOnClickListener {

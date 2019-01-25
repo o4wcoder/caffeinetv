@@ -127,15 +127,18 @@
         <argument
             android:name="possibleUsername"
             app:argType="string"
-            app:nullable="true"/>
+            app:nullable="true"
+            android:defaultValue="@null" />
         <argument
             android:name="email"
             app:argType="string"
-            app:nullable="true"/>
+            app:nullable="true"
+            android:defaultValue="@null" />
         <argument
             android:name="iid"
             app:argType="string"
-            app:nullable="true"/>
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 
     <!-- Lobby & Stage -->
