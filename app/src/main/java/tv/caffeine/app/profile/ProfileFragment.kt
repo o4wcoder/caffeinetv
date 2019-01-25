@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.isMustVerifyEmailError
@@ -27,7 +27,6 @@ import tv.caffeine.app.util.safeNavigate
 class ProfileFragment : CaffeineFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
-    private val args by navArgs<ProfileFragmentArgs>()
     private lateinit var caid: CAID
     private lateinit var binding: FragmentProfileBinding
     private var isFollowed: Boolean = false
@@ -55,7 +54,7 @@ class ProfileFragment : CaffeineFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        caid = args.caid
+        caid = ProfileFragmentArgs.fromBundle(arguments).caid
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

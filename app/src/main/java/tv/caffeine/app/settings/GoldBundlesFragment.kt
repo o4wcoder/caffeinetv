@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.navArgs
 import com.android.billingclient.api.*
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -38,8 +37,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
 
     private var availableCredits = 0
     private lateinit var billingClient: BillingClient
-    private val args by navArgs<GoldBundlesFragmentArgs>()
-    private val buyGoldOption by lazy { args.buyGoldOption }
+    private val buyGoldOption by lazy { GoldBundlesFragmentArgs.fromBundle(arguments).buyGoldOption }
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 

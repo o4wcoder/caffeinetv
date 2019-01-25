@@ -15,7 +15,6 @@ import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.facebook.login.LoginManager
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -54,14 +53,13 @@ class MyProfileFragment : CaffeineFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
     private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
-    private val args by navArgs<MyProfileFragmentArgs>()
 
     private var cameraImagePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraImagePath = savedInstanceState?.getString(CAMERA_IMAGE_PATH)
-        if (args.launchAvatarSelection) {
+        if (MyProfileFragmentArgs.fromBundle(arguments).launchAvatarSelection) {
             chooseNewAvatarImage()
         }
     }

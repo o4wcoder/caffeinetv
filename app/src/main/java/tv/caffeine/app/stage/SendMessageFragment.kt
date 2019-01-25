@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams
 import android.view.inputmethod.EditorInfo
-import androidx.navigation.fragment.navArgs
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentSendMessageBinding
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
@@ -23,7 +22,7 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentSendMessageBinding
     private val callback get() = targetFragment as? Callback
-    private val args by navArgs<SendMessageFragmentArgs>()
+    private val message by lazy { SendMessageFragmentArgs.fromBundle(arguments).message }
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
@@ -38,7 +37,7 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.messageEditText.apply {
-            prepopulateText(args.message)
+            prepopulateText(message)
             setOnAction(EditorInfo.IME_ACTION_SEND) { sendMessage() }
         }
         binding.sendButton.setOnClickListener { sendMessage() }

@@ -22,7 +22,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import kotlinx.android.parcel.Parcelize
 import tv.caffeine.app.R
 import java.io.File
@@ -55,11 +54,10 @@ class LegalDocsFragment : WebViewFragment() {
     )
 
     override val enableJavaScript = false
-    private val args by navArgs<LegalDocsFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        legalDoc = args.document
+        legalDoc = LegalDocsFragmentArgs.fromBundle(arguments).document
         webViewTitle = getString(legalDoc.title)
         webViewUrl = getString(legalDoc.url)
     }

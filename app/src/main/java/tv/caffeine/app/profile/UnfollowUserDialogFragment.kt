@@ -5,13 +5,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.navArgs
 import timber.log.Timber
 import tv.caffeine.app.R
 
 class UnfollowUserDialogFragment : DialogFragment() {
     var positiveClickListener: DialogInterface.OnClickListener? = null
-    private val args by navArgs<UnfollowUserDialogFragmentArgs>()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity == null) {
@@ -20,7 +18,7 @@ class UnfollowUserDialogFragment : DialogFragment() {
                 throw it
             }
         }
-        val username = args.username
+        val username = UnfollowUserDialogFragmentArgs.fromBundle(arguments).username
 
         return AlertDialog.Builder(activity)
                 .setTitle(getString(R.string.unfollow_question, username))

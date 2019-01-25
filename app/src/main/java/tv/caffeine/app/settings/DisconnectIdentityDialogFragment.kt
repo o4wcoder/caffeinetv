@@ -3,7 +3,6 @@ package tv.caffeine.app.settings
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.navigation.fragment.navArgs
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.IdentityProvider
@@ -15,8 +14,6 @@ class DisconnectIdentityDialogFragment : CaffeineDialogFragment() {
         fun confirmDisconnectIdentity(socialUid: String, identityProvider: IdentityProvider)
     }
 
-    private val args by navArgs<DisconnectIdentityDialogFragmentArgs>()
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val activity = this.activity ?: IllegalStateException("Activity cannot be null").let {
             Timber.e(it)
@@ -26,6 +23,7 @@ class DisconnectIdentityDialogFragment : CaffeineDialogFragment() {
             Timber.e(it)
             throw it
         }
+        val args = DisconnectIdentityDialogFragmentArgs.fromBundle(arguments)
         val socialUid = args.socialUid
         val identityProvider = args.identityProvider
         val displayName = args.displayName

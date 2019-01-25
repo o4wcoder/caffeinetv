@@ -1,5 +1,6 @@
 package tv.caffeine.app.profile
 
+import tv.caffeine.app.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +14,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import tv.caffeine.app.R
 import tv.caffeine.app.api.ReasonKey
 import tv.caffeine.app.api.ReportUserBody
 import tv.caffeine.app.api.UsersService
@@ -38,11 +37,11 @@ class ReportDialogFragment : CaffeineDialogFragment() {
     private lateinit var caid: CAID
     private lateinit var username: String
     private var shouldNavigateBackWhenDone = false
-    private val args by navArgs<ReportDialogFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.FullscreenDialogTheme)
+        val args = ReportDialogFragmentArgs.fromBundle(arguments)
         caid = args.caid
         username = args.username
         shouldNavigateBackWhenDone = args.shouldNavigateBackWhenDone

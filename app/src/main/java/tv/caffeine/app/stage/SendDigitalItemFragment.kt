@@ -8,7 +8,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
@@ -36,12 +35,12 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
 
     private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
     private val sendDigitalItemViewModel by lazy { viewModelProvider.get(SendDigitalItemViewModel::class.java) }
-    private val args by navArgs<SendDigitalItemFragmentArgs>()
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val args = SendDigitalItemFragmentArgs.fromBundle(arguments)
         digitalItemId = args.digitalItemId
         recipientCaid = args.recipientCaid
         message = args.message

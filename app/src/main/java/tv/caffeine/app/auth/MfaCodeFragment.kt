@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -32,7 +31,6 @@ class MfaCodeFragment : CaffeineFragment() {
     @Inject lateinit var authWatcher: AuthWatcher
 
     private lateinit var binding: FragmentMfaCodeBinding
-    private val args by navArgs<MfaCodeFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -59,6 +57,7 @@ class MfaCodeFragment : CaffeineFragment() {
     }
 
     private fun submitMfaCode(skipMfaCode: Boolean = false) {
+        val args = MfaCodeFragmentArgs.fromBundle(arguments)
         val username = args.username
         val password = args.password
         val caid = args.caid

@@ -12,7 +12,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
@@ -64,16 +63,16 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
 
     private var isFollowingBroadcaster = false
-    private val args by navArgs<StageFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!MediaCodecVideoDecoder.isH264HwSupported()) {
             Timber.e(Exception("Failed to decode H264"))
-            findNavController().safeNavigate(MainNavDirections.actionGlobalHardwareNotSupportedFragment())
+            findNavController().safeNavigate(MainNavDirections.ActionGlobalHardwareNotSupportedFragment())
             return
         }
         retainInstance = true
+        val args = StageFragmentArgs.fromBundle(arguments)
         broadcasterUsername = args.broadcasterUsername()
         launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
@@ -375,7 +374,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         controller.errorChannel.consumeEach { error ->
             when(error) {
                 is NewReyesController.Error.PeerConnectionError -> activity?.showSnackbar(R.string.peer_connection_error_message)
-                is NewReyesController.Error.OutOfCapacity -> findNavController().safeNavigate(MainNavDirections.actionGlobalOutOfCapacityFragment())
+                is NewReyesController.Error.OutOfCapacity -> findNavController().safeNavigate(MainNavDirections.ActionGlobalOutOfCapacityFragment())
             }
         }
     }

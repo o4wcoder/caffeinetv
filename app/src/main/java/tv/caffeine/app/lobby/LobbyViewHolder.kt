@@ -58,7 +58,8 @@ class AvatarCard(
 ) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
     override fun configure(item: LobbyItem) {
         itemView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToMyProfileFragment(true)
+            val action = LobbyFragmentDirections.actionLobbyFragmentToMyProfileFragment()
+            action.setLaunchAvatarSelection(true)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
