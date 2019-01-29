@@ -5,6 +5,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import tv.caffeine.app.auth.AuthWatcher
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.notifications.NotificationAuthWatcher
 import tv.caffeine.app.settings.EncryptedSettingsStorage
 import tv.caffeine.app.settings.KeyStoreHelper
@@ -36,4 +37,7 @@ class DataModule {
     @Singleton
     fun providesAuthWatcher(notificationAuthWatcher: NotificationAuthWatcher): AuthWatcher = notificationAuthWatcher
 
+    @Provides
+    @Singleton
+    fun providesFeatureConfig(): FeatureConfig = FeatureConfig()
 }

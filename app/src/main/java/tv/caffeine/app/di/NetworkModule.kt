@@ -169,6 +169,8 @@ class ApiModule {
     @Provides fun providesRefreshTokenService(@CaffeineApi(Service.RefreshToken) retrofit: Retrofit) = retrofit.create(RefreshTokenService::class.java)
 
     @Provides fun providesRealtimeService(@CaffeineApi(Service.Realtime) retrofit: Retrofit) = retrofit.create(Realtime::class.java)
+
+    @Provides fun providesFeatureConfigService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(FeatureConfigService::class.java)
 }
 
 @Module

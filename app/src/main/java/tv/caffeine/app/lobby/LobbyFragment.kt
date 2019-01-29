@@ -19,14 +19,18 @@ import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbyBinding
+import tv.caffeine.app.feature.Feature
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.showSnackbar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LobbyFragment : CaffeineFragment() {
 
     @Inject lateinit var lobbyAdapter: LobbyAdapter
+    @Inject lateinit var featureConfig: FeatureConfig
 
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
     private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
@@ -49,7 +53,12 @@ class LobbyFragment : CaffeineFragment() {
             addItemDecoration(itemDecorator)
         }
         binding.cameraButton.setOnClickListener {
-            BroadcastPlaceholderDialogFragment().show(fragmentManager, "broadcastPlaceholder")
+            if (featureConfig.isFeatureEnabled(Feature.BROADCAST)) {
+                // TODO: Navigate to the real broadcast fragment
+                activity?.showSnackbar(R.string.broardcast_placeholder_dialog_title)
+            } else {
+                BroadcastPlaceholderDialogFragment().show(fragmentManager, "broadcastPlaceholder")
+            }
         }
         binding.profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
         binding.searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))

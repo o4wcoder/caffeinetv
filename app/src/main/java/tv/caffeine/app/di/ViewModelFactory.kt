@@ -8,6 +8,7 @@ import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.*
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.explore.FindBroadcastersUseCase
+import tv.caffeine.app.feature.LoadFeatureConfigUseCase
 import tv.caffeine.app.lobby.LoadLobbyUseCase
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
@@ -34,6 +35,7 @@ class ViewModelFactory @Inject constructor(
         private val signInUseCase: SignInUseCase,
         private val acceptLegalUseCase: AcceptLegalUseCase,
         private val loadLobbyUseCase: LoadLobbyUseCase,
+        private val loadFeatureConfigUseCase: LoadFeatureConfigUseCase,
         private val findBroadcastersUseCase: FindBroadcastersUseCase,
         private val usersService: UsersService,
         private val accountsService: AccountsService,
@@ -59,7 +61,7 @@ class ViewModelFactory @Inject constructor(
         return when {
             modelClass.isAssignableFrom(SignInViewModel::class.java) -> SignInViewModel(dispatchConfig, signInUseCase)
             modelClass.isAssignableFrom(LegalAgreementViewModel::class.java) -> LegalAgreementViewModel(dispatchConfig, acceptLegalUseCase)
-            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, followManager, loadLobbyUseCase, isVersionSupportedCheckUseCase)
+            modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, followManager, loadLobbyUseCase, loadFeatureConfigUseCase, isVersionSupportedCheckUseCase)
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, gson, usersService, followManager, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, digitalItemRepository)
