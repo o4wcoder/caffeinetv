@@ -10,6 +10,7 @@ import timber.log.Timber
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.settings.SettingsStorage
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.webrtc.*
 import java.util.*
@@ -40,6 +41,7 @@ class NewReyesController @AssistedInject constructor(
         private val realtime: Realtime,
         private val eventsService: EventsService,
         private val peerConnectionFactory: PeerConnectionFactory,
+        private val settingsStorage: SettingsStorage,
         @Assisted private val username: String
 ): CoroutineScope {
 
@@ -73,8 +75,12 @@ class NewReyesController @AssistedInject constructor(
         stats()
     }
 
+    private fun getClientId(): String {
+        return settingsStorage.clientId ?: UUID.randomUUID().toString().also { settingsStorage.clientId = it }
+    }
+
     private fun connect() = launch {
-        val uuid = UUID.randomUUID().toString()
+        val uuid = getClientId()
         var message = NewReyes.Message(client = NewReyes.Client(id = uuid))
         do {
             var retryIn: Long? = null

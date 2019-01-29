@@ -11,38 +11,43 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.spec.IvParameterSpec
 import javax.inject.Inject
+import kotlin.reflect.KProperty
 
 interface SettingsStorage {
     var refreshToken: String?
     var caid: CAID?
+    var clientId: String?
+
+    fun clear() {
+        refreshToken = null
+        caid = null
+        clientId = null
+    }
 }
 
 private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
 private const val CAID_KEY = "CAID"
+private const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
 
 class SharedPrefsStorage @Inject constructor(
-        private val sharedPreferences: SharedPreferences
+        sharedPreferences: SharedPreferences
 ) : SettingsStorage {
-    override var refreshToken: String?
-        get() = sharedPreferences.getString(REFRESH_TOKEN_KEY, null)
-        set(value) = sharedPreferences.edit {
-            if (value == null) {
-                remove(REFRESH_TOKEN_KEY)
-            } else {
-                putString(REFRESH_TOKEN_KEY, value)
-            }
-        }
+    override var refreshToken by SharedPrefsDelegate(sharedPreferences, REFRESH_TOKEN_KEY)
 
-    override var caid: CAID?
-        get() = sharedPreferences.getString(CAID_KEY, null)
-        set(value) = sharedPreferences.edit {
-            if (value == null) {
-                remove(CAID_KEY)
-            } else {
-                putString(CAID_KEY, value)
-            }
-        }
+    override var caid: CAID? by SharedPrefsDelegate(sharedPreferences, CAID_KEY)
 
+    override var clientId by SharedPrefsDelegate(sharedPreferences, CLIENT_ID_KEY)
+}
+
+class SharedPrefsDelegate(private val sharedPreferences: SharedPreferences, private val prefKey: String) {
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String? = sharedPreferences.getString(prefKey, null)
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String?) = sharedPreferences.edit {
+        when (value) {
+            null -> remove(prefKey)
+            else -> putString(prefKey, value)
+        }
+    }
 }
 
 
@@ -51,31 +56,21 @@ class EncryptedSettingsStorage @Inject constructor(
         private val settingsStorage: SettingsStorage
 ) : SettingsStorage {
     override var refreshToken: String?
-        get() {
-            val encryptedValue = settingsStorage.refreshToken ?: return null
-            return decryptValue(encryptedValue)
-        }
+        get() = settingsStorage.refreshToken?.let { decryptValue(it) }
         set(value) {
-            if (value == null) {
-                settingsStorage.refreshToken = null
-                return
-            }
-            val encryptedValue = encryptValue(value)
-            settingsStorage.refreshToken = encryptedValue
+            settingsStorage.refreshToken = value?.let { encryptValue(it) }
         }
 
     override var caid: CAID?
-        get() {
-            val encryptedValue = settingsStorage.caid ?: return null
-            return decryptValue(encryptedValue)
-        }
+        get() = settingsStorage.caid?.let { decryptValue(it) }
         set(value) {
-            if (value == null) {
-                settingsStorage.caid = null
-                return
-            }
-            val encryptedValue = encryptValue(value)
-            settingsStorage.caid = encryptedValue
+            settingsStorage.caid = value?.let { encryptValue(it) }
+        }
+
+    override var clientId: String?
+        get() = settingsStorage.clientId?.let { decryptValue(it) }
+        set(value) {
+            settingsStorage.clientId = value?.let { encryptValue(it) }
         }
 
     private fun encryptValue(originalValue: String): String {
