@@ -146,7 +146,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-safetynet:16.0.0'
 
     // Kochava
-    stagingImplementation 'com.kochava.base:tracker:3.5.0'
+    implementation 'com.kochava.base:tracker:3.5.0'
 
     // ThreatMetrix
     implementation 'commons-io:commons-io:2.6'
