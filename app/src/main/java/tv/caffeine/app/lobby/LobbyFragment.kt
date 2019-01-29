@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
@@ -23,7 +24,7 @@ import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.showSnackbar
+import tv.caffeine.app.util.safeNavigate
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -54,8 +55,8 @@ class LobbyFragment : CaffeineFragment() {
         }
         binding.cameraButton.setOnClickListener {
             if (featureConfig.isFeatureEnabled(Feature.BROADCAST)) {
-                // TODO: Navigate to the real broadcast fragment
-                activity?.showSnackbar(R.string.broardcast_placeholder_dialog_title)
+                val action = LobbyFragmentDirections.actionLobbyFragmentToBroadcastFragment()
+                findNavController().safeNavigate(action)
             } else {
                 BroadcastPlaceholderDialogFragment().show(fragmentManager, "broadcastPlaceholder")
             }

@@ -237,4 +237,14 @@
 
     <string name="browse_more_broadcasts">Browse More Broadcasts</string>
     <string name="broadcaster_show_is_over"><![CDATA[<b>]]><xliff:g example="Caffeine" id="broadcaster">%s</xliff:g>\'s<![CDATA[</b>]]><![CDATA[<br>]]>show is over</string>
+
+    <!-- Stage/Broadcast: Content descriptions -->
+    <string name="share_button_content_description">Share the broadcast</string>
+    <string name="chat_button_content_description">Send a message</string>
+    <string name="go_live_button_content_description">Go Live</string>
+    <string name="toggle_camera_button_content_description">Switch between cameras</string>
+    <string name="live_host_button_content_description">Add a broadcast to live host</string>
+    <string name="gift_button_content_description">Send a digital item</string>
+    <string name="friends_watching_button_content_description">Friends watching this broadcast</string>
+    <string name="game_logo_content_description">Game logo</string>
 </resources>

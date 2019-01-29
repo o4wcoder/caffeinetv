@@ -237,7 +237,9 @@
     <!-- Broadcast -->
     <fragment
         android:id="@+id/broadcastFragment"
-        android:label="@string/broardcast_placeholder_dialog_title"/>
+        android:name="tv.caffeine.app.broadcast.BroadcastFragment"
+        android:label="@string/broardcast_placeholder_dialog_title"
+        tools:layout="@layout/fragment_broadcast"/>
 
     <!-- Explore -->
     <fragment
