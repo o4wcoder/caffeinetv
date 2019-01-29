@@ -23,11 +23,13 @@ import androidx.core.graphics.scale
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.ui.CaffeineFragment
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
-import java.lang.IllegalArgumentException
 
 fun Context.dismissKeyboard(view: View) {
     getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view.windowToken, 0)
@@ -149,6 +151,14 @@ fun Bitmap.rotate(degrees: Float): Bitmap {
     } else {
         this
     }
+}
+
+fun Bitmap.toJpegRequestBody(): RequestBody {
+    val stream = ByteArrayOutputStream()
+    compress(Bitmap.CompressFormat.JPEG, 85, stream)
+    val body = RequestBody.create(MediaType.get("image/jpeg"), stream.toByteArray())
+    stream.close()
+    return body
 }
 
 /**
