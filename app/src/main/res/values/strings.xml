@@ -54,6 +54,11 @@
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
 
+    <!-- Broadcasting -->
+    <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
+    <string name="camera2_api_not_supported">Your device does not support the camera APIs necessary for broadcasting</string>
+    <string name="could_not_switch_camera">Could not switch the camera</string>
+
     <!-- Lobby toolbar -->
     <string name="camera_button_content_description">Broadcast</string>
     <string name="search_button_content_description">Search</string>
