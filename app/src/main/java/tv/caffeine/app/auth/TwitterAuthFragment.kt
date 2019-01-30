@@ -36,7 +36,6 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var oauthService: OAuthService
     @Inject lateinit var gson: Gson
-    @Inject lateinit var authWatcher: AuthWatcher
     @Inject lateinit var dispatchConfig: DispatchConfig
 
     private lateinit var webView: WebView

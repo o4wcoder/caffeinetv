@@ -1,5 +1,6 @@
 package tv.caffeine.app.auth
 
+import com.crashlytics.android.Crashlytics
 import okhttp3.Request
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CAID
@@ -19,6 +20,7 @@ class TokenStore @Inject constructor(
         set(value) {
             _caid = value
             settingsStorage.caid = value
+            Crashlytics.setUserIdentifier(value)
         }
 
     fun storeSignInResult(signInResult: SignInResult) {
