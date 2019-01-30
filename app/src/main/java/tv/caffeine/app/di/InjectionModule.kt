@@ -5,6 +5,8 @@ import dagger.android.ContributesAndroidInjector
 import tv.caffeine.app.MainActivity
 import tv.caffeine.app.auth.*
 import tv.caffeine.app.broadcast.BroadcastFragment
+import tv.caffeine.app.broadcast.LiveBroadcastPickerFragment
+import tv.caffeine.app.broadcast.UpcomingBroadcastFragment
 import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.notifications.NotificationsFragment
@@ -27,6 +29,8 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun lobbyFragment(): LobbyFragment
     @ContributesAndroidInjector abstract fun stageFragment(): StageFragment
     @ContributesAndroidInjector abstract fun broadcastFragment(): BroadcastFragment
+    @ContributesAndroidInjector abstract fun liveBroadcastPickerFragment(): LiveBroadcastPickerFragment
+    @ContributesAndroidInjector abstract fun upcomingBroadcastFragment(): UpcomingBroadcastFragment
     @ContributesAndroidInjector abstract fun mfaCodeFragment(): MfaCodeFragment
     @ContributesAndroidInjector abstract fun myProfileFragment(): MyProfileFragment
     @ContributesAndroidInjector abstract fun profileFragment(): ProfileFragment

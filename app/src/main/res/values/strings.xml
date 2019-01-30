@@ -219,6 +219,10 @@
     <!-- Broadcast -->
     <string name="broardcast_placeholder_dialog_title">Broadcast from Android Coming Soon</string>
     <string name="got_it">Got it</string>
+    <string name="live_broadcast_picker_dialog_title">Pick a Live Broadcast</string>
+    <string name="view_upcoming_broadcast">View Upcoming</string>
+    <string name="upcoming_broadcasts_dialog_title">Upcoming Broadcasts</string>
+    <string name="upcoming_broadcasts_empty_message">No scheduled upcoming broadcasts.</string>
 
     <!-- Version Check -->
     <string name="take_me_to_play_store_button">Sweet! Take me to the Play Store to update.</string>

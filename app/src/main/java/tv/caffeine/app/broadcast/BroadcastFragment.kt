@@ -21,6 +21,7 @@ import tv.caffeine.app.util.showSnackbar
 import tv.caffeine.app.webrtc.SimpleCameraEventsHandler
 import javax.inject.Inject
 
+private const val PICK_LIVE_BROADCAST = 0
 private const val RC_BROADCAST_PERMISSIONS = 0
 private val broadcastPermissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
 
@@ -56,6 +57,9 @@ class BroadcastFragment : CaffeineFragment(), EasyPermissions.PermissionCallback
         cameraAndMicrophonePermissionsRequired()
         binding.toggleCameraButton.setOnClickListener {
             toggleCamera()
+        }
+        binding.liveHostButton.setOnClickListener {
+            openLiveBroadcastPicker()
         }
     }
 
@@ -166,4 +170,11 @@ class BroadcastFragment : CaffeineFragment(), EasyPermissions.PermissionCallback
         cameraCapture?.startCapture(VIDEO_WIDTH, VIDEO_HEIGHT, VIDEO_FPS)
     }
 
+    private fun openLiveBroadcastPicker() {
+        val fragmentManager = fragmentManager ?: return
+        LiveBroadcastPickerFragment().apply {
+            setTargetFragment(this@BroadcastFragment, PICK_LIVE_BROADCAST)
+            show(fragmentManager, "liveBroadcastPicker")
+        }
+    }
 }

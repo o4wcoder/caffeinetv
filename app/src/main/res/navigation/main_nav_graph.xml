@@ -240,6 +240,16 @@
         android:name="tv.caffeine.app.broadcast.BroadcastFragment"
         android:label="@string/broardcast_placeholder_dialog_title"
         tools:layout="@layout/fragment_broadcast"/>
+    <fragment
+        android:id="@+id/liveBroadcastPickerFragment"
+        android:name="tv.caffeine.app.broadcast.LiveBroadcastPickerFragment"
+        android:label="@string/live_broadcast_picker_dialog_title"
+        tools:layout="@layout/fragment_live_broadcast_picker"/>
+    <fragment
+        android:id="@+id/upcomingBroadcastFragment"
+        android:name="tv.caffeine.app.broadcast.UpcomingBroadcastFragment"
+        android:label="@string/upcoming_broadcasts_dialog_title"
+        tools:layout="@layout/fragment_upcoming_broadcast"/>
 
     <!-- Explore -->
     <fragment
