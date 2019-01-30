@@ -35,20 +35,20 @@ class LobbyFragment : CaffeineFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
     private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
-    private lateinit var binding: FragmentLobbyBinding
+    private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        binding = FragmentLobbyBinding.inflate(inflater, container, false).apply {
-            setLifecycleOwner(viewLifecycleOwner)
-            viewModel = this.viewModel
-        }
+        val binding = FragmentLobbyBinding.inflate(inflater, container, false)
+        configure(binding)
+        this.binding = binding
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    private fun configure(binding: FragmentLobbyBinding) {
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.lobbyRecyclerView.run {
             adapter = lobbyAdapter
             addItemDecoration(itemDecorator)
@@ -83,6 +83,12 @@ class LobbyFragment : CaffeineFragment() {
         myProfileViewModel.emailVerified.observe(viewLifecycleOwner, Observer { emailVerified ->
             binding.unverifiedMessageTextView.isVisible = emailVerified == false
         })
+    }
+
+    override fun onDestroyView() {
+        binding?.lobbyRecyclerView?.adapter = null
+        binding = null
+        super.onDestroyView()
     }
 
     private fun refreshLobby() {
