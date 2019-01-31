@@ -18,6 +18,7 @@ class LiveBroadcastPickerFragment : CaffeineBottomSheetDialogFragment() {
         binding.actionBar.apply {
             applyDarkMode()
             setTitle(R.string.live_broadcast_picker_dialog_title)
+            setDismissListener { dismiss() }
         }
         binding.viewUpcomingButton.setOnClickListener { openUpcomingBroadcastFragment() }
         return binding.root
