@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@sample/dates"/>
+        tools:text="@sample/guide.json/listings/date"/>
 
     <ImageView
         android:id="@+id/avatar_image_view"
@@ -49,7 +49,7 @@
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_text_view"
-        tools:text="@sample/broadcast_titles"/>
+        tools:text="@sample/guide.json/listings/title"/>
 
     <TextView
         android:id="@+id/username_text_view"
@@ -61,7 +61,9 @@
         app:layout_constraintStart_toStartOf="@+id/title_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_text_view"
-        tools:text="@sample/usernames"/>
+        tools:text="@sample/guide.json/listings/username"
+        tools:textColor="@color/caffeine_blue"
+        tools:textStyle="bold"/>
 
     <TextView
         android:id="@+id/time_text_view"
@@ -77,5 +79,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username_text_view"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="@sample/times"/>
+        tools:text="@sample/guide.json/listings/time"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

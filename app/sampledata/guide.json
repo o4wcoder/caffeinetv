@@ -1,0 +1,40 @@
+{
+  "listings": [
+    {
+      "title": "Creighton vs. Georgetown Women's Basketball",
+      "date": "Friday, February 1",
+      "time": "4:00 PM - 6:00 PM",
+      "username": "FoxSports"
+    },
+    {
+      "title": "Hertha Berlin vs. VFL Wolfsburg Bundesliga",
+      "date": "Saturday, February 2",
+      "time": "6:30 AM - 8:30 AM",
+      "username": "FoxSports"
+    },
+    {
+      "title": "VfB Stuttgart vs. SC Freiburg Bundesliga",
+      "date": "Sunday, February 3",
+      "time": "9:00 AM - 11:00 AM",
+      "username": "FoxSports"
+    },
+    {
+      "title": "Providence vs. Georgetown Women's Basketball",
+      "date": "Sunday, February 3",
+      "time": "11:00 AM - 1:00 PM",
+      "username": "FoxSports2"
+    },
+    {
+      "title": "FC St. Pauli vs. 1. FC Union Berlin Bundesliga 2",
+      "date": "Monday, February 4",
+      "time": "11:30 AM - 1:30 PM",
+      "username": "FoxSports"
+    },
+    {
+      "title": "St. John's vs. #10 Marquette Men's Basketball",
+      "date": "Tuesday, February 5",
+      "time": "5:00 PM - 7:00 PM",
+      "username": "FoxSports"
+    }
+  ]
+}
