@@ -23,4 +23,4 @@ class BroadcastEnvelope(val broadcast: Broadcast)
 
 class GuideList(val listings: List<Guide>)
 
-class Guide(val caid: CAID, val id: String, val title:String, val startTimestamp: String, val endTimestamp: String)
+class Guide(val caid: CAID, val id: String, val title:String, val startTimestamp: Long, val endTimestamp: Long, var shouldShowTimestamp: Boolean)

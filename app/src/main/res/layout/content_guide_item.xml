@@ -4,16 +4,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/almost_black">
 
     <TextView
-        android:id="@+id/title_text_view"
-        android:layout_width="wrap_content"
+        android:id="@+id/date_text_view"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:paddingStart="@dimen/margin"
+        android:paddingEnd="@dimen/margin"
+        android:paddingTop="@dimen/margin_double"
+        android:paddingBottom="@dimen/margin_list"
+        android:textStyle="bold"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="@sample/dates"/>
+
+    <ImageView
+        android:id="@+id/avatar_image_view"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"
+        android:contentDescription="@string/user_avatar_content_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date_text_view"
+        tools:srcCompat="@tools:sample/avatars"/>
+
+    <TextView
+        style="@style/ScreenTitle2"
+        android:id="@+id/title_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_list"
+        android:layout_marginEnd="@dimen/margin_double"
+        android:layout_marginTop="15dp"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:includeFontPadding="false"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_text_view"
+        tools:text="@sample/broadcast_titles"/>
+
+    <TextView
+        android:id="@+id/username_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginTop="@dimen/margin_line_spacing_small"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/title_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_text_view"
         tools:text="@sample/usernames"/>
 
+    <TextView
+        android:id="@+id/time_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_line_spacing"
+        android:layout_marginBottom="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/username_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username_text_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="@sample/times"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

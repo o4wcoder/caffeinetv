@@ -126,6 +126,9 @@
 
     <!-- Text -->
     <style name="ScreenTitle" parent="@style/TextAppearance.MaterialComponents.Headline5"/>
+    <style name="ScreenTitle2">
+        <item name="android:textSize">20sp</item>
+    </style>
     <style name="ScreenSubtitle">
         <item name="android:textSize">18sp</item>
     </style>
