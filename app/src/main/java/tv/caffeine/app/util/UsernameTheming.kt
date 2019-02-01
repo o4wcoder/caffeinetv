@@ -67,11 +67,10 @@ fun User.configure(
             .placeholder(R.drawable.default_avatar_round)
             .transform(transformation)
             .into(avatarImageView)
-    usernameTextView.text = username
-    if (isVerified) {
-        usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.verified_large, 0)
-    } else {
-        usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+    usernameTextView.apply {
+        text = username
+        setTextAppearance(theme.usernameTextAppearance)
+        setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, if (isVerified) R.drawable.verified_large else 0, 0)
+        compoundDrawablePadding = if (isVerified) resources.getDimensionPixelSize(R.dimen.margin_line_spacing_small) else 0
     }
-    usernameTextView.setTextAppearance(theme.usernameTextAppearance)
 }
