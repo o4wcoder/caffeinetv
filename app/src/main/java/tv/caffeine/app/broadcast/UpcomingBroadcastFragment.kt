@@ -8,6 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
@@ -25,6 +29,7 @@ import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
+import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
@@ -37,9 +42,9 @@ import kotlin.coroutines.CoroutineContext
 class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
 
     @Inject lateinit var guideAdapter: GuideAdapter
-    @Inject lateinit var broadcastService: BroadcastsService
     @Inject lateinit var gson: Gson
     private var binding: FragmentUpcomingBroadcastBinding? = null
+    private val viewModel by lazy { viewModelProvider.get(GuideViewModel::class.java)}
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
@@ -48,25 +53,6 @@ class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
             configure(this)
             binding = this
             root
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        launch {
-            val result = broadcastService.guide().awaitAndParseErrors(gson)
-            when (result) {
-                is CaffeineResult.Success ->  {
-                    result.value.listings.isEmpty().let { isEmpty ->
-                        binding?.emptyMessageTextView?.isVisible = isEmpty
-                        if (!isEmpty) {
-                            guideAdapter.submitList(prepareGuideTimestamp(result.value.listings))
-                        }
-                    }
-                }
-                is CaffeineResult.Error -> Timber.e("Failed to fetch content guide ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
-            }
         }
     }
 
@@ -89,6 +75,35 @@ class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
                     setDrawable(drawable)
                 })
+            }
+        }
+        viewModel.guides.observe(viewLifecycleOwner, Observer { guides ->
+            binding.emptyMessageTextView.isVisible = guides.isEmpty()
+            guideAdapter.submitList(guides)
+        })
+    }
+}
+
+class GuideViewModel(
+        dispatchConfig: DispatchConfig,
+        private val broadcastsService: BroadcastsService,
+        private val gson: Gson
+) : CaffeineViewModel(dispatchConfig) {
+
+    private val _guides = MutableLiveData<List<Guide>>()
+    val guides: LiveData<List<Guide>> = Transformations.map(_guides) { it }
+
+    init {
+        load()
+    }
+
+    private fun load() {
+        launch {
+            val result = broadcastsService.guide().awaitAndParseErrors(gson)
+            when (result) {
+                is CaffeineResult.Success -> _guides.value = prepareGuideTimestamp(result.value.listings)
+                is CaffeineResult.Error -> Timber.e("Failed to fetch content guide ${result.error}")
+                is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
     }

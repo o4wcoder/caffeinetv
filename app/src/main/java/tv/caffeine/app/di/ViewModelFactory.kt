@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.*
+import tv.caffeine.app.broadcast.GuideViewModel
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.explore.FindBroadcastersUseCase
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase
@@ -54,6 +55,7 @@ class ViewModelFactory @Inject constructor(
         private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
         private val oauthService: OAuthService,
         private val messageHandshakeFactory: MessageHandshake.Factory,
+        private val broadcastsService: BroadcastsService,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -81,6 +83,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, messageHandshakeFactory, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
+            modelClass.isAssignableFrom(GuideViewModel::class.java) -> GuideViewModel(dispatchConfig, broadcastsService, gson)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
     }
