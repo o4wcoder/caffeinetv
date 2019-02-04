@@ -57,7 +57,7 @@ androidExtensions {
 }
 
 ext {
-    daggerVersion = '2.20'
+    daggerVersion = '2.21'
 }
 
 dependencies {
@@ -87,8 +87,8 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
     // Navigation
-    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha11'
-    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha11'
+    implementation "android.arch.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
 
     // Data binding
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
@@ -143,7 +143,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.2'
 
     // Social
-    implementation 'com.facebook.android:facebook-android-sdk:4.39.0'
+    implementation 'com.facebook.android:facebook-android-sdk:4.40.0'
 
     // recaptcha
     implementation 'com.google.android.gms:play-services-safetynet:16.0.0'
