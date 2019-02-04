@@ -85,12 +85,10 @@ class NotificationSettings(
         val weeklySuggestionsEmail: Boolean? = null,
         val broadcastLiveEmail: Boolean? = null,
         val friendJoinsEmail: Boolean? = null,
-        val watchingBroadcastEmail: Boolean? = null,
         val communityEmail: Boolean? = null,
         val broadcastReportEmail: Boolean? = null,
         val newFollowerAndroidPush: Boolean? = null,
         val broadcastLiveAndroidPush: Boolean? = null,
-        val watchingBroadcastAndroidPush: Boolean? = null,
         val friendJoinsAndroidPush: Boolean? = null
 ) {
     enum class SettingKey {
@@ -98,13 +96,11 @@ class NotificationSettings(
         weekly_suggestions_email,
         broadcast_live_email,
         friend_joins_email,
-        watching_broadcast_email,
         community_email,
         broadcast_report_email,
 
         new_follower_android_push,
         broadcast_live_android_push,
-        watching_broadcast_android_push,
         friend_joins_android_push
     }
 
@@ -114,13 +110,11 @@ class NotificationSettings(
                 SettingKey.weekly_suggestions_email to weeklySuggestionsEmail,
                 SettingKey.broadcast_live_email to broadcastLiveEmail,
                 SettingKey.friend_joins_email to friendJoinsEmail,
-                SettingKey.watching_broadcast_email to watchingBroadcastEmail,
                 SettingKey.community_email to communityEmail,
                 SettingKey.broadcast_report_email to broadcastReportEmail,
 
                 SettingKey.new_follower_android_push to newFollowerAndroidPush,
                 SettingKey.broadcast_live_android_push to broadcastLiveAndroidPush,
-                SettingKey.watching_broadcast_android_push to watchingBroadcastAndroidPush,
                 SettingKey.friend_joins_android_push to friendJoinsAndroidPush
         )
     }
@@ -132,13 +126,11 @@ class NotificationSettings(
                     weeklySuggestionsEmail = map[SettingKey.weekly_suggestions_email],
                     broadcastLiveEmail = map[SettingKey.broadcast_live_email],
                     friendJoinsEmail = map[SettingKey.friend_joins_email],
-                    watchingBroadcastEmail = map[SettingKey.watching_broadcast_email],
                     communityEmail = map[SettingKey.community_email],
                     broadcastReportEmail = map[SettingKey.broadcast_report_email],
 
                     newFollowerAndroidPush = map[SettingKey.new_follower_android_push],
                     broadcastLiveAndroidPush = map[SettingKey.broadcast_live_android_push],
-                    watchingBroadcastAndroidPush = map[SettingKey.watching_broadcast_android_push],
                     friendJoinsAndroidPush = map[SettingKey.friend_joins_android_push]
             )
         }

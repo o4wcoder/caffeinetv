@@ -398,14 +398,14 @@ class NotificationSettingsViewModel(
 
     private fun getPushCount(settings: NotificationSettings): Int {
         return listOf(settings.newFollowerAndroidPush, settings.broadcastLiveAndroidPush,
-                settings.watchingBroadcastAndroidPush, settings.friendJoinsAndroidPush)
+                settings.friendJoinsAndroidPush)
                 .count { it == true }
     }
 
     private fun getEmailCount(settings: NotificationSettings): Int {
         return listOf(settings.newFollowerEmail, settings.weeklySuggestionsEmail,
                 settings.broadcastLiveEmail, settings.friendJoinsEmail,
-                settings.watchingBroadcastEmail, settings.communityEmail, settings.broadcastReportEmail)
+                settings.communityEmail, settings.broadcastReportEmail)
                 .count { it == true }
     }
 }

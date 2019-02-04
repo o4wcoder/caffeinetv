@@ -31,10 +31,6 @@
                 android:title="@string/people_you_follow_are_live"/>
 
             <CheckBoxPreference
-                android:key="watching_broadcast_android_push"
-                android:title="@string/people_you_follow_are_watching"/>
-
-            <CheckBoxPreference
                 android:key="new_follower_android_push"
                 android:title="@string/new_followers"/>
 
@@ -52,10 +48,6 @@
             <CheckBoxPreference
                 android:key="broadcast_live_email"
                 android:title="@string/people_you_follow_are_live"/>
-
-            <CheckBoxPreference
-                android:key="watching_broadcast_email"
-                android:title="@string/people_you_follow_are_watching"/>
 
             <CheckBoxPreference
                 android:key="new_follower_email"
