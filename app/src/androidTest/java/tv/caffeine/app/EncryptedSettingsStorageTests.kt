@@ -34,4 +34,4 @@ class EncryptedSettingsStorageTests {
     }
 }
 
-class InMemorySettingsStorage(override var refreshToken: String? = null, override var caid: CAID? = null) : SettingsStorage
+class InMemorySettingsStorage(override var refreshToken: String? = null, override var caid: CAID? = null, override var clientId: String? = null) : SettingsStorage

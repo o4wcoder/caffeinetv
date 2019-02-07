@@ -1,6 +1,7 @@
 package tv.caffeine.app.navigation
 
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.NavController
@@ -25,10 +26,10 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 class DeepLinkTests {
     private lateinit var navController: NavController
+    private lateinit var resources: Resources
 
     @DataPoints
     private val expectedDeepLinkDestinations: List<Pair<String, Int>> = listOf(
-            "https://www.caffeine.tv/tos.html" to R.id.caffeineLinksFragment,
             "https://www.caffeine.tv/account/claim-gold/index.html?id=token" to R.id.caffeineLinksFragment,
             "https://www.caffeine.tv/account/reset-password/?code=code" to R.id.caffeineLinksFragment,
             "https://www.caffeine.tv/account/reset-password?code=code" to R.id.caffeineLinksFragment,
@@ -38,7 +39,9 @@ class DeepLinkTests {
             "https://www.caffeine.tv/ESL/profile" to R.id.profileFragment,
             "https://www.caffeine.tv/caffeine" to R.id.stageFragment,
             "https://www.caffeine.tv/caffeine?bst=sharing" to R.id.stageFragment,
-            "https://www.caffeine.tv/caffeine/profile" to R.id.profileFragment
+            "https://www.caffeine.tv/caffeine/profile" to R.id.profileFragment,
+            "https://www.caffeine.tv/privacy.html" to R.id.caffeineLinksFragment,
+            "https://www.caffeine.tv/tos.html" to R.id.caffeineLinksFragment
     )
 
     @Before
@@ -48,6 +51,7 @@ class DeepLinkTests {
         val fragmentManager = mainActivity.supportFragmentManager
         val navHostFragment = fragmentManager.primaryNavigationFragment as NavHostFragment
         navController = navHostFragment.navController
+        resources = navHostFragment.resources
     }
 
     @Test
@@ -78,7 +82,11 @@ class DeepLinkTests {
 
     private fun deepLinkNavigatesCorrectly(url: String, expectedDestination: NavDestination) {
         navigateToDeepLink(url) { actualDestination, _ ->
-            assertEquals("Deep link: $url; Destinations: Expected: ${expectedDestination.label}, actual: ${actualDestination.label}", expectedDestination.id, actualDestination.id)
+            val expectedLabel = expectedDestination.label
+            val actualLabel = actualDestination.label
+            val expectedResource = resources.getResourceEntryName(expectedDestination.id)
+            val actualResource = resources.getResourceEntryName(actualDestination.id)
+            assertEquals("Deep link: $url; Destinations: Expected: $expectedLabel, actual: $actualLabel", expectedResource, actualResource)
         }
     }
 

@@ -177,6 +177,10 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="www.caffeine.tv/{broadcastLink}"/>
+        <deepLink
+            app:uri="applink.caffeine.tv/{broadcastLink}"/>
+        <deepLink
+            app:uri="preview.caffeine.tv/{broadcastLink}"/>
         <action
             android:id="@+id/action_stageFragment_to_friendsWatchingFragment"
             app:destination="@+id/friendsWatchingFragment"/>
