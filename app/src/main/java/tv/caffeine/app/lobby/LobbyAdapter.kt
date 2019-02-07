@@ -55,6 +55,7 @@ class LobbyAdapter @Inject constructor(
             LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD -> liveBroadcastWithFriendsCard(inflater, parent)
             LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> previousBroadcastCard(inflater, parent)
             LobbyItem.Type.CARD_LIST -> listCard(inflater, parent)
+            LobbyItem.Type.UPCOMING_BUTTON_CARD -> upcomingButtonCard(inflater, parent)
         }
     }
 
@@ -78,6 +79,9 @@ class LobbyAdapter @Inject constructor(
 
     private fun listCard(inflater: LayoutInflater, parent: ViewGroup) =
             ListCard(CardListBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, recycledViewPool)
+
+    private fun upcomingButtonCard(inflater: LayoutInflater, parent: ViewGroup) =
+            UpcomingButtonCard(UpcomingButtonCardBinding.inflate(inflater, parent, false), null, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight)
 
     override fun onBindViewHolder(holder: LobbyViewHolder, position: Int) {
         val item = getItem(position)

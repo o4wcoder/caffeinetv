@@ -7,8 +7,11 @@ interface LobbyItem {
     val itemType: Type
 
     enum class Type {
-        AVATAR_CARD, HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD, PREVIOUS_BROADCAST_CARD, CARD_LIST
+        AVATAR_CARD, HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD, PREVIOUS_BROADCAST_CARD, CARD_LIST, UPCOMING_BUTTON_CARD
     }
+
+    // An interface may not implement a method of 'Any'
+    fun equals(other: LobbyItem) = id == other.id && itemType == other.itemType
 
     companion object {
 
@@ -60,4 +63,7 @@ data class PreviousBroadcast(override val id: String, override val broadcaster: 
 }
 data class CardList(override val id: String, val cards: List<SingleCard>) : LobbyItem {
     override val itemType = LobbyItem.Type.CARD_LIST
+}
+data class UpcomingButtonItem(override val id: String) : LobbyItem {
+    override val itemType = LobbyItem.Type.UPCOMING_BUTTON_CARD
 }

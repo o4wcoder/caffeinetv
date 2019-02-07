@@ -160,7 +160,9 @@
     <style name="ExploreUsername.Following">
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
-    <style name="ExploreUsername.NotFollowing"/>
+    <style name="ExploreUsername.NotFollowing">
+        <item name="android:textColor">@color/black</item>
+    </style>
     <style name="ExploreFollowerCount" parent="@style/TextAppearance.MaterialComponents.Caption"/>
 
     <!-- Design approved - End -->

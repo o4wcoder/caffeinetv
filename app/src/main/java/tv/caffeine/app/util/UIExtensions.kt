@@ -21,13 +21,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.scale
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.ui.CaffeineFragment
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -111,7 +111,7 @@ fun Activity.showSnackbar(@StringRes resId: Int) {
     Snackbar.make(window.decorView, resId, Snackbar.LENGTH_SHORT).show()
 }
 
-fun CaffeineFragment.showSnackbar(@StringRes resId: Int) {
+fun Fragment.showSnackbar(@StringRes resId: Int) {
     val view = this.view ?: return
     Snackbar.make(view, resId, Snackbar.LENGTH_SHORT).show()
 }

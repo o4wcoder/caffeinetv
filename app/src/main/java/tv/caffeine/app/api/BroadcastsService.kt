@@ -7,6 +7,7 @@ import retrofit2.http.Path
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaidRecord
+import tv.caffeine.app.api.model.Lobby
 
 interface BroadcastsService {
     @GET("v1/broadcasts/{broadcastId}")
@@ -16,7 +17,10 @@ interface BroadcastsService {
     fun friendsWatching(@Path("broadcastId") broadcastId: String): Deferred<Response<List<CaidRecord.FriendWatching>>>
 
     @GET("v1/guide")
-    fun guide():  Deferred<Response<GuideList>>
+    fun guide(): Deferred<Response<GuideList>>
+
+    @GET("v1/live-hostable-broadcasters")
+    fun liveHostableBroadcasters(): Deferred<Response<BroadcasterList>>
 }
 
 class BroadcastEnvelope(val broadcast: Broadcast)
@@ -24,3 +28,5 @@ class BroadcastEnvelope(val broadcast: Broadcast)
 class GuideList(val listings: List<Guide>)
 
 class Guide(val caid: CAID, val id: String, val title:String, val startTimestamp: Long, val endTimestamp: Long, var shouldShowTimestamp: Boolean)
+
+class BroadcasterList(val broadcasters: List<Lobby.Broadcaster>)

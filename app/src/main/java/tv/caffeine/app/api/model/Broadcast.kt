@@ -10,7 +10,8 @@ class Broadcast(
         val liveHostedBroadcaster: Lobby.Broadcaster?,
         private val previewImagePath: String,
         val state: State,
-        val dateText: String
+        val dateText: String,
+        val externalStreamId: String?
 ) {
     val hasLiveHostedBroadcaster get() = liveHostedBroadcaster != null
     val previewImageUrl get() = "$IMAGES_BASE_URL$previewImagePath"

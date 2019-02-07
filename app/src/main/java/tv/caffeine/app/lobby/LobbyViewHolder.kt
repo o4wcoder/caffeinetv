@@ -168,7 +168,7 @@ abstract class BroadcasterCard(
         }
     }
 
-    fun viewProfile(caid: CAID) {
+    open fun viewProfile(caid: CAID) {
         val action = MainNavDirections.actionGlobalProfileFragment(caid)
         Navigation.findNavController(itemView).safeNavigate(action)
     }
@@ -319,3 +319,61 @@ class ListCard(
     }
 }
 
+class LiveBroadcastPickerCard(
+        binding: LiveBroadcastCardBinding,
+        val callback: Callback?,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+
+    override fun configure(item: LobbyItem) {
+        super.configure(item)
+        val liveBroadcastItem = item as LiveBroadcast
+        previewImageView.setOnClickListener {
+            liveBroadcastItem.broadcaster.broadcast?.id?.let {
+                callback?.onPreviewImageClicked(it)
+            }
+        }
+        liveBroadcastItem.broadcaster.user.let { user ->
+            binding.moreButton.setOnClickListener {
+                callback?.onMoreButtonClicked(user.caid, user.username)
+            }
+        }
+    }
+
+    override fun viewProfile(caid: CAID) {
+        // prevent navigating from a picker card to the user profile because that will end the broadcast.
+    }
+
+    interface Callback {
+        fun onPreviewImageClicked(broadcastId: String)
+        fun onMoreButtonClicked(caid: CAID, username: String)
+    }
+}
+
+class UpcomingButtonCard(
+        val binding: UpcomingButtonCardBinding,
+        val callback: Callback?,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme
+) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight) {
+    override fun configure(item: LobbyItem) {
+        binding.viewUpcomingButton.setOnClickListener {
+            callback?.onButtonClicked()
+        }
+    }
+
+    interface Callback {
+        fun onButtonClicked()
+    }
+}
