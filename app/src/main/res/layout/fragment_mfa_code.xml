@@ -50,7 +50,7 @@
                 android:layout_marginTop="6dp"
                 android:hint="@string/mfa_code_hint">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/mfa_code_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -15,7 +15,7 @@
         android:orientation="vertical"
         tools:context=".explore.ExploreFragment">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/search_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
