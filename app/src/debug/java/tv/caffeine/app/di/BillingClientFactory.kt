@@ -1,6 +1,5 @@
 package tv.caffeine.app.di
 
-import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.PurchasesUpdatedListener
@@ -11,8 +10,8 @@ import java.util.concurrent.Executors
 
 object BillingClientFactory {
 
-    fun createBillingClient(activity: Activity, listener: PurchasesUpdatedListener) =
-            DebugBillingClient(activity, listener, Executors.newSingleThreadExecutor())
+    fun createBillingClient(context: Context, listener: PurchasesUpdatedListener) =
+            DebugBillingClient(context, listener, Executors.newSingleThreadExecutor())
 
     fun loadBillingStore(context: Context) {
         BillingStore.defaultStore(context)

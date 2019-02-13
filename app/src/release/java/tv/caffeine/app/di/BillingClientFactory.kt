@@ -1,13 +1,12 @@
 package tv.caffeine.app.di
 
-import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.PurchasesUpdatedListener
 
 object BillingClientFactory {
-    fun createBillingClient(activity: Activity, listener: PurchasesUpdatedListener) =
-            BillingClient.newBuilder(activity)
+    fun createBillingClient(context: Context, listener: PurchasesUpdatedListener) =
+            BillingClient.newBuilder(context)
                     .setListener(listener)
                     .build()
 

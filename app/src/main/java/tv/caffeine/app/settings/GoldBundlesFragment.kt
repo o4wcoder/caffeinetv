@@ -50,8 +50,8 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
 
     private fun configureBillingClient() {
         if (buyGoldOption != BuyGoldOption.UsingPlayStore) return
-        val activity = activity ?: return
-        billingClient = BillingClientFactory.createBillingClient(activity, PurchasesUpdatedListener { responseCode, purchases ->
+        val context = context ?: return
+        billingClient = BillingClientFactory.createBillingClient(context, PurchasesUpdatedListener { responseCode, purchases ->
             Timber.d("Connected")
             consumeInAppPurchases(responseCode, purchases)
         })
