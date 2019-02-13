@@ -247,6 +247,10 @@
     <string name="browse_more_broadcasts">Browse More Broadcasts</string>
     <string name="broadcaster_show_is_over"><![CDATA[<b>]]><xliff:g example="Caffeine" id="broadcaster">%s</xliff:g>\'s<![CDATA[</b>]]><![CDATA[<br>]]>show is over</string>
 
+    <!-- Notifications -->
+    <string name="notification_channel_general_name">General</string>
+    <string name="notification_channel_general_description">General notifications</string>
+
     <!-- Stage/Broadcast: Content descriptions -->
     <string name="share_button_content_description">Share the broadcast</string>
     <string name="chat_button_content_description">Send a message</string>

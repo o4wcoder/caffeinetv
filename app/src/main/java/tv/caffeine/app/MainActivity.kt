@@ -1,10 +1,13 @@
 package tv.caffeine.app
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.os.Build
 import android.os.Bundle
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
@@ -54,6 +57,20 @@ class MainActivity : DaggerAppCompatActivity() {
         }
         if (savedInstanceState == null) {
             profiling.initialize()
+            createNotificationChannel()
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelId = "general"
+            val channelName = getString(R.string.notification_channel_general_name)
+            val channelDescription = getString(R.string.notification_channel_general_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, channelName, importance).apply {
+                description = channelDescription
+            }
+            getSystemService<NotificationManager>()?.createNotificationChannel(channel)
         }
     }
 
