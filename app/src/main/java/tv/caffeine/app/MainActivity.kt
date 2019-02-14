@@ -18,7 +18,11 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
 import dagger.android.support.DaggerAppCompatActivity
 import timber.log.Timber
+import tv.caffeine.app.analytics.Analytics
+import tv.caffeine.app.analytics.AnalyticsEvent
+import tv.caffeine.app.analytics.NotificationEvent
 import tv.caffeine.app.analytics.Profiling
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.ActivityMainBinding
 import tv.caffeine.app.util.*
 import javax.inject.Inject
@@ -27,8 +31,10 @@ private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.lan
 
 class MainActivity : DaggerAppCompatActivity() {
 
-    @Inject
-    lateinit var profiling: Profiling
+    @Inject lateinit var profiling: Profiling
+    @Inject lateinit var analytics: Analytics
+    @Inject lateinit var tokenStore: TokenStore
+
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +61,10 @@ class MainActivity : DaggerAppCompatActivity() {
         if (savedInstanceState == null) {
             profiling.initialize()
             createNotificationChannel()
+            if (intent.notificationId != null && intent.notificationTag != null) {
+                val notificationEvent = NotificationEvent(NotificationEvent.Type.Opened, intent.notificationId, intent.notificationTag)
+                analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationEvent))
+            }
         }
     }
 

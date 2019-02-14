@@ -9,6 +9,9 @@ private fun IdentityProvider.toEventName() = when(this) {
     IdentityProvider.twitter -> "signin_twitter_clicked"
 }
 
+private const val NOTIFICATION_ID = "notification_id"
+private const val NOTIFICATION_TAG = "notification_tag"
+
 class KochavaAnalytics @Inject constructor(
         private val configuration: Tracker.Configuration
 ) : Analytics {
@@ -20,7 +23,15 @@ class KochavaAnalytics @Inject constructor(
         val trackerEvent = when(event) {
             is AnalyticsEvent.NewRegistration -> Tracker.Event(Tracker.EVENT_TYPE_REGISTRATION_COMPLETE).setUserId(event.userId)
             is AnalyticsEvent.SocialSignInClicked -> Tracker.Event(event.identityProvider.toEventName())
-            AnalyticsEvent.NewAccountClicked -> Tracker.Event("new_account_clicked")
+            is AnalyticsEvent.Notification -> Tracker.Event(
+                    when(event.notification.type) {
+                        NotificationEvent.Type.Received -> Tracker.EVENT_TYPE_PUSH_RECEIVED
+                        NotificationEvent.Type.Opened -> Tracker.EVENT_TYPE_PUSH_OPENED
+                    })
+                    .addCustom(NOTIFICATION_ID, event.notification.id ?: "")
+                    .addCustom(NOTIFICATION_TAG, event.notification.tag ?: "")
+                    .setUserId(event.userId ?: "")
+            is AnalyticsEvent.NewAccountClicked -> Tracker.Event("new_account_clicked")
         }
         Tracker.sendEvent(trackerEvent)
     }

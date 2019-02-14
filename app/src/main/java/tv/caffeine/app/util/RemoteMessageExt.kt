@@ -21,13 +21,16 @@ private const val ID = "id"
 
 val RemoteMessage.imageUrl get() = data[IMAGE_URL]
 val RemoteMessage.tag get() = data[TAG]
-val RemoteMessage.id get() = data[ID]?.toIntOrNull() ?: 0
+val RemoteMessage.id get() = data[ID]
+val RemoteMessage.numericId get() = data[ID]?.toIntOrNull() ?: 0
 
 fun RemoteMessage.buildNotification(context: Context, largeImage: Bitmap? = null): Notification? {
     val title = data[TITLE]
     val body = data[BODY]
     val deepLink = data[DEEP_LINK]
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(deepLink), context, MainActivity::class.java)
+    intent.notificationId = id
+    intent.notificationTag = tag
     val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     return NotificationCompat.Builder(context, "general")
             .setSmallIcon(R.drawable.caffeine_wireframe_logo)

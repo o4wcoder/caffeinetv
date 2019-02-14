@@ -15,14 +15,25 @@ class LogAnalytics : Analytics {
     }
 
     override fun trackEvent(event: AnalyticsEvent) {
-        when(event) {
-            is AnalyticsEvent.NewRegistration -> Timber.d("New Registration, user ID = ${event.userId}")
+        val logMessage = when(event) {
+            is AnalyticsEvent.NewRegistration -> "New Registration, user ID = ${event.userId}"
+            is AnalyticsEvent.SocialSignInClicked -> "Social sign in with ${event.identityProvider}"
+            is AnalyticsEvent.Notification -> "Notification, user ID = ${event.userId}, notification = ${event.notification}"
+            is AnalyticsEvent.NewAccountClicked -> "New Account clicked"
         }
+        Timber.d(logMessage)
+    }
+}
+
+data class NotificationEvent(val type: Type, val id: String?, val tag: String?) {
+    enum class Type {
+        Received, Opened
     }
 }
 
 sealed class AnalyticsEvent {
     data class NewRegistration(val userId: CAID) : AnalyticsEvent()
     data class SocialSignInClicked(val identityProvider: IdentityProvider) : AnalyticsEvent()
+    data class Notification(val userId: CAID?, val notification: NotificationEvent) : AnalyticsEvent()
     object NewAccountClicked : AnalyticsEvent()
 }

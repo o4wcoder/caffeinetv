@@ -9,6 +9,7 @@ import tv.caffeine.app.broadcast.LiveBroadcastPickerFragment
 import tv.caffeine.app.broadcast.UpcomingBroadcastFragment
 import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.LobbyFragment
+import tv.caffeine.app.notifications.CaffeineFirebaseMessagingService
 import tv.caffeine.app.notifications.NotificationsFragment
 import tv.caffeine.app.profile.*
 import tv.caffeine.app.settings.*
@@ -22,6 +23,7 @@ import tv.caffeine.app.util.NoNetworkFragment
 @Module
 abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun mainActivity(): MainActivity
+    @ContributesAndroidInjector abstract fun caffeineFirebaseMessagingService(): CaffeineFirebaseMessagingService
     @ContributesAndroidInjector abstract fun signInFragment(): SignInFragment
     @ContributesAndroidInjector abstract fun signUpFragment(): SignUpFragment
     @ContributesAndroidInjector abstract fun landingFragment(): LandingFragment

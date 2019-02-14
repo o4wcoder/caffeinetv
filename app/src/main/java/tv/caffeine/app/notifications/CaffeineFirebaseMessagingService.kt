@@ -10,13 +10,24 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import dagger.android.AndroidInjection
 import timber.log.Timber
-import tv.caffeine.app.util.buildNotification
-import tv.caffeine.app.util.id
-import tv.caffeine.app.util.imageUrl
-import tv.caffeine.app.util.tag
+import tv.caffeine.app.analytics.Analytics
+import tv.caffeine.app.analytics.AnalyticsEvent
+import tv.caffeine.app.analytics.NotificationEvent
+import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.util.*
+import javax.inject.Inject
 
 class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
+
+    @Inject lateinit var analytics: Analytics
+    @Inject lateinit var tokenStore: TokenStore
+
+    override fun onCreate() {
+        AndroidInjection.inject(this)
+        super.onCreate()
+    }
 
     override fun onNewToken(token: String?) {
         super.onNewToken(token)
@@ -29,6 +40,8 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
         if (message == null) return
         Timber.d("notification.body = ${message.notification?.body}")
         Timber.d("data = ${message.data}")
+        val notificationEvent = NotificationEvent(NotificationEvent.Type.Received, message.id, message.tag)
+        analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationEvent))
         when (val imageUrl = message.imageUrl) {
             null -> notify(message)
             else -> {
@@ -42,7 +55,7 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
     private fun notify(message: RemoteMessage, bitmap: Bitmap? = null) {
         val notification = message.buildNotification(applicationContext, bitmap)
         val notificationManager = getSystemService<NotificationManager>() ?: return
-        notificationManager.notify(message.tag, message.id, notification)
+        notificationManager.notify(message.tag, message.numericId, notification)
     }
 }
 
