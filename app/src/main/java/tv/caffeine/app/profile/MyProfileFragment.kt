@@ -127,8 +127,9 @@ class MyProfileFragment : CaffeineFragment() {
         }
         if (resultCode != Activity.RESULT_OK) return
         val uri = data?.data
-        val cameraFile = File(cameraImagePath)
-        val fileExists = cameraImagePath != null && cameraFile.exists() && cameraFile.length() > 1000
+        val fileExists = cameraImagePath?.let {
+            File(it).run { exists() && length() > 1000 }
+        } ?: false
         when {
             uri != null && !fileExists -> uploadPhotoFromUri(uri)
             uri == null && fileExists -> uploadPhotoFromCamera()
