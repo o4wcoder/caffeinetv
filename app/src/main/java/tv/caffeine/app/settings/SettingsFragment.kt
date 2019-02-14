@@ -181,6 +181,8 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                 val twitter = user?.connectedAccounts?.get("twitter")
                 @StringRes val title = if (twitter != null) R.string.disconnect_twitter_account else R.string.connect_twitter_account
                 preference.title = getString(title)
+                preference.isEnabled = user != null
+                if (user == null) return@Observer
                 preference.setOnPreferenceClickListener {
                     if (twitter != null) {
                         val action = SettingsFragmentDirections.actionSettingsFragmentToDisconnectIdentityDialogFragment(twitter.uid, IdentityProvider.twitter, twitter.displayName)
@@ -202,6 +204,8 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                 val facebook = user?.connectedAccounts?.get("facebook")
                 @StringRes val title = if (facebook != null) R.string.disconnect_facebook_account else R.string.connect_facebook_account
                 preference.title = getString(title)
+                preference.isEnabled = user != null
+                if (user == null) return@Observer
                 preference.setOnPreferenceClickListener {
                     if (facebook != null) {
                         val action = SettingsFragmentDirections.actionSettingsFragmentToDisconnectIdentityDialogFragment(facebook.uid, IdentityProvider.facebook, facebook.displayName)
@@ -246,6 +250,8 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     private fun configureDeleteAccount() {
         findPreference("delete_caffeine_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer { user ->
+                preference.isEnabled = user != null
+                if (user == null) return@Observer
                 preference.setOnPreferenceClickListener {
                     fragmentManager?.let { fm ->
                         DeleteAccountDialogFragment().apply {
@@ -289,7 +295,7 @@ class SettingsViewModel(
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
     private val _userDetails = MutableLiveData<User>()
-    val userDetails: LiveData<User> = Transformations.map(_userDetails) { it }
+    val userDetails: LiveData<User?> = Transformations.map(_userDetails) { it }
 
     init {
         load()
