@@ -3,7 +3,6 @@ package tv.caffeine.app
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -20,9 +19,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import dagger.android.support.DaggerAppCompatActivity
 import timber.log.Timber
 import tv.caffeine.app.analytics.Profiling
-import tv.caffeine.app.auth.LandingFragment
 import tv.caffeine.app.databinding.ActivityMainBinding
-import tv.caffeine.app.settings.SettingsFragment
 import tv.caffeine.app.util.*
 import javax.inject.Inject
 
@@ -75,16 +72,6 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp()
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        supportFragmentManager.fragments
-                .flatMap { it.childFragmentManager.fragments }
-                .find { it is LandingFragment || it is SettingsFragment }
-                ?.let {  fragment ->
-                    fragment.onActivityResult(requestCode, resultCode, data)
-                }
-    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
