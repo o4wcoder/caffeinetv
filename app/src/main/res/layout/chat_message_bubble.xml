@@ -107,7 +107,7 @@
             tools:text="2" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/speech_bubble_triangle"
             android:layout_width="@dimen/chat_bubble_triangle_size"
             android:layout_height="@dimen/chat_bubble_triangle_size"
             android:layout_marginStart="32dp"

@@ -28,6 +28,13 @@ class FollowManager @Inject constructor(
 
     fun isFollowing(caidFollower: CAID) = tokenStore.caid?.let { followedUsers[it]?.contains(caidFollower) } ?: false
 
+    fun isSelf(caid: CAID) = tokenStore.caid == caid
+
+    fun currentUserDetails(): User? {
+        val caid = tokenStore.caid ?: return null
+        return userDetails[caid]
+    }
+
     fun followersLoaded() = tokenStore.caid?.let { followedUsers.containsKey(it) } == true
 
     suspend fun refreshFollowedUsers() {

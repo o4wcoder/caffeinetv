@@ -287,6 +287,21 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="ChatMessageText.DefaultUserReference">
+        <item name="android:textColor">@color/default_user_reference</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="ChatMessageText.FollowedUserReference">
+        <item name="android:textColor">@color/followed_user_reference</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="ChatMessageText.CurrentUserReference">
+        <item name="android:textColor">@color/current_user_reference</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
     <style name="StageToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActionBarOverlay">true</item>
         <!-- Support library compatibility -->

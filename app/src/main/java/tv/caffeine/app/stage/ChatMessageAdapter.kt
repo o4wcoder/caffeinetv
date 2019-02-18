@@ -1,5 +1,6 @@
 package tv.caffeine.app.stage
 
+import android.text.style.TextAppearanceSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.chat.*
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
 import tv.caffeine.app.databinding.ChatMessageDigitalItemBinding
 import tv.caffeine.app.databinding.ChatMessageDummyBinding
@@ -69,24 +71,6 @@ sealed class ChatMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(ite
     abstract fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
 }
 
-private val Message.endorsementTextColorResId get() = when(endorsementCount) {
-    in 0..4 -> R.color.endorsement_4_text
-    in 5..9 -> R.color.endorsement_5_text
-    in 10..14 -> R.color.endorsement_6_text
-    in 15..19 -> R.color.endorsement_7_text
-    in 20..24 -> R.color.endorsement_8_text
-    else -> R.color.endorsement_9_text
-}
-
-private val Message.endorsementCountBackgroundResId get() = when(endorsementCount) {
-    in 0..4 -> R.drawable.polygon_4_sides
-    in 5..9 -> R.drawable.polygon_5_sides
-    in 10..14 -> R.drawable.polygon_6_sides
-    in 15..19 -> R.drawable.polygon_7_sides
-    in 20..24 -> R.drawable.polygon_8_sides
-    else -> R.drawable.polygon_9_sides
-}
-
 private fun View.toggleVisibility() {
     isVisible = !isVisible
 }
@@ -94,10 +78,6 @@ private fun View.toggleVisibility() {
 class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
 
     private val numberFormat = NumberFormat.getInstance()
-
-    init {
-        itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
-    }
 
     private fun toggleInteractionOverlayVisibility() {
         binding.interactionOverlay.toggleVisibility()
@@ -112,13 +92,25 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
     }
 
     override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+        if (followManager.isSelf(message.publisher.caid)) {
+            itemView.setOnClickListener(null)
+        } else {
+            itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
+        }
         hideInteractionOverlay()
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
                 R.dimen.avatar_size, followedTheme, notFollowedTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
-        binding.speechBubbleTextView.text = message.body.text
+        val userReferenceStyle = message.userReferenceStyle(followManager)
+        binding.speechBubbleTextView.text = highlightUsernames(message.body.text) {
+            TextAppearanceSpan(itemView.context, userReferenceStyle)
+        }
+        val background = message.chatBubbleBackground(followManager)
+        val tintList = ContextCompat.getColorStateList(itemView.context, background)
+        binding.speechBubbleTextView.backgroundTintList = tintList
+        binding.speechBubbleTriangle.imageTintList = tintList
         binding.endorsementCountTextView.text = if (message.endorsementCount > 0) numberFormat.format(message.endorsementCount) else null
         binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
         val endorsementTextColor = ContextCompat.getColor(itemView.context, message.endorsementTextColorResId)
@@ -145,10 +137,6 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
 
     private val numberFormat = NumberFormat.getInstance()
 
-    init {
-        itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
-    }
-
     private fun toggleInteractionOverlayVisibility() {
         binding.interactionOverlay.toggleVisibility()
         binding.replyTextView.toggleVisibility()
@@ -162,13 +150,21 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
     }
 
     override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+        if (followManager.isSelf(message.publisher.caid)) {
+            itemView.setOnClickListener(null)
+        } else {
+            itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
+        }
         hideInteractionOverlay()
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
                 R.dimen.avatar_size, followedTheme, notFollowedTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
-        binding.speechBubbleTextView.text = message.body.text
+        val userReferenceStyle = message.userReferenceStyle(followManager)
+        binding.speechBubbleTextView.text = highlightUsernames(message.body.text) {
+            TextAppearanceSpan(itemView.context, userReferenceStyle)
+        }
         binding.endorsementCountTextView.text = if (message.endorsementCount > 0) numberFormat.format(message.endorsementCount) else null
         binding.endorsementCountTextView.isVisible = message.endorsementCount > 0
         val endorsementTextColor = ContextCompat.getColor(itemView.context, message.endorsementTextColorResId)
