@@ -26,6 +26,7 @@ import retrofit2.Response
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
@@ -49,6 +50,7 @@ class MyProfileFragment : CaffeineFragment() {
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var gson: Gson
+    @Inject lateinit var authWatcher: AuthWatcher
 
     private lateinit var binding: FragmentMyProfileBinding
 
@@ -211,6 +213,7 @@ class MyProfileFragment : CaffeineFragment() {
 
     private fun signOut() {
         tokenStore.clear()
+        authWatcher.onSignOut()
         findNavController().navigateToLanding()
         LoginManager.getInstance().logOut()
         accountsService.signOut().enqueue(object : Callback<Unit?> {
