@@ -14,7 +14,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.FollowButtonDecorator
-import tv.caffeine.app.ui.FollowButtonDecorator.*
+import tv.caffeine.app.ui.FollowButtonDecorator.Style
 
 class UserTheme(val avatarImageTransformation: Transformation, @StyleRes val usernameTextAppearance: Int)
 
@@ -27,12 +27,13 @@ fun User.configure(
         followHandler: FollowManager.FollowHandler? = null,
         @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
         followedTheme: UserTheme,
-        notFollowedTheme: UserTheme
+        notFollowedTheme: UserTheme,
+        picasso: Picasso
 ) {
     val following = followManager.isFollowing(caid)
     val theme = if (following) followedTheme else notFollowedTheme
     val transformation = theme.avatarImageTransformation
-    followButton?.let { followButton ->
+    if (followButton != null) {
         if (followManager.followersLoaded() && !following) {
             FollowButtonDecorator(Style.FOLLOW).decorate(followButton)
             followButton.isVisible = true
@@ -60,7 +61,7 @@ fun User.configure(
             followButton.setOnClickListener(null)
         }
     }
-    Picasso.get()
+    picasso
             .load(avatarImageUrl)
             .centerCrop()
             .resizeDimen(avatarImageSize, avatarImageSize)

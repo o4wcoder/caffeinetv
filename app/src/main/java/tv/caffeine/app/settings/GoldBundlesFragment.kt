@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.android.billingclient.api.*
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
@@ -17,7 +18,7 @@ import tv.caffeine.app.databinding.FragmentGoldBundlesBinding
 import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.showSnackbar
 import java.text.NumberFormat
 import javax.inject.Inject
@@ -25,11 +26,12 @@ import javax.inject.Inject
 class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
 
     @Inject lateinit var tokenStore: TokenStore
+    @Inject lateinit var picasso: Picasso
 
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel by lazy { viewModelProvider.get(GoldBundlesViewModel::class.java) }
     private val goldBundlesAdapter by lazy {
-        GoldBundlesAdapter(buyGoldOption, object : GoldBundleClickListener {
+        GoldBundlesAdapter(buyGoldOption, picasso, object : GoldBundleClickListener {
             override fun onClick(goldBundle: GoldBundle) {
                 purchaseGoldBundle(goldBundle)
             }
@@ -145,10 +147,10 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
             availableCredits = wallet.credits
             val goldCount = NumberFormat.getIntegerInstance().format(wallet.gold)
             val creditBalance = NumberFormat.getIntegerInstance().format(wallet.credits)
-            binding.currentBalanceTextView.htmlText = when(buyGoldOption) {
+            binding.currentBalanceTextView.formatUsernameAsHtml(picasso, when(buyGoldOption) {
                 BuyGoldOption.UsingCredits -> getString(R.string.you_have_gold_and_credits_balance, goldCount, creditBalance)
                 BuyGoldOption.UsingPlayStore -> getString(R.string.you_have_gold_balance, goldCount)
-            }
+            })
         })
         val handler = Handler()
         viewModel.goldBundles.observe(viewLifecycleOwner, Observer { result ->

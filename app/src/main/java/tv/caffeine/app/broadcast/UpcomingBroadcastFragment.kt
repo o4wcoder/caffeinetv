@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -132,7 +133,8 @@ class GuideAdapter @Inject constructor(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso
 ): ListAdapter<Guide, GuideViewHolder>(
         object : DiffUtil.ItemCallback<Guide>() {
             override fun areItemsTheSame(oldItem: Guide, newItem: Guide) = oldItem === newItem
@@ -149,7 +151,7 @@ class GuideAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.content_guide_item, parent, false)
-        return GuideViewHolder(view, this, followManager, followedTheme, notFollowedTheme)
+        return GuideViewHolder(view, this, followManager, followedTheme, notFollowedTheme, picasso)
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
@@ -167,7 +169,8 @@ class GuideViewHolder(
         private val scope: CoroutineScope,
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme
+        private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
@@ -183,7 +186,7 @@ class GuideViewHolder(
         clear()
         job = scope.launch {
             val user = followManager.userDetails(guide.caid) ?: return@launch
-            user.configure(avatarImageView, usernameTextView, null, followManager, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme)
+            user.configure(avatarImageView, usernameTextView, null, followManager, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
         }
         dateTextView.isVisible = guide.shouldShowTimestamp
         dateTextView.text = getDateText(guide)

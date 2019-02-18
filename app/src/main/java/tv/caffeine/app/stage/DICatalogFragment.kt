@@ -17,9 +17,10 @@ import tv.caffeine.app.databinding.FragmentDiCatalogBinding
 import tv.caffeine.app.settings.BuyGoldOption
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
+import javax.inject.Inject
 
 class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 
@@ -27,16 +28,20 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
         fun digitalItemSelected(digitalItem: DigitalItem, message: String? = null)
     }
 
+    @Inject lateinit var picasso: Picasso
+
     private val args by navArgs<DICatalogFragmentArgs>()
 
-    private val adapter = DigitalItemAdapter(object: DigitalItemViewHolder.Callback {
-        override fun digitalItemSelected(digitalItem: DigitalItem) {
-            val callback = targetFragment as? Callback ?: return
-            val message = args.message
-            callback.digitalItemSelected(digitalItem, message)
-            dismiss()
-        }
-    })
+    private val adapter by lazy {
+        DigitalItemAdapter(picasso, object : DigitalItemViewHolder.Callback {
+            override fun digitalItemSelected(digitalItem: DigitalItem) {
+                val callback = targetFragment as? Callback ?: return
+                val message = args.message
+                callback.digitalItemSelected(digitalItem, message)
+                dismiss()
+            }
+        })
+    }
     private val viewModel by lazy { viewModelProvider.get(DICatalogViewModel::class.java) }
     private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
     private lateinit var binding: FragmentDiCatalogBinding
@@ -52,11 +57,11 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
             val numberFormat = NumberFormat.getIntegerInstance()
-            binding.walletBalanceTextView.htmlText = getString(R.string.wallet_balance, numberFormat.format(wallet.gold))
+            binding.walletBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.wallet_balance, numberFormat.format(wallet.gold)))
         })
         binding.username = args.broadcasterUsername
         binding.list.adapter = adapter
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it.digitalItems.state)
         })
@@ -70,8 +75,9 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
 
 }
 
-private class DigitalItemViewHolder constructor(
+private class DigitalItemViewHolder(
         val binding: DiCatalogItemBinding,
+        val picasso: Picasso,
         val callback: Callback
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -85,7 +91,7 @@ private class DigitalItemViewHolder constructor(
         binding.digitalItem = digitalItem
         binding.nameTextView.text = digitalItem.name
         binding.goldCostTextView.text = numberFormat.format(digitalItem.goldCost)
-        Picasso.get()
+        picasso
                 .load(digitalItem.staticImageUrl)
                 .into(binding.previewImageView)
         itemView.setOnClickListener {
@@ -95,7 +101,8 @@ private class DigitalItemViewHolder constructor(
 }
 
 
-private class DigitalItemAdapter (
+private class DigitalItemAdapter(
+        private val picasso: Picasso,
         private val callback: DigitalItemViewHolder.Callback
 ) : ListAdapter<DigitalItem, DigitalItemViewHolder>(
         object : DiffUtil.ItemCallback<DigitalItem>() {
@@ -107,7 +114,7 @@ private class DigitalItemAdapter (
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigitalItemViewHolder {
         val binding = DiCatalogItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DigitalItemViewHolder(binding, callback)
+        return DigitalItemViewHolder(binding, picasso, callback)
     }
 
     override fun onBindViewHolder(holder: DigitalItemViewHolder, position: Int) {

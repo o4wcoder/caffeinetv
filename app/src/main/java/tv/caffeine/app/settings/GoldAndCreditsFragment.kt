@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.squareup.picasso.Picasso
 import kotlinx.android.parcel.Parcelize
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -17,10 +18,10 @@ import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
 import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
-import tv.caffeine.app.wallet.WalletViewModel
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
 import javax.inject.Inject
 
@@ -31,6 +32,7 @@ enum class BuyGoldOption: Parcelable {
 
 class GoldAndCreditsFragment : CaffeineFragment() {
     @Inject lateinit var featureConfig: FeatureConfig
+    @Inject lateinit var picasso: Picasso
     private lateinit var binding: FragmentGoldAndCreditsBinding
     private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
     private val goldBundlesViewModel by lazy { viewModelProvider.get(GoldBundlesViewModel::class.java) }
@@ -46,9 +48,9 @@ class GoldAndCreditsFragment : CaffeineFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val numberFormat = NumberFormat.getIntegerInstance()
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
-            binding.goldBalanceTextView.htmlText = getString(R.string.gold_formatted, numberFormat.format(wallet.gold))
-            binding.creditBalanceTextView.htmlText = getString(R.string.credits_formatted, numberFormat.format(wallet.credits))
-            binding.cumulativeCreditBalanceTextView.htmlText = getString(R.string.credits_formatted, numberFormat.format(wallet.cumulativeCredits))
+            binding.goldBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.gold_formatted, numberFormat.format(wallet.gold)))
+            binding.creditBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.credits_formatted, numberFormat.format(wallet.credits)))
+            binding.cumulativeCreditBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.credits_formatted, numberFormat.format(wallet.cumulativeCredits)))
         })
         binding.transactionHistoryButton.setOnClickListener {
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToTransactionHistoryFragment()
@@ -56,7 +58,7 @@ class GoldAndCreditsFragment : CaffeineFragment() {
         }
         binding.buyGoldButton.setOnClickListener { navigateToBuyGold(BuyGoldOption.UsingPlayStore) }
         binding.buyGoldWithCreditsButton.setOnClickListener { navigateToBuyGold(BuyGoldOption.UsingCredits) }
-        binding.goldAndCreditsHelpTextView.htmlText = getString(R.string.gold_and_credits_help_html)
+        binding.goldAndCreditsHelpTextView.formatUsernameAsHtml(picasso, getString(R.string.gold_and_credits_help_html))
     }
 
     override fun onResume() {

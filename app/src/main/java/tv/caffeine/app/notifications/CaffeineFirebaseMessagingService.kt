@@ -23,6 +23,7 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var analytics: Analytics
     @Inject lateinit var tokenStore: TokenStore
+    @Inject lateinit var picasso: Picasso
 
     override fun onCreate() {
         AndroidInjection.inject(this)
@@ -47,7 +48,7 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
             else -> {
                 val loader = NotificationImageLoader { bitmap -> notify(message, bitmap) }
                 val handler = Handler(Looper.getMainLooper())
-                handler.post { Picasso.get().load(imageUrl).into(loader) }
+                handler.post { picasso.load(imageUrl).into(loader) }
             }
         }
     }

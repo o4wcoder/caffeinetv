@@ -3,6 +3,7 @@ package tv.caffeine.app.di
 import android.content.Context
 import com.google.gson.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -19,6 +20,7 @@ import tv.caffeine.app.net.AppMetaDataInterceptor
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.LongPollInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
+import tv.caffeine.app.ui.ImgixRequestTransformer
 import java.lang.reflect.Type
 import javax.inject.Singleton
 
@@ -30,7 +32,15 @@ enum class AuthorizationType {
     Required, NoAuthorization
 }
 
-@Module(includes = [GsonModule::class, OkHttpModule::class, RetrofitModule::class, ApiModule::class, WebRtcModule::class, ServerConfigModule::class])
+@Module(includes = [
+    GsonModule::class,
+    OkHttpModule::class,
+    RetrofitModule::class,
+    ApiModule::class,
+    WebRtcModule::class,
+    ImageLoadingModule::class,
+    ServerConfigModule::class
+])
 class NetworkModule
 
 @Module
@@ -196,4 +206,13 @@ class WebRtcModule {
                 .setVideoDecoderFactory(videoDecoderFactory)
                 .createPeerConnectionFactory()
     }
+}
+
+@Module
+class ImageLoadingModule {
+    @Provides
+    @Singleton
+    fun providesPicasso(context: Context): Picasso = Picasso.Builder(context)
+            .requestTransformer(ImgixRequestTransformer())
+            .build()
 }

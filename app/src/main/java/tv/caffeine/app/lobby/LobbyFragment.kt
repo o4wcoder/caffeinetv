@@ -32,6 +32,7 @@ class LobbyFragment : CaffeineFragment() {
 
     @Inject lateinit var lobbyAdapter: LobbyAdapter
     @Inject lateinit var featureConfig: FeatureConfig
+    @Inject lateinit var picasso: Picasso
 
     private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
     private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
@@ -74,7 +75,7 @@ class LobbyFragment : CaffeineFragment() {
             }
         })
         myProfileViewModel.avatarImageUrl.observe(viewLifecycleOwner, Observer {  avatarImageUrl ->
-            Picasso.get()
+            picasso
                     .load(avatarImageUrl)
                     .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
                     .transform(CropCircleTransformation())

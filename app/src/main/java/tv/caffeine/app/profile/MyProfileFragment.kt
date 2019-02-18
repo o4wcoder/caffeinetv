@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.facebook.login.LoginManager
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -31,7 +32,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.*
 import tv.caffeine.app.wallet.WalletViewModel
@@ -51,6 +52,7 @@ class MyProfileFragment : CaffeineFragment() {
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var gson: Gson
     @Inject lateinit var authWatcher: AuthWatcher
+    @Inject lateinit var picasso: Picasso
 
     private lateinit var binding: FragmentMyProfileBinding
 
@@ -103,7 +105,7 @@ class MyProfileFragment : CaffeineFragment() {
             if (wallet == null) return@Observer
             val goldBalance = NumberFormat.getInstance().format(wallet.gold)
             val creditsBalance = NumberFormat.getInstance().format(wallet.credits)
-            binding.goldAndCreditsBalanceButton.htmlText = getString(R.string.gold_and_credits_button_balance, goldBalance, creditsBalance)
+            binding.goldAndCreditsBalanceButton.formatUsernameAsHtml(picasso, getString(R.string.gold_and_credits_button_balance, goldBalance, creditsBalance))
         })
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }

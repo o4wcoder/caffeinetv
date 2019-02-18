@@ -25,7 +25,12 @@ private val inlineImages: Map<String, ImageSpec> = mapOf(
         "purplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.coin_size, R.dimen.coin_size)
 )
 
-class UserAvatarImageGetter(private val textView: TextView, isFollowed: Boolean, @DimenRes private val avatarSizeDimen: Int) : Html.ImageGetter {
+class UserAvatarImageGetter(
+        private val textView: TextView,
+        isFollowed: Boolean,
+        @DimenRes private val avatarSizeDimen: Int,
+        private val picasso: Picasso
+) : Html.ImageGetter {
     private val transform = if (isFollowed) {
         CropBorderedCircleTransformation(textView.resources.getColor(R.color.caffeine_blue, null),
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, textView.resources.displayMetrics))
@@ -39,7 +44,7 @@ class UserAvatarImageGetter(private val textView: TextView, isFollowed: Boolean,
             }
         }
         return BitmapDrawablePlaceholder(textView).apply {
-            Picasso.get()
+            picasso
                     .load(source)
                     .resizeDimen(avatarSizeDimen, avatarSizeDimen)
                     .transform(transform)

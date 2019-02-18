@@ -26,9 +26,12 @@ import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.DigitalItemRepository
 import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
+import javax.inject.Inject
 
 class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
     private lateinit var binding: FragmentSendDigitalItemBinding
+
+    @Inject lateinit var picasso: Picasso
 
     private lateinit var digitalItemId: String
     private lateinit var recipientCaid: CAID
@@ -64,7 +67,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
         sendDigitalItemViewModel.load(digitalItemId).observe(viewLifecycleOwner, Observer { digitalItem ->
             itemGoldCost = digitalItem.goldCost
             binding.goldCostTextView.text = numberFormat.format(total)
-            Picasso.get().load(digitalItem.staticImageUrl).into(binding.diImageView)
+            picasso.load(digitalItem.staticImageUrl).into(binding.diImageView)
             binding.messageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) { sendDigitalItem(digitalItem) }
             binding.sendButton.setOnClickListener { sendDigitalItem(digitalItem) }
             binding.diImageView.contentDescription = digitalItem.name
@@ -73,7 +76,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             walletBalance = wallet.gold
             val numberFormat = NumberFormat.getIntegerInstance()
-            binding.walletBalanceTextView.htmlText = getString(R.string.wallet_balance, numberFormat.format(wallet.gold))
+            binding.walletBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.wallet_balance, numberFormat.format(wallet.gold)))
             checkAbilityToPurchase()
         })
         binding.diQuantityNumberPicker.apply {

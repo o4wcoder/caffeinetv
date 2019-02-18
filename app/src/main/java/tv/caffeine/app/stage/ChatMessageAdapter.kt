@@ -31,7 +31,8 @@ import javax.inject.Inject
 class ChatMessageAdapter @Inject constructor(
         private val followManager: FollowManager,
         @ThemeFollowedChat private val followedTheme: UserTheme,
-        @ThemeNotFollowedChat private val notFollowedTheme: UserTheme
+        @ThemeNotFollowedChat private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso
 ): ListAdapter<Message, ChatMessageViewHolder>(
         object : DiffUtil.ItemCallback<Message>() {
             override fun areItemsTheSame(oldItem: Message, newItem: Message) = oldItem.type == newItem.type && oldItem.id == newItem.id
@@ -56,8 +57,8 @@ class ChatMessageAdapter @Inject constructor(
         val layoutInflater = LayoutInflater.from(parent.context)
         return when(type) {
             Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(layoutInflater, parent, false))
-            Message.Type.digital_item -> ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false), callback)
-            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false), callback)
+            Message.Type.digital_item -> ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false), picasso, callback)
+            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false), picasso, callback)
         }
     }
 
@@ -75,7 +76,7 @@ private fun View.toggleVisibility() {
     isVisible = !isVisible
 }
 
-class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
+class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Picasso, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
 
     private val numberFormat = NumberFormat.getInstance()
 
@@ -99,7 +100,7 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
         }
         hideInteractionOverlay()
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
-                R.dimen.avatar_size, followedTheme, notFollowedTheme)
+                R.dimen.avatar_size, followedTheme, notFollowedTheme, picasso)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
@@ -133,7 +134,7 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val callback: Cha
 
 }
 
-class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
+class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val picasso: Picasso, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
 
     private val numberFormat = NumberFormat.getInstance()
 
@@ -157,7 +158,7 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         }
         hideInteractionOverlay()
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
-                R.dimen.avatar_size, followedTheme, notFollowedTheme)
+                R.dimen.avatar_size, followedTheme, notFollowedTheme, picasso)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
@@ -177,7 +178,7 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
                 binding.quantityTextView.isVisible = false
             }
             else -> {
-                Picasso.get().load(digitalItem.previewImageUrl).into(binding.digitalItemImageView)
+                picasso.load(digitalItem.previewImageUrl).into(binding.digitalItemImageView)
                 if (digitalItem.count > 1) {
                     binding.quantityTextView.text = itemView.resources.getString(R.string.digital_item_quantity, digitalItem.count)
                     binding.quantityTextView.isVisible = true

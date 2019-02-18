@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -18,7 +19,6 @@ import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
-import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.databinding.FragmentLiveBroadcastPickerBinding
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.UpcomingButtonCardBinding
@@ -28,6 +28,7 @@ import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
 import tv.caffeine.app.lobby.*
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.ui.PaddingItemDecoration
 import tv.caffeine.app.util.DispatchConfig
@@ -132,13 +133,14 @@ class LiveBroadcastPickerAdapter @Inject constructor(
         @ThemeFollowedExplore private val followedTheme: UserTheme,
         @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
         @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-        @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme
+        @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
+        private val picasso: Picasso
 ): ListAdapter<LobbyItem, LobbyViewHolder>(
         object : DiffUtil.ItemCallback<LobbyItem>() {
             override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem.equals(newItem)
             override fun areContentsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem.equals(newItem) // broadcasts are unique in the list
         }
-){
+) {
 
     var broadcastCardCallback: LiveBroadcastPickerCard.Callback? = null
     var upcomingButtonCallback: UpcomingButtonCard.Callback? = null
@@ -161,9 +163,9 @@ class LiveBroadcastPickerAdapter @Inject constructor(
 
     private fun liveBroadcastPickerCard(inflater: LayoutInflater, parent: ViewGroup) =
             LiveBroadcastPickerCard(LiveBroadcastCardBinding.inflate(inflater, parent, false), broadcastCardCallback,
-                    mapOf(), mapOf(), followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight)
+                    mapOf(), mapOf(), followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
 
     private fun upcomingButtonCard(inflater: LayoutInflater, parent: ViewGroup) =
             UpcomingButtonCard(UpcomingButtonCardBinding.inflate(inflater, parent, false), upcomingButtonCallback,
-                    mapOf(), mapOf(), followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight)
+                    mapOf(), mapOf(), followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
 }

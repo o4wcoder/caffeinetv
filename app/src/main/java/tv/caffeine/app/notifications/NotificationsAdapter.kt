@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
@@ -37,7 +38,8 @@ class NotificationsAdapter @Inject constructor(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso
 ) : ListAdapter<CaffeineNotification, NotificationViewHolder>(
         object : DiffUtil.ItemCallback<CaffeineNotification?>() {
             override fun areItemsTheSame(oldItem: CaffeineNotification, newItem: CaffeineNotification) = oldItem === newItem
@@ -94,7 +96,7 @@ class NotificationsAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.notification_new_follower, parent, false)
-        return FollowNotificationViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this)
+        return FollowNotificationViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this, picasso)
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
@@ -114,8 +116,12 @@ class NotificationsAdapter @Inject constructor(
 
 sealed class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class FollowNotificationViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope)
-    : NotificationViewHolder(itemView) {
+class FollowNotificationViewHolder(
+        itemView: View,
+        private val followHandler: FollowManager.FollowHandler,
+        private val scope: CoroutineScope,
+        private val picasso: Picasso
+) : NotificationViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)
@@ -136,7 +142,7 @@ class FollowNotificationViewHolder(itemView: View, private val followHandler: Fo
             followButton.isVisible = caidRecord !is CaidRecord.IgnoreRecord
             val maybeFollowButton = if (caidRecord is CaidRecord.IgnoreRecord) null else followButton
             user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme)
+                    followedTheme, notFollowedTheme, picasso)
         }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(caidRecord.caid)

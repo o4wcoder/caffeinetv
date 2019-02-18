@@ -12,7 +12,11 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.*
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -32,7 +36,8 @@ abstract class UsersAdapter(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme
+        private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso
 ) : ListAdapter<SearchUserItem, UserViewHolder>(
         object : DiffUtil.ItemCallback<SearchUserItem?>() {
             override fun areItemsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem === newItem
@@ -86,7 +91,7 @@ abstract class UsersAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(userItemLayout, parent, false)
-        return UserViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback))
+        return UserViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), picasso)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
@@ -99,8 +104,9 @@ class SearchUsersAdapter @Inject constructor(
         dispatchConfig: DispatchConfig,
         followManager: FollowManager,
         @ThemeFollowedExplore followedTheme: UserTheme,
-        @ThemeNotFollowedExplore notFollowedTheme: UserTheme)
-    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
+        @ThemeNotFollowedExplore notFollowedTheme: UserTheme,
+        picasso: Picasso)
+    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme, picasso) {
     override val userItemLayout = R.layout.user_item_search
 }
 
@@ -108,12 +114,17 @@ class ExploreAdapter @Inject constructor(
         dispatchConfig: DispatchConfig,
         followManager: FollowManager,
         @ThemeFollowedExplore followedTheme: UserTheme,
-        @ThemeNotFollowedExplore notFollowedTheme: UserTheme)
-    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
+        @ThemeNotFollowedExplore notFollowedTheme: UserTheme,
+        picasso: Picasso)
+    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme, picasso) {
     override val userItemLayout = R.layout.user_item_explore
 }
 
-class UserViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler) : RecyclerView.ViewHolder(itemView) {
+class UserViewHolder(
+        itemView: View,
+        private val followHandler: FollowManager.FollowHandler,
+        private val picasso: Picasso
+) : RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)
@@ -121,7 +132,7 @@ class UserViewHolder(itemView: View, private val followHandler: FollowManager.Fo
 
     fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         item.user.configure(avatarImageView, usernameTextView, followButton, followManager, true, followHandler,
-                R.dimen.avatar_explore, followedTheme, notFollowedTheme)
+                R.dimen.avatar_explore, followedTheme, notFollowedTheme, picasso)
         numberOfFollowersTextView?.apply {
             val followersCount = item.user.followersCount
             val compactFollowersCount = compactNumberFormat(followersCount)

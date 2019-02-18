@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
+import com.squareup.picasso.Picasso
 import tv.caffeine.app.R
 
 inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
@@ -47,9 +48,14 @@ fun EditText.prepopulateText(text: String?) {
     }
 }
 
-fun TextView.formatUsernameAsHtml(string: String?, isFollowed: Boolean, @DimenRes avatarSizeDimen: Int) {
+fun TextView.formatUsernameAsHtml(
+        picasso: Picasso,
+        string: String?,
+        isFollowed: Boolean = false,
+        @DimenRes avatarSizeDimen: Int = R.dimen.chat_avatar_size
+) {
     text = string?.let { string ->
-        val imageGetter = UserAvatarImageGetter(this, isFollowed, avatarSizeDimen)
+        val imageGetter = UserAvatarImageGetter(this, isFollowed, avatarSizeDimen, picasso)
         val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
         for (span in html.getSpans(0, html.length, ImageSpan::class.java)) {
             val start = html.getSpanStart(span)
@@ -60,9 +66,3 @@ fun TextView.formatUsernameAsHtml(string: String?, isFollowed: Boolean, @DimenRe
         html
     }
 }
-
-var TextView.htmlText: String?
-    get() = null
-    set(value) {
-        formatUsernameAsHtml(value, false, R.dimen.chat_avatar_size)
-    }

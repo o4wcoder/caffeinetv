@@ -8,10 +8,14 @@ import com.squareup.picasso.RequestCreator
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 
+
 @BindingAdapter("imageUrl", "placeholder", "cornerRadius", requireAll = false)
 fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, cornerRadius: Float? = null) {
     if (imageUrl == null) return setImageDrawable(null)
-    Picasso.get()
+    val picasso = Picasso.Builder(context)
+            .requestTransformer(ImgixRequestTransformer())
+            .build()
+    picasso
             .load(imageUrl)
             .centerCrop()
             .fit()
@@ -23,7 +27,10 @@ fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, corner
 @BindingAdapter("roundedImageUrl", "placeholder", requireAll = false)
 fun ImageView.loadRoundedImage(imageUrl: String?, placeholder: Drawable? = null) {
     if (imageUrl == null) return
-    Picasso.get()
+    val picasso = Picasso.Builder(context)
+            .requestTransformer(ImgixRequestTransformer())
+            .build()
+    picasso
             .load(imageUrl)
             .centerCrop()
             .fit()

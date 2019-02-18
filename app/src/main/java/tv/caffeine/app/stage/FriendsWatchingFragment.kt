@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
@@ -77,7 +78,8 @@ class FriendsWatchingAdapter @Inject constructor(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso
 ) : ListAdapter<CaidRecord, FriendWatchingViewHolder>(
         object : DiffUtil.ItemCallback<CaidRecord?>() {
             override fun areItemsTheSame(oldItem: CaidRecord, newItem: CaidRecord) = oldItem === newItem
@@ -96,7 +98,7 @@ class FriendsWatchingAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendWatchingViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
-        return FriendWatchingViewHolder(view, this, followManager, followedTheme, notFollowedTheme) { caid ->
+        return FriendWatchingViewHolder(view, this, followManager, followedTheme, notFollowedTheme, picasso) { caid ->
             callback?.invoke(caid)
         }
     }
@@ -118,6 +120,7 @@ class FriendWatchingViewHolder(
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
         private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso,
         private val callback: (String) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
@@ -134,7 +137,7 @@ class FriendWatchingViewHolder(
             val user = followManager.userDetails(item.caid) ?: return@launch
             followButton.isVisible = false
             user.configure(avatarImageView, usernameTextView, null, followManager, false, null, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme)
+                    followedTheme, notFollowedTheme, picasso)
         }
         itemView.setOnClickListener { callback(item.caid) }
     }

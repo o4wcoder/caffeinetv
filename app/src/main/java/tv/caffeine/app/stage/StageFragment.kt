@@ -32,7 +32,7 @@ import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.*
 import javax.inject.Inject
@@ -50,6 +50,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
     @Inject lateinit var gson: Gson
     @Inject lateinit var isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
+    @Inject lateinit var picasso: Picasso
 
     private lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
@@ -139,7 +140,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                         }
                     }
                     profileViewModel.username.observe(viewLifecycleOwner, Observer { username ->
-                        binding.showIsOverTextView.htmlText = getString(R.string.broadcaster_show_is_over, username)
+                        binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, username))
                     })
                 }
             }
@@ -255,7 +256,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 val broadcast = result.value.broadcast
                 broadcastName = broadcast.name
                 title = broadcastName
-                Picasso.get()
+                picasso
                         .load(broadcast.game?.iconImageUrl)
                         .into(binding.gameLogoImageView)
                 updateShowIsOverVisibility(broadcast.isOnline())
@@ -277,7 +278,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 } else {
                     binding.friendsWatchingButton?.isEnabled = true
                     binding.friendsWatchingButton?.imageTintList = null
-                    Picasso.get().load(friendAvatarImageUrl)
+                    picasso.load(friendAvatarImageUrl)
                             .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
                             .placeholder(R.drawable.ic_profile)
                             .transform(profileAvatarTransform)

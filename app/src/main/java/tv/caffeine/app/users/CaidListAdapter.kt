@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
@@ -35,7 +36,8 @@ class CaidListAdapter @Inject constructor(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+        private val picasso: Picasso
 ) : ListAdapter<CaidRecord, CaidViewHolder>(
         object : DiffUtil.ItemCallback<CaidRecord?>() {
             override fun areItemsTheSame(oldItem: CaidRecord, newItem: CaidRecord) = oldItem === newItem
@@ -88,7 +90,7 @@ class CaidListAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CaidViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
-        return CaidViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this)
+        return CaidViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this, picasso)
     }
 
     override fun onBindViewHolder(holder: CaidViewHolder, position: Int) {
@@ -102,7 +104,7 @@ class CaidListAdapter @Inject constructor(
     }
 }
 
-class CaidViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope)
+class CaidViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope, val picasso: Picasso)
     : RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
@@ -118,7 +120,7 @@ class CaidViewHolder(itemView: View, private val followHandler: FollowManager.Fo
             followButton.isVisible = item !is CaidRecord.IgnoreRecord
             val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton
             user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme)
+                    followedTheme, notFollowedTheme, picasso)
         }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(item.caid)

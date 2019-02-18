@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.databinding.GoldBundleItemBinding
-import tv.caffeine.app.ui.htmlText
+import tv.caffeine.app.ui.formatUsernameAsHtml
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -19,6 +20,7 @@ interface GoldBundleClickListener {
 
 class GoldBundlesAdapter @Inject constructor(
         private val buyGoldOption: BuyGoldOption,
+        private val picasso: Picasso,
         private val itemClickListener: GoldBundleClickListener
 ) : ListAdapter<GoldBundle, GoldBundleViewHolder>(object: DiffUtil.ItemCallback<GoldBundle?>() {
     override fun areItemsTheSame(oldItem: GoldBundle, newItem: GoldBundle) = oldItem.id == newItem.id
@@ -27,7 +29,7 @@ class GoldBundlesAdapter @Inject constructor(
 }) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoldBundleViewHolder {
         val binding = GoldBundleItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GoldBundleViewHolder(binding, buyGoldOption, itemClickListener)
+        return GoldBundleViewHolder(binding, buyGoldOption, itemClickListener, picasso)
     }
 
     override fun onBindViewHolder(holder: GoldBundleViewHolder, position: Int) {
@@ -38,7 +40,8 @@ class GoldBundlesAdapter @Inject constructor(
 class GoldBundleViewHolder(
         private val binding: GoldBundleItemBinding,
         private val buyGoldOption: BuyGoldOption,
-        private val itemClickListener: GoldBundleClickListener
+        private val itemClickListener: GoldBundleClickListener,
+        private val picasso: Picasso
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(goldBundle: GoldBundle) {
@@ -53,7 +56,7 @@ class GoldBundleViewHolder(
             }
             buyGoldOption == BuyGoldOption.UsingCredits && goldBundle.usingCredits != null -> {
                 val amount = numberFormat.format(goldBundle.usingCredits.cost)
-                binding.dollarCostTextView.htmlText = itemView.resources.getString(R.string.credits_formatted, amount)
+                binding.dollarCostTextView.formatUsernameAsHtml(picasso, itemView.resources.getString(R.string.credits_formatted, amount))
                 binding.dollarCostTextView.alpha = if (goldBundle.usingCredits.canPurchase) 1.0f else 0.5f
             }
             else -> binding.dollarCostTextView.text = null
