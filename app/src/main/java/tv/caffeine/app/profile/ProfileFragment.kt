@@ -74,6 +74,7 @@ class ProfileFragment : CaffeineFragment() {
                     callback.follow(caid)
                 }
             }
+            binding.stageImageView.setOnClickListener { watchBroadcast(username) }
         })
         viewModel.isFollowed.observe(this, Observer { isFollowed ->
             this.isFollowed = isFollowed
@@ -86,7 +87,6 @@ class ProfileFragment : CaffeineFragment() {
         binding.setLifecycleOwner(viewLifecycleOwner)
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }
-        binding.stageImageView.setOnClickListener { watchBroadcast() }
         return binding.root
     }
 
@@ -100,8 +100,8 @@ class ProfileFragment : CaffeineFragment() {
         findNavController().safeNavigate(action)
     }
 
-    private fun watchBroadcast() {
-        val action = ProfileFragmentDirections.actionProfileFragmentToStageFragment(caid)
+    private fun watchBroadcast(username: String) {
+        val action = ProfileFragmentDirections.actionProfileFragmentToStageFragment(username)
         findNavController().safeNavigate(action, NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, false).build())
     }
 }
