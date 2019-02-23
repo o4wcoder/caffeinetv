@@ -41,8 +41,6 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
         if (message == null) return
         Timber.d("notification.body = ${message.notification?.body}")
         Timber.d("data = ${message.data}")
-        val notificationEvent = NotificationEvent(NotificationEvent.Type.Received, message.id, message.tag)
-        analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationEvent))
         when (val imageUrl = message.imageUrl) {
             null -> notify(message)
             else -> {
@@ -61,7 +59,22 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun notify(message: RemoteMessage, bitmap: Bitmap? = null) {
         val notification = message.buildNotification(applicationContext, bitmap)
-        val notificationManager = getSystemService<NotificationManager>() ?: return
-        notificationManager.notify(message.tag, message.numericId, notification)
+        val notificationManager = getSystemService<NotificationManager>()
+        if (notificationManager == null) {
+            val notificationDisplayedEvent = NotificationEvent(NotificationEvent.Type.Received, message.id, message.tag, false)
+            analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationDisplayedEvent))
+            Timber.e("Notification Manager Service is not available")
+            return
+        }
+
+        try {
+            notificationManager.notify(message.tag, message.numericId, notification)
+            val notificationDisplayedEvent = NotificationEvent(NotificationEvent.Type.Received, message.id, message.tag, true)
+            analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationDisplayedEvent))
+        } catch (e: Exception) {
+            val notificationDisplayedEvent = NotificationEvent(NotificationEvent.Type.Received, message.id, message.tag, false)
+            analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationDisplayedEvent))
+            Timber.e(e)
+        }
     }
 }

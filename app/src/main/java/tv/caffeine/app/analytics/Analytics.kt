@@ -25,7 +25,7 @@ class LogAnalytics : Analytics {
     }
 }
 
-data class NotificationEvent(val type: Type, val id: String?, val tag: String?) {
+data class NotificationEvent(val type: Type, val id: String?, val tag: String?, val isDisplayed: Boolean = true) {
     enum class Type {
         Received, Opened
     }
