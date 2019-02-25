@@ -11,6 +11,7 @@ private fun IdentityProvider.toEventName() = when(this) {
 
 private const val NOTIFICATION_ID = "notification_id"
 private const val NOTIFICATION_TAG = "notification_tag"
+private const val NOTIFICATION_IS_DISPLAYED = "notification_is_displayed"
 
 class KochavaAnalytics @Inject constructor(
         private val configuration: Tracker.Configuration
@@ -30,6 +31,7 @@ class KochavaAnalytics @Inject constructor(
                     })
                     .addCustom(NOTIFICATION_ID, event.notification.id ?: "")
                     .addCustom(NOTIFICATION_TAG, event.notification.tag ?: "")
+                    .addCustom(NOTIFICATION_IS_DISPLAYED, event.notification.isDisplayed)
                     .setUserId(event.userId ?: "")
             is AnalyticsEvent.NewAccountClicked -> Tracker.Event("new_account_clicked")
         }
