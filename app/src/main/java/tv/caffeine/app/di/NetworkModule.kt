@@ -3,6 +3,7 @@ package tv.caffeine.app.di
 import android.content.Context
 import com.google.gson.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,7 @@ import tv.caffeine.app.net.LongPollInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
 import tv.caffeine.app.ui.ImgixRequestTransformer
 import java.lang.reflect.Type
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 enum class Service {
@@ -213,6 +215,7 @@ class ImageLoadingModule {
     @Provides
     @Singleton
     fun providesPicasso(context: Context): Picasso = Picasso.Builder(context)
+            .downloader(OkHttp3Downloader(OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build()))
             .requestTransformer(ImgixRequestTransformer())
             .build()
 }
