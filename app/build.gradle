@@ -84,7 +84,7 @@ dependencies {
     implementation 'jp.wasabeef:picasso-transformations:2.2.1'
 
     // Date/Time
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.2'
 
     // Navigation
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigation_version"
@@ -154,7 +154,7 @@ dependencies {
 
     // ThreatMetrix
     implementation 'commons-io:commons-io:2.6'
-    implementation 'commons-codec:commons-codec:1.11'
+    implementation 'commons-codec:commons-codec:1.12'
     implementation fileTree(dir: 'libs', include: ['TrustDefender-5.3-91.aar'])
 
     // Tests
