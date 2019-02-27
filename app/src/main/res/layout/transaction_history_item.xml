@@ -5,10 +5,6 @@
 
     <data>
 
-        <variable
-            name="digitalItemImageUrl"
-            type="java.lang.String"/>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,58 +12,29 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/transaction_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/timestamp_text_view"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Sent" />
-
-        <TextView
-            android:id="@+id/timestamp_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            tools:text="10/25/18 9:42:25 AM"
-            app:layout_constraintBaseline_toBaselineOf="@+id/transaction_title"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/username_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:drawablePadding="@dimen/verified_icon_padding"
-            android:textAppearance="@style/ExploreUsername.NotFollowing"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/transaction_title"
-            tools:drawableEnd="@drawable/verified_large"
-            tools:text="@sample/usernames" />
-
-        <ImageView
-            android:id="@+id/digital_item_image_view"
-            android:layout_width="@dimen/tx_history_avatar_size"
-            android:layout_height="@dimen/tx_history_avatar_size"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:imageUrl="@{digitalItemImageUrl}"
-            app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
-            app:layout_constraintStart_toEndOf="@+id/username_text_view"
-            app:layout_constraintTop_toTopOf="@+id/username_text_view"
-            tools:src="@drawable/ic_digital_items" />
+            tools:text="10/25/18 9:42:25 AM" />
 
         <TextView
             android:id="@+id/gold_cost_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            app:layout_constraintStart_toEndOf="@+id/digital_item_image_view"
-            app:layout_constraintTop_toTopOf="@+id/username_text_view"
-            app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timestamp_text_view"
             tools:text="700" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

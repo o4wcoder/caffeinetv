@@ -11,6 +11,7 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.di.ASSETS_BASE_URL
 import java.text.NumberFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 interface PaymentsClientService {
     @POST("store/get-digital-items")
@@ -84,21 +85,63 @@ fun HugeTransactionHistoryItem.convert(): TransactionHistoryItem? {
 }
 
 sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost: Int, val value: Int) {
-    class Bundle(val costCurrencyCode: String, val bundleId: String, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
-    class SendDigitalItem(val quantity: Int, val recipient: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
-    class ReceiveDigitalItem(val quantity: Int, val sender: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value)
+    abstract fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String?
+    class Bundle(val costCurrencyCode: String, val bundleId: String, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
+        override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
+            return when (costCurrencyCode) {
+                "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, numberFormat.format(value), numberFormat.format(cost))
+                else -> {
+                    val currencyFormatter = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }
+                    resources.getString(R.string.transaction_item_purchased, numberFormat.format(value), currencyFormatter.format(cost / 100f))
+                }
+            }
+        }
+    }
+
+    class SendDigitalItem(val quantity: Int, val recipient: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
+        override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
+            return when(quantity) {
+                1 -> resources.getString(R.string.transaction_item_sent, digitalItemStaticImageUrl, numberFormat.format(cost), username, fontColor)
+                else -> resources.getString(R.string.transaction_items_sent, digitalItemStaticImageUrl, numberFormat.format(cost), username, fontColor, numberFormat.format(quantity))
+            }
+        }
+    }
+
+    class ReceiveDigitalItem(val quantity: Int, val sender: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
+        override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
+            return when(quantity) {
+                1 -> resources.getString(R.string.transaction_item_received, username, fontColor, digitalItemStaticImageUrl, numberFormat.format(value))
+                else -> resources.getString(R.string.transaction_items_received,  username, fontColor, digitalItemStaticImageUrl, numberFormat.format(value), numberFormat.format(quantity))
+            }
+        }
+    }
+
     class CashOut(val state: State, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
         enum class State {
             pending, deposited, failed
         }
-    }
-    class Adjustment(val currencyCode: String, val quantity: Int, id: String, createdAt: Int) : TransactionHistoryItem(id, createdAt, 0, 0) { // Adjustment doesn't have cost or value
-        enum class Kind {
-            credit, debit
+
+        override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
+            val stringRes = when(state) {
+                TransactionHistoryItem.CashOut.State.pending -> R.string.transaction_item_cashout_pending
+                TransactionHistoryItem.CashOut.State.deposited -> R.string.transaction_item_cashout_success
+                TransactionHistoryItem.CashOut.State.failed -> R.string.transaction_item_cashout_failed
+            }
+            return resources.getString(stringRes, numberFormat.format(value), numberFormat.format(cost))
         }
-        val kind: Kind get() = if (quantity >= 0) Kind.credit else Kind.debit
+    }
+
+    class Adjustment(val currencyCode: String, val quantity: Int, id: String, createdAt: Int) : TransactionHistoryItem(id, createdAt, 0, 0) { // Adjustment doesn't have cost or value
+        override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
+            val stringRes = when {
+                quantity >= 0 -> R.string.transaction_item_adjustment_credit
+                else -> R.string.transaction_item_adjustment_debit
+            }
+            return resources.getString(stringRes, numberFormat.format(quantity.absoluteValue))
+        }
     }
 }
+
 class DigitalItemAssets(val iosSceneKitPath: String, val webAssetPath: String, val staticImagePath: String)
 
 val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
@@ -106,38 +149,6 @@ val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
     is TransactionHistoryItem.ReceiveDigitalItem -> "$ASSETS_BASE_URL${assets.staticImagePath}"
     else -> null
 
-}
-
-fun TransactionHistoryItem.costString(resources: Resources): String? {
-    val numberFormat = NumberFormat.getNumberInstance()
-    return when {
-        this is TransactionHistoryItem.Bundle && costCurrencyCode != "CREDITS" -> {
-            val currencyFormatter = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }
-            resources.getString(R.string.transaction_item_purchased, numberFormat.format(value), currencyFormatter.format(cost/100f))
-        }
-        this is TransactionHistoryItem.Bundle && costCurrencyCode == "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, numberFormat.format(value), numberFormat.format(cost))
-        this is TransactionHistoryItem.SendDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_sent, numberFormat.format(cost))
-        this is TransactionHistoryItem.SendDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_sent, numberFormat.format(cost), numberFormat.format(quantity))
-        this is TransactionHistoryItem.ReceiveDigitalItem && quantity == 1 -> resources.getString(R.string.transaction_item_received, numberFormat.format(value))
-        this is TransactionHistoryItem.ReceiveDigitalItem && quantity != 1 -> resources.getString(R.string.transaction_items_received, numberFormat.format(value), numberFormat.format(quantity))
-        this is TransactionHistoryItem.Adjustment -> resources.getString(R.string.transaction_item_received, numberFormat.format(quantity))
-        else -> numberFormat.format(cost)
-    }
-}
-
-val TransactionHistoryItem.titleResId: Int get() = when(this) {
-    is TransactionHistoryItem.Bundle -> R.string.transaction_title_bundle
-    is TransactionHistoryItem.SendDigitalItem -> R.string.transaction_title_send
-    is TransactionHistoryItem.ReceiveDigitalItem -> R.string.transaction_title_receive
-    is TransactionHistoryItem.CashOut -> when(state) {
-        TransactionHistoryItem.CashOut.State.pending -> R.string.transaction_title_cashout_pending
-        TransactionHistoryItem.CashOut.State.deposited -> R.string.transaction_title_cashout_success
-        TransactionHistoryItem.CashOut.State.failed -> R.string.transaction_title_cashout_failed
-    }
-    is TransactionHistoryItem.Adjustment -> when(kind) {
-        TransactionHistoryItem.Adjustment.Kind.credit -> R.string.transaction_title_adjustment_credit
-        TransactionHistoryItem.Adjustment.Kind.debit -> R.string.transaction_title_adjustment_debit
-    }
 }
 
 class GoldBundlesPayload(val maintenance: MaintenanceInfo, val goldBundles: PaymentsCollection<GoldBundle>, val limits: PurchaseLimitsEnvelope)

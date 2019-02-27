@@ -21,7 +21,7 @@
 
     <!-- Coin -->
     <color name="gold_coin">#ffaa00</color>
-    <color name="purple_coin">#aa33aa</color>
+    <color name="purple_coin">#cd66ff</color>
 
     <!-- Chat -->
     <color name="default_user_reference">#999999</color>

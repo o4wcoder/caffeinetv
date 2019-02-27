@@ -2,7 +2,6 @@ package tv.caffeine.app.settings
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,14 +19,13 @@ import org.threeten.bp.format.FormatStyle
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.TransactionHistoryItem
-import tv.caffeine.app.api.costString
-import tv.caffeine.app.api.digitalItemStaticImageUrl
-import tv.caffeine.app.api.titleResId
 import tv.caffeine.app.databinding.TransactionHistoryItemBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.getHexColor
 import tv.caffeine.app.util.safeNavigate
+import java.text.NumberFormat
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -70,44 +68,35 @@ class TransactionHistoryViewHolder(
         private val picasso: Picasso
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    var job: Job? = null
+    private var job: Job? = null
+    private val numberFormat: NumberFormat = NumberFormat.getNumberInstance()
+    private val usernamePlaceholder = itemView.resources.getString(R.string.transaction_history_username_placeholder)
+    private val defaultColor = itemView.context.getHexColor(R.color.black)
 
     fun bind(item: TransactionHistoryItem) {
         job?.cancel()
         val zoneId = ZoneId.systemDefault()
         val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
         binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
-        binding.digitalItemImageUrl = item.digitalItemStaticImageUrl
-        binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources))
-        binding.transactionTitle.setText(item.titleResId)
+        binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, usernamePlaceholder, defaultColor))
         val userCaid = when(item) {
             is TransactionHistoryItem.SendDigitalItem -> item.recipient
             is TransactionHistoryItem.ReceiveDigitalItem -> item.sender
             else -> null
         }
         if (userCaid != null) {
-            val usernameTextAppearance = when {
-                followManager.isFollowing(userCaid) -> R.style.ExploreUsername_Following
-                else -> R.style.ExploreUsername_NotFollowing
-            }
-            binding.usernameTextView.setTextAppearance(usernameTextAppearance)
-            binding.usernameTextView.text = null
             job = scope.launch {
                 val user = followManager.userDetails(userCaid) ?: return@launch
-                val usernameStringResId = when {
-                    user.isVerified -> R.string.user_avatar_username_verified
-                    else -> R.string.user_avatar_username_not_verified
-                }
-                binding.usernameTextView.formatUsernameAsHtml(picasso, itemView.resources.getString(usernameStringResId, user.username, user.avatarImageUrl), followManager.isFollowing(userCaid), R.dimen.tx_history_avatar_size)
+                val colorRes = if (followManager.isFollowing(user.caid)) R.color.caffeine_blue else R.color.black
+                val fontColor = itemView.context.getHexColor(colorRes)
+                binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, user.username, fontColor))
             }
             itemView.setOnClickListener {
                 val action = MainNavDirections.actionGlobalProfileFragment(userCaid)
                 itemView.findNavController().safeNavigate(action)
             }
         } else {
-            binding.usernameTextView.text = null
             itemView.setOnClickListener(null)
         }
-        binding.digitalItemImageView.isVisible = item.digitalItemStaticImageUrl != null
     }
 }
