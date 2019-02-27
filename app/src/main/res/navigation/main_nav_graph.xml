@@ -221,6 +221,10 @@
             android:name="message"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="canSendDI"
+            android:defaultValue="true"
+            app:argType="boolean"/>
     </fragment>
     <fragment
         android:id="@+id/sendDigitalItemFragment"

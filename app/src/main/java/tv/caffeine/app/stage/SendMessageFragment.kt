@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentSendMessageBinding
@@ -42,7 +43,10 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
             setOnAction(EditorInfo.IME_ACTION_SEND) { sendMessage() }
         }
         binding.sendButton.setOnClickListener { sendMessage() }
-        binding.digitalItemButton.setOnClickListener { sendDigitalItem() }
+        binding.digitalItemButton.apply {
+            isVisible = args.canSendDI
+            setOnClickListener { sendDigitalItem() }
+        }
     }
 
     private fun sendMessage() {

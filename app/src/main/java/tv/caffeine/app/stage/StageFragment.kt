@@ -65,6 +65,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
 
     private var isFollowingBroadcaster = false
+    private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,7 +142,11 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                     }
                     profileViewModel.username.observe(viewLifecycleOwner, Observer { username ->
                         binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, username))
+
                     })
+
+                    isMe = followManager.isSelf(userDetails.caid)
+                    updateViewsOnMyStageVisibility()
                 }
             }
             launch {
@@ -233,7 +238,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             viewsToToggle.forEach {
                 it.isVisible = true
             }
-            if (!isFollowingBroadcaster) binding.followButton.isVisible = true
+            if (!isFollowingBroadcaster && !isMe) binding.followButton.isVisible = true
             appBarVisibilityJob = launch {
                 delay(3000)
                 viewsToToggle.forEach {
@@ -246,6 +251,12 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 it.isInvisible = true
             }
             binding.followButton.isVisible = false
+        }
+    }
+
+    private fun updateViewsOnMyStageVisibility() {
+        listOf(binding.giftButton, binding.friendsWatchingButton, binding.followButton, binding.avatarImageView).forEach {
+            it?.isVisible = !isMe
         }
     }
 
@@ -461,7 +472,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private fun openSendMessage(message: String? = null) {
         val fragmentManager = fragmentManager ?: return
         val fragment = SendMessageFragment()
-        val action = StageFragmentDirections.actionStageFragmentToSendMessageFragment(message)
+        val action = StageFragmentDirections.actionStageFragmentToSendMessageFragment(message, !isMe)
         fragment.arguments = action.arguments
         fragment.show(fragmentManager, "sendMessage")
         fragment.setTargetFragment(this, SEND_MESSAGE)
