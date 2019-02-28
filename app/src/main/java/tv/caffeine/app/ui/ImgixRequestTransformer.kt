@@ -11,8 +11,9 @@ class ImgixRequestTransformer(private val alwaysTransform: Boolean = true) : Pic
         if (request.resourceId != 0) return request // don't transform resource requests
         val uri = requireNotNull(request.uri)
         val scheme = uri.scheme ?: return request
+        val host = uri.host ?: return request
         if (scheme != "https" && scheme != "http") return request
-        if (uri.host.startsWith("assets")) return request
+        if (host.contains("assets")) return request
         if (!request.hasSize() && !alwaysTransform) return request
 
         val imgix = Imgix(uri)

@@ -84,7 +84,8 @@ class LiveBroadcastPickerFragment : CaffeineBottomSheetDialogFragment() {
                     }
                 }
             }
-            addItemDecoration(PaddingItemDecoration(resources.getDimensionPixelSize(R.dimen.margin)))
+            val padding = resources.getDimensionPixelSize(R.dimen.margin)
+            addItemDecoration(PaddingItemDecoration(padding, 0, padding, padding))
         }
         viewModel.broadcasters.observe(viewLifecycleOwner, Observer { items ->
             liveBroadcastPickerAdapter.submitList(items)

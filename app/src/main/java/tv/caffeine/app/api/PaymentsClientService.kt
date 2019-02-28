@@ -122,12 +122,13 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
         }
 
         override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
+            val currencyFormatter = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance("USD") }
             val stringRes = when(state) {
                 TransactionHistoryItem.CashOut.State.pending -> R.string.transaction_item_cashout_pending
                 TransactionHistoryItem.CashOut.State.deposited -> R.string.transaction_item_cashout_success
                 TransactionHistoryItem.CashOut.State.failed -> R.string.transaction_item_cashout_failed
             }
-            return resources.getString(stringRes, numberFormat.format(value), numberFormat.format(cost))
+            return resources.getString(stringRes, numberFormat.format(cost), currencyFormatter.format(value / 100f))
         }
     }
 

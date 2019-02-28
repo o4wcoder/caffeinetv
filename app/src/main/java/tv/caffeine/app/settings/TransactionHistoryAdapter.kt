@@ -39,7 +39,7 @@ class TransactionHistoryAdapter @Inject constructor(
                     oldItem.id == newItem.id
 
             override fun areContentsTheSame(oldItem: TransactionHistoryItem, newItem: TransactionHistoryItem) =
-                    oldItem == newItem
+                    oldItem.id == newItem.id
         }
 ), CoroutineScope {
     private val job = SupervisorJob()
@@ -78,7 +78,7 @@ class TransactionHistoryViewHolder(
         val zoneId = ZoneId.systemDefault()
         val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
         binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
-        binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, usernamePlaceholder, defaultColor))
+        binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, usernamePlaceholder, defaultColor), avatarSizeDimen = R.dimen.tx_history_digital_item_size)
         val userCaid = when(item) {
             is TransactionHistoryItem.SendDigitalItem -> item.recipient
             is TransactionHistoryItem.ReceiveDigitalItem -> item.sender
@@ -86,14 +86,21 @@ class TransactionHistoryViewHolder(
         }
         if (userCaid != null) {
             job = scope.launch {
-                val user = followManager.userDetails(userCaid) ?: return@launch
-                val colorRes = if (followManager.isFollowing(user.caid)) R.color.caffeine_blue else R.color.black
+                val user = followManager.userDetails(userCaid)
+                val username = user?.username ?: itemView.resources.getString(R.string.transaction_history_deleted_account)
+                val colorRes = when {
+                    user == null -> R.color.medium_gray
+                    followManager.isFollowing(userCaid) -> R.color.caffeine_blue
+                    else -> R.color.black
+                }
+                if (user != null) {
+                    itemView.setOnClickListener {
+                        val action = MainNavDirections.actionGlobalProfileFragment(userCaid)
+                        itemView.findNavController().safeNavigate(action)
+                    }
+                }
                 val fontColor = itemView.context.getHexColor(colorRes)
-                binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, user.username, fontColor))
-            }
-            itemView.setOnClickListener {
-                val action = MainNavDirections.actionGlobalProfileFragment(userCaid)
-                itemView.findNavController().safeNavigate(action)
+                binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, username, fontColor))
             }
         } else {
             itemView.setOnClickListener(null)
