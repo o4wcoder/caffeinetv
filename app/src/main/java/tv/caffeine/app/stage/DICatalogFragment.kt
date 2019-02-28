@@ -18,6 +18,7 @@ import tv.caffeine.app.settings.BuyGoldOption
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
+import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
 import javax.inject.Inject
@@ -69,7 +70,7 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
             val action = DICatalogFragmentDirections.actionDigitalItemListDialogFragmentToGoldBundlesFragment(BuyGoldOption.UsingPlayStore)
             val fragment = GoldBundlesFragment()
             fragment.arguments = action.arguments
-            fragment.show(fragmentManager, "buyGold")
+            fragment.maybeShow(fragmentManager, "buyGold")
         }
     }
 

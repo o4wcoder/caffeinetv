@@ -22,7 +22,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.scale
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.MediaType
@@ -117,6 +119,11 @@ fun Activity.showSnackbar(@StringRes resId: Int) {
 fun Fragment.showSnackbar(@StringRes resId: Int) {
     val view = this.view ?: return
     Snackbar.make(view, resId, Snackbar.LENGTH_SHORT).show()
+}
+
+fun DialogFragment.maybeShow(fragmentManager: FragmentManager?, tag: String) {
+    if (fragmentManager == null) return
+    show(fragmentManager, tag)
 }
 
 fun convertLinks(

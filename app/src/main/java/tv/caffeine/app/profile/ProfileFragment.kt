@@ -20,6 +20,7 @@ import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
+import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.navigateToUnfollowUserDialog
 import tv.caffeine.app.util.safeNavigate
@@ -38,7 +39,7 @@ class ProfileFragment : CaffeineFragment() {
                     is CaffeineEmptyResult.Error -> {
                         if (result.error.isMustVerifyEmailError()) {
                             val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.show(fragmentManager, "verifyEmail")
+                            fragment.maybeShow(fragmentManager, "verifyEmail")
                         } else {
                             Timber.e("Couldn't follow user ${result.error}")
                         }

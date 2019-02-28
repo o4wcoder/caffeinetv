@@ -24,6 +24,7 @@ import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -59,7 +60,7 @@ class LobbyFragment : CaffeineFragment() {
                 val action = LobbyFragmentDirections.actionLobbyFragmentToBroadcastFragment()
                 findNavController().safeNavigate(action)
             } else {
-                BroadcastPlaceholderDialogFragment().show(fragmentManager, "broadcastPlaceholder")
+                BroadcastPlaceholderDialogFragment().maybeShow(fragmentManager, "broadcastPlaceholder")
             }
         }
         binding.profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))

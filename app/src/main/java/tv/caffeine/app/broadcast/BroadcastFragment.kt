@@ -98,7 +98,7 @@ class BroadcastFragment : CaffeineFragment(), EasyPermissions.PermissionCallback
         }
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         cameraEnumerator = Camera2Enumerator(context)
     }

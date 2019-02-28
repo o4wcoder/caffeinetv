@@ -19,6 +19,7 @@ import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
+import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.showSnackbar
 import java.text.NumberFormat
 import javax.inject.Inject
@@ -190,17 +191,17 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
                     if (availableCredits >= goldBundle.usingCredits.cost) {
                         promptPurchaseGoldBundleUsingCredits(goldBundle)
                     } else {
-                        AlertDialogFragment.withMessage(R.string.cannot_purchase_not_enough_credits).show(fragmentManager, "cannotPurchase")
+                        AlertDialogFragment.withMessage(R.string.cannot_purchase_not_enough_credits).maybeShow(fragmentManager, "cannotPurchase")
                     }
                 } else {
-                    AlertDialogFragment.withMessage(R.string.cannot_purchase_using_credits).show(fragmentManager, "cannotPurchase")
+                    AlertDialogFragment.withMessage(R.string.cannot_purchase_using_credits).maybeShow(fragmentManager, "cannotPurchase")
                 }
             }
             BuyGoldOption.UsingPlayStore -> {
                 if (goldBundle.usingInAppBilling?.canPurchase == true) {
                     purchaseGoldBundleUsingPlayStore(goldBundle)
                 } else {
-                    AlertDialogFragment.withMessage(R.string.cannot_purchase_using_play_store).show(fragmentManager, "cannotPurchase")
+                    AlertDialogFragment.withMessage(R.string.cannot_purchase_using_play_store).maybeShow(fragmentManager, "cannotPurchase")
                 }
             }
         }
@@ -215,7 +216,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
         val fragment = BuyGoldUsingCreditsDialogFragment()
         fragment.arguments = action.arguments
         fragment.setTargetFragment(this, 0)
-        fragment.show(fragmentManager, "buyGoldUsingCredits")
+        fragment.maybeShow(fragmentManager, "buyGoldUsingCredits")
     }
 
     override fun buyGoldBundle(goldBundleId: String) {

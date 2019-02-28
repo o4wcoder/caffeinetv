@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.*
-import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.broadcast.GuideViewModel
+import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.explore.FindBroadcastersUseCase
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase

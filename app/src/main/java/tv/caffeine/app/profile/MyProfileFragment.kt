@@ -209,7 +209,7 @@ class MyProfileFragment : CaffeineFragment() {
     private fun confirmSignOut() {
         SignOutDialogFragment().let {
             it.positiveClickListener =  DialogInterface.OnClickListener { _, _ -> signOut() }
-            it.show(fragmentManager, "signOut")
+            it.maybeShow(fragmentManager, "signOut")
         }
     }
 

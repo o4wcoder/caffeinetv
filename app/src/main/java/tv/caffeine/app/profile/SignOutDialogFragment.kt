@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import timber.log.Timber
 import tv.caffeine.app.R
-import java.lang.IllegalStateException
 
 class SignOutDialogFragment : DialogFragment() {
     var positiveClickListener: DialogInterface.OnClickListener? = null

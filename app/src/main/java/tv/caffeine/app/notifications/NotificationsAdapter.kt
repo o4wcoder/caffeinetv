@@ -27,10 +27,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
-import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
-import tv.caffeine.app.util.configure
-import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -67,7 +64,7 @@ class NotificationsAdapter @Inject constructor(
                      is CaffeineEmptyResult.Error -> {
                          if (result.error.isMustVerifyEmailError()) {
                              val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                             fragment.show(fragmentManager, "verifyEmail")
+                             fragment.maybeShow(fragmentManager, "verifyEmail")
                          } else {
                              Timber.e("Couldn't follow user ${result.error}")
                          }

@@ -36,6 +36,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
@@ -105,7 +106,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                 setSummary(status)
                 setOnPreferenceClickListener {
                     val fragment = AlertDialogFragment.withMessage(R.string.manage_mfa_coming_soon)
-                    fragment.show(fragmentManager, "mfaSoonDialog")
+                    fragment.maybeShow(fragmentManager, "mfaSoonDialog")
                     true
                 }
             }
@@ -189,11 +190,11 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         val fragment = DisconnectIdentityDialogFragment()
                         fragment.arguments = action.arguments
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
-                        fragment.show(fragmentManager, "disconnectTwitter")
+                        fragment.maybeShow(fragmentManager, "disconnectTwitter")
                     } else {
                         val fragment = TwitterAuthFragment()
                         fragment.setTargetFragment(this, 0)
-                        fragment.show(fragmentManager, "twitterAuth")
+                        fragment.maybeShow(fragmentManager, "twitterAuth")
                     }
                     true
                 }
@@ -212,7 +213,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         val fragment = DisconnectIdentityDialogFragment()
                         fragment.arguments = action.arguments
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
-                        fragment.show(fragmentManager, "disconnectFacebook")
+                        fragment.maybeShow(fragmentManager, "disconnectFacebook")
                     } else {
                         val loginManager = LoginManager.getInstance()
                         loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {

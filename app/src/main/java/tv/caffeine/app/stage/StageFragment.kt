@@ -459,7 +459,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                     is CaffeineEmptyResult.Error -> {
                         if (result.error.isMustVerifyEmailError()) {
                             val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.show(fragmentManager, "verifyEmail")
+                            fragment.maybeShow(fragmentManager, "verifyEmail")
                         } else {
                             Timber.e("Couldn't follow user ${result.error}")
                         }

@@ -27,6 +27,7 @@ import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentLandingBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
@@ -72,7 +73,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.twitter))
             val fragment = TwitterAuthFragment()
             fragment.setTargetFragment(this, 0)
-            fragment.show(fragmentManager, "twitterAuth")
+            fragment.maybeShow(fragmentManager, "twitterAuth")
         }
         args.message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
