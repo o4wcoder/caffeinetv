@@ -2,12 +2,16 @@ package tv.caffeine.app.stage
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -77,22 +81,34 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
         retainInstance = true
         broadcasterUsername = args.broadcasterUsername()
+        context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
+                NetworkRequest.Builder().build(), networkCallback)
+
         launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
             if (isVersionSupported is CaffeineEmptyResult.Error) {
                 handleError(CaffeineResult.Error<ApiErrorResult>(VersionCheckError()))
                 return@launch
             }
-            val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-            launch {
-                followManager.refreshFollowedUsers()
-                isFollowingBroadcaster = followManager.isFollowing(userDetails.caid)
-            }
-            connectStreams(userDetails.username)
-            launch(dispatchConfig.main) {
-                connectMessages(userDetails.stageId)
-            }
+            connectStage()
         }
+    }
+
+    private suspend fun connectStage() {
+        val userDetails = followManager.userDetails(broadcasterUsername) ?: return
+        launch {
+            followManager.refreshFollowedUsers()
+            isFollowingBroadcaster = followManager.isFollowing(userDetails.caid)
+        }
+        connectStreams(userDetails.username)
+        launch(dispatchConfig.main) {
+            connectMessages(userDetails.stageId)
+        }
+    }
+
+    private fun disconnectStage() {
+        disconnectStreams()
+        chatViewModel.disconnect()
     }
 
     private var title: String? = null
@@ -102,7 +118,8 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
 
     override fun onDestroy() {
-        disconnectStreams()
+        disconnectStage()
+        context?.getSystemService<ConnectivityManager>()?.unregisterNetworkCallback(networkCallback)
         super.onDestroy()
     }
 
@@ -114,7 +131,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
         // Inflate the layout for this fragment
         binding = FragmentStageBinding.inflate(inflater, container, false)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -402,6 +419,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private fun disconnectStreams() {
         newReyesController?.close()
         newReyesController = null
+        videoTracks.clear()
     }
 
     private fun configureButtons() {
@@ -501,5 +519,25 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private fun setMediaTracksEnabled(enabled: Boolean) {
         videoTracks.values.forEach { it.setEnabled(enabled) }
+    }
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        private var wasNetworkLost = false
+
+        override fun onAvailable(network: Network?) {
+            super.onAvailable(network)
+            if (wasNetworkLost) {
+                wasNetworkLost = false
+                launch {
+                    connectStage()
+                }
+            }
+        }
+
+        override fun onLost(network: Network?) {
+            super.onLost(network)
+            wasNetworkLost = true
+            disconnectStage()
+        }
     }
 }

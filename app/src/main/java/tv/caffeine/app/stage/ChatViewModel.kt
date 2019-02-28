@@ -145,8 +145,11 @@ class ChatViewModel(
     }
 
     override fun onCleared() {
-        messageHandshake?.close()
+        disconnect()
         super.onCleared()
     }
 
+    fun disconnect() {
+        messageHandshake?.close()
+    }
 }

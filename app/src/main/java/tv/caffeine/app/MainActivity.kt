@@ -8,6 +8,7 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -28,6 +29,8 @@ import tv.caffeine.app.util.*
 import javax.inject.Inject
 
 private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment, R.id.needsUpdateFragment)
+
+private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
 
 class MainActivity : DaggerAppCompatActivity() {
 
@@ -133,19 +136,22 @@ class MainActivity : DaggerAppCompatActivity() {
     private fun closeNoNetworkFragment() = runOnUiThread { navController.closeNoNetwork() }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onUnavailable() {
+
+        private val handler = Handler()
+        private val runnable = Runnable {
             openNoNetworkFragment()
         }
 
         override fun onAvailable(network: Network?) {
             if (isNetworkAvailable()) {
+                handler.removeCallbacks(runnable)
                 closeNoNetworkFragment()
             }
         }
 
         override fun onLost(network: Network?) {
             if (!isNetworkAvailable()) {
-                openNoNetworkFragment()
+                handler.postDelayed(runnable, OPEN_NO_NETWORK_FRAGMENT_DELAY_MS)
             }
         }
     }
