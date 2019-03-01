@@ -43,9 +43,9 @@ fun Context.isNetworkAvailable(): Boolean {
     return connectivityManager.activeNetworkInfo?.isConnected == true
 }
 
-fun Context.safeUnregisterReceiver(receiver: BroadcastReceiver) {
+fun ConnectivityManager.safeUnregisterNetworkCallback(callback: ConnectivityManager.NetworkCallback) {
     try {
-        unregisterReceiver(receiver)
+        unregisterNetworkCallback(callback)
     } catch(e: IllegalArgumentException) {
         Timber.d(e)
     }

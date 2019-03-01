@@ -128,7 +128,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun stopConnectivityMonitoring() {
         val connectivityManager = getSystemService<ConnectivityManager>() ?: return
-        connectivityManager.unregisterNetworkCallback(networkCallback)
+        connectivityManager.safeUnregisterNetworkCallback(networkCallback)
     }
 
     private fun openNoNetworkFragment() = runOnUiThread { navController.navigateToNoNetwork() }

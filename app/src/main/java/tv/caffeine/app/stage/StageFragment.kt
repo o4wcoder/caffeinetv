@@ -119,7 +119,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onDestroy() {
         disconnectStage()
-        context?.getSystemService<ConnectivityManager>()?.unregisterNetworkCallback(networkCallback)
+        context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
         super.onDestroy()
     }
 
