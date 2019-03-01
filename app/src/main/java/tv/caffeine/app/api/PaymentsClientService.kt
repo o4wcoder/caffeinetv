@@ -89,7 +89,7 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
     class Bundle(val costCurrencyCode: String, val bundleId: String, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
         override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
             return when (costCurrencyCode) {
-                "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, numberFormat.format(value), numberFormat.format(cost))
+                "CREDITS" -> resources.getString(R.string.transaction_item_purchased_using_credits, numberFormat.format(cost), numberFormat.format(value))
                 else -> {
                     val currencyFormatter = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(costCurrencyCode) }
                     resources.getString(R.string.transaction_item_purchased, numberFormat.format(value), currencyFormatter.format(cost / 100f))
@@ -128,7 +128,7 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
                 TransactionHistoryItem.CashOut.State.deposited -> R.string.transaction_item_cashout_success
                 TransactionHistoryItem.CashOut.State.failed -> R.string.transaction_item_cashout_failed
             }
-            return resources.getString(stringRes, numberFormat.format(cost), currencyFormatter.format(value / 100f))
+            return resources.getString(stringRes, currencyFormatter.format(value / 100f), numberFormat.format(cost))
         }
     }
 
