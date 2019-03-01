@@ -534,10 +534,24 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             }
         }
 
+        /**
+         * 1. AP on, wifi off -> stage -> wifi on -> AP off -> isNetworkAvailable = true -> connectStage()
+         * 2. AP on, wifi on -> stage -> wifi off -> isNetworkAvailable = false -> onAvailable() -> connectStage()
+         * 3. Wifi on, AP on/off -> stage -> AP off/on -> no callbacks
+         *
+         * There is a potential Android bug in scenario #1 after the "wifi on" step.
+         * The data is still being funneled through AP, but Android thinks wifi is the active network.
+         * When we turn off AP, we need to disconnect the stage on AP and re-connect it on wifi.
+         */
         override fun onLost(network: Network?) {
             super.onLost(network)
             wasNetworkLost = true
             disconnectStage()
+            if (context?.isNetworkAvailable() == true) {
+                launch {
+                    connectStage()
+                }
+            }
         }
     }
 }
