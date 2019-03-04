@@ -1,16 +1,16 @@
 package tv.caffeine.app.util
 
-import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.R
 import tv.caffeine.app.chat.mentionsUsername
 import tv.caffeine.app.chat.messageBackground
 
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class MessageBackgroundTests {
 
     @Test

@@ -2,16 +2,16 @@ package tv.caffeine.app.util
 
 import android.text.style.UnderlineSpan
 import androidx.core.text.getSpans
-import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.R
 import tv.caffeine.app.chat.highlightUsernames
 import tv.caffeine.app.chat.userReferenceStyle
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class HighlightUsernamesTests {
 
     @Test
