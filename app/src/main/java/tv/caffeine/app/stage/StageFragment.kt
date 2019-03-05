@@ -94,19 +94,27 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
     }
 
-    private suspend fun connectStage() {
-        val userDetails = followManager.userDetails(broadcasterUsername) ?: return
-        launch {
-            followManager.refreshFollowedUsers()
-            isFollowingBroadcaster = followManager.isFollowing(userDetails.caid)
-        }
-        connectStreams(userDetails.username)
-        launch(dispatchConfig.main) {
-            connectMessages(userDetails.stageId)
+    private var connectStageJob: Job? = null
+
+    private fun connectStage() {
+        if (connectStageJob == null) {
+            connectStageJob = launch {
+                val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
+                launch {
+                    followManager.refreshFollowedUsers()
+                    isFollowingBroadcaster = followManager.isFollowing(userDetails.caid)
+                }
+                connectStreams(userDetails.username)
+                launch(dispatchConfig.main) {
+                    connectMessages(userDetails.stageId)
+                }
+            }
         }
     }
 
     private fun disconnectStage() {
+        connectStageJob?.cancel()
+        connectStageJob = null
         disconnectStreams()
         chatViewModel.disconnect()
     }
@@ -217,14 +225,14 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onStart() {
         super.onStart()
-        setMediaTracksEnabled(true)
-        newReyesController?.unmute()
+        connectStage()
     }
+
+    private fun isChangingConfigurations() = activity?.isChangingConfigurations != false
 
     override fun onStop() {
         super.onStop()
-        setMediaTracksEnabled(false)
-        newReyesController?.mute()
+        if (!isChangingConfigurations()) disconnectStage()
     }
 
     private fun initSurfaceViewRenderer() {
@@ -515,10 +523,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             renderer.release()
         }
         renderers.clear()
-    }
-
-    private fun setMediaTracksEnabled(enabled: Boolean) {
-        videoTracks.values.forEach { it.setEnabled(enabled) }
     }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {

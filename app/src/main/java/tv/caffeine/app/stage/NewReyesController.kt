@@ -282,18 +282,6 @@ class NewReyesController @AssistedInject constructor(
         return configureConnections(peerConnection)
     }
 
-    fun mute() {
-        audioTracks.values.forEach {
-            it.setEnabled(false)
-        }
-    }
-
-    fun unmute() {
-        audioTracks.values.forEach {
-            it.setEnabled(true)
-        }
-    }
-
     fun close() {
         job.cancel()
         feedChannel.close()
