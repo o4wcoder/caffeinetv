@@ -1,6 +1,5 @@
 package tv.caffeine.app.di
 
-import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
@@ -16,27 +15,44 @@ import javax.inject.Singleton
 
 private const val CAFFEINE_SHARED_PREFERENCES = "caffeine"
 
+@Module(includes = [
+    KeyStoreModule::class,
+    SharedPreferencesModule::class,
+    SettingsStorageModule::class,
+    AuthWatcherModule::class,
+    FeatureConfigModule::class
+])
+class DataModule
+
 @Module
-class DataModule {
-
-    @Provides
-    fun providesContext(application: Application): Context = application
-
-    @Provides
-    fun providesCaffeineSharedPreferences(context: Context) = context.getSharedPreferences(CAFFEINE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-
+class KeyStoreModule {
     @Provides
     @Singleton
     fun providesKeyStore(): KeyStore = KeyStoreHelper.defaultKeyStore()
+}
 
+@Module
+class SharedPreferencesModule {
+    @Provides
+    fun providesCaffeineSharedPreferences(context: Context) = context.getSharedPreferences(CAFFEINE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+}
+
+@Module
+class SettingsStorageModule {
     @Provides
     @Singleton
     fun providesSettingsStorage(sharedPrefsStorage: SharedPrefsStorage, keyStoreHelper: KeyStoreHelper): SettingsStorage = EncryptedSettingsStorage(keyStoreHelper, sharedPrefsStorage)
+}
 
+@Module
+class AuthWatcherModule {
     @Provides
     @Singleton
     fun providesAuthWatcher(notificationAuthWatcher: NotificationAuthWatcher): AuthWatcher = notificationAuthWatcher
+}
 
+@Module
+class FeatureConfigModule {
     @Provides
     @Singleton
     fun providesFeatureConfig(): FeatureConfig = FeatureConfig()

@@ -10,10 +10,13 @@ import tv.caffeine.app.di.DaggerCaffeineComponent
 import javax.inject.Inject
 
 class CaffeineApplication : DaggerApplication() {
+    lateinit var injector: AndroidInjector<out DaggerApplication>
+
     @Inject lateinit var timberTree: Timber.Tree
     @Inject lateinit var analytics: Analytics
 
     override fun onCreate() {
+        injector = DaggerCaffeineComponent.builder().create(this)
         super.onCreate()
         AndroidThreeTen.init(this)
         Timber.plant(timberTree)
@@ -21,6 +24,5 @@ class CaffeineApplication : DaggerApplication() {
         analytics.initialize()
     }
 
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication>
-            = DaggerCaffeineComponent.builder().create(this)
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> = injector
 }

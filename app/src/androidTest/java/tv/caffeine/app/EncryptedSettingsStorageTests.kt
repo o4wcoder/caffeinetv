@@ -2,10 +2,9 @@ package tv.caffeine.app
 
 import org.junit.Assert
 import org.junit.Test
-import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.settings.EncryptedSettingsStorage
+import tv.caffeine.app.settings.InMemorySettingsStorage
 import tv.caffeine.app.settings.KeyStoreHelper
-import tv.caffeine.app.settings.SettingsStorage
 import java.nio.charset.Charset
 
 class EncryptedSettingsStorageTests {
@@ -33,5 +32,3 @@ class EncryptedSettingsStorageTests {
         Assert.assertEquals(originalString, decryptedString)
     }
 }
-
-class InMemorySettingsStorage(override var refreshToken: String? = null, override var caid: CAID? = null, override var clientId: String? = null) : SettingsStorage

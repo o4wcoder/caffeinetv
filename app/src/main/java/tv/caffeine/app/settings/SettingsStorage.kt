@@ -25,6 +25,8 @@ interface SettingsStorage {
     }
 }
 
+class InMemorySettingsStorage(override var refreshToken: String? = null, override var caid: CAID? = null, override var clientId: String? = null) : SettingsStorage
+
 private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
 private const val CAID_KEY = "CAID"
 private const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
