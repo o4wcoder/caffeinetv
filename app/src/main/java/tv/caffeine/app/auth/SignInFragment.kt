@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -20,7 +21,7 @@ class SignInFragment : CaffeineFragment() {
 
     private lateinit var binding: FragmentSignInBinding
 
-    private val signInViewModel by lazy { viewModelProvider.get(SignInViewModel::class.java) }
+    private val signInViewModel: SignInViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

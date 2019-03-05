@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -27,7 +28,7 @@ import tv.caffeine.app.util.safeNavigate
 
 class ProfileFragment : CaffeineFragment() {
 
-    private val viewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
+    private val viewModel: ProfileViewModel by viewModels { viewModelFactory }
     private val args by navArgs<ProfileFragmentArgs>()
     private lateinit var caid: CAID
     private lateinit var binding: FragmentProfileBinding
@@ -85,7 +86,7 @@ class ProfileFragment : CaffeineFragment() {
             }
         })
         binding.profileViewModel = viewModel
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }
         return binding.root

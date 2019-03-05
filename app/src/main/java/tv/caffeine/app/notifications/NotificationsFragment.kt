@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import tv.caffeine.app.databinding.UserListFragmentBinding
@@ -15,13 +16,13 @@ class NotificationsFragment : CaffeineFragment() {
 
     @Inject lateinit var notificationsAdapter: NotificationsAdapter
 
-    private val viewModel by lazy { viewModelProvider.get(NotificationsViewModel::class.java) }
+    private val viewModel: NotificationsViewModel by viewModels { viewModelFactory }
     private lateinit var binding: UserListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

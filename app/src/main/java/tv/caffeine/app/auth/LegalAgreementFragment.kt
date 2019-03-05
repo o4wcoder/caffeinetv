@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -35,11 +36,11 @@ class LegalAgreementFragment : CaffeineFragment() {
 
     private lateinit var binding: FragmentLegalAgreementBinding
 
-    private val legalAgreementViewModel by lazy { viewModelProvider.get(LegalAgreementViewModel::class.java) }
+    private val legalAgreementViewModel: LegalAgreementViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentLegalAgreementBinding.inflate(inflater, container, false)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

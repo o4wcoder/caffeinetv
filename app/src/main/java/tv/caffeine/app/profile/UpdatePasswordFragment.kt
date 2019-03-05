@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import tv.caffeine.app.api.currentPasswordErrorsString
@@ -15,7 +16,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 
 class UpdatePasswordFragment : CaffeineFragment() {
     private lateinit var binding: FragmentUpdatePasswordBinding
-    private val viewModel by lazy { viewModelProvider.get(UpdateProfileViewModel::class.java) }
+    private val viewModel: UpdateProfileViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

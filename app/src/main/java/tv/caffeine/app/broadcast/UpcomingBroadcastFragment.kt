@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -45,7 +46,7 @@ class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
     @Inject lateinit var guideAdapter: GuideAdapter
     @Inject lateinit var gson: Gson
     private var binding: FragmentUpcomingBroadcastBinding? = null
-    private val viewModel by lazy { viewModelProvider.get(GuideViewModel::class.java)}
+    private val viewModel: GuideViewModel by viewModels { viewModelFactory }
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 

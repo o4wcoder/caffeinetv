@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,7 +21,7 @@ class ExploreFragment : CaffeineFragment() {
     @Inject lateinit var exploreAdapter: ExploreAdapter
     @Inject lateinit var searchUsersAdapter: SearchUsersAdapter
 
-    private val viewModel by lazy { viewModelProvider.get(ExploreViewModel::class.java) }
+    private val viewModel: ExploreViewModel by viewModels { viewModelFactory }
     private lateinit var binding: FragmentExploreBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

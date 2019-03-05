@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -29,7 +30,7 @@ class FollowingFragment : CaffeineFragment() {
 
     @Inject lateinit var caidListAdapter: CaidListAdapter
 
-    private val viewModel by lazy { viewModelProvider.get(FollowingViewModel::class.java) }
+    private val viewModel: FollowingViewModel by viewModels { viewModelFactory }
     private val args by navArgs<FollowingFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

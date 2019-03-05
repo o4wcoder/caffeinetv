@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -29,13 +30,13 @@ class FollowersFragment : CaffeineFragment() {
 
     @Inject lateinit var caidListAdapter: CaidListAdapter
 
-    private val viewModel by lazy { viewModelProvider.get(FollowersViewModel::class.java) }
+    private val viewModel: FollowersViewModel by viewModels { viewModelFactory }
     private val args by navArgs<FollowersFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         caidListAdapter.fragmentManager = fragmentManager
         binding.userListRecyclerView.apply {
             adapter = caidListAdapter

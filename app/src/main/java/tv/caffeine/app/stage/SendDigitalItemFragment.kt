@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
@@ -37,8 +38,8 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
     private lateinit var recipientCaid: CAID
     private var message: String? = null
 
-    private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
-    private val sendDigitalItemViewModel by lazy { viewModelProvider.get(SendDigitalItemViewModel::class.java) }
+    private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
+    private val sendDigitalItemViewModel: SendDigitalItemViewModel by viewModels { viewModelFactory }
     private val args by navArgs<SendDigitalItemFragmentArgs>()
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
@@ -52,7 +53,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSendDigitalItemBinding.inflate(inflater, container, false)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

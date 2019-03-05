@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.android.billingclient.api.*
@@ -30,7 +31,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
     @Inject lateinit var picasso: Picasso
 
     private lateinit var binding: FragmentGoldBundlesBinding
-    private val viewModel by lazy { viewModelProvider.get(GoldBundlesViewModel::class.java) }
+    private val viewModel: GoldBundlesViewModel by viewModels { viewModelFactory }
     private val goldBundlesAdapter by lazy {
         GoldBundlesAdapter(buyGoldOption, picasso, object : GoldBundleClickListener {
             override fun onClick(goldBundle: GoldBundle) {
@@ -137,7 +138,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentGoldBundlesBinding.inflate(inflater, container, false).apply {
-            setLifecycleOwner(viewLifecycleOwner)
+            lifecycleOwner = viewLifecycleOwner
             goldBundlesRecyclerView.adapter = goldBundlesAdapter
         }
         return binding.root

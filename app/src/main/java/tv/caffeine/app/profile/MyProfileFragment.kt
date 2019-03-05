@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.facebook.login.LoginManager
@@ -56,8 +57,8 @@ class MyProfileFragment : CaffeineFragment() {
 
     private lateinit var binding: FragmentMyProfileBinding
 
-    private val viewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
-    private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
+    private val viewModel: MyProfileViewModel by viewModels { viewModelFactory }
+    private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
     private val args by navArgs<MyProfileFragmentArgs>()
 
     private var cameraImagePath: String? = null
@@ -78,7 +79,7 @@ class MyProfileFragment : CaffeineFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentMyProfileBinding.inflate(inflater, container, false)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

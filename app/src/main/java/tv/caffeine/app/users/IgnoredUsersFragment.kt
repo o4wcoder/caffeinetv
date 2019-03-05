@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -26,7 +27,7 @@ class IgnoredUsersFragment : CaffeineFragment() {
 
     @Inject lateinit var caidListAdapter: CaidListAdapter
 
-    private val viewModel by lazy { viewModelProvider.get(IgnoredUsersViewModel::class.java) }
+    private val viewModel: IgnoredUsersViewModel by viewModels { viewModelFactory }
     private lateinit var binding: UserListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

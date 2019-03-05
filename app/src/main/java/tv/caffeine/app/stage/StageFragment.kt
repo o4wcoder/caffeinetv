@@ -14,6 +14,7 @@ import android.widget.ProgressBar
 import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -65,8 +66,8 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private var broadcastName: String? = null
 
-    private val chatViewModel: ChatViewModel by lazy { viewModelProvider.get(ChatViewModel::class.java) }
-    private val profileViewModel by lazy { viewModelProvider.get(ProfileViewModel::class.java) }
+    private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
+    private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
     private var isFollowingBroadcaster = false
     private var isMe = false

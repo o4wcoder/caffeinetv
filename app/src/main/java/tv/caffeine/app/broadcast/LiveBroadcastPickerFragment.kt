@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -41,7 +42,7 @@ class LiveBroadcastPickerFragment : CaffeineBottomSheetDialogFragment() {
 
     @Inject lateinit var liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter
     private var binding: FragmentLiveBroadcastPickerBinding? = null
-    private val viewModel by lazy { viewModelProvider.get(LiveHostableBroadcastersViewModel::class.java) }
+    private val viewModel: LiveHostableBroadcastersViewModel by viewModels { viewModelFactory }
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 

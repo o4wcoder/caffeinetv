@@ -1,7 +1,6 @@
 package tv.caffeine.app.ui
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -21,10 +20,8 @@ open class CaffeineFragment : DaggerFragment(), CoroutineScope {
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var dispatchConfig: DispatchConfig
 
-    protected val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-
     protected lateinit var job: Job
-    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable, "Coroutine throwable")
     }
 

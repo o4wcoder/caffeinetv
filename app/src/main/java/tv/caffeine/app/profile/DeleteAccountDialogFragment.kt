@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.EditText
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -31,7 +32,7 @@ class DeleteAccountDialogFragment : CaffeineDialogFragment() {
     @Inject lateinit var accountsService: AccountsService
     private lateinit var username: String
     private lateinit var passwordEditText: EditText
-    private val viewModel by lazy { viewModelProvider.get(DeleteAccountViewModel::class.java) }
+    private val viewModel: DeleteAccountViewModel by viewModels { viewModelFactory }
     private val args by navArgs<DeleteAccountDialogFragmentArgs>()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -34,7 +35,7 @@ import javax.inject.Inject
 class ReportDialogFragment : CaffeineDialogFragment() {
 
     @Inject lateinit var usersService: UsersService
-    private val viewModel by lazy { viewModelProvider.get(ReportUserViewModel::class.java) }
+    private val viewModel: ReportUserViewModel by viewModels { viewModelFactory }
     private lateinit var caid: CAID
     private lateinit var username: String
     private var shouldNavigateBackWhenDone = false

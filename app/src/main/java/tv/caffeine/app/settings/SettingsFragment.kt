@@ -6,8 +6,12 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
 import androidx.preference.CheckBoxPreference
 import androidx.preference.PreferenceFragmentCompat
@@ -40,6 +44,7 @@ import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
+import kotlin.collections.set
 
 private const val DISCONNECT_IDENTITY = 1
 
@@ -49,10 +54,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(SettingsViewModel::class.java) }
-    private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
-    private lateinit var notificationSettingsViewModel: NotificationSettingsViewModel
+    private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
+    private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
+    private val notificationSettingsViewModel: NotificationSettingsViewModel by activityViewModels { viewModelFactory }
 
     private val callbackManager: CallbackManager = CallbackManager.Factory.create()
 
@@ -74,8 +78,6 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
-        notificationSettingsViewModel = ViewModelProviders.of(context as FragmentActivity, viewModelFactory)
-                .get(NotificationSettingsViewModel::class.java)
     }
 
     override fun onStop() {

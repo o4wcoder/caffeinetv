@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import timber.log.Timber
@@ -21,7 +22,7 @@ class TransactionHistoryFragment : CaffeineFragment() {
     @Inject lateinit var adapter: TransactionHistoryAdapter
 
     private lateinit var binding: FragmentTransactionHistoryBinding
-    private val viewModel by lazy { viewModelProvider.get(TransactionHistoryViewModel::class.java) }
+    private val viewModel: TransactionHistoryViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DiffUtil
@@ -43,8 +44,8 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
             }
         })
     }
-    private val viewModel by lazy { viewModelProvider.get(DICatalogViewModel::class.java) }
-    private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
+    private val viewModel: DICatalogViewModel by viewModels { viewModelFactory }
+    private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
     private lateinit var binding: FragmentDiCatalogBinding
 
     override fun getTheme() = R.style.DarkBottomSheetDialog

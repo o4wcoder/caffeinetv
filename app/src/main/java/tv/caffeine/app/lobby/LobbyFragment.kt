@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -35,8 +36,8 @@ class LobbyFragment : CaffeineFragment() {
     @Inject lateinit var featureConfig: FeatureConfig
     @Inject lateinit var picasso: Picasso
 
-    private val viewModel by lazy { viewModelProvider.get(LobbyViewModel::class.java) }
-    private val myProfileViewModel by lazy { viewModelProvider.get(MyProfileViewModel::class.java) }
+    private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
+    private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
     private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
 

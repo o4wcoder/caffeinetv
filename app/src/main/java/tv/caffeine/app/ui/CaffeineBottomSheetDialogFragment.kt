@@ -1,7 +1,6 @@
 package tv.caffeine.app.ui
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -13,8 +12,6 @@ import kotlin.coroutines.CoroutineContext
 open class CaffeineBottomSheetDialogFragment : DaggerBottomSheetDialogFragment(), CoroutineScope {
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var dispatchConfig: DispatchConfig
-
-    protected val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     protected lateinit var job: Job
     override val coroutineContext: CoroutineContext

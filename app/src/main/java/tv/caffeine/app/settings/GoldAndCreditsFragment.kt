@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.android.billingclient.api.BillingClient
@@ -34,8 +35,8 @@ class GoldAndCreditsFragment : CaffeineFragment() {
     @Inject lateinit var featureConfig: FeatureConfig
     @Inject lateinit var picasso: Picasso
     private lateinit var binding: FragmentGoldAndCreditsBinding
-    private val walletViewModel by lazy { viewModelProvider.get(WalletViewModel::class.java) }
-    private val goldBundlesViewModel by lazy { viewModelProvider.get(GoldBundlesViewModel::class.java) }
+    private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
+    private val goldBundlesViewModel: GoldBundlesViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentGoldAndCreditsBinding.inflate(inflater, container, false).apply {
