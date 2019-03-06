@@ -38,9 +38,6 @@
             </intent-filter>
             <nav-graph android:value="@navigation/main_nav_graph"/>
         </activity>
-        <activity
-            android:name=".stage.StageActivity"
-            android:configChanges="orientation|smallestScreenSize|screenSize|screenLayout" />
 
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
