@@ -29,7 +29,25 @@ before_install:
   - echo -e "\n24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "$ANDROID_HOME/licenses/android-sdk-license"
   - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" >> "$ANDROID_HOME/licenses/android-sdk-preview-license"
   - ./gradlew dependencies || true
-script: "./gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace"
+env:
+  - SUBDOMAIN=android-build-output TEST_REPORT_PATH="app/build/reports/tests"
+script:
+  - './gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace'
+  - 'cp scripts/test_report_index.html $TEST_REPORT_PATH/index.html'
+  - 'echo "Test report: https://$SUBDOMAIN.caffeine.tv/$TRAVIS_JOB_ID/index.html"'
+deploy:
+  - provider: gcs
+    access_key_id: $GCS_ACCESS_KEY_ID
+    secret_access_key: $GCS_SECRET_ACCESS_KEY
+    bucket: caffeine-internal-tool-web-clients
+    skip_cleanup: true
+    local_dir: $TEST_REPORT_PATH
+    upload-dir: "$SUBDOMAIN/$TRAVIS_JOB_ID"
+    cache_control: no-cache
+    detect_encoding: true
+    on:
+      all_branches: true
+
 notifications:
   slack:
     secure: HG5LqHv7N93K6kQC3OYRQif81tOw+YSSuEbJgq1BAQJTbeaFEyPCcMIk5eDgbIRGqnNmo5AhoZ6HmIXINOXWCfHGHV5T5OgaJB3JQtjB8Ot+D1quxDkpduO+rx5mVMq8+4iL63kA3bbfCG03dEnpwRPDUCXnbRIwEHQZwXFRlJp2XBz4lnq0t1V5r+pHK5rOvj8dRj0p78BVn6W8tMNJY/ovjQNYR6pPr5+2m/fUAy8JSz4/iC9+12uZihNpFDe36cB8zEf4x6sH6c0NwTk+i7qB7lWE81dbOkDzxKtUpX3dMAQBvmrQIYqZlq/GQY4s9w4/1Zo8rB5+HY5tU5UPdMt+8uwQmrxNAkJnl5qWWrc0irFHNK3bGjR15FOvoFe0yV0svBIjnPDHPCcwZdA+0r5nd6kBwvNqiGKYrRgH43Vc7Wo7mwMwVRSurMUDv49GWJreaCnvMmTB0GhVV7jdjHCd1lB97s+LCcPVqNpDlwZ3yu32iWa9Ygo8w6MBmyIH6/UiyoQo5kVmzEm/YftWFDsnEAU0ZMDofmC2WqB+ZtDY+X6Xnq1fonRXCFAkU820OtAfN7znElTAWAgSNhPDHcydPT8jpUO5RcjZJwcIPyebpAajViI8CTvV0S9h5GNnI+SVDW/0JpuFI/isOAbhiOew8Yg8aVvZwMVThasGMTQ=
