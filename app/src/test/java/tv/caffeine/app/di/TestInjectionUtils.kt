@@ -20,7 +20,7 @@ class InjectionActivityTestRule<T : Activity>(
     }
 }
 
-private fun CaffeineApplication.setApplicationInjector(injector: AndroidInjector<CaffeineApplication>) {
+fun CaffeineApplication.setApplicationInjector(injector: AndroidInjector<CaffeineApplication>) {
     this.injector = injector.also {
         it.inject(this)
     }
