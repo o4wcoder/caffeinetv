@@ -24,6 +24,10 @@ annotation class ThemeNotFollowedExplore
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
+annotation class ThemeNotFollowedExploreDark
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
 annotation class ThemeFollowedLobby
 
 @Qualifier

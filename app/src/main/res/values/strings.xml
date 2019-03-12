@@ -2,6 +2,7 @@
     <!-- screen labels -->
     <string name="landing">Landing</string>
     <string name="lobby">Lobby</string>
+    <string name="featured_program_guide">Featured Program Guide</string>
     <string name="stage">Stage</string>
     <string name="confirm_email">Confirm Email</string>
     <string name="caffeine_links">Caffeine Links</string>

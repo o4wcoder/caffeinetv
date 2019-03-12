@@ -47,6 +47,12 @@ class UIModule {
 
     @Provides
     @Singleton
+    @ThemeNotFollowedExploreDark
+    fun providesNotFollowedUserThemeExploreDark(@WhiteCircleTransformation transformation: CropBorderedCircleTransformation)
+            = UserTheme(transformation, R.style.ExploreUsername_NotFollowingDark)
+
+    @Provides
+    @Singleton
     @ThemeFollowedLobby
     fun providesFollowedUserThemeLobby(@BlueCircleTransformation transformation: CropBorderedCircleTransformation)
             = UserTheme(transformation, R.style.BroadcastCardUsername_Following)

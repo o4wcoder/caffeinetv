@@ -164,6 +164,12 @@
             app:destination="@+id/myProfileFragment"/>
     </fragment>
     <fragment
+        android:id="@+id/featuredProgramGuideFragment"
+        android:name="tv.caffeine.app.lobby.FeaturedProgramGuideFragment"
+        android:label="@string/featured_program_guide"
+        tools:layout="@layout/fragment_featured_program_guide">
+    </fragment>
+    <fragment
         android:id="@+id/stageFragment"
         android:name="tv.caffeine.app.stage.StageFragment"
         android:label="@string/stage"

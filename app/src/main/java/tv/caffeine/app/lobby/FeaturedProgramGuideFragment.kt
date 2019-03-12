@@ -1,4 +1,4 @@
-package tv.caffeine.app.broadcast
+package tv.caffeine.app.lobby
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,11 +26,11 @@ import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.Guide
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
-import tv.caffeine.app.databinding.FragmentUpcomingBroadcastBinding
+import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExploreDark
+import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
+import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
@@ -41,17 +41,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
+class FeaturedProgramGuideFragment: CaffeineFragment() {
 
     @Inject lateinit var guideAdapter: GuideAdapter
     @Inject lateinit var gson: Gson
-    private var binding: FragmentUpcomingBroadcastBinding? = null
-    private val viewModel: GuideViewModel by viewModels { viewModelFactory }
-
-    override fun getTheme() = R.style.DarkBottomSheetDialog
+    private var binding: FragmentFeaturedProgramGuideBinding? = null
+    private val viewModel: FeaturedProgramGuideViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentUpcomingBroadcastBinding.inflate(inflater, container, false).run {
+        return FragmentFeaturedProgramGuideBinding.inflate(inflater, container, false).run {
             configure(this)
             binding = this
             root
@@ -64,16 +62,11 @@ class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
         super.onDestroyView()
     }
 
-    private fun configure(binding: FragmentUpcomingBroadcastBinding) {
-        binding.actionBar.apply {
-            applyDarkMode()
-            setTitle(R.string.upcoming_broadcasts_dialog_title)
-            setDismissListener { dismiss() }
-        }
+    private fun configure(binding: FragmentFeaturedProgramGuideBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.guideRecyclerView.apply {
             adapter = guideAdapter
-            ContextCompat.getDrawable(context, R.drawable.black_top_divider)?.let { drawable ->
+            ContextCompat.getDrawable(context, R.drawable.gray_top_divider)?.let { drawable ->
                 addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
                     setDrawable(drawable)
                 })
@@ -86,7 +79,7 @@ class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
     }
 }
 
-class GuideViewModel(
+class FeaturedProgramGuideViewModel(
         dispatchConfig: DispatchConfig,
         private val broadcastsService: BroadcastsService,
         private val gson: Gson
@@ -134,7 +127,7 @@ class GuideAdapter @Inject constructor(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExploreDark private val notFollowedTheme: UserTheme,
+        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
         private val picasso: Picasso
 ): ListAdapter<Guide, GuideViewHolder>(
         object : DiffUtil.ItemCallback<Guide>() {
@@ -151,7 +144,7 @@ class GuideAdapter @Inject constructor(
         get() = dispatchConfig.main + job + exceptionHandler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.content_guide_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.featured_program_guide_item, parent, false)
         return GuideViewHolder(view, this, followManager, followedTheme, notFollowedTheme, picasso)
     }
 
@@ -204,7 +197,7 @@ class GuideViewHolder(
     }
 
     /**
-     * TODO (i18n): Localize the date format.
+     * TODO (AND-139): Localize the date format.
      */
     private fun getDateText(guide: Guide): String {
         return Calendar.getInstance().run {
@@ -214,7 +207,7 @@ class GuideViewHolder(
     }
 
     /**
-     * TODO (i18n): Localize the time format.
+     * TODO (AND-139): Localize the time format.
      */
     private fun getTimeText(guide: Guide): String {
         val startTime = Calendar.getInstance().run {
