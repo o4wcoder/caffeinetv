@@ -76,11 +76,12 @@
                     <ImageButton
                         android:id="@+id/profileButton"
                         style="@android:style/Widget.Material.ActionButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
                         android:background="@android:color/transparent"
                         android:src="@drawable/ic_profile_light"
                         android:contentDescription="@string/profile_button_content_description"
+                        app:layout_constraintDimensionRatio="V,1:1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
