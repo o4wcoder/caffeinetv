@@ -162,7 +162,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
         val navController = findNavController()
         tokenStore.storeCredentials(credentials)
         navController.popBackStack(R.id.landingFragment, true)
-        navController.safeNavigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbySwipeFragment)
         authWatcher.onSignIn()
     }
 
@@ -171,7 +171,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
         val navController = findNavController()
         tokenStore.storeSignInResult(signInResult)
         navController.popBackStack(R.id.landingFragment, true)
-        navController.safeNavigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbySwipeFragment)
         authWatcher.onSignIn()
     }
 

@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class FeaturedProgramGuideFragment: CaffeineFragment() {
+class FeaturedProgramGuideFragment : CaffeineFragment() {
 
     @Inject lateinit var guideAdapter: GuideAdapter
     @Inject lateinit var gson: Gson
@@ -136,7 +136,7 @@ class GuideAdapter @Inject constructor(
         }
 ), CoroutineScope {
 
-    private val job = SupervisorJob()
+    private var job = SupervisorJob()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable, "Coroutine throwable")
     }
@@ -150,6 +150,13 @@ class GuideAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
         holder.bind(getItem(position))
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        if (job.isCancelled) {
+            job = SupervisorJob()
+        }
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {

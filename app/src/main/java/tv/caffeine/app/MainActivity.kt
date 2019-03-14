@@ -28,7 +28,7 @@ import tv.caffeine.app.databinding.ActivityMainBinding
 import tv.caffeine.app.util.*
 import javax.inject.Inject
 
-private val destinationsWithCustomToolbar = arrayOf(R.id.lobbyFragment, R.id.landingFragment, R.id.stageFragment, R.id.needsUpdateFragment)
+private val destinationsWithCustomToolbar = arrayOf(R.id.lobbySwipeFragment, R.id.landingFragment, R.id.stageFragment, R.id.needsUpdateFragment)
 
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
 

@@ -75,14 +75,12 @@ fun NavController.safeNavigate(@IdRes resId: Int, args: Bundle?, navOptions: Nav
 
 fun NavController.navigateToLanding(message: String? = null) {
     val action = MainNavDirections.actionGlobalLandingFragment(message)
-    val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
+    val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbySwipeFragment, true).build()
     safeNavigate(action, navOptions)
 }
 
 fun NavController.navigateToNeedsUpdate() {
-    val action = MainNavDirections.actionGlobalNeedsUpdateFragment()
-    val navOptions = NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, true).build()
-    safeNavigate(action, navOptions)
+    safeNavigate(MainNavDirections.actionGlobalNeedsUpdateFragment())
 }
 
 fun NavController.navigateToNoNetwork() {

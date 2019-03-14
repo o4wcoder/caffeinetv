@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@+id/lobbyFragment">
+    app:startDestination="@+id/lobbySwipeFragment">
 
     <!-- Confirm email and general Caffeine link -->
     <fragment
@@ -143,19 +143,28 @@
 
     <!-- Lobby & Stage -->
     <fragment
+        android:id="@+id/lobbySwipeFragment"
+        android:name="tv.caffeine.app.lobby.LobbySwipeFragment"
+        android:label="@string/lobby"
+        tools:layout="@layout/fragment_lobby_swipe">
+        <action
+            android:id="@+id/action_lobbySwipeFragment_to_broadcastFragment"
+            app:destination="@+id/broadcastFragment"/>
+        <action
+            android:id="@+id/action_lobbySwipeFragment_to_exploreFragment"
+            app:destination="@+id/exploreFragment"/>
+        <action
+            android:id="@+id/action_lobbySwipeFragment_to_notificationsFragment"
+            app:destination="@+id/notificationsFragment"/>
+        <action
+            android:id="@+id/action_lobbySwipeFragment_to_myProfileFragment"
+            app:destination="@+id/myProfileFragment"/>
+    </fragment>
+    <fragment
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"
         android:label="@string/lobby"
         tools:layout="@layout/fragment_lobby">
-        <action
-            android:id="@+id/action_lobbyFragment_to_broadcastFragment"
-            app:destination="@+id/broadcastFragment"/>
-        <action
-            android:id="@+id/action_lobbyFragment_to_exploreFragment"
-            app:destination="@+id/exploreFragment"/>
-        <action
-            android:id="@+id/action_lobbyFragment_to_notificationsFragment"
-            app:destination="@+id/notificationsFragment"/>
         <action
             android:id="@+id/action_lobbyFragment_to_stageFragment"
             app:destination="@+id/stageFragment"/>
@@ -337,6 +346,7 @@
             app:destination="@+id/followingFragment"/>
         <action
             android:id="@+id/action_profileFragment_to_stageFragment"
+            app:popUpTo="@id/lobbySwipeFragment"
             app:destination="@+id/stageFragment"/>
     </fragment>
     <fragment
@@ -537,6 +547,8 @@
         android:id="@+id/needsUpdateFragment"
         android:name="tv.caffeine.app.update.NeedsUpdateFragment"
         android:label="@string/time_to_update"
+        app:popUpTo="@id/lobbySwipeFragment"
+        app:popUpToInclusive="true"
         tools:layout="@layout/fragment_needs_update"/>
     <action
         android:id="@+id/action_global_needsUpdateFragment"
@@ -552,9 +564,9 @@
     <action
         android:id="@+id/action_global_outOfCapacityFragment"
         app:destination="@id/outOfCapacityFragment"
-        app:popUpTo="@id/lobbyFragment" />
+        app:popUpTo="@id/lobbySwipeFragment"/>
     <action
         android:id="@+id/action_global_hardwareNotSupportedFragment"
         app:destination="@id/hardwareNotSupportedFragment"
-        app:popUpTo="@id/lobbyFragment"/>
+        app:popUpTo="@id/lobbySwipeFragment"/>
 </navigation>

@@ -478,7 +478,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             }
         }
         binding.backToLobbyButton.setOnClickListener {
-            findNavController().popBackStack(R.id.lobbyFragment, false)
+            findNavController().popBackStack(R.id.lobbySwipeFragment, false)
         }
     }
 

@@ -3,6 +3,7 @@ package tv.caffeine.app.navigation
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Build.VERSION_CODES.O_MR1
 import androidx.navigation.NavController
 import androidx.navigation.findDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -14,12 +15,19 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 import tv.caffeine.app.MainActivity
 import tv.caffeine.app.R
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.InjectionActivityTestRule
 
+/**
+ * https://github.com/robolectric/robolectric/issues/3698
+ * DeepLinkUnitTests.setup() will fail with SDK 28 and Robolectric 4.2. SDK 27 works.
+ * TODO: AND-140 to try the latest Robolectric library.
+ */
 @RunWith(AndroidJUnit4::class)
+@Config(sdk = [O_MR1])
 class DeepLinkUnitTests {
     private lateinit var navController: NavController
     private lateinit var resources: Resources

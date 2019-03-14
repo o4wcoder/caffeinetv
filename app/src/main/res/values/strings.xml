@@ -65,6 +65,8 @@
     <string name="search_button_content_description">Search</string>
     <string name="activity_button_content_description">Activity</string>
     <string name="profile_button_content_description">My Profile</string>
+    <string name="lobby_page_title_watch_now">Watch Now</string>
+    <string name="lobby_page_title_scheduled">Scheduled</string>
 
     <string name="hint_current_password">Current Password</string>
     <string name="update_button">Update</string>
@@ -259,4 +261,7 @@
     <string name="gift_button_content_description">Send a digital item</string>
     <string name="friends_watching_button_content_description">Friends watching this broadcast</string>
     <string name="game_logo_content_description">Game logo</string>
+
+    <!-- Feature Program Guide -->
+    <string name="fpg_empty_message">There are currently no scheduled events.\nCheck back soon!</string>
 </resources>

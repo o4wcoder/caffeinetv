@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
             android:textAlignment="center"
-            android:text="@string/upcoming_broadcasts_empty_message"
+            android:text="@string/fpg_empty_message"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

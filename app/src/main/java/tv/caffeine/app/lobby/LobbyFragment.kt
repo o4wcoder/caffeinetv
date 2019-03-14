@@ -9,35 +9,22 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import tv.caffeine.app.R
-import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbyBinding
-import tv.caffeine.app.feature.Feature
-import tv.caffeine.app.feature.FeatureConfig
-import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.maybeShow
-import tv.caffeine.app.util.safeNavigate
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LobbyFragment : CaffeineFragment() {
 
     @Inject lateinit var lobbyAdapter: LobbyAdapter
-    @Inject lateinit var featureConfig: FeatureConfig
-    @Inject lateinit var picasso: Picasso
 
     private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
-    private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
     private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
 
@@ -56,17 +43,6 @@ class LobbyFragment : CaffeineFragment() {
             adapter = lobbyAdapter
             addItemDecoration(itemDecorator)
         }
-        binding.cameraButton.setOnClickListener {
-            if (featureConfig.isFeatureEnabled(Feature.BROADCAST)) {
-                val action = LobbyFragmentDirections.actionLobbyFragmentToBroadcastFragment()
-                findNavController().safeNavigate(action)
-            } else {
-                BroadcastPlaceholderDialogFragment().maybeShow(fragmentManager, "broadcastPlaceholder")
-            }
-        }
-        binding.profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
-        binding.searchButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.exploreFragment))
-        binding.activityButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.notificationsFragment))
         binding.lobbySwipeRefreshLayout.setOnRefreshListener { refreshLobby() }
         viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false
@@ -75,16 +51,6 @@ class LobbyFragment : CaffeineFragment() {
                 lobbyAdapter.submitList(items, lobby.tags, lobby.content)
                 binding.lobbyLoadingIndicator.isVisible = false
             }
-        })
-        myProfileViewModel.avatarImageUrl.observe(viewLifecycleOwner, Observer {  avatarImageUrl ->
-            picasso
-                    .load(avatarImageUrl)
-                    .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
-                    .transform(CropCircleTransformation())
-                    .into(binding.profileButton)
-        })
-        myProfileViewModel.emailVerified.observe(viewLifecycleOwner, Observer { emailVerified ->
-            binding.unverifiedMessageTextView.isVisible = emailVerified == false
         })
     }
 

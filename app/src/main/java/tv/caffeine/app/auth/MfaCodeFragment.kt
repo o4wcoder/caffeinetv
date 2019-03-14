@@ -80,7 +80,7 @@ class MfaCodeFragment : CaffeineFragment() {
         tokenStore.storeSignInResult(result)
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
-        navController.safeNavigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbySwipeFragment)
         authWatcher.onSignIn()
     }
 

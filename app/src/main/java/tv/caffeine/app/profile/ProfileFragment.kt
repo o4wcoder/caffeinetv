@@ -103,7 +103,6 @@ class ProfileFragment : CaffeineFragment() {
     }
 
     private fun watchBroadcast(username: String) {
-        val action = ProfileFragmentDirections.actionProfileFragmentToStageFragment(username)
-        findNavController().safeNavigate(action, NavOptions.Builder().setPopUpTo(R.id.lobbyFragment, false).build())
+        findNavController().safeNavigate(ProfileFragmentDirections.actionProfileFragmentToStageFragment(username))
     }
 }

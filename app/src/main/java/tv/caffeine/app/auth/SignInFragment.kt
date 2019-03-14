@@ -60,7 +60,7 @@ class SignInFragment : CaffeineFragment() {
     private fun onSuccess() {
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
-        navController.safeNavigate(R.id.lobbyFragment)
+        navController.safeNavigate(R.id.lobbySwipeFragment)
     }
 
     @UiThread
