@@ -6,7 +6,10 @@ import android.security.keystore.KeyProperties
 import androidx.core.content.edit
 import okio.ByteString
 import tv.caffeine.app.api.model.CAID
+import java.security.InvalidKeyException
 import java.security.KeyStore
+import java.security.UnrecoverableKeyException
+import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.spec.IvParameterSpec
@@ -75,6 +78,15 @@ class EncryptedSettingsStorage @Inject constructor(
             settingsStorage.clientId = value?.let { encryptValue(it) }
         }
 
+    private fun reset() {
+        settingsStorage.apply {
+            refreshToken = null
+            caid = null
+            clientId = null
+        }
+        keyStoreHelper.regenerateKeys()
+    }
+
     private fun encryptValue(originalValue: String): String {
         val bytes = originalValue.toByteArray()
         val encryptedContent = keyStoreHelper.encrypt(bytes)
@@ -88,8 +100,14 @@ class EncryptedSettingsStorage @Inject constructor(
         if (encryptedStrings.size != 2) return null
         val iv = ByteString.decodeBase64(encryptedStrings[0])?.toByteArray() ?: return null
         val encryptedBytes = ByteString.decodeBase64(encryptedStrings[1])?.toByteArray() ?: return null
-        val decrypted = keyStoreHelper.decrypt(EncryptedContent(iv, encryptedBytes))
-        return decrypted.toString(Charsets.UTF_8)
+        return try {
+            keyStoreHelper.decrypt(EncryptedContent(iv, encryptedBytes)).toString(Charsets.UTF_8)
+        } catch(t: Throwable) {
+            when(t) {
+                is BadPaddingException, is UnrecoverableKeyException, is InvalidKeyException -> reset()
+            }
+            null
+        }
     }
 
 }
@@ -101,7 +119,7 @@ class KeyStoreHelper @Inject constructor(
 ) {
 
     init {
-        generateKeys()
+        ensureGoodKeys()
     }
 
     companion object {
@@ -118,9 +136,16 @@ class KeyStoreHelper @Inject constructor(
         }
     }
 
-    private fun generateKeys() {
-        if (keyStore.containsAlias(aesKeyAlias)) return
+    fun regenerateKeys() {
+        destroyKeys()
+        ensureGoodKeys()
+    }
 
+    private fun ensureGoodKeys() {
+        if (!keyStore.containsAlias(aesKeyAlias)) generateKeys()
+    }
+
+    private fun generateKeys() {
         val keyGenParameterSpec = KeyGenParameterSpec.Builder(aesKeyAlias, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
                 .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)

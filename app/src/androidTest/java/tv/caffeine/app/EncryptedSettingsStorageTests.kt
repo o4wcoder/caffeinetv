@@ -1,6 +1,7 @@
 package tv.caffeine.app
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import tv.caffeine.app.settings.EncryptedSettingsStorage
 import tv.caffeine.app.settings.InMemorySettingsStorage
@@ -20,8 +21,8 @@ class EncryptedSettingsStorageTests {
         val bytes = originalString.toByteArray()
         val encrypted = keyStoreHelper.encrypt(bytes)
         val decrypted = keyStoreHelper.decrypt(encrypted)
-        Assert.assertEquals(bytes.size, decrypted.size)
-        Assert.assertEquals(bytes.toString(Charset.forName("UTF-8")), decrypted.toString(Charset.forName("UTF-8")))
+        assertEquals(bytes.size, decrypted.size)
+        assertEquals(bytes.toString(Charset.forName("UTF-8")), decrypted.toString(Charset.forName("UTF-8")))
     }
 
     @Test
@@ -29,7 +30,7 @@ class EncryptedSettingsStorageTests {
         val originalString = "ABCDEFG random stuff, Caffeine"
         subject.refreshToken = originalString
         val decryptedString = subject.refreshToken
-        Assert.assertEquals(originalString, decryptedString)
+        assertEquals(originalString, decryptedString)
     }
 
     @Test
@@ -39,26 +40,44 @@ class EncryptedSettingsStorageTests {
         val originalString = "ABCDEFG random stuff, Caffeine"
         subject.refreshToken = originalString
         val decryptedString = anotherStorage.refreshToken
-        Assert.assertEquals(originalString, decryptedString)
+        assertEquals(originalString, decryptedString)
     }
 
-    @Test(expected = java.security.InvalidKeyException::class)
-    fun deletingKeysCausesDecryptionToFail() {
+    @Test
+    fun deletingKeysResultsInDecryptReturningNull() {
         val originalString = "ABCDEFG random stuff, Caffeine"
         subject.refreshToken = originalString
         deleteKey()
-        val decryptedString = subject.refreshToken // expect exception to be thrown
-        Assert.assertNull(decryptedString) // this is unreachable
+        val decryptedString = subject.refreshToken
+        assertNull(decryptedString)
     }
 
-    @Test(expected = javax.crypto.BadPaddingException::class)
-    fun regeneratingKeysCausesDecryptionToFail() {
+    @Test
+    fun regeneratingKeysResultsInDecryptReturningNull() {
         val originalString = "ABCDEFG random stuff, Caffeine"
         subject.refreshToken = originalString
         deleteKey()
         val anotherKeyStoreHelper = KeyStoreHelper(KeyStoreHelper.defaultKeyStore()) // triggers regenerating keys
-        val decryptedString = subject.refreshToken // expect exception to be thrown
-        Assert.assertNull(decryptedString) // this is unreachable
+        val decryptedString = subject.refreshToken
+        assertNull(decryptedString)
+    }
+
+    @Test
+    fun regeneratingKeysResultsInAllDecryptsReturningNull() {
+        val originalString = "ABCDEFG random stuff, Caffeine"
+        subject.refreshToken = originalString
+        subject.caid = originalString
+        deleteKey()
+        val anotherKeyStoreHelper = KeyStoreHelper(KeyStoreHelper.defaultKeyStore()) // triggers regenerating keys
+        val decryptedString = subject.refreshToken
+        assertNull(decryptedString)
+        subject.refreshToken = originalString // encrypt again
+        val decryptedAgainString = subject.refreshToken
+        assertEquals(originalString, decryptedAgainString)
+        val decryptedCaid = subject.caid // this should not cause a failure
+        assertNull(decryptedCaid)
+        val decryptedThirdTimeString = subject.refreshToken
+        assertEquals(originalString, decryptedThirdTimeString)
     }
 
     private fun deleteKey() {
