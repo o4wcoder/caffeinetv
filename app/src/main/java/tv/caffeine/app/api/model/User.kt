@@ -23,7 +23,7 @@ data class User(
         val abilities: Map<String, Boolean>,
         val connectedAccounts: Map<String, ConnectedAccount>?,
         val age: Any?,
-        val bio: String,
+        val bio: String?,
         val countryCode: Any?,
         val countryName: Any?,
         val gender: Any?,

@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -64,15 +67,13 @@ class LobbySwipeFragment : CaffeineFragment() {
         }
         binding.tabLayout.isVisible = IS_FPG_ENABLED
 
-        myProfileViewModel.avatarImageUrl.observe(viewLifecycleOwner, Observer { avatarImageUrl ->
+        myProfileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             picasso
-                    .load(avatarImageUrl)
+                    .load(userProfile.avatarImageUrl)
                     .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
                     .transform(CropCircleTransformation())
                     .into(binding.profileButton)
-        })
-        myProfileViewModel.emailVerified.observe(viewLifecycleOwner, Observer { emailVerified ->
-            binding.unverifiedMessageTextView.isVisible = emailVerified == false
+            binding.unverifiedMessageTextView.isVisible = userProfile.emailVerified == false
         })
     }
 }

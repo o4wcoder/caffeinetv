@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="profileViewModel"
-            type="tv.caffeine.app.profile.ProfileViewModel"/>
+            name="userProfile"
+            type="tv.caffeine.app.profile.UserProfile"/>
 
     </data>
 
@@ -70,10 +70,10 @@
             android:id="@+id/large_avatar_image_view"
             android:layout_width="@dimen/avatar_explore"
             android:layout_height="@dimen/avatar_explore"
-            android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
+            android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
             android:padding="2dp"
             android:visibility="gone"
-            app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
+            app:roundedImageUrl="@{userProfile.avatarImageUrl}"
             app:placeholder="@{@drawable/default_avatar_round}"
             app:layout_constraintTop_toTopOf="@id/primary_view_renderer"
             app:layout_constraintStart_toStartOf="@id/primary_view_renderer"
@@ -276,10 +276,10 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="12dp"
                 android:src="@drawable/default_avatar_round"
-                android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
+                android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                 android:padding="2dp"
                 android:layout_gravity="top|end"
-                app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
+                app:roundedImageUrl="@{userProfile.avatarImageUrl}"
                 app:placeholder="@{@drawable/default_avatar_round}"
                 tools:background="@drawable/circle_white_with_blue_rim"
                 tools:src="@drawable/default_avatar_round"

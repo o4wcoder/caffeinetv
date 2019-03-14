@@ -99,8 +99,8 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
             findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToUpdatePasswordFragment())
             true
         }
-        myProfileViewModel.mfaMethod.observe(this, Observer {
-            @StringRes val status = when(it) {
+        myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
+            @StringRes val status = when(userProfile.mfaMethod) {
                 MfaMethod.EMAIL, MfaMethod.TOTP -> R.string.mfa_status_on
                 else -> R.string.mfa_status_off
             }
@@ -112,9 +112,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                     true
                 }
             }
-        })
-        myProfileViewModel.email.observe(this, Observer {
-            findPreference("change_email")?.summary = it ?: getString(R.string.email)
+            findPreference("change_email")?.summary = userProfile.email ?: getString(R.string.email)
         })
     }
 

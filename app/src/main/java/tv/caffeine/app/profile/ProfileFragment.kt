@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import timber.log.Timber
@@ -64,28 +63,26 @@ class ProfileFragment : CaffeineFragment() {
                               savedInstanceState: Bundle?): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         viewModel.load(caid)
-        viewModel.username.observe(this, Observer { username ->
+        viewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
+            binding.userProfile = userProfile
             binding.moreButton.apply {
                 visibility = View.VISIBLE
-                setOnClickListener { fragmentManager?.navigateToReportOrIgnoreDialog(caid, username, true) }
+                setOnClickListener { fragmentManager?.navigateToReportOrIgnoreDialog(caid, userProfile.username, true) }
             }
             binding.followButton.setOnClickListener {
                 if (isFollowed) {
-                    fragmentManager?.navigateToUnfollowUserDialog(caid, username, callback)
+                    fragmentManager?.navigateToUnfollowUserDialog(caid, userProfile.username, callback)
                 } else {
                     callback.follow(caid)
                 }
             }
-            binding.stageImageView.setOnClickListener { watchBroadcast(username) }
-        })
-        viewModel.isFollowed.observe(this, Observer { isFollowed ->
-            this.isFollowed = isFollowed
+            binding.stageImageView.setOnClickListener { watchBroadcast(userProfile.username) }
+            this.isFollowed = userProfile.isFollowed
             binding.followButton.apply {
                 visibility = View.VISIBLE
-                FollowButtonDecorator(if (isFollowed) Style.FOLLOWING else Style.FOLLOW).decorate(this)
+                FollowButtonDecorator(if (userProfile.isFollowed) Style.FOLLOWING else Style.FOLLOW).decorate(this)
             }
         })
-        binding.profileViewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }

@@ -154,7 +154,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 val userDetails = followManager.userDetails(broadcasterUsername)
                 if (userDetails != null) {
                     profileViewModel.load(userDetails.caid)
-                    binding.profileViewModel = profileViewModel
                     binding.stageToolbar.apply {
                         inflateMenu(R.menu.stage_menu)
                         menu.findItem(R.id.stage_overflow_menu).setOnMenuItemClickListener {
@@ -166,8 +165,9 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                             true
                         }
                     }
-                    profileViewModel.username.observe(viewLifecycleOwner, Observer { username ->
-                        binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, username))
+                    profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
+                        binding.userProfile = userProfile
+                        binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
 
                     })
 
@@ -433,9 +433,9 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private fun configureButtons() {
         binding.shareButton?.setOnClickListener {
-            profileViewModel.username.observe(viewLifecycleOwner, Observer { username ->
+            profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
                 val intent = Intent(Intent.ACTION_SEND).apply {
-                    val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, username, it) } ?: getString(R.string.watching_caffeine_live)
+                    val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, userProfile.username, it) } ?: getString(R.string.watching_caffeine_live)
                     putExtra(Intent.EXTRA_TEXT, textToShare)
                     type = "text/plain"
                 }

@@ -17,32 +17,39 @@ class ProfileViewModel(
 
     private val numberFormat = NumberFormat.getInstance()
 
-    private val user = MutableLiveData<User>()
-    private val broadcast = MutableLiveData<Broadcast>()
-
-    val username: LiveData<String> = Transformations.map(user) { it.username }
-    val name: LiveData<String> = Transformations.map(user) { it.name }
-    val followersCount: LiveData<String> = Transformations.map(user) { numberFormat.format(it.followersCount) }
-    val followingCount: LiveData<String> = Transformations.map(user) { numberFormat.format(it.followingCount) }
-    val bio: LiveData<String> = Transformations.map(user) { it.bio }
-
-    val isFollowed: LiveData<Boolean> = Transformations.map(user) { followManager.isFollowing(it.caid) }
-    val isVerified: LiveData<Boolean> = Transformations.map(user) { it.isVerified }
-
-    val avatarImageUrl: LiveData<String> = Transformations.map(user) { it.avatarImageUrl }
-    val stageImageUrl: LiveData<String> = Transformations.map(broadcast) { it?.mainPreviewImageUrl }
-    val isLive: LiveData<Boolean> = Transformations.map(broadcast) { it?.mainPreviewImageUrl != null }
+    private val _userProfile = MutableLiveData<UserProfile>()
+    val userProfile: LiveData<UserProfile> = Transformations.map(_userProfile) { it }
 
     fun load(caid: CAID) = launch {
         val userDetails = followManager.userDetails(caid) ?: return@launch
         val broadcastDetails = followManager.broadcastDetails(userDetails)
-        user.value = userDetails
-        broadcast.value = if (broadcastDetails?.isOnline() == true) broadcastDetails else null
+        configure(userDetails, broadcastDetails)
     }
 
     private fun forceLoad(caid: CAID) = launch {
         val userDetails = followManager.loadUserDetails(caid) ?: return@launch
-        user.value = userDetails
+        val broadcastDetails = followManager.broadcastDetails(userDetails)
+        configure(userDetails, broadcastDetails)
+    }
+
+    private fun configure(userDetails: User, broadcastDetails: Broadcast?) {
+        val isLive = broadcastDetails?.isOnline() == true
+        val broadcastImageUrl = if (isLive) broadcastDetails?.mainPreviewImageUrl else null
+        _userProfile.value = UserProfile(
+                userDetails.username,
+                userDetails.name,
+                userDetails.email,
+                userDetails.emailVerified,
+                numberFormat.format(userDetails.followersCount),
+                numberFormat.format(userDetails.followingCount),
+                userDetails.bio,
+                followManager.isFollowing(userDetails.caid),
+                userDetails.isVerified,
+                userDetails.avatarImageUrl,
+                userDetails.mfaMethod,
+                broadcastImageUrl,
+                isLive
+        )
     }
 
     fun follow(caid: CAID): LiveData<CaffeineEmptyResult> {

@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.MfaMethod
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
@@ -26,20 +25,8 @@ class MyProfileViewModel(
 
     private val numberFormat = NumberFormat.getInstance()
 
-    private val myProfile = MutableLiveData<User>()
-
-    val username: LiveData<String> = Transformations.map(myProfile) { it.username }
-    val email: LiveData<String> = Transformations.map(myProfile) { it.email }
-    val name: LiveData<String> = Transformations.map(myProfile) { it.name }
-    val followersCount: LiveData<String> = Transformations.map(myProfile) { numberFormat.format(it.followersCount) }
-    val followingCount: LiveData<String> = Transformations.map(myProfile) { numberFormat.format(it.followingCount) }
-    val bio: LiveData<String> = Transformations.map(myProfile) { it.bio }
-    val mfaMethod: LiveData<MfaMethod> = Transformations.map(myProfile) { it.mfaMethod }
-
-    val isVerified: LiveData<Boolean> = Transformations.map(myProfile) { it.isVerified }
-    val emailVerified: LiveData<Boolean> = Transformations.map(myProfile) { it.emailVerified }
-
-    val avatarImageUrl: LiveData<String> = Transformations.map(myProfile) { it.avatarImageUrl }
+    private val _userProfile = MutableLiveData<UserProfile>()
+    val userProfile: LiveData<UserProfile> = Transformations.map(_userProfile) { it }
 
     private var loadJob: Job? = null
         set(value) {
@@ -65,7 +52,21 @@ class MyProfileViewModel(
     private suspend fun loadUserProfile(caid: CAID) = followManager.loadUserDetails(caid)
 
     private suspend fun updateViewModel(user: User) = withContext(dispatchConfig.main) {
-        myProfile.value = user
+        _userProfile.value = UserProfile(
+                user.username,
+                user.name,
+                user.email,
+                user.emailVerified,
+                numberFormat.format(user.followersCount),
+                numberFormat.format(user.followingCount),
+                user.bio,
+                false,
+                user.isVerified,
+                user.avatarImageUrl,
+                user.mfaMethod,
+                null,
+                false
+        )
     }
 
     fun updateName(name: String) {

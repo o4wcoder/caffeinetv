@@ -41,15 +41,15 @@ class MyProfileViewModelTests {
     @Test
     fun followersCountIsLoadedCorrectly() {
         assertNotEquals(FOLLOWERS_COUNT, FOLLOWING_COUNT)
-        subject.followersCount.observeForever {
-            assertEquals(FOLLOWERS_COUNT_FORMATTED, it)
+        subject.userProfile.observeForever { userProfile ->
+            assertEquals(FOLLOWERS_COUNT_FORMATTED, userProfile.followersCount)
         }
     }
 
     @Test
     fun followingCountIsLoadedCorrectly() {
-        subject.followingCount.observeForever {
-            assertEquals(FOLLOWING_COUNT.toString(), it)
+        subject.userProfile.observeForever { userProfile ->
+            assertEquals(FOLLOWING_COUNT.toString(), userProfile.followingCount)
         }
     }
 

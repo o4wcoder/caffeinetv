@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="tv.caffeine.app.profile.MyProfileViewModel"/>
+            name="userProfile"
+            type="tv.caffeine.app.profile.UserProfile"/>
 
     </data>
 
@@ -27,7 +27,7 @@
             android:gravity="top"
             android:hint="@string/edit_bio_prompt"
             android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
-            android:text="@{viewModel.bio}"
+            android:text="@{userProfile.bio}"
             android:maxLength="@integer/max_bio_length"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

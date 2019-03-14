@@ -15,6 +15,7 @@ import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.facebook.login.LoginManager
@@ -84,7 +85,9 @@ class MyProfileFragment : CaffeineFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.viewModel = viewModel
+        viewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
+            binding.userProfile = userProfile
+        })
         binding.signOutButton.setOnClickListener { confirmSignOut() }
         binding.infoButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToEditBioFragment()
@@ -102,7 +105,7 @@ class MyProfileFragment : CaffeineFragment() {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToGoldAndCreditsFragment()
             findNavController().safeNavigate(action)
         }
-        walletViewModel.wallet.observe(viewLifecycleOwner, androidx.lifecycle.Observer { wallet ->
+        walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             if (wallet == null) return@Observer
             val goldBalance = NumberFormat.getInstance().format(wallet.gold)
             val creditsBalance = NumberFormat.getInstance().format(wallet.credits)

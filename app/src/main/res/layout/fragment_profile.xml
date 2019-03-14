@@ -6,8 +6,8 @@
     <data>
         <import type="android.view.View"/>
         <variable
-            name="profileViewModel"
-            type="tv.caffeine.app.profile.ProfileViewModel"/>
+            name="userProfile"
+            type="tv.caffeine.app.profile.UserProfile"/>
     </data>
 
     <ScrollView
@@ -29,9 +29,9 @@
                 android:layout_height="@dimen/avatar_size_large"
                 android:src="@drawable/default_avatar_round"
                 android:padding="@dimen/avatar_rim_size"
-                android:background="@{profileViewModel.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
+                android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                 android:contentDescription="@string/user_avatar_content_description"
-                app:roundedImageUrl="@{profileViewModel.avatarImageUrl}"
+                app:roundedImageUrl="@{userProfile.avatarImageUrl}"
                 app:placeholder="@{@drawable/default_avatar_round}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_line_spacing"
-                android:text="@{profileViewModel.name}"
+                android:text="@{userProfile.name}"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +57,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/verified_icon_padding"
-                android:text="@{profileViewModel.username}"
+                android:text="@{userProfile.username}"
                 android:textAppearance="@style/ExploreUsername"
-                android:textColor="@{profileViewModel.isFollowed ? @color/caffeine_blue: @color/medium_gray}"
-                android:drawableEnd="@{profileViewModel.isVerified ? @drawable/verified_large : null}"
+                android:textColor="@{userProfile.isFollowed ? @color/caffeine_blue: @color/medium_gray}"
+                android:drawableEnd="@{userProfile.isVerified ? @drawable/verified_large : null}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_text_view"
@@ -110,7 +110,7 @@
                     android:id="@+id/number_following_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{profileViewModel.followingCount}"
+                    android:text="@{userProfile.followingCount}"
                     android:textAppearance="@style/FollowCount"
                     tools:text="42"/>
                 <TextView
@@ -137,7 +137,7 @@
                     android:id="@+id/number_of_followers_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{profileViewModel.followersCount}"
+                    android:text="@{userProfile.followersCount}"
                     android:textAppearance="@style/FollowCount"
                     tools:text="42"/>
                 <TextView
@@ -154,8 +154,8 @@
                 android:layout_marginTop="25dp"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/stage_image_content_description"
-                android:visibility="@{profileViewModel.isLive ? View.VISIBLE : View.GONE}"
-                app:imageUrl="@{profileViewModel.stageImageUrl}"
+                android:visibility="@{userProfile.isLive ? View.VISIBLE : View.GONE}"
+                app:imageUrl="@{userProfile.stageImageUrl}"
                 app:placeholder="@{@drawable/default_lobby_image}"
                 app:cornerRadius="@{@dimen/lobby_card_rounding_radius}"
                 app:layout_constraintTop_toBottomOf="@+id/following_container"
@@ -171,7 +171,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
                 android:text="@string/live_indicator"
-                android:visibility="@{profileViewModel.isLive ? View.VISIBLE : View.GONE}"
+                android:visibility="@{userProfile.isLive ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="@+id/stage_image_view"
                 app:layout_constraintTop_toTopOf="@+id/stage_image_view" />
 
@@ -183,7 +183,7 @@
                 android:layout_marginStart="@dimen/margin_double"
                 android:layout_marginEnd="@dimen/margin_double"
                 android:gravity="center_horizontal"
-                android:text="@{profileViewModel.bio}"
+                android:text="@{userProfile.bio}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/stage_image_view"

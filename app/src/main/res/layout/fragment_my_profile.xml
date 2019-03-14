@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="tv.caffeine.app.profile.MyProfileViewModel"/>
+            name="userProfile"
+            type="tv.caffeine.app.profile.UserProfile"/>
     </data>
 
     <ScrollView
@@ -26,7 +26,7 @@
                 android:layout_height="@dimen/avatar_size_large"
                 android:src="@drawable/default_avatar_round"
                 android:focusableInTouchMode="true"
-                app:roundedImageUrl="@{viewModel.avatarImageUrl}"
+                app:roundedImageUrl="@{userProfile.avatarImageUrl}"
                 app:placeholder="@{@drawable/default_avatar_round}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
                 android:layout_marginTop="@dimen/margin_line_spacing"
                 android:textAlignment="center"
                 android:hint="@string/add_your_full_name"
-                android:text="@{viewModel.name}"
+                android:text="@{userProfile.name}"
                 android:textSize="20sp"
                 android:singleLine="true"
                 android:imeOptions="actionSend"
@@ -57,8 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/verified_icon_padding"
-                android:text="@{viewModel.username}"
-                android:drawableEnd="@{viewModel.isVerified ? @drawable/verified_large : null}"
+                android:text="@{userProfile.username}"
+                android:drawableEnd="@{userProfile.isVerified ? @drawable/verified_large : null}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_edit_text"
@@ -81,7 +81,7 @@
                     android:id="@+id/number_following_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.followingCount}"
+                    android:text="@{userProfile.followingCount}"
                     android:textAppearance="@style/FollowCount"
                     tools:text="42"/>
                 <TextView
@@ -108,7 +108,7 @@
                     android:id="@+id/number_of_followers_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.followersCount}"
+                    android:text="@{userProfile.followersCount}"
                     android:textAppearance="@style/FollowCount"
                     tools:text="42"/>
                 <TextView
