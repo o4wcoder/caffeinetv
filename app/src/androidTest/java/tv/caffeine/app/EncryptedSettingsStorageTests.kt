@@ -31,4 +31,38 @@ class EncryptedSettingsStorageTests {
         val decryptedString = subject.refreshToken
         Assert.assertEquals(originalString, decryptedString)
     }
+
+    @Test
+    fun swappingKeyStoreHelperIsHarmless() {
+        val anotherKeyStoreHelper = KeyStoreHelper(KeyStoreHelper.defaultKeyStore())
+        val anotherStorage = EncryptedSettingsStorage(anotherKeyStoreHelper, inMemorySettingsStorage)
+        val originalString = "ABCDEFG random stuff, Caffeine"
+        subject.refreshToken = originalString
+        val decryptedString = anotherStorage.refreshToken
+        Assert.assertEquals(originalString, decryptedString)
+    }
+
+    @Test(expected = java.security.InvalidKeyException::class)
+    fun deletingKeysCausesDecryptionToFail() {
+        val originalString = "ABCDEFG random stuff, Caffeine"
+        subject.refreshToken = originalString
+        deleteKey()
+        val decryptedString = subject.refreshToken // expect exception to be thrown
+        Assert.assertNull(decryptedString) // this is unreachable
+    }
+
+    @Test(expected = javax.crypto.BadPaddingException::class)
+    fun regeneratingKeysCausesDecryptionToFail() {
+        val originalString = "ABCDEFG random stuff, Caffeine"
+        subject.refreshToken = originalString
+        deleteKey()
+        val anotherKeyStoreHelper = KeyStoreHelper(KeyStoreHelper.defaultKeyStore()) // triggers regenerating keys
+        val decryptedString = subject.refreshToken // expect exception to be thrown
+        Assert.assertNull(decryptedString) // this is unreachable
+    }
+
+    private fun deleteKey() {
+        // this is an implementation detail
+        KeyStoreHelper.defaultKeyStore().deleteEntry("CaffeineKeyAlias")
+    }
 }
