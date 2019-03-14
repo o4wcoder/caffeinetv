@@ -1,6 +1,7 @@
 language: android
 jdk: oraclejdk8
-sudo: false
+sudo: true
+dist: xenial
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -30,9 +31,12 @@ before_install:
   - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" >> "$ANDROID_HOME/licenses/android-sdk-preview-license"
   - ./gradlew dependencies || true
 env:
-  - SUBDOMAIN=android-build-output TEST_REPORT_PATH="app/build/reports/tests"
+  global:
+    - SUBDOMAIN=android-build-output
+    - TEST_REPORT_PATH="app/build/reports/tests"
 script:
-  - './gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace'
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./gradlew testProdDebugUnitTest -PdisablePreDex --stacktrace; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./gradlew testStagingDebugUnitTest -PdisablePreDex --stacktrace; fi'
   - 'cp scripts/test_report_index.html $TEST_REPORT_PATH/index.html'
   - 'echo "Test report: https://$SUBDOMAIN.caffeine.tv/$TRAVIS_JOB_ID/index.html"'
 deploy:
