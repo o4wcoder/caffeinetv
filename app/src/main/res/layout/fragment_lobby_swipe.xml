@@ -127,11 +127,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <androidx.viewpager.widget.PagerTitleStrip
-                android:id="@+id/lobby_pager_title_stip"
+            <com.google.android.material.tabs.TabLayout
+                style="@style/TabLayout"
+                android:id="@+id/tab_layout"
+                android:background="@color/lightest_gray"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"/>
+                android:layout_height="wrap_content">
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lobby_page_title_watch_now"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lobby_page_title_scheduled"/>
+            </com.google.android.material.tabs.TabLayout>
         </androidx.viewpager.widget.ViewPager>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

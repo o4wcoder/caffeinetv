@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -14,7 +13,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -64,14 +62,7 @@ class FeaturedProgramGuideFragment : CaffeineFragment() {
 
     private fun configure(binding: FragmentFeaturedProgramGuideBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.guideRecyclerView.apply {
-            adapter = guideAdapter
-            ContextCompat.getDrawable(context, R.drawable.gray_top_divider)?.let { drawable ->
-                addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
-                    setDrawable(drawable)
-                })
-            }
-        }
+        binding.guideRecyclerView.adapter = guideAdapter
         viewModel.guides.observe(viewLifecycleOwner, Observer { guides ->
             binding.emptyMessageTextView.isVisible = guides.isEmpty()
             guideAdapter.submitList(guides)

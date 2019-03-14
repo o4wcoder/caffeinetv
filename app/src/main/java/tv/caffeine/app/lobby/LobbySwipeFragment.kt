@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.*
 import androidx.lifecycle.Observer
@@ -19,6 +20,7 @@ import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.ViewPagerColorOnPageChangeListener
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
@@ -53,8 +55,14 @@ class LobbySwipeFragment : CaffeineFragment() {
         binding.activityButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.notificationsFragment))
         binding.profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
 
-        binding.lobbyViewPager.adapter = LobbyPagerAdapter(childFragmentManager, resources)
-        binding.lobbyPagerTitleStip.isVisible = IS_FPG_ENABLED
+        binding.lobbyViewPager.apply {
+            adapter = LobbyPagerAdapter(childFragmentManager, resources)
+            addOnPageChangeListener(ViewPagerColorOnPageChangeListener(this,
+                    listOf(R.color.white, R.color.light_gray).map {
+                        ContextCompat.getColor(context, it)
+                    }))
+        }
+        binding.tabLayout.isVisible = IS_FPG_ENABLED
 
         myProfileViewModel.avatarImageUrl.observe(viewLifecycleOwner, Observer { avatarImageUrl ->
             picasso

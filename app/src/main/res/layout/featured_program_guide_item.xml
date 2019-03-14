@@ -10,7 +10,6 @@
         android:id="@+id/date_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/light_gray"
         android:paddingStart="@dimen/margin"
         android:paddingEnd="@dimen/margin"
         android:paddingTop="@dimen/margin_double"
