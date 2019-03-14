@@ -5,7 +5,10 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Request
 import timber.log.Timber
 
-class ImgixRequestTransformer(private val alwaysTransform: Boolean = true) : Picasso.RequestTransformer {
+class ImgixRequestTransformer(
+        private val alwaysTransform: Boolean = true,
+        private val supportedHosts: List<String> = listOf("images.caffeine.tv")
+) : Picasso.RequestTransformer {
 
     override fun transformRequest(request: Request): Request {
         if (request.resourceId != 0) return request // don't transform resource requests
@@ -13,7 +16,7 @@ class ImgixRequestTransformer(private val alwaysTransform: Boolean = true) : Pic
         val scheme = uri.scheme ?: return request
         val host = uri.host ?: return request
         if (scheme != "https" && scheme != "http") return request
-        if (host.contains("assets")) return request
+        if (!supportedHosts.contains(host)) return request
         if (!request.hasSize() && !alwaysTransform) return request
 
         val imgix = Imgix(uri)
