@@ -5,7 +5,7 @@ import androidx.test.runner.AndroidJUnit4
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import tv.caffeine.app.lobby.LobbyFragmentDirections
+import tv.caffeine.app.lobby.LobbySwipeFragmentDirections
 import tv.caffeine.app.stage.StageFragmentArgs
 import tv.caffeine.app.util.broadcasterUsername
 
@@ -14,7 +14,7 @@ class StageFragmentArgsTests {
 
     @Test
     fun broadcasterUsernameIsParsedCorrectly() {
-        val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment("username")
+        val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStageFragment("username")
         val subject = StageFragmentArgs.fromBundle(action.arguments)
         Assert.assertEquals("username", subject.broadcasterUsername())
     }

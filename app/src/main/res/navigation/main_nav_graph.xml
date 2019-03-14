@@ -159,18 +159,15 @@
         <action
             android:id="@+id/action_lobbySwipeFragment_to_myProfileFragment"
             app:destination="@+id/myProfileFragment"/>
+        <action
+            android:id="@+id/action_lobbySwipeFragment_to_stageFragment"
+            app:destination="@+id/stageFragment"/>
     </fragment>
     <fragment
         android:id="@+id/lobbyFragment"
         android:name="tv.caffeine.app.lobby.LobbyFragment"
         android:label="@string/lobby"
         tools:layout="@layout/fragment_lobby">
-        <action
-            android:id="@+id/action_lobbyFragment_to_stageFragment"
-            app:destination="@+id/stageFragment"/>
-        <action
-            android:id="@+id/action_lobbyFragment_to_myProfileFragment"
-            app:destination="@+id/myProfileFragment"/>
     </fragment>
     <fragment
         android:id="@+id/featuredProgramGuideFragment"

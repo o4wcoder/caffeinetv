@@ -60,7 +60,7 @@ class AvatarCard(
 ) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
     override fun configure(item: LobbyItem) {
         itemView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToMyProfileFragment(true)
+            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToMyProfileFragment(true)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
@@ -207,7 +207,7 @@ open class LiveBroadcastCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
+            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStageFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
@@ -248,7 +248,7 @@ class LiveBroadcastWithFriendsCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            val action = LobbyFragmentDirections.actionLobbyFragmentToStageFragment(item.broadcaster.user.username)
+            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStageFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
