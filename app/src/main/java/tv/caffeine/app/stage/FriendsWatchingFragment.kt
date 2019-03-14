@@ -90,7 +90,7 @@ class FriendsWatchingAdapter @Inject constructor(
     var callback: ((String) -> Unit)? = null
 
     private val job = SupervisorJob()
-    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable, "Coroutine throwable")
     }
     override val coroutineContext: CoroutineContext

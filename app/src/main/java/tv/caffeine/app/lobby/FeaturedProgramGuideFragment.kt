@@ -127,7 +127,7 @@ class GuideAdapter @Inject constructor(
         }
 ), CoroutineScope {
 
-    private var job = SupervisorJob()
+    private val job = SupervisorJob()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable, "Coroutine throwable")
     }
@@ -143,15 +143,8 @@ class GuideAdapter @Inject constructor(
         holder.bind(getItem(position))
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        if (job.isCancelled) {
-            job = SupervisorJob()
-        }
-    }
-
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        job.cancel()
+        job.cancelChildren()
         super.onDetachedFromRecyclerView(recyclerView)
     }
 }

@@ -107,7 +107,7 @@ class NotificationsAdapter @Inject constructor(
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        job.cancel()
+        job.cancelChildren()
     }
 }
 

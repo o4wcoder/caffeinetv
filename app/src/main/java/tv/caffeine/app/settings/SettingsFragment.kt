@@ -323,7 +323,7 @@ class SettingsViewModel(
     }
 
     fun processTwitterAuth(result: OAuthCallbackResult) {
-        Timber.d("Successfully connected Twitter, ${result}")
+        Timber.d("Successfully connected Twitter, $result")
         load()
     }
 

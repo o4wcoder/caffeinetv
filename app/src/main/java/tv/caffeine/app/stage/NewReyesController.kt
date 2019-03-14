@@ -113,7 +113,7 @@ class NewReyesController @AssistedInject constructor(
                 val streamId = it.key
                 val peerConnection = it.value
                 peerConnectionStreamLabels[streamId]?.let { streamLabel ->
-                    reportStats(peerConnection, "viewerId", streamLabel) // TODO: viewer ID
+                    reportStats(peerConnection, streamLabel)
                 }
             }
             delay(TimeUnit.SECONDS.toMillis(STATS_REPORTING_PERIOD_SECONDS))
@@ -242,15 +242,15 @@ class NewReyesController @AssistedInject constructor(
         val sessionDescription = SessionDescription(SessionDescription.Type.OFFER, sdpOffer)
         val rtcConfiguration = PeerConnection.RTCConfiguration(listOf())
         val observer = object : SimplePeerConnectionObserver() {
-            override fun onIceCandidate(iceCandidate: IceCandidate?) {
-                super.onIceCandidate(iceCandidate)
+            override fun onIceCandidate(candidate: IceCandidate?) {
+                super.onIceCandidate(candidate)
                 if (!isActive) {
                     Timber.e("Ice candidate received after closing the stream controller")
                     return
                 }
-                if (iceCandidate == null) return
-                val candidate = IndividualIceCandidate(iceCandidate.sdp, iceCandidate.sdpMid, iceCandidate.sdpMLineIndex)
-                val iceCandidates = NewReyes.ConnectToStream(iceCandidates = arrayOf(candidate))
+                if (candidate == null) return
+                val iceCandidate = IndividualIceCandidate(candidate.sdp, candidate.sdpMid, candidate.sdpMLineIndex)
+                val iceCandidates = NewReyes.ConnectToStream(iceCandidates = arrayOf(iceCandidate))
                 launch {
                     val result = realtime.connectToStream(stream.url, iceCandidates).awaitAndParseErrors(gson)
                     when (result) {
@@ -314,10 +314,9 @@ class NewReyesController @AssistedInject constructor(
         return NewReyesConnectionInfo(peerConnection, videoTrack, audioTrack)
     }
 
-    private val relevantStatsTypes = listOf("inbound-rtp", "candidate-pair", "remote-candidate", "local-candidate", "track")
     private val relevantStatsMetrics = listOf("bytesReceived", "packetsReceived", "packetsLost", "framesDecoded")
 
-    private suspend fun reportStats(peerConnection: PeerConnection, viewerId: String, streamLabel: String) {
+    private suspend fun reportStats(peerConnection: PeerConnection, streamLabel: String) {
         val rtcStats = peerConnection.getStats()
         sendPerformanceStats(rtcStats, streamLabel)
     }

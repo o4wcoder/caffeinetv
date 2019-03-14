@@ -1,6 +1,7 @@
 package tv.caffeine.app.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import tv.caffeine.app.auth.AuthWatcher
@@ -34,7 +35,7 @@ class KeyStoreModule {
 @Module
 class SharedPreferencesModule {
     @Provides
-    fun providesCaffeineSharedPreferences(context: Context) = context.getSharedPreferences(CAFFEINE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+    fun providesCaffeineSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(CAFFEINE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
 }
 
 @Module

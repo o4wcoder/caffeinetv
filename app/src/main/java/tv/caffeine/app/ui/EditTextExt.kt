@@ -54,15 +54,16 @@ fun TextView.formatUsernameAsHtml(
         isFollowed: Boolean = false,
         @DimenRes avatarSizeDimen: Int = R.dimen.chat_avatar_size
 ) {
-    text = string?.let { string ->
-        val imageGetter = UserAvatarImageGetter(this, isFollowed, avatarSizeDimen, picasso)
-        val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
-        for (span in html.getSpans(0, html.length, ImageSpan::class.java)) {
-            val start = html.getSpanStart(span)
-            val end = html.getSpanEnd(span)
-            html.setSpan(CenterImageSpan(span.drawable), start, end, html.getSpanFlags(span))
-        }
-
-        html
+    if (string == null) {
+        text = null
+        return
     }
+    val imageGetter = UserAvatarImageGetter(this, isFollowed, avatarSizeDimen, picasso)
+    val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+    for (span in html.getSpans(0, html.length, ImageSpan::class.java)) {
+        val start = html.getSpanStart(span)
+        val end = html.getSpanEnd(span)
+        html.setSpan(CenterImageSpan(span.drawable), start, end, html.getSpanFlags(span))
+    }
+    text = html
 }

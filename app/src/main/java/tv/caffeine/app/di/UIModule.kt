@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Module
 class UIModule {
     @Provides
-    fun providesResources(context: Context) = context.resources
+    fun providesResources(context: Context): Resources = context.resources
 
     @Provides
     fun providesRecycledViewPool() = RecyclerView.RecycledViewPool()
