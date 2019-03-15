@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/margin"
+    android:paddingEnd="@dimen/margin"
+    android:clipToPadding="false">
+
+    <TextView
+        style="@style/ListSubtitle"
+        android:id="@+id/date_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/margin_list"
+        android:paddingBottom="@dimen/margin_list"
+        android:textStyle="bold"
+        android:textColor="@color/almost_black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@sample/guide.json/listings/date"/>
+
+    <androidx.cardview.widget.CardView
+        style="@style/LobbyCard"
+        android:background="@color/warning_red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date_text_view"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/event_image_view"
+                android:layout_width="@dimen/featured_guide_event_image_size"
+                android:layout_height="@dimen/featured_guide_event_image_size"
+                android:layout_marginStart="@dimen/margin_list"
+                android:layout_marginTop="@dimen/margin_list"
+                android:layout_marginBottom="@dimen/margin_list"
+                android:contentDescription="@string/featured_event_image_content_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/featured_guide_detail_container"
+                tools:srcCompat="@tools:sample/avatars"/>
+
+            <TextView
+                android:id="@+id/category_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_list"
+                android:maxLines="1"
+                android:textColor="@color/almost_black"
+                android:includeFontPadding="false"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@+id/event_image_view"
+                app:layout_constraintEnd_toStartOf="@+id/time_text_view"
+                app:layout_constraintTop_toTopOf="@id/event_image_view"
+                tools:text="@sample/guide.json/listings/category"/>
+
+            <TextView
+                android:id="@+id/time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_list"
+                android:layout_marginEnd="@dimen/margin_list"
+                android:textColor="@color/almost_black"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/category_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/category_text_view"
+                tools:text="@sample/guide.json/listings/start_time"/>
+
+            <TextView
+                style="@style/ListSubtitle"
+                android:id="@+id/title_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_line_spacing_small"
+                android:layout_marginEnd="@dimen/margin_list"
+                android:maxLines="2"
+                android:textColor="@color/almost_black"
+                android:textStyle="bold"
+                android:includeFontPadding="false"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@+id/category_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/category_text_view"
+                tools:text="@sample/guide.json/listings/title"/>
+
+            <TextView
+                android:id="@+id/username_plain_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_line_spacing_small"
+                android:layout_marginEnd="@dimen/margin_list"
+                android:layout_marginBottom="@dimen/margin_list"
+                android:textColor="@color/almost_black"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@+id/title_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title_text_view"
+                app:layout_constraintBottom_toTopOf="@+id/featured_guide_detail_container"
+                tools:text="@sample/guide.json/listings/username"/>
+
+            <include layout="@layout/featured_guide_detail_item"
+                android:id="@+id/featured_guide_detail_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_list"
+                android:layout_marginEnd="@dimen/margin_list"
+                android:layout_marginBottom="@dimen/margin_list"
+                app:layout_constraintVertical_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/event_image_view"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,10 +12,9 @@
     </data>
 
     <androidx.cardview.widget.CardView
+        style="@style/LobbyCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/lobby_card_rounding_radius"
-        app:cardElevation="4dp">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/frameLayout"
@@ -173,6 +172,5 @@
                 app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
                 app:layout_constraintTop_toTopOf="@+id/avatar_image_view" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
 </layout>

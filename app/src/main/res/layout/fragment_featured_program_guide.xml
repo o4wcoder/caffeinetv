@@ -9,7 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".lobby.FeaturedProgramGuide">
+        tools:context=".lobby.FeaturedProgramGuide"
+        tools:background="@color/light_gray">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/guide_recycler_view"
@@ -21,7 +22,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/featured_program_guide_item"/>
+            tools:listitem="@layout/featured_guide_item"/>
 
         <TextView
             android:id="@+id/empty_message_text_view"

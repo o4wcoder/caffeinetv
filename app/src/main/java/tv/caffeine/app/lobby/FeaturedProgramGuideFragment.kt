@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +20,10 @@ import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import timber.log.Timber
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.BroadcastsService
-import tv.caffeine.app.api.Guide
+import tv.caffeine.app.api.FeaturedGuide
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
@@ -33,6 +35,7 @@ import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.safeNavigate
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -76,8 +79,8 @@ class FeaturedProgramGuideViewModel(
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
 
-    private val _guides = MutableLiveData<List<Guide>>()
-    val guides: LiveData<List<Guide>> = Transformations.map(_guides) { it }
+    private val _guides = MutableLiveData<List<FeaturedGuide>>()
+    val guides: LiveData<List<FeaturedGuide>> = Transformations.map(_guides) { it }
 
     init {
         load()
@@ -85,7 +88,7 @@ class FeaturedProgramGuideViewModel(
 
     private fun load() {
         launch {
-            val result = broadcastsService.guide().awaitAndParseErrors(gson)
+            val result = broadcastsService.featuredGuide().awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> _guides.value = prepareGuideTimestamp(result.value.listings)
                 is CaffeineResult.Error -> Timber.e("Failed to fetch content guide ${result.error}")
@@ -94,7 +97,7 @@ class FeaturedProgramGuideViewModel(
         }
     }
 
-    private fun prepareGuideTimestamp(guides: List<Guide>): List<Guide> {
+    private fun prepareGuideTimestamp(guides: List<FeaturedGuide>): List<FeaturedGuide> {
         guides.getOrNull(0)?.shouldShowTimestamp = true
         for (i in 1 until guides.size) {
             guides[i].shouldShowTimestamp = isDifferentDay(guides[i - 1], guides[i])
@@ -102,7 +105,7 @@ class FeaturedProgramGuideViewModel(
         return guides
     }
 
-    private fun isDifferentDay(guide1: Guide, guide2: Guide): Boolean {
+    private fun isDifferentDay(guide1: FeaturedGuide, guide2: FeaturedGuide): Boolean {
         val calendar1 = Calendar.getInstance().apply {
             timeInMillis = TimeUnit.SECONDS.toMillis(guide1.startTimestamp)
         }
@@ -120,10 +123,10 @@ class GuideAdapter @Inject constructor(
         @ThemeFollowedExplore private val followedTheme: UserTheme,
         @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
         private val picasso: Picasso
-): ListAdapter<Guide, GuideViewHolder>(
-        object : DiffUtil.ItemCallback<Guide>() {
-            override fun areItemsTheSame(oldItem: Guide, newItem: Guide) = oldItem === newItem
-            override fun areContentsTheSame(oldItem: Guide, newItem: Guide) = oldItem.id == newItem.id
+): ListAdapter<FeaturedGuide, GuideViewHolder>(
+        object : DiffUtil.ItemCallback<FeaturedGuide>() {
+            override fun areItemsTheSame(oldItem: FeaturedGuide, newItem: FeaturedGuide) = oldItem === newItem
+            override fun areContentsTheSame(oldItem: FeaturedGuide, newItem: FeaturedGuide) = oldItem.id == newItem.id
         }
 ), CoroutineScope {
 
@@ -135,12 +138,12 @@ class GuideAdapter @Inject constructor(
         get() = dispatchConfig.main + job + exceptionHandler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.featured_program_guide_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.featured_guide_item, parent, false)
         return GuideViewHolder(view, this, followManager, followedTheme, notFollowedTheme, picasso)
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -158,39 +161,72 @@ class GuideViewHolder(
         private val picasso: Picasso
 ) : RecyclerView.ViewHolder(itemView) {
 
-    private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val dateTextView: TextView = itemView.findViewById(R.id.date_text_view)
+    private val eventImageView: ImageView = itemView.findViewById(R.id.event_image_view)
+    private val categoryTextView: TextView = itemView.findViewById(R.id.category_text_view)
     private val timeTextView: TextView = itemView.findViewById(R.id.time_text_view)
     private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
+    private val usernamePlainTextView: TextView = itemView.findViewById(R.id.username_plain_text_view)
+    private val detailImageView: ImageView = itemView.findViewById(R.id.detail_image_view)
+    private val descriptionTextView: TextView = itemView.findViewById(R.id.description_text_view)
+    private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
+    private val detailContainer: ViewGroup = itemView.findViewById(R.id.featured_guide_detail_container)
 
     var job: Job? = null
 
-    fun bind(guide: Guide) {
+    fun bind(guide: FeaturedGuide, position: Int) {
         job?.cancel()
         clear()
+
+        detailContainer.isVisible = position == 0
         job = scope.launch {
             val user = followManager.userDetails(guide.caid) ?: return@launch
-            user.configure(avatarImageView, usernameTextView, null, followManager, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
+            user.configure(avatarImageView, usernameTextView, null, followManager, avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
+            usernamePlainTextView.text = user.username
+            avatarImageView.setOnClickListener {
+                Navigation.findNavController(itemView).safeNavigate(MainNavDirections.actionGlobalProfileFragment(guide.caid))
+            }
         }
         dateTextView.isVisible = guide.shouldShowTimestamp
         dateTextView.text = getDateText(guide)
         timeTextView.text = getTimeText(guide)
+
+        picasso.load(guide.eventImageUrl)
+                .resizeDimen(R.dimen.featured_guide_event_image_size, R.dimen.featured_guide_event_image_size)
+                .centerCrop()
+                .into(eventImageView)
+        categoryTextView.text = guide.category
         titleTextView.text = guide.title
+
+        picasso.load(guide.detailImageUrl)
+                .resizeDimen(R.dimen.featured_guide_detail_image_width, R.dimen.featured_guide_detail_image_height)
+                .centerCrop()
+                .into(detailImageView)
+        descriptionTextView.text = guide.description
     }
 
     private fun clear() {
-        avatarImageView.setImageResource(R.drawable.default_avatar_round)
         dateTextView.text = null
         timeTextView.text = null
+
+        eventImageView.setImageResource(R.color.light_gray)
+        categoryTextView.text = null
         titleTextView.text = null
+        usernamePlainTextView.text = null
+
+        detailContainer.isVisible = false
+        detailImageView.setImageResource(R.color.light_gray)
+        descriptionTextView.text = null
+        avatarImageView.setImageResource(R.drawable.default_avatar_round)
+        avatarImageView.setOnClickListener(null)
         usernameTextView.text = null
     }
 
     /**
      * TODO (AND-139): Localize the date format.
      */
-    private fun getDateText(guide: Guide): String {
+    private fun getDateText(guide: FeaturedGuide): String {
         return Calendar.getInstance().run {
             timeInMillis = TimeUnit.SECONDS.toMillis(guide.startTimestamp)
             SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
@@ -200,16 +236,11 @@ class GuideViewHolder(
     /**
      * TODO (AND-139): Localize the time format.
      */
-    private fun getTimeText(guide: Guide): String {
-        val startTime = Calendar.getInstance().run {
+    private fun getTimeText(guide: FeaturedGuide): String {
+        return Calendar.getInstance().run {
             timeInMillis = TimeUnit.SECONDS.toMillis(guide.startTimestamp)
             SimpleDateFormat("h:mm a", Locale.getDefault()).format(this.time)
         }
-        val endTime = Calendar.getInstance().run {
-            timeInMillis = TimeUnit.SECONDS.toMillis(guide.endTimestamp)
-            SimpleDateFormat("h:mm a", Locale.getDefault()).format(this.time)
-        }
-        return "$startTime - $endTime"
     }
 }
 

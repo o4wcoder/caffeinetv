@@ -16,6 +16,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
+import tv.caffeine.app.BuildConfig
 import tv.caffeine.app.R
 import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbySwipeBinding
@@ -28,7 +29,7 @@ import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
-private const val IS_FPG_ENABLED = false
+private const val IS_FPG_ENABLED = BuildConfig.FLAVOR == "staging"
 
 class LobbySwipeFragment : CaffeineFragment() {
 
