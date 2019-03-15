@@ -35,8 +35,7 @@ env:
     - SUBDOMAIN=android-build-output
     - TEST_REPORT_PATH="app/build/reports/tests"
 script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./gradlew testProdDebugUnitTest -PdisablePreDex --stacktrace; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./gradlew testStagingDebugUnitTest -PdisablePreDex --stacktrace; fi'
+  - './gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace'
   - 'cp scripts/test_report_index.html $TEST_REPORT_PATH/index.html'
   - 'echo "Test report: https://$SUBDOMAIN.caffeine.tv/$TRAVIS_JOB_ID/index.html"'
 deploy:
