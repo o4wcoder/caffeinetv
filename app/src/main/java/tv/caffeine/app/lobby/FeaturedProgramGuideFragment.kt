@@ -5,8 +5,6 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -27,6 +25,7 @@ import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.FeaturedGuideListing
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.databinding.FeaturedGuideItemBinding
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
@@ -153,8 +152,8 @@ class GuideAdapter @Inject constructor(
         get() = dispatchConfig.main + job + exceptionHandler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.featured_guide_item, parent, false)
-        return GuideViewHolder(view, this, followManager, followedTheme, notFollowedTheme, picasso)
+        val binding = FeaturedGuideItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return GuideViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
@@ -170,25 +169,13 @@ class GuideAdapter @Inject constructor(
 }
 
 class GuideViewHolder(
-        itemView: View,
+        private val binding: FeaturedGuideItemBinding,
         private val scope: CoroutineScope,
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
         private val notFollowedTheme: UserTheme,
         private val picasso: Picasso
-) : RecyclerView.ViewHolder(itemView) {
-
-    private val dateTextView: TextView = itemView.findViewById(R.id.date_text_view)
-    private val eventImageView: ImageView = itemView.findViewById(R.id.event_image_view)
-    private val categoryTextView: TextView = itemView.findViewById(R.id.category_text_view)
-    private val timeTextView: TextView = itemView.findViewById(R.id.time_text_view)
-    private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
-    private val usernamePlainTextView: TextView = itemView.findViewById(R.id.username_plain_text_view)
-    private val detailImageView: ImageView = itemView.findViewById(R.id.detail_image_view)
-    private val descriptionTextView: TextView = itemView.findViewById(R.id.description_text_view)
-    private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
-    private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
-    private val detailContainer: ViewGroup = itemView.findViewById(R.id.featured_guide_detail_container)
+) : RecyclerView.ViewHolder(binding.root) {
 
     var job: Job? = null
 
@@ -196,35 +183,37 @@ class GuideViewHolder(
         job?.cancel()
         clear()
 
-        detailContainer.isVisible = listingItem.isExpanded
+        binding.included.detailContainer.isVisible = listingItem.isExpanded
         job = scope.launch {
             val user = followManager.userDetails(listingItem.listing.caid) ?: return@launch
-            user.configure(avatarImageView, usernameTextView, null, followManager, avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
-            usernamePlainTextView.text = user.username
-            avatarImageView.setOnClickListener {
+            user.configure(binding.included.avatarImageView, binding.included.usernameTextView, null, followManager,
+                    avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme,
+                    notFollowedTheme = notFollowedTheme, picasso = picasso)
+            binding.usernamePlainTextView.text = user.username
+            binding.included.avatarImageView.setOnClickListener {
                 Navigation.findNavController(itemView).safeNavigate(MainNavDirections.actionGlobalProfileFragment(listingItem.listing.caid))
             }
         }
-        dateTextView.isVisible = listingItem.shouldShowTimestamp
-        dateTextView.text = getDateText(listingItem)
-        timeTextView.text = getTimeText(listingItem)
+        binding.dateTextView.isVisible = listingItem.shouldShowTimestamp
+        binding.dateTextView.text = getDateText(listingItem)
+        binding.timeTextView.text = getTimeText(listingItem)
 
         picasso.load(listingItem.listing.eventImageUrl)
                 .resizeDimen(R.dimen.featured_guide_event_image_size, R.dimen.featured_guide_event_image_size)
                 .centerCrop()
-                .into(eventImageView)
-        categoryTextView.text = listingItem.listing.category
-        titleTextView.text = listingItem.listing.title
+                .into(binding.eventImageView)
+        binding.categoryTextView.text = listingItem.listing.category
+        binding.titleTextView.text = listingItem.listing.title
 
         picasso.load(listingItem.listing.detailImageUrl)
                 .resizeDimen(R.dimen.featured_guide_detail_image_width, R.dimen.featured_guide_detail_image_height)
                 .centerCrop()
-                .into(detailImageView)
-        descriptionTextView.text = listingItem.listing.description
+                .into(binding.included.detailImageView)
+        binding.included.descriptionTextView.text = listingItem.listing.description
 
         // Click listeners
         itemView.setOnClickListener { animateDetailView(listingItem, callback) }
-        detailContainer.setOnClickListener { animateDetailView(listingItem, callback) }
+        binding.included.detailContainer.setOnClickListener { animateDetailView(listingItem, callback) }
     }
 
     private fun animateDetailView(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
@@ -234,12 +223,12 @@ class GuideViewHolder(
          * the view must have been measured when it's clicked.
          */
         if (listingItem.detailHeight == 0) {
-            listingItem.detailHeight = detailContainer.height
+            listingItem.detailHeight = binding.included.detailContainer.height
         }
         if (listingItem.isExpanded) {
-            detailContainer.animateSlideUpAndHide(listingItem.detailHeight)
+            binding.included.detailContainer.animateSlideUpAndHide(listingItem.detailHeight)
         } else {
-            detailContainer.isVisible = true
+            binding.included.detailContainer.isVisible = true
             TransitionManager.beginDelayedTransition(itemView as ViewGroup)
         }
         /**
@@ -251,20 +240,20 @@ class GuideViewHolder(
     }
 
     private fun clear() {
-        dateTextView.text = null
-        timeTextView.text = null
+        binding.dateTextView.text = null
+        binding.timeTextView.text = null
 
-        eventImageView.setImageResource(R.color.light_gray)
-        categoryTextView.text = null
-        titleTextView.text = null
-        usernamePlainTextView.text = null
+        binding.eventImageView.setImageResource(R.color.light_gray)
+        binding.categoryTextView.text = null
+        binding.titleTextView.text = null
+        binding.usernamePlainTextView.text = null
 
-        detailContainer.isVisible = false
-        detailImageView.setImageResource(R.color.light_gray)
-        descriptionTextView.text = null
-        avatarImageView.setImageResource(R.drawable.default_avatar_round)
-        avatarImageView.setOnClickListener(null)
-        usernameTextView.text = null
+        binding.included.detailContainer.isVisible = false
+        binding.included.detailImageView.setImageResource(R.color.light_gray)
+        binding.included.descriptionTextView.text = null
+        binding.included.avatarImageView.setImageResource(R.drawable.default_avatar_round)
+        binding.included.avatarImageView.setOnClickListener(null)
+        binding.included.usernameTextView.text = null
     }
 
     /**
