@@ -1,6 +1,7 @@
 package tv.caffeine.app.lobby
 
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,19 +24,17 @@ import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.BroadcastsService
-import tv.caffeine.app.api.FeaturedGuide
+import tv.caffeine.app.api.FeaturedGuideListing
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
+import tv.caffeine.app.lobby.FeaturedGuideItem.ListingItem
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
-import tv.caffeine.app.util.configure
-import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -66,9 +65,9 @@ class FeaturedProgramGuideFragment : CaffeineFragment() {
     private fun configure(binding: FragmentFeaturedProgramGuideBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.guideRecyclerView.adapter = guideAdapter
-        viewModel.guides.observe(viewLifecycleOwner, Observer { guides ->
-            binding.emptyMessageTextView.isVisible = guides.isEmpty()
-            guideAdapter.submitList(guides)
+        viewModel.listings.observe(viewLifecycleOwner, Observer {
+            binding.emptyMessageTextView.isVisible = it.isEmpty()
+            guideAdapter.submitList(it)
         })
     }
 }
@@ -79,8 +78,8 @@ class FeaturedProgramGuideViewModel(
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
 
-    private val _guides = MutableLiveData<List<FeaturedGuide>>()
-    val guides: LiveData<List<FeaturedGuide>> = Transformations.map(_guides) { it }
+    private val _listings = MutableLiveData<List<ListingItem>>()
+    val listings: LiveData<List<ListingItem>> = Transformations.map(_listings) { it }
 
     init {
         load()
@@ -90,31 +89,47 @@ class FeaturedProgramGuideViewModel(
         launch {
             val result = broadcastsService.featuredGuide().awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> _guides.value = prepareGuideTimestamp(result.value.listings)
+                is CaffeineResult.Success -> _listings.value = prepareList(result.value.listings)
                 is CaffeineResult.Error -> Timber.e("Failed to fetch content guide ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
     }
 
-    private fun prepareGuideTimestamp(guides: List<FeaturedGuide>): List<FeaturedGuide> {
-        guides.getOrNull(0)?.shouldShowTimestamp = true
-        for (i in 1 until guides.size) {
-            guides[i].shouldShowTimestamp = isDifferentDay(guides[i - 1], guides[i])
+    private fun prepareList(listings: List<FeaturedGuideListing>): List<ListingItem> {
+        val listingItems = listings.map { ListingItem(it) }.apply {
+            getOrNull(0)?.isExpanded = true
         }
-        return guides
+        return prepareListingTimestamp(listingItems)
     }
 
-    private fun isDifferentDay(guide1: FeaturedGuide, guide2: FeaturedGuide): Boolean {
+    private fun prepareListingTimestamp(listingItems: List<ListingItem>): List<ListingItem> {
+        listingItems.getOrNull(0)?.shouldShowTimestamp = true
+        for (i in 1 until listingItems.size) {
+            listingItems[i].shouldShowTimestamp = isDifferentDay(listingItems[i - 1].listing, listingItems[i].listing)
+        }
+        return listingItems
+    }
+
+    private fun isDifferentDay(listing1: FeaturedGuideListing, listing2: FeaturedGuideListing): Boolean {
         val calendar1 = Calendar.getInstance().apply {
-            timeInMillis = TimeUnit.SECONDS.toMillis(guide1.startTimestamp)
+            timeInMillis = TimeUnit.SECONDS.toMillis(listing1.startTimestamp)
         }
         val calendar2 = Calendar.getInstance().apply {
-            timeInMillis = TimeUnit.SECONDS.toMillis(guide2.startTimestamp)
+            timeInMillis = TimeUnit.SECONDS.toMillis(listing2.startTimestamp)
         }
         return calendar1.get(Calendar.DAY_OF_YEAR) != calendar2.get(Calendar.DAY_OF_YEAR)
                 || calendar1.get(Calendar.YEAR) != calendar2.get(Calendar.YEAR)
     }
+}
+
+sealed class FeaturedGuideItem {
+    data class ListingItem(
+            var listing: FeaturedGuideListing,
+            var shouldShowTimestamp: Boolean = false,
+            var isExpanded: Boolean = false,
+            var detailHeight: Int = 0) : FeaturedGuideItem()
+    // TODO data class DateHeaderItem() : FeaturedGuideItem()
 }
 
 class GuideAdapter @Inject constructor(
@@ -123,10 +138,10 @@ class GuideAdapter @Inject constructor(
         @ThemeFollowedExplore private val followedTheme: UserTheme,
         @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
         private val picasso: Picasso
-): ListAdapter<FeaturedGuide, GuideViewHolder>(
-        object : DiffUtil.ItemCallback<FeaturedGuide>() {
-            override fun areItemsTheSame(oldItem: FeaturedGuide, newItem: FeaturedGuide) = oldItem === newItem
-            override fun areContentsTheSame(oldItem: FeaturedGuide, newItem: FeaturedGuide) = oldItem.id == newItem.id
+): ListAdapter<ListingItem, GuideViewHolder>(
+        object : DiffUtil.ItemCallback<ListingItem>() {
+            override fun areItemsTheSame(oldItem: ListingItem, newItem: ListingItem) = oldItem === newItem
+            override fun areContentsTheSame(oldItem: ListingItem, newItem: ListingItem) = oldItem == newItem
         }
 ), CoroutineScope {
 
@@ -143,7 +158,9 @@ class GuideAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position), position) { clickedPosition, isExpanded ->
+            getItem(clickedPosition).isExpanded = isExpanded
+        }
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -175,35 +192,62 @@ class GuideViewHolder(
 
     var job: Job? = null
 
-    fun bind(guide: FeaturedGuide, position: Int) {
+    fun bind(listingItem: ListingItem, position: Int, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
         job?.cancel()
         clear()
 
-        detailContainer.isVisible = position == 0
+        detailContainer.isVisible = listingItem.isExpanded
         job = scope.launch {
-            val user = followManager.userDetails(guide.caid) ?: return@launch
+            val user = followManager.userDetails(listingItem.listing.caid) ?: return@launch
             user.configure(avatarImageView, usernameTextView, null, followManager, avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
             usernamePlainTextView.text = user.username
             avatarImageView.setOnClickListener {
-                Navigation.findNavController(itemView).safeNavigate(MainNavDirections.actionGlobalProfileFragment(guide.caid))
+                Navigation.findNavController(itemView).safeNavigate(MainNavDirections.actionGlobalProfileFragment(listingItem.listing.caid))
             }
         }
-        dateTextView.isVisible = guide.shouldShowTimestamp
-        dateTextView.text = getDateText(guide)
-        timeTextView.text = getTimeText(guide)
+        dateTextView.isVisible = listingItem.shouldShowTimestamp
+        dateTextView.text = getDateText(listingItem)
+        timeTextView.text = getTimeText(listingItem)
 
-        picasso.load(guide.eventImageUrl)
+        picasso.load(listingItem.listing.eventImageUrl)
                 .resizeDimen(R.dimen.featured_guide_event_image_size, R.dimen.featured_guide_event_image_size)
                 .centerCrop()
                 .into(eventImageView)
-        categoryTextView.text = guide.category
-        titleTextView.text = guide.title
+        categoryTextView.text = listingItem.listing.category
+        titleTextView.text = listingItem.listing.title
 
-        picasso.load(guide.detailImageUrl)
+        picasso.load(listingItem.listing.detailImageUrl)
                 .resizeDimen(R.dimen.featured_guide_detail_image_width, R.dimen.featured_guide_detail_image_height)
                 .centerCrop()
                 .into(detailImageView)
-        descriptionTextView.text = guide.description
+        descriptionTextView.text = listingItem.listing.description
+
+        // Click listeners
+        itemView.setOnClickListener { animateDetailView(listingItem, callback) }
+        detailContainer.setOnClickListener { animateDetailView(listingItem, callback) }
+    }
+
+    private fun animateDetailView(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
+        /**
+         * The animation listeners are unreliable that we can't trust them to reset the height
+         * if the animation has been interrupted. We initialize it here at the data layer since
+         * the view must have been measured when it's clicked.
+         */
+        if (listingItem.detailHeight == 0) {
+            listingItem.detailHeight = detailContainer.height
+        }
+        if (listingItem.isExpanded) {
+            detailContainer.animateSlideUpAndHide(listingItem.detailHeight)
+        } else {
+            detailContainer.isVisible = true
+            TransitionManager.beginDelayedTransition(itemView as ViewGroup)
+        }
+        /**
+         * Due to the visual imperfectness of the default animation, we build our own animation.
+         * The callback only updates the isExpanded field so it's correct at the data layer
+         * in preparation for the next bind() call. The callback doesn't trigger a bind() call.
+         */
+        callback(position, !listingItem.isExpanded)
     }
 
     private fun clear() {
@@ -226,9 +270,9 @@ class GuideViewHolder(
     /**
      * TODO (AND-139): Localize the date format.
      */
-    private fun getDateText(guide: FeaturedGuide): String {
+    private fun getDateText(listingItem: ListingItem): String {
         return Calendar.getInstance().run {
-            timeInMillis = TimeUnit.SECONDS.toMillis(guide.startTimestamp)
+            timeInMillis = TimeUnit.SECONDS.toMillis(listingItem.listing.startTimestamp)
             SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
         }
     }
@@ -236,9 +280,9 @@ class GuideViewHolder(
     /**
      * TODO (AND-139): Localize the time format.
      */
-    private fun getTimeText(guide: FeaturedGuide): String {
+    private fun getTimeText(listingItem: ListingItem): String {
         return Calendar.getInstance().run {
-            timeInMillis = TimeUnit.SECONDS.toMillis(guide.startTimestamp)
+            timeInMillis = TimeUnit.SECONDS.toMillis(listingItem.listing.startTimestamp)
             SimpleDateFormat("h:mm a", Locale.getDefault()).format(this.time)
         }
     }

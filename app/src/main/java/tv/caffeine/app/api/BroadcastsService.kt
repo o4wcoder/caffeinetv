@@ -23,7 +23,7 @@ interface BroadcastsService {
     @GET("v1/live-hostable-broadcasters")
     fun liveHostableBroadcasters(): Deferred<Response<BroadcasterList>>
 
-    @GET("v1/guide/featured")
+    @GET("public/v1/guide/featured")
     fun featuredGuide(): Deferred<Response<FeaturedGuideList>>
 }
 
@@ -35,9 +35,9 @@ class Guide(val caid: CAID, val id: String, val title:String, val startTimestamp
 
 class BroadcasterList(val broadcasters: List<Lobby.Broadcaster>)
 
-class FeaturedGuideList(val listings: List<FeaturedGuide>)
+class FeaturedGuideList(val listings: List<FeaturedGuideListing>)
 
-class FeaturedGuide(val caid: CAID, val id: String, val category: String, val title: String, private val eventImage: String, val startTimestamp: Long, val endTimestamp: Long, val description: String, private val detailImage: String, val isUsOnly: Boolean, var shouldShowTimestamp: Boolean) {
+class FeaturedGuideListing(val caid: CAID, val id: String, val category: String, val title: String, private val eventImage: String, val startTimestamp: Long, val endTimestamp: Long, val description: String, private val detailImage: String, val isUsOnly: Boolean) {
     val eventImageUrl get() = "$ASSETS_BASE_URL$eventImage"
     val detailImageUrl get() = "$ASSETS_BASE_URL$detailImage"
 }

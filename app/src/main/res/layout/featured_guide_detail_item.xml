@@ -5,9 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/margin_list"
-    android:layout_marginEnd="@dimen/margin_list"
     android:paddingTop="@dimen/margin_list"
+    android:paddingBottom="@dimen/margin_list"
     android:background="@drawable/gray_top_divider">
 
     <ImageView
