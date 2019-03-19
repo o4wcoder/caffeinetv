@@ -190,6 +190,7 @@ class GuideViewHolder(
                     avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme,
                     notFollowedTheme = notFollowedTheme, picasso = picasso)
             binding.usernamePlainTextView.text = user.username
+            binding.usOnlyLabelTextView.isVisible = listingItem.listing.isUsOnly
             binding.included.avatarImageView.setOnClickListener {
                 Navigation.findNavController(itemView).safeNavigate(MainNavDirections.actionGlobalProfileFragment(listingItem.listing.caid))
             }
@@ -210,6 +211,7 @@ class GuideViewHolder(
                 .centerCrop()
                 .into(binding.included.detailImageView)
         binding.included.descriptionTextView.text = listingItem.listing.description
+        binding.included.usOnlyDescriptionTextView.isVisible = listingItem.listing.isUsOnly
 
         // Click listeners
         itemView.setOnClickListener { animateDetailView(listingItem, callback) }
@@ -243,15 +245,17 @@ class GuideViewHolder(
         binding.dateTextView.text = null
         binding.timeTextView.text = null
 
-        binding.eventImageView.setImageResource(R.color.light_gray)
+        binding.eventImageView.setImageDrawable(null)
         binding.categoryTextView.text = null
         binding.titleTextView.text = null
         binding.usernamePlainTextView.text = null
+        binding.usOnlyLabelTextView.isVisible = false
 
         binding.included.detailContainer.isVisible = false
-        binding.included.detailImageView.setImageResource(R.color.light_gray)
+        binding.included.detailImageView.setImageDrawable(null)
         binding.included.descriptionTextView.text = null
-        binding.included.avatarImageView.setImageResource(R.drawable.default_avatar_round)
+        binding.included.usOnlyDescriptionTextView.isVisible = false
+        binding.included.avatarImageView.setImageDrawable(null)
         binding.included.avatarImageView.setOnClickListener(null)
         binding.included.usernameTextView.text = null
     }

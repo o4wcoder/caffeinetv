@@ -12,13 +12,12 @@
         android:clipToPadding="false">
 
         <TextView
-            style="@style/ListSubtitle"
+            style="@style/ListTitle"
             android:id="@+id/date_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/margin_list"
             android:paddingBottom="@dimen/margin_list"
-            android:textStyle="bold"
             android:textColor="@color/almost_black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,6 +59,7 @@
                     android:layout_marginStart="@dimen/margin_list"
                     android:maxLines="1"
                     android:textColor="@color/almost_black"
+                    android:textSize="13sp"
                     android:includeFontPadding="false"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@+id/event_image_view"
@@ -74,6 +74,7 @@
                     android:layout_marginStart="@dimen/margin_list"
                     android:layout_marginEnd="@dimen/margin_list"
                     android:textColor="@color/almost_black"
+                    android:textSize="13sp"
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toEndOf="@+id/category_text_view"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +82,7 @@
                     tools:text="@sample/guide.json/listings/start_time"/>
 
                 <TextView
-                    style="@style/ListSubtitle"
+                    style="@style/ListTitle"
                     android:id="@+id/title_text_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -89,7 +90,6 @@
                     android:layout_marginEnd="@dimen/margin_list"
                     android:maxLines="2"
                     android:textColor="@color/almost_black"
-                    android:textStyle="bold"
                     android:includeFontPadding="false"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="@+id/category_text_view"
@@ -102,15 +102,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_line_spacing_small"
-                    android:layout_marginEnd="@dimen/margin_list"
                     android:layout_marginBottom="@dimen/margin_list"
                     android:textColor="@color/almost_black"
-                    app:layout_constraintHorizontal_bias="0"
+                    android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="@+id/title_text_view"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/title_text_view"
                     app:layout_constraintBottom_toTopOf="@+id/included"
                     tools:text="@sample/guide.json/listings/username"/>
+
+                <TextView
+                    android:id="@+id/us_only_label_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_line_spacing_small"
+                    android:layout_marginEnd="@dimen/margin_list"
+                    android:text="@string/us_only_label"
+                    android:textColor="@color/almost_black"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@+id/username_plain_text_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/username_plain_text_view"
+                    app:layout_constraintBottom_toBottomOf="@id/username_plain_text_view"
+                    tools:visibility="visible"/>
 
                 <include layout="@layout/featured_guide_detail_item"
                     android:id="@+id/included"
