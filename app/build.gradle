@@ -57,13 +57,9 @@ androidExtensions {
     experimental = true
 }
 
-ext {
-    daggerVersion = '2.21'
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 
     // Jetpack
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
@@ -89,12 +85,12 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
 
     // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:${versions.navigation}"
+    implementation "androidx.navigation:navigation-ui-ktx:${versions.navigation}"
 
     // Data binding
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
-    kapt "androidx.databinding:databinding-compiler:$android_plugin_version"
+    kapt "androidx.databinding:databinding-compiler:${versions.android_plugin}"
 
     // Retrofit, okhttp
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
@@ -103,15 +99,15 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
 
     // Dagger
-    implementation "com.google.dagger:dagger:${daggerVersion}"
-    implementation "com.google.dagger:dagger-android:${daggerVersion}"
-    implementation "com.google.dagger:dagger-android-support:${daggerVersion}"
-    kapt "com.google.dagger:dagger-compiler:${daggerVersion}"
-    kapt "com.google.dagger:dagger-android-processor:${daggerVersion}"
+    implementation "com.google.dagger:dagger:${versions.dagger}"
+    implementation "com.google.dagger:dagger-android:${versions.dagger}"
+    implementation "com.google.dagger:dagger-android-support:${versions.dagger}"
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    kapt "com.google.dagger:dagger-android-processor:${versions.dagger}"
     compileOnly 'com.squareup.inject:assisted-inject-annotations-dagger2:0.3.3'
     kapt "com.squareup.inject:assisted-inject-processor-dagger2:0.3.3"
-    kaptTest "com.google.dagger:dagger-compiler:${daggerVersion}"
-    kaptTest "com.google.dagger:dagger-android-processor:${daggerVersion}"
+    kaptTest "com.google.dagger:dagger-compiler:${versions.dagger}"
+    kaptTest "com.google.dagger:dagger-android-processor:${versions.dagger}"
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
@@ -161,19 +157,19 @@ dependencies {
     testImplementation 'io.mockk:mockk:1.9.2'
     testImplementation 'android.arch.core:core-testing:1.1.1'
     testImplementation 'org.hamcrest:hamcrest-library:2.1'
-    testImplementation 'org.robolectric:robolectric:4.2'
+    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
     testImplementation 'androidx.test:core:1.1.0'
     testImplementation 'androidx.test:runner:1.1.1'
     testImplementation 'androidx.test:rules:1.1.1'
-    debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha04'
-    testImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    testImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
+    debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha05'
+    testImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    testImplementation "androidx.test.espresso:espresso-intents:${versions.espresso}"
     androidTestImplementation 'io.mockk:mockk-android:1.9.2'
     androidTestImplementation 'android.arch.core:core-testing:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${versions.espresso}"
     implementation project(':libwebrtc')
 }
 

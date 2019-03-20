@@ -34,6 +34,9 @@ env:
   global:
     - SUBDOMAIN=android-build-output
     - TEST_REPORT_PATH="app/build/reports/tests"
+    - JVM_OPTS="-Xmx3200m"
+    - _JAVA_OPTIONS="-Xmx3200m"
+    - GRADLE_OPTS='-Dorg.gradle.jvmargs="-Xmx3200m" -Dorg.gradle.daemon=false'
 script:
   - './gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace'
   - 'cp scripts/test_report_index.html $TEST_REPORT_PATH/index.html'

@@ -53,6 +53,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
 
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var facebookLoginManager: LoginManager
 
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
@@ -215,8 +216,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
                         fragment.maybeShow(fragmentManager, "disconnectFacebook")
                     } else {
-                        val loginManager = LoginManager.getInstance()
-                        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+                        facebookLoginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                             override fun onSuccess(result: LoginResult?) {
                                 viewModel.processFacebookLogin(result)
                             }
@@ -229,7 +229,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                             }
 
                         })
-                        loginManager.logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
+                        facebookLoginManager.logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
                     }
                     true
                 }
@@ -293,6 +293,7 @@ class SettingsViewModel(
         private val followManager: FollowManager,
         private val usersService: UsersService,
         private val oauthService: OAuthService,
+        private val facebookLoginManager: LoginManager,
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
     private val _userDetails = MutableLiveData<User>()
@@ -337,7 +338,7 @@ class SettingsViewModel(
                     Timber.d("Successfully disconnected identity")
                     when(identityProvider) {
                         IdentityProvider.facebook -> {
-                            LoginManager.getInstance().logOut()
+                            facebookLoginManager.logOut()
                         }
                         IdentityProvider.twitter -> {
                             // TODO clear out web view cache, in case the user checked "remember me on this device"

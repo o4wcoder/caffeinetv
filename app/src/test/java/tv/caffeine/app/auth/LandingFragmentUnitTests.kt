@@ -1,6 +1,9 @@
 package tv.caffeine.app.auth
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
@@ -10,13 +13,14 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.runner.AndroidJUnit4
-import com.facebook.FacebookSdk
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.CaffeineApplication
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -27,41 +31,49 @@ import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
 
-//@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class LandingFragmentUnitTests {
     private lateinit var analytics: Analytics
+    private lateinit var fragment: LandingFragment
+    private lateinit var scenario: FragmentScenario<LandingFragment>
+    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
-    //@Before
+    @Before
     fun setup() {
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
         val testComponent = DaggerTestComponent.builder().create(app)
         app.setApplicationInjector(testComponent)
-        FacebookSdk.sdkInitialize(app)
         val directions = MainNavDirections.actionGlobalLandingFragment(null)
-        val scenario = launchFragmentInContainer<LandingFragment>(directions.arguments)
+        scenario = launchFragmentInContainer<LandingFragment>(directions.arguments)
         val navController = mockk<NavController>(relaxed = true)
         scenario.onFragment {
             analytics = mockk<LogAnalytics>(relaxed = true)
             it.analytics = analytics
             Navigation.setViewNavController(it.view!!, navController)
+            fragment = it
         }
     }
 
-    //@Test
+    @After
+    fun cleanup() {
+        scenario.moveToState(Lifecycle.State.DESTROYED)
+    }
+
+    @Test
     fun `clicking facebook generates correct analytics event`() {
         onView(withId(R.id.facebook_sign_in_button)).check(matches(isDisplayed()))
         onView(withId(R.id.facebook_sign_in_button)).perform(click())
         verify(exactly = 1) { analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.facebook)) }
     }
 
-    //@Test
+    @Test
     fun `clicking twitter generates correct analytics event`() {
         onView(withId(R.id.twitter_sign_in_button)).check(matches(isDisplayed()))
         onView(withId(R.id.twitter_sign_in_button)).perform(click())
         verify(exactly = 1) { analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.twitter)) }
     }
 
-    //@Test
+    @Test
     fun `clicking new account generates correct analytics event`() {
         onView(withId(R.id.new_account_button)).check(matches(isDisplayed()))
         onView(withId(R.id.new_account_button)).perform(scrollTo()).perform(click())

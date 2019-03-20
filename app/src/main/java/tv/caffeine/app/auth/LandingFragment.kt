@@ -41,6 +41,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     @Inject lateinit var gson: Gson
     @Inject lateinit var authWatcher: AuthWatcher
     @Inject lateinit var analytics: Analytics
+    @Inject lateinit var facebookLoginManager: LoginManager
 
     private lateinit var binding: FragmentLandingBinding
     private lateinit var callbackManager: CallbackManager
@@ -49,7 +50,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         callbackManager = CallbackManager.Factory.create()
-        LoginManager.getInstance().registerCallback(callbackManager, facebookCallback)
+        facebookLoginManager.registerCallback(callbackManager, facebookCallback)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +68,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
         binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
         binding.facebookSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.facebook))
-            LoginManager.getInstance().logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
+            facebookLoginManager.logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
         }
         binding.twitterSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.twitter))

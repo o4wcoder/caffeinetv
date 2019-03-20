@@ -9,12 +9,13 @@ import androidx.navigation.findDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.get
 import androidx.test.annotation.UiThreadTest
-import androidx.test.runner.AndroidJUnit4
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import tv.caffeine.app.MainActivity
 import tv.caffeine.app.R
@@ -26,11 +27,12 @@ import tv.caffeine.app.di.InjectionActivityTestRule
  * DeepLinkUnitTests.setup() will fail with SDK 28 and Robolectric 4.2. SDK 27 works.
  * TODO: AND-140 to try the latest Robolectric library.
  */
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 @Config(sdk = [O_MR1])
 class DeepLinkUnitTests {
     private lateinit var navController: NavController
     private lateinit var resources: Resources
+    private val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.builder())
 
     private val expectedDeepLinkDestinations: List<Pair<String, Int>> = listOf(
             "https://www.caffeine.tv/account/claim-gold/index.html?id=token" to R.id.caffeineLinksFragment,
@@ -49,12 +51,16 @@ class DeepLinkUnitTests {
 
     @Before
     fun setup() {
-        val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.builder())
         val mainActivity = activityTestRule.launchActivity(Intent())
         val fragmentManager = mainActivity.supportFragmentManager
         val navHostFragment = fragmentManager.primaryNavigationFragment as NavHostFragment
         navController = navHostFragment.navController
         resources = navHostFragment.resources
+    }
+
+    @After
+    fun cleanup() {
+        activityTestRule.finishActivity()
     }
 
     @Test

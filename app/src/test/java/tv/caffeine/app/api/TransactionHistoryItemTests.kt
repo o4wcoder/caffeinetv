@@ -2,18 +2,18 @@ package tv.caffeine.app.api
 
 import android.content.res.Resources
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.runner.AndroidJUnit4
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.CaffeineApplication
 import tv.caffeine.app.di.ASSETS_BASE_URL
 import java.text.NumberFormat
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class TransactionHistoryItemTests {
     private val gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)

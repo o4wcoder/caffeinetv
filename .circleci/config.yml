@@ -4,6 +4,8 @@ defaults: &defaults
     - image: circleci/android:api-28
   environment:
     JVM_OPTS: -Xmx3200m
+    _JAVA_OPTIONS: "-Xmx3200m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx3200m" -Dorg.gradle.daemon=false'
     TERM: dumb
 
 version: 2
@@ -25,10 +27,10 @@ jobs:
           key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
       - run:
           name: Build Unit Tests
-          command: ./gradlew assembleProdDebugUnitTest assembleStagingDebugUnitTest
+          command: ./gradlew assembleProdDebugUnitTest assembleStagingDebugUnitTest -PdisablePreDex --stacktrace
       - run:
           name: Run Unit Tests
-          command: ./gradlew testProdDebugUnitTest testStagingDebugUnitTest
+          command: ./gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace
       - store_test_results:
           path: app/build/test-results
 

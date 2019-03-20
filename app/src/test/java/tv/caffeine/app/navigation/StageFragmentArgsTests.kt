@@ -1,15 +1,15 @@
 package tv.caffeine.app.navigation
 
 import androidx.core.os.bundleOf
-import androidx.test.runner.AndroidJUnit4
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.lobby.LobbySwipeFragmentDirections
 import tv.caffeine.app.stage.StageFragmentArgs
 import tv.caffeine.app.util.broadcasterUsername
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class StageFragmentArgsTests {
 
     @Test

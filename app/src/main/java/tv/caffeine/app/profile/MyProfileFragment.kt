@@ -55,6 +55,7 @@ class MyProfileFragment : CaffeineFragment() {
     @Inject lateinit var gson: Gson
     @Inject lateinit var authWatcher: AuthWatcher
     @Inject lateinit var picasso: Picasso
+    @Inject lateinit var facebookLoginManager: LoginManager
 
     private lateinit var binding: FragmentMyProfileBinding
 
@@ -221,7 +222,7 @@ class MyProfileFragment : CaffeineFragment() {
         tokenStore.clear()
         authWatcher.onSignOut()
         findNavController().navigateToLanding()
-        LoginManager.getInstance().logOut()
+        facebookLoginManager.logOut()
         accountsService.signOut().enqueue(object : Callback<Unit?> {
             override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
                 Timber.e(t, "Failed to sign out")

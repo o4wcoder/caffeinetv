@@ -3,14 +3,14 @@ package tv.caffeine.app.ui
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
 import com.google.android.material.animation.ArgbEvaluatorCompat
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class ViewPagerColorOnPageChangeListenerTest {
 
     private lateinit var view: View

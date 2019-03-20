@@ -3,6 +3,7 @@ package tv.caffeine.app.di
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.facebook.login.LoginManager
 import com.google.gson.Gson
 import tv.caffeine.app.api.*
 import tv.caffeine.app.auth.*
@@ -58,6 +59,7 @@ class ViewModelFactory @Inject constructor(
         private val oauthService: OAuthService,
         private val messageHandshakeFactory: MessageHandshake.Factory,
         private val broadcastsService: BroadcastsService,
+        private val facebookLoginManager: LoginManager,
         private val gson: Gson
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -76,7 +78,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(ReportUserViewModel::class.java) -> ReportUserViewModel(dispatchConfig, usersService, gson)
             modelClass.isAssignableFrom(FollowingViewModel::class.java) -> FollowingViewModel(dispatchConfig, gson, usersService)
             modelClass.isAssignableFrom(FollowersViewModel::class.java) -> FollowersViewModel(dispatchConfig, gson, usersService)
-            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(dispatchConfig, tokenStore, followManager, usersService, oauthService, gson)
+            modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(dispatchConfig, tokenStore, followManager, usersService, oauthService, facebookLoginManager, gson)
             modelClass.isAssignableFrom(NotificationSettingsViewModel::class.java) -> NotificationSettingsViewModel(dispatchConfig, accountsService, gson)
             modelClass.isAssignableFrom(DeleteAccountViewModel::class.java) -> DeleteAccountViewModel(dispatchConfig, accountsService, tokenStore, gson)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(dispatchConfig, tokenStore, followManager, uploadAvatarUseCase)
