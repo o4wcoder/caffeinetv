@@ -5,18 +5,14 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.PurchasesUpdatedListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.parcel.Parcelize
-import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
-import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.ui.CaffeineFragment
@@ -36,7 +32,7 @@ class GoldAndCreditsFragment : CaffeineFragment() {
     @Inject lateinit var picasso: Picasso
     private lateinit var binding: FragmentGoldAndCreditsBinding
     private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
-    private val goldBundlesViewModel: GoldBundlesViewModel by viewModels { viewModelFactory }
+    private val goldBundlesViewModel: GoldBundlesViewModel by activityViewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentGoldAndCreditsBinding.inflate(inflater, container, false).apply {
@@ -65,42 +61,12 @@ class GoldAndCreditsFragment : CaffeineFragment() {
     override fun onResume() {
         super.onResume()
         if (featureConfig.isFeatureEnabled(Feature.PAYMENT_FIX)) {
-            processRecentlyCachedPurchases()
+            goldBundlesViewModel.processRecentlyCachedPurchases()
         }
     }
 
     private fun navigateToBuyGold(buyGoldOption: BuyGoldOption) {
         val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToGoldBundlesFragment(buyGoldOption)
         findNavController().safeNavigate(action)
-    }
-
-    /**
-     * We will redeem cached google play payments as a short-term fix for the bug that
-     * a network or Caffeine error occurred when we processed the payment.
-     */
-    private fun processRecentlyCachedPurchases() {
-        val context = context ?: return
-        val count = 5 // Only re-process the most recent 5 purchases
-        val billingClient = BillingClientFactory.createBillingClient(context, PurchasesUpdatedListener { _, _ -> })
-        billingClient.startConnection(object: BillingClientStateListener {
-            override fun onBillingServiceDisconnected() {
-                Timber.e("Billing service disconnected")
-            }
-
-            override fun onBillingSetupFinished(responseCode: Int) {
-                if (responseCode == BillingClient.BillingResponse.OK) {
-                    Timber.d("Successfully started billing connection")
-                    val purchaseResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-                    if (purchaseResult.responseCode == BillingClient.BillingResponse.OK) {
-                        for (purchase in purchaseResult.purchasesList.takeLast(count)) {
-                            goldBundlesViewModel.processInAppPurchase(purchase)
-                        }
-                    }
-                } else {
-                    Timber.e("Failed to start billing connection")
-                }
-            }
-        })
-        billingClient.endConnection()
     }
 }

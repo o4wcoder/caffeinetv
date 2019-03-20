@@ -5,18 +5,15 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.android.billingclient.api.*
 import com.squareup.picasso.Picasso
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentGoldBundlesBinding
-import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
@@ -27,11 +24,10 @@ import javax.inject.Inject
 
 class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
 
-    @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var picasso: Picasso
 
     private lateinit var binding: FragmentGoldBundlesBinding
-    private val viewModel: GoldBundlesViewModel by viewModels { viewModelFactory }
+    private val viewModel: GoldBundlesViewModel by activityViewModels { viewModelFactory }
     private val goldBundlesAdapter by lazy {
         GoldBundlesAdapter(buyGoldOption, picasso, object : GoldBundleClickListener {
             override fun onClick(goldBundle: GoldBundle) {
@@ -41,99 +37,10 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
     }
 
     private var availableCredits = 0
-    private lateinit var billingClient: BillingClient
     private val args by navArgs<GoldBundlesFragmentArgs>()
     private val buyGoldOption by lazy { args.buyGoldOption }
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        configureBillingClient()
-    }
-
-    private fun configureBillingClient() {
-        if (buyGoldOption != BuyGoldOption.UsingPlayStore) return
-        val context = context ?: return
-        billingClient = BillingClientFactory.createBillingClient(context, PurchasesUpdatedListener { responseCode, purchases ->
-            Timber.d("Connected")
-            consumeInAppPurchases(responseCode, purchases)
-        })
-        billingClient.startConnection(object: BillingClientStateListener {
-            override fun onBillingServiceDisconnected() {
-                Timber.e("Billing service disconnected")
-            }
-
-            override fun onBillingSetupFinished(responseCode: Int) {
-                if (responseCode == BillingClient.BillingResponse.OK) {
-                    Timber.d("Successfully started billing connection")
-                } else {
-                    Timber.e("Failed to start billing connection")
-                }
-            }
-        })
-    }
-
-    private fun consumeInAppPurchases(responseCode: Int, purchases: List<Purchase>?) {
-        when {
-            responseCode == BillingClient.BillingResponse.OK && purchases != null -> {
-                for (purchase in purchases) {
-                    consumeInAppPurchase(purchase)
-                }
-            }
-            responseCode == BillingClient.BillingResponse.USER_CANCELED -> {
-                Timber.d("User canceled")
-                activity?.showSnackbar(R.string.user_cancel_buying_gold_using_in_app_billing)
-            }
-            else -> {
-                Timber.e("Billing client error $responseCode")
-                activity?.showSnackbar(R.string.failure_buying_gold_using_in_app_billing)
-            }
-        }
-    }
-
-    private fun consumeInAppPurchase(purchase: Purchase) {
-        try {
-            billingClient.consumeAsync(purchase.purchaseToken) { responseCode, purchaseToken ->
-                when (responseCode) {
-                    BillingClient.BillingResponse.OK -> {
-                        processInAppPurchase(purchase)
-                        Timber.d("Successfully consumed the purchase $purchaseToken")
-                    }
-                    BillingClient.BillingResponse.USER_CANCELED -> {
-                        Timber.d("User canceled purchase")
-                        activity?.showSnackbar(R.string.user_cancel_buying_gold_using_in_app_billing)
-                    }
-                    else -> {
-                        Timber.e("Failed to consume the purchase $purchaseToken")
-                        activity?.showSnackbar(R.string.failure_buying_gold_using_in_app_billing)
-                    }
-                }
-            }
-        } catch (nee: NotImplementedError) {
-            // This will happen when using BillingX testing library,
-            // since v 0.8.0 doesn't implement consuming IAB purchases
-            Timber.d("Debug build, using BillingX library, consuming purchases isn't supported")
-            processInAppPurchase(purchase)
-        } catch (t: Throwable) {
-            Timber.e(t)
-        }
-    }
-
-    private fun processInAppPurchase(purchase: Purchase) {
-        viewModel.processInAppPurchase(purchase).observe(this@GoldBundlesFragment, Observer { purchaseStatus ->
-            when(purchaseStatus.result) {
-                is CaffeineResult.Success -> {
-                    Timber.d("Successfully processed purchase")
-                    activity?.showSnackbar(R.string.success_buying_gold_using_in_app_billing)
-                }
-                else -> {
-                    Timber.e("Failed to process purchase")
-                    activity?.showSnackbar(R.string.failure_processing_in_app_purchase)
-                }
-            }
-        })
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -155,32 +62,36 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
             })
         })
         val handler = Handler()
-        viewModel.goldBundles.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.load(buyGoldOption).observe(viewLifecycleOwner, Observer { result ->
             when(result) {
-                is CaffeineResult.Success -> {
-                    val goldBundles = result.value
-                    val list = goldBundles.filter { it.usingInAppBilling != null }
-                    val skuList = list.mapNotNull { it.usingInAppBilling }.map { it.productId }
-                    when (buyGoldOption) {
-                        BuyGoldOption.UsingCredits -> goldBundlesAdapter.submitList(list)
-                        BuyGoldOption.UsingPlayStore -> {
-                            val params = SkuDetailsParams.newBuilder().setSkusList(skuList).setType(BillingClient.SkuType.INAPP).build()
-                            billingClient.querySkuDetailsAsync(params) { responseCode, skuDetailsList ->
-                                if (responseCode != BillingClient.BillingResponse.OK) {
-                                    Timber.e("Error loading SKU details, $responseCode")
-                                    return@querySkuDetailsAsync
-                                }
-                                Timber.d("Results: $skuDetailsList")
-                                list.forEach { goldBundle ->
-                                    goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingInAppBilling?.productId }
-                                }
-                                handler.post { goldBundlesAdapter.submitList(list) }
-                            }
-                        }
-                    }
-                }
-                else -> activity?.showSnackbar(R.string.error_loading_gold_bundles)
+                is CaffeineResult.Success -> handler.post { goldBundlesAdapter.submitList(result.value) }
+                else -> showSnackbar(R.string.error_loading_gold_bundles)
             }
+        })
+        viewModel.events.observe(viewLifecycleOwner, Observer { event ->
+            val purchaseStatus = event.getContentIfNotHandled() ?: return@Observer
+            when(purchaseStatus) {
+                is PurchaseStatus.GooglePlaySuccess -> {
+                    Timber.d("Successfully processed purchase")
+                    showSnackbar(R.string.success_buying_gold_using_in_app_billing)
+                }
+                is PurchaseStatus.GooglePlayError -> {
+                    Timber.e(Exception("Error purchasing gold via Google Play ${purchaseStatus.responseCode}"))
+                    showSnackbar(R.string.failure_buying_gold_using_in_app_billing)
+                }
+                is PurchaseStatus.CanceledByUser -> {
+                    Timber.d("Purchase flow canceled by user")
+                    showSnackbar(R.string.user_cancel_buying_gold_using_in_app_billing)
+                }
+                is PurchaseStatus.Error -> {
+                    Timber.e("Failed to process purchase")
+                    showSnackbar(R.string.failure_processing_in_app_purchase)
+                }
+                is PurchaseStatus.CreditsSuccess -> {
+                    Timber.d("Successfully purchased gold using credits")
+                    showSnackbar(R.string.success_buying_gold_using_credits)
+                }
+            }.toString() // TODO: hack to force exhaustiveness
         })
     }
 
@@ -221,16 +132,12 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
     }
 
     override fun buyGoldBundle(goldBundleId: String) {
-        viewModel.purchaseGoldBundleUsingCredits(goldBundleId).observe(viewLifecycleOwner, Observer { success ->
-            activity?.showSnackbar(if (success) R.string.success_buying_gold_using_credits else R.string.error_buying_gold_using_credits)
-        })
+        viewModel.purchaseGoldBundleUsingCredits(goldBundleId)
     }
 
     private fun purchaseGoldBundleUsingPlayStore(goldBundle: GoldBundle) {
         val activity = activity ?: return
-        val sku = goldBundle.skuDetails?.sku ?: return
-        val params = BillingFlowParams.newBuilder().setSku(sku).setAccountId(tokenStore.caid).setType(BillingClient.SkuType.INAPP).build()
-        billingClient.launchBillingFlow(activity, params)
+        viewModel.purchaseGoldBundleUsingPlayStore(activity, goldBundle)
     }
 
 }

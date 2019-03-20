@@ -49,6 +49,7 @@ class ViewModelFactory @Inject constructor(
         private val transactionHistoryUseCase: TransactionHistoryUseCase,
         private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
         private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
+        private val processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase,
         private val updateEmailUseCase: UpdateEmailUseCase,
         private val updatePasswordUseCase: UpdatePasswordUseCase,
         private val realtime: Realtime,
@@ -83,7 +84,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(DeleteAccountViewModel::class.java) -> DeleteAccountViewModel(dispatchConfig, accountsService, tokenStore, gson)
             modelClass.isAssignableFrom(MyProfileViewModel::class.java) -> MyProfileViewModel(dispatchConfig, tokenStore, followManager, uploadAvatarUseCase)
             modelClass.isAssignableFrom(TransactionHistoryViewModel::class.java) -> TransactionHistoryViewModel(dispatchConfig, transactionHistoryUseCase)
-            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, gson, walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, paymentsClientService)
+            modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, context, tokenStore, gson, walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, messageHandshakeFactory, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
