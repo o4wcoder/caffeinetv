@@ -1,0 +1,40 @@
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/android:api-28
+  environment:
+    JVM_OPTS: -Xmx3200m
+    TERM: dumb
+
+version: 2
+jobs:
+  unit-tests:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - run:
+          name: Download dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+              - ~/.gradle/caches/
+              - ~/.gradle/wrapper/
+              - ~/.android/build-cache
+          key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - run:
+          name: Build Unit Tests
+          command: ./gradlew assembleProdDebugUnitTest assembleStagingDebugUnitTest
+      - run:
+          name: Run Unit Tests
+          command: ./gradlew testProdDebugUnitTest testStagingDebugUnitTest
+      - store_test_results:
+          path: app/build/test-results
+
+workflows:
+  version: 2
+  android:
+    jobs:
+      - unit-tests
+
