@@ -16,7 +16,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
-import tv.caffeine.app.BuildConfig
 import tv.caffeine.app.R
 import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbySwipeBinding
@@ -28,8 +27,6 @@ import tv.caffeine.app.ui.ViewPagerColorOnPageChangeListener
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
-
-private const val IS_FPG_ENABLED = BuildConfig.FLAVOR == "staging"
 
 class LobbySwipeFragment : CaffeineFragment() {
 
@@ -66,7 +63,6 @@ class LobbySwipeFragment : CaffeineFragment() {
                         ContextCompat.getColor(context, it)
                     }))
         }
-        binding.tabLayout.isVisible = IS_FPG_ENABLED
 
         myProfileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             picasso
@@ -81,7 +77,7 @@ class LobbySwipeFragment : CaffeineFragment() {
 
 class LobbyPagerAdapter(fm: FragmentManager, val resources: Resources) : FragmentStatePagerAdapter(fm) {
 
-    override fun getCount() = if (IS_FPG_ENABLED) 2 else 1
+    override fun getCount() = 2
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> LobbyFragment()
