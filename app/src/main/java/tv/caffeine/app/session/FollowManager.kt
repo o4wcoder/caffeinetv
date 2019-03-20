@@ -48,11 +48,12 @@ class FollowManager @Inject constructor(
         }
     }
 
-    suspend fun followUser(caid: CAID): CaffeineEmptyResult {
+    suspend fun followUser(caid: CAID, callback: FollowCompletedCallback? = null): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
         val result = usersService.follow(self, caid).awaitEmptyAndParseErrors(gson)
         if (result is CaffeineEmptyResult.Success) {
             followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
+            callback?.onUserFollowed()
         }
         refreshFollowedUsers()
         return result
@@ -120,6 +121,10 @@ class FollowManager @Inject constructor(
     abstract class Callback {
         abstract fun follow(caid: CAID)
         abstract fun unfollow(caid: CAID)
+    }
+
+    interface FollowCompletedCallback {
+        fun onUserFollowed()
     }
 }
 

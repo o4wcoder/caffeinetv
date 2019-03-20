@@ -192,6 +192,15 @@
         <item name="strokeWidth">0dp</item>
     </style>
 
+    <style name="FollowTextButton" parent="LinkButton">
+        <item name="android:paddingStart">@dimen/margin_list</item>
+        <item name="android:paddingEnd">@dimen/margin_list</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="icon">@drawable/ic_black_dot</item>
+        <item name="iconTint">@color/almost_black</item>
+    </style>
+
     <!-- Action bar -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

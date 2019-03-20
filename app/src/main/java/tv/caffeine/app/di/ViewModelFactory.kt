@@ -88,7 +88,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, messageHandshakeFactory, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
             modelClass.isAssignableFrom(GuideViewModel::class.java) -> GuideViewModel(dispatchConfig, broadcastsService, gson)
-            modelClass.isAssignableFrom(FeaturedProgramGuideViewModel::class.java) -> FeaturedProgramGuideViewModel(dispatchConfig, broadcastsService, gson)
+            modelClass.isAssignableFrom(FeaturedProgramGuideViewModel::class.java) -> FeaturedProgramGuideViewModel(dispatchConfig, broadcastsService, followManager, gson)
             modelClass.isAssignableFrom(LiveHostableBroadcastersViewModel::class.java) -> LiveHostableBroadcastersViewModel(dispatchConfig, broadcastsService, gson)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T

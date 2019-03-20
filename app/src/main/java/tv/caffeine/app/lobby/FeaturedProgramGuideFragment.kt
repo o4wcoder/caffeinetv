@@ -23,7 +23,9 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.FeaturedGuideListing
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FeaturedGuideItemBinding
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
@@ -74,6 +76,7 @@ class FeaturedProgramGuideFragment : CaffeineFragment() {
 class FeaturedProgramGuideViewModel(
         dispatchConfig: DispatchConfig,
         private val broadcastsService: BroadcastsService,
+        private val followManager: FollowManager,
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
 
@@ -88,7 +91,11 @@ class FeaturedProgramGuideViewModel(
         launch {
             val result = broadcastsService.featuredGuide().awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> _listings.value = prepareList(result.value.listings)
+                is CaffeineResult.Success -> {
+                    // TODO [AND-164] Improve how FollowManager refreshes the followed users list
+                    followManager.refreshFollowedUsers()
+                    _listings.value = prepareList(result.value.listings)
+                }
                 is CaffeineResult.Error -> Timber.e("Failed to fetch content guide ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
@@ -157,7 +164,7 @@ class GuideAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
-        holder.bind(getItem(position), position) { clickedPosition, isExpanded ->
+        holder.bind(getItem(position)) { clickedPosition, isExpanded ->
             getItem(clickedPosition).isExpanded = isExpanded
         }
     }
@@ -179,20 +186,21 @@ class GuideViewHolder(
 
     var job: Job? = null
 
-    fun bind(listingItem: ListingItem, position: Int, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
+    fun bind(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
         job?.cancel()
         clear()
 
         binding.included.detailContainer.isVisible = listingItem.isExpanded
         job = scope.launch {
             val user = followManager.userDetails(listingItem.listing.caid) ?: return@launch
-            user.configure(binding.included.avatarImageView, binding.included.usernameTextView, null, followManager,
-                    avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme,
-                    notFollowedTheme = notFollowedTheme, picasso = picasso)
+            configureUser(user, createFollowHandler(user))
             binding.usernamePlainTextView.text = user.username
             binding.usOnlyLabelTextView.isVisible = listingItem.listing.isUsOnly
-            binding.included.avatarImageView.setOnClickListener {
+            View.OnClickListener {
                 Navigation.findNavController(itemView).safeNavigate(MainNavDirections.actionGlobalProfileFragment(listingItem.listing.caid))
+            }.let {
+                binding.included.avatarImageView.setOnClickListener(it)
+                binding.included.usernameTextView.setOnClickListener(it)
             }
         }
         binding.dateTextView.isVisible = listingItem.shouldShowTimestamp
@@ -218,6 +226,30 @@ class GuideViewHolder(
         binding.included.detailContainer.setOnClickListener { animateDetailView(listingItem, callback) }
     }
 
+    private fun createFollowHandler(user: User): FollowManager.FollowHandler {
+        return FollowManager.FollowHandler(null, object: FollowManager.Callback() {
+            override fun follow(caid: CAID) {
+                scope.launch {
+                    followManager.followUser(caid, object: FollowManager.FollowCompletedCallback {
+                        override fun onUserFollowed() {
+                            configureUser(user, null)
+                        }
+                    })
+                }
+            }
+
+            override fun unfollow(caid: CAID) { // can't unfollow in FPG
+            }
+        })
+    }
+
+    private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {
+        user.configure(binding.included.avatarImageView, binding.included.usernameTextView,
+                binding.included.followButton, followManager, followHandler = followHandler,
+                avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme,
+                notFollowedTheme = notFollowedTheme, picasso = picasso)
+    }
+
     private fun animateDetailView(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
         /**
          * The animation listeners are unreliable that we can't trust them to reset the height
@@ -238,7 +270,7 @@ class GuideViewHolder(
          * The callback only updates the isExpanded field so it's correct at the data layer
          * in preparation for the next bind() call. The callback doesn't trigger a bind() call.
          */
-        callback(position, !listingItem.isExpanded)
+        callback(adapterPosition, !listingItem.isExpanded)
     }
 
     private fun clear() {
@@ -258,6 +290,7 @@ class GuideViewHolder(
         binding.included.avatarImageView.setImageDrawable(null)
         binding.included.avatarImageView.setOnClickListener(null)
         binding.included.usernameTextView.text = null
+        binding.included.followButton.isVisible = false
     }
 
     /**
