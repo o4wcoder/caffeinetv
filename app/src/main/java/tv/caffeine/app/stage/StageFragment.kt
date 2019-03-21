@@ -75,13 +75,13 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        broadcasterUsername = args.broadcasterUsername()
         if (!MediaCodecVideoDecoder.isH264HwSupported()) {
             Timber.e(Exception("Failed to decode H264"))
             findNavController().safeNavigate(MainNavDirections.actionGlobalHardwareNotSupportedFragment())
             return
         }
         retainInstance = true
-        broadcasterUsername = args.broadcasterUsername()
         context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
                 NetworkRequest.Builder().build(), networkCallback)
 
