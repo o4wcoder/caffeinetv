@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/margin_list"
         android:paddingBottom="4dp"
-        android:background="@drawable/gray_top_divider">
+        android:background="@drawable/gray_top_divider"
+        android:backgroundTint="@color/medium_gray">
 
         <ImageView
             android:id="@+id/detail_image_view"
