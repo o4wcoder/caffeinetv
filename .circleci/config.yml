@@ -3,9 +3,8 @@ defaults: &defaults
   docker:
     - image: circleci/android:api-28
   environment:
-    JVM_OPTS: -Xmx3200m
-    _JAVA_OPTIONS: "-Xmx3200m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx3200m" -Dorg.gradle.daemon=false'
+    JAVA_TOOL_OPTIONS: "-Xmx1024m"
+    GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false'
     TERM: dumb
 
 version: 2
