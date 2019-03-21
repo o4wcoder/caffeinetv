@@ -149,6 +149,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val profileAvatarTransform = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
+        view.setOnClickListener { toggleAppBarVisibility() }
         viewJob = launch {
             launch(dispatchConfig.main) {
                 val userDetails = followManager.userDetails(broadcasterUsername)
