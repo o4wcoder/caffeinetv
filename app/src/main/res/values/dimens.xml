@@ -5,6 +5,8 @@
     <dimen name="margin_list">12dp</dimen>
     <dimen name="margin_line_spacing">10dp</dimen>
     <dimen name="margin_line_spacing_small">4dp</dimen>
+    <dimen name="empty_state_margin_top">104dp</dimen>
+    <dimen name="empty_state_width_percent">0.8</dimen>
 
     <dimen name="avatar_size">36dp</dimen> <!-- on a lobby card -->
     <dimen name="avatar_size_large">175dp</dimen> <!-- profile -->
