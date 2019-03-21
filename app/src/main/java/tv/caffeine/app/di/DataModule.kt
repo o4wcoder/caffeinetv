@@ -3,6 +3,8 @@ package tv.caffeine.app.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.facebook.login.LoginManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.iid.FirebaseInstanceId
 import dagger.Module
 import dagger.Provides
 import tv.caffeine.app.auth.AuthWatcher
@@ -23,7 +25,8 @@ private const val CAFFEINE_SHARED_PREFERENCES = "caffeine"
     SettingsStorageModule::class,
     AuthWatcherModule::class,
     FeatureConfigModule::class,
-    FacebookModule::class
+    FacebookModule::class,
+    FirebaseModule::class
 ])
 class DataModule
 
@@ -65,4 +68,15 @@ class FeatureConfigModule {
 class FacebookModule {
     @Provides
     fun providesFacebookLoginManager(): LoginManager = LoginManager.getInstance()
+}
+
+@Module
+class FirebaseModule {
+    @Provides
+    @Singleton
+    fun providesFirebaseAnalytics(context: Context): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
+
+    @Provides
+    @Singleton
+    fun providesFirebaseInstanceId(): FirebaseInstanceId = FirebaseInstanceId.getInstance()
 }

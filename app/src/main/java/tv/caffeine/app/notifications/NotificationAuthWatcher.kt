@@ -15,13 +15,14 @@ import javax.inject.Inject
 
 class NotificationAuthWatcher @Inject constructor(
         private val devicesService: DevicesService,
+        private val firebaseInstanceId: FirebaseInstanceId,
         private val gson: Gson
 ) : AuthWatcher {
     private val coroutineScope: CoroutineScope = GlobalScope
 
     override fun onSignIn() {
         Timber.d("NotificationAuthWatcher.onSignIn()")
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+        firebaseInstanceId.instanceId.addOnCompleteListener { task ->
             coroutineScope.launch {
                 if (task.isSuccessful) {
                     task.result?.let { instanceId ->
@@ -38,7 +39,7 @@ class NotificationAuthWatcher @Inject constructor(
 
     override fun onSignOut() {
         Timber.d("NotificationAuthWatcher.onSignOut()")
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+        firebaseInstanceId.instanceId.addOnCompleteListener { task ->
             coroutineScope.launch {
                 if (task.isSuccessful) {
                     task.result?.let { instanceId ->

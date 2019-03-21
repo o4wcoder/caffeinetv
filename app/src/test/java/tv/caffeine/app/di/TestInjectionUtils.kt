@@ -3,7 +3,6 @@ package tv.caffeine.app.di
 import android.app.Activity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.ActivityTestRule
-import com.google.firebase.FirebaseApp
 import dagger.android.AndroidInjector
 import tv.caffeine.app.CaffeineApplication
 
@@ -16,7 +15,6 @@ class InjectionActivityTestRule<T : Activity>(
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
         val testComponent = componentBuilder.create(app)
         app.setApplicationInjector(testComponent)
-        FirebaseApp.initializeApp(app)
     }
 }
 

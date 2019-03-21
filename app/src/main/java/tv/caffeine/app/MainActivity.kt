@@ -37,6 +37,8 @@ class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var profiling: Profiling
     @Inject lateinit var analytics: Analytics
     @Inject lateinit var tokenStore: TokenStore
+    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
+    @Inject lateinit var firebaseInstanceId: FirebaseInstanceId
 
     private lateinit var navController: NavController
 
@@ -49,9 +51,9 @@ class MainActivity : DaggerAppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             dismissKeyboard()
             binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
-            FirebaseAnalytics.getInstance(this).setCurrentScreen(this, destination.label.toString(), null)
+            firebaseAnalytics.setCurrentScreen(this, destination.label.toString(), null)
         }
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+        firebaseInstanceId.instanceId.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Timber.d("FCM registration token retrieved")
                 task.result?.let { result ->

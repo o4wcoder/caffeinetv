@@ -1,6 +1,9 @@
 package tv.caffeine.app.di
 
+import android.content.Context
 import com.facebook.login.LoginManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.iid.FirebaseInstanceId
 import dagger.Module
 import dagger.Provides
 import io.mockk.mockk
@@ -15,7 +18,8 @@ import javax.inject.Singleton
     FakeSettingsStorageModule::class,
     AuthWatcherModule::class,
     FeatureConfigModule::class,
-    FakeFacebookModule::class
+    FakeFacebookModule::class,
+    FakeFirebaseModule::class
 ])
 class TestDataModule
 
@@ -30,4 +34,15 @@ class FakeSettingsStorageModule {
 class FakeFacebookModule {
     @Provides
     fun providesFacebookLoginManager(): LoginManager = mockk(relaxed = true)
+}
+
+@Module
+class FakeFirebaseModule {
+    @Provides
+    @Singleton
+    fun providesFirebaseAnalytics(context: Context): FirebaseAnalytics = mockk(relaxed = true)
+
+    @Provides
+    @Singleton
+    fun providesFirebaseInstanceId(): FirebaseInstanceId = mockk(relaxed = true)
 }
