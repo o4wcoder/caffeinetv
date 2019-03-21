@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/margin_list"
         android:paddingBottom="4dp"
-        android:background="@drawable/gray_top_divider"
-        android:backgroundTint="@color/medium_gray">
+        android:background="@drawable/gray_top_divider">
 
         <ImageView
             android:id="@+id/detail_image_view"
@@ -30,7 +29,6 @@
             android:layout_marginStart="@dimen/margin_list"
             android:includeFontPadding="false"
             android:textColor="@color/almost_black"
-            android:textSize="12sp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/detail_image_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,10 +52,10 @@
             android:id="@+id/avatar_image_view"
             android:layout_width="@dimen/chat_avatar_size"
             android:layout_height="@dimen/chat_avatar_size"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/user_avatar_content_description"
             app:layout_constraintStart_toStartOf="@id/description_text_view"
-            app:layout_constraintTop_toTopOf="@+id/username_text_view"
-            app:layout_constraintBottom_toBottomOf="@id/username_text_view"
+            app:layout_constraintTop_toBottomOf="@id/us_only_description_text_view"
             tools:srcCompat="@tools:sample/avatars"/>
 
         <TextView
@@ -68,9 +66,9 @@
             android:layout_marginStart="@dimen/margin_line_spacing_small"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
+            android:includeFontPadding="false"
             app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
             app:layout_constraintTop_toBottomOf="@id/us_only_description_text_view"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="@sample/guide.json/listings/username"
             tools:textColor="@color/caffeine_blue"
             tools:textStyle="bold"/>
@@ -80,6 +78,7 @@
             android:id="@+id/follow_button"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:includeFontPadding="false"
             android:text="@string/follow_button"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/username_text_view"
