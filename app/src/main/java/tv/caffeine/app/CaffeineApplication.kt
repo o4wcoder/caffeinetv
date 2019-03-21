@@ -1,27 +1,20 @@
 package tv.caffeine.app
 
-import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
-import timber.log.Timber
-import tv.caffeine.app.analytics.Analytics
-import tv.caffeine.app.di.BillingClientFactory
+import tv.caffeine.app.appinit.AppInitializers
 import tv.caffeine.app.di.DaggerCaffeineComponent
 import javax.inject.Inject
 
 class CaffeineApplication : DaggerApplication() {
     lateinit var injector: AndroidInjector<out DaggerApplication>
 
-    @Inject lateinit var timberTree: Timber.Tree
-    @Inject lateinit var analytics: Analytics
+    @Inject lateinit var initializers: AppInitializers
 
     override fun onCreate() {
         injector = DaggerCaffeineComponent.builder().create(this)
         super.onCreate()
-        AndroidThreeTen.init(this)
-        Timber.plant(timberTree)
-        BillingClientFactory.loadBillingStore(this)
-        analytics.initialize()
+        initializers.init(this)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> = injector
