@@ -81,15 +81,15 @@ class LobbyFragment : CaffeineFragment() {
         refreshJob = null
     }
 
-    private val edgeOffset by lazy { resources.getDimension(R.dimen.lobby_card_side_margin).toInt() }
-    private val listTopBottomOffset by lazy { resources.getDimension(R.dimen.lobby_list_top_bottom_margin).toInt() }
-    private val cardSpacing by lazy { resources.getDimension(R.dimen.lobby_card_vertical_spacing).toInt() }
-    private val headerTopMargin by lazy { resources.getDimension(R.dimen.lobby_header_top_margin).toInt() }
-    private val headerBottomMargin by lazy { resources.getDimension(R.dimen.lobby_header_bottom_margin).toInt() }
-    private val subtitleTopMargin by lazy { resources.getDimension(R.dimen.lobby_subtitle_top_margin).toInt() }
-    private val subtitleBottomMargin by lazy { resources.getDimension(R.dimen.lobby_subtitle_bottom_margin).toInt() }
+    private val edgeOffset by lazy { resources.getDimensionPixelSize(R.dimen.lobby_card_side_margin) }
+    private val listTopBottomOffset by lazy { resources.getDimensionPixelSize(R.dimen.lobby_list_top_bottom_margin) }
+    private val cardSpacing by lazy { resources.getDimensionPixelSize(R.dimen.lobby_card_vertical_spacing) }
+    private val headerTopMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_header_top_margin) }
+    private val headerBottomMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_header_bottom_margin) }
+    private val subtitleTopMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_subtitle_top_margin) }
+    private val subtitleBottomMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_subtitle_bottom_margin) }
 
-    private val itemDecorator = object: RecyclerView.ItemDecoration() {
+    private val itemDecorator = object : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
             val itemType = view.tag as? LobbyItem.Type ?: return
             val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition

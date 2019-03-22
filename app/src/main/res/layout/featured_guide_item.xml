@@ -7,8 +7,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/margin"
-        android:paddingEnd="@dimen/margin"
+        android:paddingStart="@dimen/lobby_card_side_margin"
+        android:paddingEnd="@dimen/lobby_card_side_margin"
         android:clipToPadding="false">
 
         <TextView
