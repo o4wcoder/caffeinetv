@@ -27,7 +27,6 @@
 
         <androidx.cardview.widget.CardView
             style="@style/LobbyCard"
-            android:background="@color/warning_red"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_list"
@@ -46,11 +45,9 @@
                     android:layout_height="@dimen/featured_guide_event_image_size"
                     android:layout_marginStart="@dimen/margin_list"
                     android:layout_marginTop="@dimen/margin_list"
-                    android:layout_marginBottom="@dimen/margin_list"
                     android:contentDescription="@string/featured_event_image_content_description"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/included"
                     tools:srcCompat="@tools:sample/avatars"/>
 
                 <TextView
@@ -106,12 +103,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_line_spacing_small"
-                    android:layout_marginBottom="@dimen/margin_list"
                     android:includeFontPadding="false"
-                    app:layout_constraintVertical_bias="0"
                     app:layout_constraintStart_toStartOf="@+id/title_text_view"
                     app:layout_constraintTop_toBottomOf="@+id/title_text_view"
-                    app:layout_constraintBottom_toTopOf="@+id/included"
                     tools:text="@sample/guide.json/listings/username"/>
 
                 <TextView
@@ -129,17 +123,30 @@
                     app:layout_constraintBottom_toBottomOf="@id/username_plain_text_view"
                     tools:visibility="visible"/>
 
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/compact_view_bottom_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="event_image_view, username_plain_text_view"/>
+
+                <View
+                    android:id="@+id/compact_view_bottom_padding_view"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_list"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/compact_view_bottom_barrier"/>
+
                 <include layout="@layout/featured_guide_detail_item"
                     android:id="@+id/included"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_list"
                     android:layout_marginEnd="@dimen/margin_list"
-                    app:layout_constraintVertical_bias="1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/event_image_view"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/compact_view_bottom_padding_view"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
