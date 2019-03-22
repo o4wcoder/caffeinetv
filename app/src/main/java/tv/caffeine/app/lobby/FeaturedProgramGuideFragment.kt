@@ -66,7 +66,9 @@ class FeaturedProgramGuideFragment : CaffeineFragment() {
     private fun configure(binding: FragmentFeaturedProgramGuideBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.guideRecyclerView.adapter = guideAdapter
+        binding.guideSwipeRefreshLayout.setOnRefreshListener { viewModel.load() }
         viewModel.listings.observe(viewLifecycleOwner, Observer {
+            binding.guideSwipeRefreshLayout.isRefreshing = false
             binding.emptyMessageTextView.isVisible = it.isEmpty()
             guideAdapter.submitList(it)
         })
@@ -87,7 +89,7 @@ class FeaturedProgramGuideViewModel(
         load()
     }
 
-    private fun load() {
+    fun load() {
         launch {
             val result = broadcastsService.featuredGuide().awaitAndParseErrors(gson)
             when (result) {
