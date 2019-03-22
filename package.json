@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@types/lodash": "^4.14.123",
+    "danger": "^7.0.15"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
+}

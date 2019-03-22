@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/android:api-28
+    - image: circleci/android:api-28-node
   environment:
     JAVA_TOOL_OPTIONS: "-Xmx1024m"
     GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false'
@@ -33,9 +33,27 @@ jobs:
       - store_test_results:
           path: app/build/test-results
 
+  danger:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: v2-yarn-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Yarn Dependencies
+          command: yarn ci:skip-native-if-possible || yarn install --ignore-engines
+      - save_cache:
+          key: v2-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+      - run:
+          name: Danger
+          command: yarn danger ci
+
 workflows:
   version: 2
   android:
     jobs:
+      - danger
       - unit-tests
 
