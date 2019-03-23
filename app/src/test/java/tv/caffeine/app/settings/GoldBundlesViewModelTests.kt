@@ -57,7 +57,7 @@ class GoldBundlesViewModelTests {
             val walletRepository = WalletRepository(TestDispatchConfig, gson, paymentsClientService)
             val loadGoldBundlesUseCase = LoadGoldBundlesUseCase(paymentsClientService, gson)
             val purchaseGoldBundleUseCase = PurchaseGoldBundleUseCase(paymentsClientService, gson)
-            subject = GoldBundlesViewModel(TestDispatchConfig, mainActivity.applicationContext, TokenStore(settingsStorage), gson, walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
+            subject = GoldBundlesViewModel(TestDispatchConfig, mainActivity.applicationContext, TokenStore(settingsStorage), walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
         }
 
         @After

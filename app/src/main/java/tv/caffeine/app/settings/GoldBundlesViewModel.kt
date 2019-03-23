@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.android.billingclient.api.*
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -37,7 +36,6 @@ class GoldBundlesViewModel(
         dispatchConfig: DispatchConfig,
         context: Context,
         private val tokenStore: TokenStore,
-        private val gson: Gson,
         private val walletRepository: WalletRepository,
         private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
         private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
@@ -45,6 +43,9 @@ class GoldBundlesViewModel(
 ) : CaffeineViewModel(dispatchConfig) {
     private val _events = MutableLiveData<Event<PurchaseStatus>>()
     val events : LiveData<Event<PurchaseStatus>> = Transformations.map(_events) { it }
+
+    private val _goldBundlesUsingCredits = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
+    private val _goldBundlesUsingPlayStore = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
 
     private fun postPurchaseStatus(purchaseStatus: PurchaseStatus) {
         _events.value = Event(purchaseStatus)
@@ -63,6 +64,7 @@ class GoldBundlesViewModel(
 
     private fun load() {
         refreshWallet()
+        loadGoldBundles()
         billingClient.startConnection(object: BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
                 Timber.e("Billing service disconnected")
@@ -78,23 +80,24 @@ class GoldBundlesViewModel(
         })
     }
 
-    fun load(buyGoldOption: BuyGoldOption): LiveData<CaffeineResult<List<GoldBundle>>> {
-        val liveData = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
+    private fun loadGoldBundles() {
         launch {
-            val result = loadGoldBundlesUseCase()
+            val allGoldBundles = loadGoldBundlesUseCase()
                     .map { it.payload.goldBundles.state }
-                    .map { goldBundles ->
-                        val list = goldBundles.filter { it.usingInAppBilling != null }
-                        when (buyGoldOption) {
-                            BuyGoldOption.UsingCredits -> list
-                            BuyGoldOption.UsingPlayStore -> lookupSkuDetails(list)
-                        }
-                    }
+            val listUsingCredits = allGoldBundles.map { it.filter { gb -> gb.usingCredits != null } }
+            val listUsingPlayStore = allGoldBundles.map { lookupSkuDetails(it.filter { gb -> gb.usingInAppBilling != null }) }
             withContext(dispatchConfig.main) {
-                liveData.value = result
+                _goldBundlesUsingCredits.value = listUsingCredits
+                _goldBundlesUsingPlayStore.value = listUsingPlayStore
             }
         }
-        return Transformations.map(liveData) { it }
+    }
+
+    fun load(buyGoldOption: BuyGoldOption): LiveData<CaffeineResult<List<GoldBundle>>> {
+        return when(buyGoldOption) {
+            BuyGoldOption.UsingCredits -> _goldBundlesUsingCredits
+            BuyGoldOption.UsingPlayStore -> _goldBundlesUsingPlayStore
+        }
     }
 
     private suspend fun lookupSkuDetails(list: List<GoldBundle>): List<GoldBundle> {
