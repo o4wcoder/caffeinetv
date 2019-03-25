@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
@@ -188,6 +189,8 @@ class GuideViewHolder(
 
     var job: Job? = null
 
+    private val roundedCornersTransformation by lazy { RoundedCornersTransformation(itemView.resources.getDimensionPixelSize(R.dimen.lobby_card_pip_radius), 0) }
+
     fun bind(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
         job?.cancel()
         clear()
@@ -212,6 +215,7 @@ class GuideViewHolder(
         picasso.load(listingItem.listing.eventImageUrl)
                 .resizeDimen(R.dimen.featured_guide_event_image_size, R.dimen.featured_guide_event_image_size)
                 .centerCrop()
+                .transform(roundedCornersTransformation)
                 .into(binding.eventImageView)
         binding.categoryTextView.text = listingItem.listing.category
         binding.titleTextView.text = listingItem.listing.title

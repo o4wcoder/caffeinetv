@@ -31,7 +31,7 @@
     <dimen name="digital_item_size">72dp</dimen>
     <dimen name="chat_bubble_triangle_size">8dp</dimen>
     <dimen name="lobby_card_rounding_radius">15dp</dimen>
-    <dimen name="lobby_card_pip_radius">5dp</dimen>
+    <dimen name="lobby_card_pip_radius">4dp</dimen>
     <dimen name="lobby_card_side_margin">18dp</dimen>
     <dimen name="lobby_card_narrow_margin">4dp</dimen>
     <dimen name="lobby_list_top_bottom_margin">0dp</dimen>

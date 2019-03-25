@@ -191,7 +191,6 @@ open class LiveBroadcastCard(
         notFollowedThemeLight: UserTheme,
         picasso: Picasso
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
-    private val roundedCornersTransformation by lazy { RoundedCornersTransformation(itemView.resources.getDimension(R.dimen.lobby_card_pip_radius).toInt(), 0) }
 
     override fun configure(item: LobbyItem) {
         super.configure(item)
