@@ -33,12 +33,24 @@ class LobbySwipeFragment : CaffeineFragment() {
     @Inject lateinit var featureConfig: FeatureConfig
     @Inject lateinit var picasso: Picasso
 
+    private lateinit var binding: FragmentLobbySwipeBinding
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
+    private val viewPagerBackgroundColors = listOf(R.color.white, R.color.light_gray)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentLobbySwipeBinding.inflate(inflater, container, false)
-        configure(binding)
-        return binding.root
+        FragmentLobbySwipeBinding.inflate(inflater, container, false).apply {
+            binding = this
+            configure(this)
+            return root
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Set the correct background color in case no scroll is involved, e.g., from a deep link.
+        binding.lobbyViewPager.apply {
+            setBackgroundResource(viewPagerBackgroundColors.getOrElse(currentItem) { viewPagerBackgroundColors[0] })
+        }
     }
 
     private fun configure(binding: FragmentLobbySwipeBinding) {
@@ -59,7 +71,7 @@ class LobbySwipeFragment : CaffeineFragment() {
         binding.lobbyViewPager.apply {
             adapter = LobbyPagerAdapter(childFragmentManager, resources)
             addOnPageChangeListener(ViewPagerColorOnPageChangeListener(this,
-                    listOf(R.color.white, R.color.light_gray).map {
+                    viewPagerBackgroundColors.map {
                         ContextCompat.getColor(context, it)
                     }))
         }
