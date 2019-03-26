@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.*
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
@@ -260,8 +259,6 @@ class ListingItemViewHolder(
 
     var job: Job? = null
 
-    private val roundedCornersTransformation by lazy { RoundedCornersTransformation(itemView.resources.getDimensionPixelSize(R.dimen.lobby_card_pip_radius), 0) }
-
     fun bind(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
         job?.cancel()
         clear()
@@ -270,22 +267,15 @@ class ListingItemViewHolder(
         job = scope.launch {
             val user = followManager.userDetails(listingItem.listing.caid) ?: return@launch
             configureUser(user, createFollowHandler(user))
-            binding.usernamePlainTextView.text = user.username
             binding.usOnlyLabelTextView.isVisible = listingItem.listing.isUsOnly
             View.OnClickListener {
                 Navigation.findNavController(itemView).safeNavigate(MainNavDirections.actionGlobalProfileFragment(listingItem.listing.caid))
             }.let {
-                binding.included.avatarImageView.setOnClickListener(it)
-                binding.included.usernameTextView.setOnClickListener(it)
+                binding.avatarImageView.setOnClickListener(it)
+                binding.usernameTextView.setOnClickListener(it)
             }
         }
         binding.timeTextView.text = getTimeText(listingItem)
-
-        picasso.load(listingItem.listing.eventImageUrl)
-                .resizeDimen(R.dimen.featured_guide_event_image_size, R.dimen.featured_guide_event_image_size)
-                .centerCrop()
-                .transform(roundedCornersTransformation)
-                .into(binding.eventImageView)
         binding.categoryTextView.text = listingItem.listing.category
         binding.titleTextView.text = listingItem.listing.title
 
@@ -319,10 +309,9 @@ class ListingItemViewHolder(
     }
 
     private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {
-        user.configure(binding.included.avatarImageView, binding.included.usernameTextView,
-                binding.included.followButton, followManager, followHandler = followHandler,
-                avatarImageSize = R.dimen.chat_avatar_size, followedTheme = followedTheme,
-                notFollowedTheme = notFollowedTheme, picasso = picasso)
+        user.configure(binding.avatarImageView, binding.usernameTextView, binding.followButton, followManager,
+                followHandler = followHandler, avatarImageSize = R.dimen.avatar_featured_guide,
+                followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
     }
 
     private fun animateDetailView(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
@@ -350,20 +339,18 @@ class ListingItemViewHolder(
 
     private fun clear() {
         binding.timeTextView.text = null
-        binding.eventImageView.setImageDrawable(null)
         binding.categoryTextView.text = null
         binding.titleTextView.text = null
-        binding.usernamePlainTextView.text = null
         binding.usOnlyLabelTextView.isVisible = false
+        binding.avatarImageView.setImageDrawable(null)
+        binding.avatarImageView.setOnClickListener(null)
+        binding.usernameTextView.text = null
+        binding.followButton.isVisible = false
 
         binding.included.detailContainer.isVisible = false
         binding.included.detailImageView.setImageDrawable(null)
         binding.included.descriptionTextView.text = null
         binding.included.usOnlyDescriptionTextView.isVisible = false
-        binding.included.avatarImageView.setImageDrawable(null)
-        binding.included.avatarImageView.setOnClickListener(null)
-        binding.included.usernameTextView.text = null
-        binding.included.followButton.isVisible = false
     }
 
     /**

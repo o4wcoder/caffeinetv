@@ -14,6 +14,7 @@
     <dimen name="avatar_lobby_previous_broadcast">80dp</dimen>
     <dimen name="avatar_lobby_friend_watching">24dp</dimen>
     <dimen name="avatar_rim_size">4dp</dimen>
+    <dimen name="avatar_featured_guide">60dp</dimen>
     <dimen name="unread_badge">6dp</dimen>
 
     <dimen name="game_logo_width">120dp</dimen>
@@ -45,5 +46,4 @@
 
     <dimen name="featured_guide_detail_image_width">112dp</dimen>
     <dimen name="featured_guide_detail_image_height">63dp</dimen>
-    <dimen name="featured_guide_event_image_size">60dp</dimen>
 </resources>

@@ -26,30 +26,42 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/event_image_view"
-                    android:layout_width="@dimen/featured_guide_event_image_size"
-                    android:layout_height="@dimen/featured_guide_event_image_size"
+                    android:id="@+id/avatar_image_view"
+                    android:layout_width="@dimen/avatar_featured_guide"
+                    android:layout_height="@dimen/avatar_featured_guide"
                     android:layout_marginStart="@dimen/margin_list"
                     android:layout_marginTop="@dimen/margin_list"
-                    android:contentDescription="@string/featured_event_image_content_description"
+                    android:contentDescription="@string/user_avatar_content_description"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:srcCompat="@tools:sample/avatars"/>
 
                 <TextView
                     android:id="@+id/category_text_view"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_list"
                     android:maxLines="1"
                     android:textColor="@color/almost_black"
                     android:textSize="12sp"
                     android:includeFontPadding="false"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@+id/event_image_view"
-                    app:layout_constraintEnd_toStartOf="@+id/time_text_view"
-                    app:layout_constraintTop_toTopOf="@id/event_image_view"
+                    app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+                    app:layout_constraintTop_toTopOf="@id/avatar_image_view"
                     tools:text="@sample/guide.json/listings/category"/>
+
+                <TextView
+                    android:id="@+id/us_only_label_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_line_spacing_small"
+                    android:layout_marginEnd="@dimen/margin_list"
+                    android:text="@string/us_only_label"
+                    android:textSize="12sp"
+                    android:includeFontPadding="false"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toEndOf="@+id/category_text_view"
+                    app:layout_constraintTop_toTopOf="@+id/category_text_view"
+                    tools:visibility="visible"/>
 
                 <TextView
                     android:id="@+id/time_text_view"
@@ -62,9 +74,9 @@
                     android:includeFontPadding="false"
 
                     app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@+id/category_text_view"
+                    app:layout_constraintStart_toEndOf="@+id/us_only_label_text_view"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/category_text_view"
+                    app:layout_constraintTop_toTopOf="@+id/us_only_label_text_view"
                     tools:text="@sample/guide.json/listings/start_time"/>
 
                 <TextView
@@ -74,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_line_spacing_small"
                     android:layout_marginEnd="@dimen/margin_list"
-                    android:maxLines="2"
+                    android:maxLines="3"
                     android:textColor="@color/almost_black"
                     android:textSize="18sp"
                     android:includeFontPadding="false"
@@ -85,36 +97,37 @@
                     tools:text="@sample/guide.json/listings/title"/>
 
                 <TextView
-                    android:id="@+id/username_plain_text_view"
+                    style="@style/BroadcastCardUsername"
+                    android:id="@+id/username_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_line_spacing_small"
                     android:includeFontPadding="false"
                     app:layout_constraintStart_toStartOf="@+id/title_text_view"
                     app:layout_constraintTop_toBottomOf="@+id/title_text_view"
-                    tools:text="@sample/guide.json/listings/username"/>
+                    tools:text="@sample/guide.json/listings/username"
+                    tools:textColor="@color/caffeine_blue"
+                    tools:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/us_only_label_text_view"
+                <Button
+                    style="@style/FollowTextButton"
+                    android:id="@+id/follow_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_line_spacing_small"
-                    android:layout_marginEnd="@dimen/margin_list"
-                    android:text="@string/us_only_label"
-                    android:visibility="gone"
+                    android:includeFontPadding="false"
+                    android:text="@string/follow_button"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@+id/username_plain_text_view"
+                    app:layout_constraintStart_toEndOf="@+id/username_text_view"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/username_plain_text_view"
-                    app:layout_constraintBottom_toBottomOf="@id/username_plain_text_view"
-                    tools:visibility="visible"/>
+                    app:layout_constraintTop_toTopOf="@+id/username_text_view"
+                    app:layout_constraintBottom_toBottomOf="@+id/username_text_view"/>
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/compact_view_bottom_barrier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="event_image_view, username_plain_text_view"/>
+                    app:constraint_referenced_ids="avatar_image_view, username_text_view"/>
 
                 <View
                     android:id="@+id/compact_view_bottom_padding_view"
@@ -122,7 +135,7 @@
                     android:layout_height="@dimen/margin_list"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/compact_view_bottom_barrier"/>
+                    app:layout_constraintTop_toBottomOf="@+id/compact_view_bottom_barrier"/>
 
                 <include layout="@layout/featured_guide_detail_item"
                     android:id="@+id/included"
