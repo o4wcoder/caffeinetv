@@ -137,7 +137,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/compact_view_bottom_barrier"/>
 
-                <include layout="@layout/featured_guide_detail_item"
+                <include layout="@layout/featured_guide_listing_item_detail"
                     android:id="@+id/included"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
