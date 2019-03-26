@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/lobby_card_side_margin"
+        android:paddingEnd="@dimen/lobby_card_side_margin">
+
+        <TextView
+            style="@style/ListTitle"
+            android:id="@+id/date_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/margin_list"
+            android:paddingBottom="@dimen/margin_list"
+            android:textColor="@color/almost_black"
+            android:textSize="16sp"
+            tools:text="@sample/guide.json/listings/date"/>
+    </FrameLayout>
+</layout>

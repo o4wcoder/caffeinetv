@@ -28,10 +28,12 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.databinding.FeaturedGuideDateHeaderItemBinding
 import tv.caffeine.app.databinding.FeaturedGuideItemBinding
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
+import tv.caffeine.app.lobby.FeaturedGuideItem.DateHeaderItem
 import tv.caffeine.app.lobby.FeaturedGuideItem.ListingItem
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
@@ -83,8 +85,8 @@ class FeaturedProgramGuideViewModel(
         private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
 
-    private val _listings = MutableLiveData<List<ListingItem>>()
-    val listings: LiveData<List<ListingItem>> = Transformations.map(_listings) { it }
+    private val _listings = MutableLiveData<List<FeaturedGuideItem>>()
+    val listings: LiveData<List<FeaturedGuideItem>> = Transformations.map(_listings) { it }
 
     init {
         load()
@@ -105,19 +107,26 @@ class FeaturedProgramGuideViewModel(
         }
     }
 
-    private fun prepareList(listings: List<FeaturedGuideListing>): List<ListingItem> {
+    private fun prepareList(listings: List<FeaturedGuideListing>): List<FeaturedGuideItem> {
         val listingItems = listings.map { ListingItem(it) }.apply {
             getOrNull(0)?.isExpanded = true
         }
         return prepareListingTimestamp(listingItems)
     }
 
-    private fun prepareListingTimestamp(listingItems: List<ListingItem>): List<ListingItem> {
-        listingItems.getOrNull(0)?.shouldShowTimestamp = true
+    private fun prepareListingTimestamp(listingItems: List<ListingItem>): List<FeaturedGuideItem> {
+        val timestampIndices = mutableListOf<Int>()
+        listingItems.getOrNull(0)?.let { timestampIndices.add(0)}
         for (i in 1 until listingItems.size) {
-            listingItems[i].shouldShowTimestamp = isDifferentDay(listingItems[i - 1].listing, listingItems[i].listing)
+            if (isDifferentDay(listingItems[i - 1].listing, listingItems[i].listing)) {
+                timestampIndices.add(i)
+            }
         }
-        return listingItems
+        val featuredGuideItems = LinkedList<FeaturedGuideItem>(listingItems)
+        for (i in timestampIndices.reversed()) {
+            featuredGuideItems.add(i, FeaturedGuideItem.DateHeaderItem(listingItems[i].listing.startTimestamp))
+        }
+        return featuredGuideItems
     }
 
     private fun isDifferentDay(listing1: FeaturedGuideListing, listing2: FeaturedGuideListing): Boolean {
@@ -133,12 +142,28 @@ class FeaturedProgramGuideViewModel(
 }
 
 sealed class FeaturedGuideItem {
+
+    enum class Type {
+        LISTING_ITEM, DATE_HEADER_ITEM;
+
+        companion object {
+            fun ofViewType(viewType: Int) = Type.values()[viewType]
+        }
+    }
+
+    abstract fun getItemType(): FeaturedGuideItem.Type
+    fun getViewType() = getItemType().ordinal
+
     data class ListingItem(
             var listing: FeaturedGuideListing,
-            var shouldShowTimestamp: Boolean = false,
             var isExpanded: Boolean = false,
-            var detailHeight: Int = 0) : FeaturedGuideItem()
-    // TODO data class DateHeaderItem() : FeaturedGuideItem()
+            var detailHeight: Int = 0) : FeaturedGuideItem() {
+        override fun getItemType() = FeaturedGuideItem.Type.LISTING_ITEM
+    }
+
+    data class DateHeaderItem(val startTimestamp: Long) : FeaturedGuideItem() {
+        override fun getItemType() = FeaturedGuideItem.Type.DATE_HEADER_ITEM
+    }
 }
 
 class GuideAdapter @Inject constructor(
@@ -147,10 +172,16 @@ class GuideAdapter @Inject constructor(
         @ThemeFollowedExplore private val followedTheme: UserTheme,
         @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
         private val picasso: Picasso
-): ListAdapter<ListingItem, GuideViewHolder>(
-        object : DiffUtil.ItemCallback<ListingItem>() {
-            override fun areItemsTheSame(oldItem: ListingItem, newItem: ListingItem) = oldItem === newItem
-            override fun areContentsTheSame(oldItem: ListingItem, newItem: ListingItem) = oldItem == newItem
+): ListAdapter<FeaturedGuideItem, GuideViewHolder>(
+        object : DiffUtil.ItemCallback<FeaturedGuideItem>() {
+            override fun areItemsTheSame(oldItem: FeaturedGuideItem, newItem: FeaturedGuideItem) = oldItem === newItem
+            override fun areContentsTheSame(oldItem: FeaturedGuideItem, newItem: FeaturedGuideItem): Boolean {
+                return when {
+                    oldItem is ListingItem && newItem is ListingItem -> oldItem == newItem
+                    oldItem is DateHeaderItem && newItem is DateHeaderItem -> oldItem == newItem
+                    else -> false
+                }
+            }
         }
 ), CoroutineScope {
 
@@ -161,14 +192,35 @@ class GuideAdapter @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = dispatchConfig.main + job + exceptionHandler
 
+    override fun getItemViewType(position: Int) = getItem(position).getViewType()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
-        val binding = FeaturedGuideItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GuideViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
+        return when(FeaturedGuideItem.Type.ofViewType(viewType)) {
+            FeaturedGuideItem.Type.LISTING_ITEM -> {
+                val binding = FeaturedGuideItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ListingItemViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
+            }
+            FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
+                val binding = FeaturedGuideDateHeaderItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                DateHeaderViewHolder(binding)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
-        holder.bind(getItem(position)) { clickedPosition, isExpanded ->
-            getItem(clickedPosition).isExpanded = isExpanded
+        return when(getItem(position).getItemType()) {
+            FeaturedGuideItem.Type.LISTING_ITEM -> {
+                (holder as ListingItemViewHolder).bind(getItem(position) as ListingItem) { clickedPosition, isExpanded ->
+                    getItem(clickedPosition).let {
+                        if (it is ListingItem) {
+                            it.isExpanded = isExpanded
+                        }
+                    }
+                }
+            }
+            FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
+                (holder as DateHeaderViewHolder).bind(getItem(position) as DateHeaderItem)
+            }
         }
     }
 
@@ -178,14 +230,33 @@ class GuideAdapter @Inject constructor(
     }
 }
 
-class GuideViewHolder(
+sealed class GuideViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+class DateHeaderViewHolder(private val binding: FeaturedGuideDateHeaderItemBinding) : GuideViewHolder(binding.root) {
+
+    fun bind(dateHeaderItem: DateHeaderItem) {
+        binding.dateTextView.text = getDateText(dateHeaderItem)
+    }
+
+    /**
+     * TODO (AND-139): Localize the date format.
+     */
+    private fun getDateText(dateHeaderItem: DateHeaderItem): String {
+        return Calendar.getInstance().run {
+            timeInMillis = TimeUnit.SECONDS.toMillis(dateHeaderItem.startTimestamp)
+            SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
+        }
+    }
+}
+
+class ListingItemViewHolder(
         private val binding: FeaturedGuideItemBinding,
         private val scope: CoroutineScope,
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
         private val notFollowedTheme: UserTheme,
         private val picasso: Picasso
-) : RecyclerView.ViewHolder(binding.root) {
+) : GuideViewHolder(binding.root) {
 
     var job: Job? = null
 
@@ -208,8 +279,6 @@ class GuideViewHolder(
                 binding.included.usernameTextView.setOnClickListener(it)
             }
         }
-        binding.dateTextView.isVisible = listingItem.shouldShowTimestamp
-        binding.dateTextView.text = getDateText(listingItem)
         binding.timeTextView.text = getTimeText(listingItem)
 
         picasso.load(listingItem.listing.eventImageUrl)
@@ -280,9 +349,7 @@ class GuideViewHolder(
     }
 
     private fun clear() {
-        binding.dateTextView.text = null
         binding.timeTextView.text = null
-
         binding.eventImageView.setImageDrawable(null)
         binding.categoryTextView.text = null
         binding.titleTextView.text = null
@@ -297,16 +364,6 @@ class GuideViewHolder(
         binding.included.avatarImageView.setOnClickListener(null)
         binding.included.usernameTextView.text = null
         binding.included.followButton.isVisible = false
-    }
-
-    /**
-     * TODO (AND-139): Localize the date format.
-     */
-    private fun getDateText(listingItem: ListingItem): String {
-        return Calendar.getInstance().run {
-            timeInMillis = TimeUnit.SECONDS.toMillis(listingItem.listing.startTimestamp)
-            SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
-        }
     }
 
     /**

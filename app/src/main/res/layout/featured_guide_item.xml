@@ -11,20 +11,6 @@
         android:paddingEnd="@dimen/lobby_card_side_margin"
         android:clipToPadding="false">
 
-        <TextView
-            style="@style/ListTitle"
-            android:id="@+id/date_text_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/margin_list"
-            android:paddingBottom="@dimen/margin_list"
-            android:textColor="@color/almost_black"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@sample/guide.json/listings/date"/>
-
         <androidx.cardview.widget.CardView
             style="@style/LobbyCard"
             android:layout_width="match_parent"
@@ -32,7 +18,7 @@
             android:layout_marginBottom="@dimen/margin_list"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/date_text_view"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
