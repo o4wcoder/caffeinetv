@@ -10,6 +10,7 @@ fun ApiErrorResult.isMustVerifyEmailError() = errors?._unverifiedEmail?.isNullOr
 fun ApiErrorResult.isRecordNotFoundError() = errors?._record?.contains("could not be found") == true
 fun ApiErrorResult.isVerificationFailedError() = errors?.code?.contains("Verification failed.") == true
 fun ApiErrorResult.isOutOfCapacityError() = type == "OutOfCapacity"
+fun RefreshTokenMissingError() = ApiErrorResult(ApiError(_token = listOf("Refresh token missing")))
 
 data class ApiError(
         val _error: List<String>? = null,

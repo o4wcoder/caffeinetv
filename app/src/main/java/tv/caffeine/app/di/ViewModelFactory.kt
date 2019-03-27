@@ -14,6 +14,7 @@ import tv.caffeine.app.explore.FindBroadcastersUseCase
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase
 import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
 import tv.caffeine.app.lobby.LoadLobbyUseCase
+import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.*
@@ -69,6 +70,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(SignInViewModel::class.java) -> SignInViewModel(dispatchConfig, signInUseCase)
             modelClass.isAssignableFrom(LegalAgreementViewModel::class.java) -> LegalAgreementViewModel(dispatchConfig, acceptLegalUseCase)
             modelClass.isAssignableFrom(LobbyViewModel::class.java) -> LobbyViewModel(dispatchConfig, followManager, loadLobbyUseCase, loadFeatureConfigUseCase, isVersionSupportedCheckUseCase)
+            modelClass.isAssignableFrom(SessionCheckViewModel::class.java) -> SessionCheckViewModel(dispatchConfig, tokenStore)
             modelClass.isAssignableFrom(ExploreViewModel::class.java) -> ExploreViewModel(dispatchConfig, findBroadcastersUseCase)
             modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> NotificationsViewModel(dispatchConfig, gson, usersService, followManager, tokenStore)
             modelClass.isAssignableFrom(DICatalogViewModel::class.java) -> DICatalogViewModel(dispatchConfig, digitalItemRepository)

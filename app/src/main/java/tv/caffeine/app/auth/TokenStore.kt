@@ -23,6 +23,8 @@ class TokenStore @Inject constructor(
             Crashlytics.setUserIdentifier(value)
         }
 
+    val hasRefreshToken: Boolean get() = settingsStorage.refreshToken != null
+
     fun storeSignInResult(signInResult: SignInResult) {
         if (signInResult.next != NextAccountAction.legal_acceptance_required) {
             settingsStorage.refreshToken = signInResult.refreshToken

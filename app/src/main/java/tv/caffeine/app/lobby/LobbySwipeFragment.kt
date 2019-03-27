@@ -22,6 +22,7 @@ import tv.caffeine.app.databinding.FragmentLobbySwipeBinding
 import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
+import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.ViewPagerColorOnPageChangeListener
 import tv.caffeine.app.util.maybeShow
@@ -34,8 +35,16 @@ class LobbySwipeFragment : CaffeineFragment() {
     @Inject lateinit var picasso: Picasso
 
     private lateinit var binding: FragmentLobbySwipeBinding
+    private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
     private val viewPagerBackgroundColors = listOf(R.color.white, R.color.light_gray)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sessionCheckViewModel.sessionCheck.observe(this, Observer { result ->
+            handle(result) {}
+        })
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         FragmentLobbySwipeBinding.inflate(inflater, container, false).apply {
