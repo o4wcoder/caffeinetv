@@ -131,7 +131,6 @@
             <com.google.android.material.tabs.TabLayout
                 style="@style/TabLayout"
                 android:id="@+id/tab_layout"
-                android:background="@color/lightest_gray"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabIndicator="@drawable/tab_indicator">
