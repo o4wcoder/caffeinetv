@@ -5,7 +5,6 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -13,8 +12,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.parcel.Parcelize
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
-import tv.caffeine.app.feature.Feature
-import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.safeNavigate
@@ -28,11 +25,9 @@ enum class BuyGoldOption: Parcelable {
 }
 
 class GoldAndCreditsFragment : CaffeineFragment() {
-    @Inject lateinit var featureConfig: FeatureConfig
     @Inject lateinit var picasso: Picasso
     private lateinit var binding: FragmentGoldAndCreditsBinding
     private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
-    private val goldBundlesViewModel: GoldBundlesViewModel by activityViewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentGoldAndCreditsBinding.inflate(inflater, container, false).apply {
@@ -56,13 +51,6 @@ class GoldAndCreditsFragment : CaffeineFragment() {
         binding.buyGoldButton.setOnClickListener { navigateToBuyGold(BuyGoldOption.UsingPlayStore) }
         binding.buyGoldWithCreditsButton.setOnClickListener { navigateToBuyGold(BuyGoldOption.UsingCredits) }
         binding.goldAndCreditsHelpTextView.formatUsernameAsHtml(picasso, getString(R.string.gold_and_credits_help_html))
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (featureConfig.isFeatureEnabled(Feature.PAYMENT_FIX)) {
-            goldBundlesViewModel.processRecentlyCachedPurchases()
-        }
     }
 
     private fun navigateToBuyGold(buyGoldOption: BuyGoldOption) {

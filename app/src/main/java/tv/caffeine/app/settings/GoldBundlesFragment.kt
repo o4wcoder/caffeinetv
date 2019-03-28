@@ -62,7 +62,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
             })
         })
         val handler = Handler()
-        viewModel.load(buyGoldOption).observe(viewLifecycleOwner, Observer { result ->
+        viewModel.getGoldBundles(buyGoldOption).observe(viewLifecycleOwner, Observer { result ->
             when(result) {
                 is CaffeineResult.Success -> handler.post { goldBundlesAdapter.submitList(result.value) }
                 else -> showSnackbar(R.string.error_loading_gold_bundles)

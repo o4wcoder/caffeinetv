@@ -12,7 +12,6 @@ import com.android.billingclient.util.BillingHelper
 import com.google.gson.Gson
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import org.junit.After
@@ -57,6 +56,7 @@ class GoldBundlesViewModelTests {
             val walletRepository = WalletRepository(TestDispatchConfig, gson, paymentsClientService)
             val loadGoldBundlesUseCase = LoadGoldBundlesUseCase(paymentsClientService, gson)
             val purchaseGoldBundleUseCase = PurchaseGoldBundleUseCase(paymentsClientService, gson)
+            coEvery { processPlayStorePurchaseUseCase.invoke(any(), any()) } returns CaffeineResult.Success("random")
             subject = GoldBundlesViewModel(TestDispatchConfig, mainActivity.applicationContext, TokenStore(settingsStorage), walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
         }
 
@@ -82,8 +82,6 @@ class GoldBundlesViewModelTests {
 
         @Test
         fun `attempting to purchase a bundle with a valid SKU is successful` () {
-            coEvery { processPlayStorePurchaseUseCase.invoke(any(), any()) } returns CaffeineResult.Success("yay!")
-
             val skuDetails = SkuDetails("{\"productId\":\"1\"}")
             val bundle = GoldBundle("a", 1, 1, null, null, PurchaseOption.PurchaseUsingInAppBilling("b", true), null, skuDetails)
             subject.purchaseGoldBundleUsingPlayStore(mainActivity, bundle)
@@ -116,7 +114,6 @@ class GoldBundlesViewModelTests {
                 }
             }
             subject.events.observe(mainActivity, observer)
-            coVerify(exactly = 0) { processPlayStorePurchaseUseCase.invoke(any(), any()) }
         }
 
     }

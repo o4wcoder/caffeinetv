@@ -40,7 +40,8 @@ class GoldBundlesViewModel(
         private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
         private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
         private val processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : CaffeineViewModel(dispatchConfig), BillingClientStateListener {
+
     private val _events = MutableLiveData<Event<PurchaseStatus>>()
     val events : LiveData<Event<PurchaseStatus>> = Transformations.map(_events) { it }
 
@@ -55,7 +56,24 @@ class GoldBundlesViewModel(
     private val billingClient: BillingClient = BillingClientFactory.createBillingClient(context,
             PurchasesUpdatedListener { responseCode, purchases ->
                 Timber.d("Connected")
-                consumeInAppPurchases(responseCode, purchases)
+                when(responseCode) {
+                    BillingClient.BillingResponse.OK -> when(purchases) {
+                        null -> Timber.e(Exception("Billing response OK, but purchase list is null"))
+                        else -> consumeInAppPurchases(purchases)
+                    }
+                    BillingClient.BillingResponse.USER_CANCELED -> {
+                        Timber.d("User canceled")
+                        postPurchaseStatus(PurchaseStatus.CanceledByUser)
+                    }
+                    BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
+                        Timber.e(Exception("Items already owned, processing"))
+                        processRecentlyCachedPurchases()
+                    }
+                    else -> {
+                        Timber.e(Exception("Billing client error $responseCode"))
+                        postPurchaseStatus(PurchaseStatus.GooglePlayError(responseCode))
+                    }
+                }
             })
 
     init {
@@ -64,28 +82,35 @@ class GoldBundlesViewModel(
 
     private fun load() {
         refreshWallet()
-        loadGoldBundles()
-        billingClient.startConnection(object: BillingClientStateListener {
-            override fun onBillingServiceDisconnected() {
-                Timber.e("Billing service disconnected")
-            }
+        connectBillingClient()
+    }
 
-            override fun onBillingSetupFinished(responseCode: Int) {
-                if (responseCode == BillingClient.BillingResponse.OK) {
-                    Timber.d("Successfully started billing connection")
-                } else {
-                    Timber.e("Failed to start billing connection")
-                }
-            }
-        })
+    private fun connectBillingClient() {
+        if (!billingClient.isReady) billingClient.startConnection(this)
+    }
+
+    override fun onBillingSetupFinished(responseCode: Int) {
+        if (responseCode == BillingClient.BillingResponse.OK) {
+            Timber.d("Successfully started billing connection")
+            loadGoldBundles()
+            processRecentlyCachedPurchases()
+        } else {
+            Timber.e(Exception("Failed to start billing connection"))
+        }
+    }
+
+    override fun onBillingServiceDisconnected() {
+        Timber.e(Exception("Billing service disconnected"))
     }
 
     private fun loadGoldBundles() {
         launch {
             val allGoldBundles = loadGoldBundlesUseCase()
                     .map { it.payload.goldBundles.state }
-            val listUsingCredits = allGoldBundles.map { it.filter { gb -> gb.usingCredits != null } }
-            val listUsingPlayStore = allGoldBundles.map { lookupSkuDetails(it.filter { gb -> gb.usingInAppBilling != null }) }
+            val listUsingCredits = allGoldBundles
+                    .map { it.filter { gb -> gb.usingCredits != null } }
+            val listUsingPlayStore = allGoldBundles
+                    .map { lookupSkuDetails(it.filter { gb -> gb.usingInAppBilling != null }) }
             withContext(dispatchConfig.main) {
                 _goldBundlesUsingCredits.value = listUsingCredits
                 _goldBundlesUsingPlayStore.value = listUsingPlayStore
@@ -93,7 +118,7 @@ class GoldBundlesViewModel(
         }
     }
 
-    fun load(buyGoldOption: BuyGoldOption): LiveData<CaffeineResult<List<GoldBundle>>> {
+    fun getGoldBundles(buyGoldOption: BuyGoldOption): LiveData<CaffeineResult<List<GoldBundle>>> {
         return when(buyGoldOption) {
             BuyGoldOption.UsingCredits -> _goldBundlesUsingCredits
             BuyGoldOption.UsingPlayStore -> _goldBundlesUsingPlayStore
@@ -121,7 +146,7 @@ class GoldBundlesViewModel(
             when(responseCode) {
                 BillingClient.BillingResponse.OK -> continuation.resume(skuDetailsList)
                 else -> {
-                    Timber.e("Error loading SKU details")
+                    Timber.e(Exception("Error loading SKU details $responseCode"))
                     continuation.resume(listOf())
                 }
             }
@@ -132,22 +157,8 @@ class GoldBundlesViewModel(
         walletRepository.refresh()
     }
 
-    private fun consumeInAppPurchases(responseCode: Int, purchases: List<Purchase>?) {
-        when {
-            responseCode == BillingClient.BillingResponse.OK && purchases != null -> {
-                for (purchase in purchases) {
-                    consumeInAppPurchase(purchase)
-                }
-            }
-            responseCode == BillingClient.BillingResponse.USER_CANCELED -> {
-                Timber.d("User canceled")
-                postPurchaseStatus(PurchaseStatus.CanceledByUser)
-            }
-            else -> {
-                Timber.e("Billing client error $responseCode")
-                postPurchaseStatus(PurchaseStatus.GooglePlayError(responseCode))
-            }
-        }
+    private fun consumeInAppPurchases(purchases: List<Purchase>) {
+        purchases.forEach { consumeInAppPurchase(it) }
     }
 
     private fun consumeInAppPurchase(purchase: Purchase) {
@@ -155,15 +166,19 @@ class GoldBundlesViewModel(
             billingClient.consumeAsync(purchase.purchaseToken) { responseCode, purchaseToken ->
                 when (responseCode) {
                     BillingClient.BillingResponse.OK -> {
-                        processInAppPurchase(purchase)
+                        processInAppPurchase(purchase, purchaseToken)
                         Timber.d("Successfully consumed the purchase $purchaseToken")
                     }
                     BillingClient.BillingResponse.USER_CANCELED -> {
                         Timber.d("User canceled purchase")
                         postPurchaseStatus(PurchaseStatus.CanceledByUser)
                     }
+                    BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
+                        Timber.e(Exception("Item already owned, processing purchase"))
+                        processInAppPurchase(purchase, purchaseToken)
+                    }
                     else -> {
-                        Timber.e("Failed to consume the purchase $purchaseToken")
+                        Timber.e(Exception("Failed to consume the purchase $responseCode, $purchaseToken"))
                         postPurchaseStatus(PurchaseStatus.GooglePlayError(responseCode))
                     }
                 }
@@ -180,7 +195,11 @@ class GoldBundlesViewModel(
 
     fun purchaseGoldBundleUsingPlayStore(activity: Activity, goldBundle: GoldBundle) {
         val sku = goldBundle.skuDetails?.sku ?: return postPurchaseStatus(PurchaseStatus.Error(R.string.error_missing_sku))
-        val params = BillingFlowParams.newBuilder().setSku(sku).setAccountId(tokenStore.caid).setType(BillingClient.SkuType.INAPP).build()
+        val params = BillingFlowParams.newBuilder()
+                .setSku(sku)
+                .setAccountId(tokenStore.caid)
+                .setType(BillingClient.SkuType.INAPP)
+                .build()
         billingClient.launchBillingFlow(activity, params)
     }
 
@@ -198,22 +217,19 @@ class GoldBundlesViewModel(
     }
 
     /**
-     * We will redeem cached google play payments as a short-term fix for the bug that
-     * a network or Caffeine error occurred when we processed the payment.
+     * We always check previously purchased items and make sure we consume the one that may have been missed before
      */
-    fun processRecentlyCachedPurchases() {
-        val count = 5 // Only re-process the most recent 5 purchases
+    private fun processRecentlyCachedPurchases() {
         val purchaseResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-        if (purchaseResult.responseCode == BillingClient.BillingResponse.OK) {
-            for (purchase in purchaseResult.purchasesList.takeLast(count)) {
-                processInAppPurchase(purchase)
-            }
+        when(purchaseResult.responseCode) {
+            BillingClient.BillingResponse.OK -> consumeInAppPurchases(purchaseResult.purchasesList)
+            else -> Timber.e(Exception("Error querying recent purchases ${purchaseResult.responseCode}"))
         }
     }
 
-    private fun processInAppPurchase(purchase: Purchase) = launch {
-        Timber.d("Purchased ${purchase.sku}: ${purchase.orderId}, ${purchase.purchaseToken}")
-        val result = processPlayStorePurchaseUseCase(purchase.sku, purchase.purchaseToken)
+    private fun processInAppPurchase(purchase: Purchase, purchaseToken: String = purchase.purchaseToken) = launch {
+        Timber.d("Purchased: ${purchase.sku}, Order ID: ${purchase.orderId}, Purchase Token: $purchaseToken")
+        val result = processPlayStorePurchaseUseCase(purchase.sku, purchaseToken)
         refreshWallet()
         val purchaseStatus = when(result) {
             is CaffeineResult.Success -> PurchaseStatus.GooglePlaySuccess(purchase.purchaseToken)
