@@ -1,7 +1,7 @@
 language: android
 jdk: oraclejdk8
 sudo: true
-dist: xenial
+dist: trusty
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -10,6 +10,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+    - $HOME/.git/lfs
+git:
+  lfs_skip_smudge: true
 android:
   components:
   - platform-tools
@@ -29,6 +32,9 @@ before_install:
   - echo -e "\nd56f5187479451eabf01fb78af6dfcb131a6481e" >> "$ANDROID_HOME/licenses/android-sdk-license"
   - echo -e "\n24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "$ANDROID_HOME/licenses/android-sdk-license"
   - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" >> "$ANDROID_HOME/licenses/android-sdk-preview-license"
+  - git lfs install
+install:
+  - git lfs pull
   - ./gradlew dependencies || true
 env:
   global:

@@ -12,7 +12,18 @@ jobs:
   unit-tests:
     <<: *defaults
     steps:
+      - run:
+          name: Install Git LFS
+          command: |
+              sudo apt-get install software-properties-common
+              sudo add-apt-repository -y ppa:git-core/ppa
+              curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+              sudo apt-get install git-lfs
+              git lfs install
       - checkout
+      - run:
+          name: Git LFS pull
+          command: git lfs pull
       - restore_cache:
           key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
       - run:
@@ -23,6 +34,7 @@ jobs:
               - ~/.gradle/caches/
               - ~/.gradle/wrapper/
               - ~/.android/build-cache
+              - ~/.git/lfs
           key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
       - run:
           name: Build Unit Tests
