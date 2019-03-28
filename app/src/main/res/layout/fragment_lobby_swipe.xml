@@ -133,15 +133,19 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabIndicator="@drawable/tab_indicator">
+                app:tabIndicator="@drawable/tab_indicator"
+                app:tabGravity="center"
+                app:tabPaddingStart="@dimen/margin"
+                app:tabPaddingEnd="@dimen/margin">
+
                 <com.google.android.material.tabs.TabItem
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/lobby_page_title_watch_now"/>
                 <com.google.android.material.tabs.TabItem
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/lobby_page_title_scheduled"/>
+                    android:text="@string/lobby_page_title_upcoming"/>
             </com.google.android.material.tabs.TabLayout>
         </androidx.viewpager.widget.ViewPager>
 

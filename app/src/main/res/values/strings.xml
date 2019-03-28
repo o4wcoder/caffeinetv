@@ -66,7 +66,7 @@
     <string name="activity_button_content_description">Activity</string>
     <string name="profile_button_content_description">My Profile</string>
     <string name="lobby_page_title_watch_now">Watch Now</string>
-    <string name="lobby_page_title_scheduled">Scheduled</string>
+    <string name="lobby_page_title_upcoming">Upcoming</string>
 
     <string name="hint_current_password">Current Password</string>
     <string name="update_button">Update</string>
@@ -266,6 +266,6 @@
     <!-- Feature Program Guide -->
     <string name="fpg_empty_message">There are currently no scheduled events.\nCheck back soon!</string>
     <string name="featured_event_image_content_description">Featured event image</string>
-    <string name="us_only_label">| * US only</string><!-- the vertical bar is to separate this label from the username before it -->
-    <string name="us_only_description">* This program is available in the US only.</string>
+    <string name="us_only_label">| *U.S. only</string><!-- the vertical bar is to separate this label from the username before it -->
+    <string name="us_only_description">*This program is available in the US only.</string>
 </resources>

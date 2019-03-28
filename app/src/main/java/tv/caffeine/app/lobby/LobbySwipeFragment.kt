@@ -109,7 +109,7 @@ class LobbyPagerAdapter(fm: FragmentManager, val resources: Resources) : Fragmen
     override fun getPageTitle(position: Int): CharSequence? {
         return when (position) {
             0 -> resources.getString(R.string.lobby_page_title_watch_now)
-            else -> resources.getString(R.string.lobby_page_title_scheduled)
+            else -> resources.getString(R.string.lobby_page_title_upcoming)
         }
     }
 }
