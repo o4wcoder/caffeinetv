@@ -3,12 +3,12 @@ package tv.caffeine.app.lobby
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.transition.TransitionManager
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -171,12 +171,15 @@ class ListingItemViewHolder(
         binding.categoryTextView.text = listingItem.listing.category
         binding.titleTextView.text = listingItem.listing.title
 
-        picasso.load(listingItem.listing.detailImageUrl)
-                .resizeDimen(R.dimen.featured_guide_detail_image_width, R.dimen.featured_guide_detail_image_height)
-                .centerCrop()
-                .into(binding.included.detailImageView)
+        (listingItem.listing.detailImageUrl != null).let { hasDetailImage->
+            binding.included.detailImageView.isVisible = hasDetailImage
+            binding.included.divider.isVisible = !hasDetailImage
+        }
+        listingItem.listing.detailImageUrl?.let {
+            picasso.load(it)
+                    .into(binding.included.detailImageView)
+        }
         binding.included.descriptionTextView.text = listingItem.listing.description
-        binding.included.usOnlyDescriptionTextView.isVisible = listingItem.listing.isUsOnly
 
         // Click listeners
         itemView.setOnClickListener { animateDetailView(listingItem, callback) }
@@ -240,9 +243,9 @@ class ListingItemViewHolder(
         binding.followButton.isVisible = false
 
         binding.included.detailContainer.isVisible = false
+        binding.included.divider.isVisible = false
         binding.included.detailImageView.setImageDrawable(null)
         binding.included.descriptionTextView.text = null
-        binding.included.usOnlyDescriptionTextView.isVisible = false
     }
 
     /**

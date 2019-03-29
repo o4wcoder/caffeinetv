@@ -8,49 +8,42 @@
         android:id="@+id/detail_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_list"
-        android:paddingBottom="@dimen/margin_list"
-        android:background="@drawable/gray_top_divider">
+        android:paddingBottom="@dimen/margin_list">
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_list"
+            android:layout_marginEnd="@dimen/margin_list"
+            android:background="@color/medium_gray_2"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/detail_image_view"
-            android:layout_width="@dimen/featured_guide_detail_image_width"
-            android:layout_height="@dimen/featured_guide_detail_image_height"
-            android:layout_marginBottom="8dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/featured_event_image_content_description"
-            app:layout_constraintVertical_bias="0"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:srcCompat="@tools:sample/avatars"
-            tools:scaleType="fitXY"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintDimensionRatio="H,16:9"
+            tools:srcCompat="@tools:sample/avatars"/>
 
         <TextView
             android:id="@+id/description_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_list"
+            android:layout_marginEnd="@dimen/margin_list"
+            android:layout_marginTop="@dimen/margin_list"
             android:includeFontPadding="false"
             android:textColor="@color/almost_black"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/detail_image_view"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_image_view"
             tools:text="@sample/guide.json/listings/title"/>
-
-        <TextView
-            android:id="@+id/us_only_description_text_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/us_only_description"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="@id/description_text_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description_text_view"
-            tools:visibility="visible"/>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

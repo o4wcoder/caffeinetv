@@ -46,7 +46,4 @@
     <dimen name="lobby_subtitle_bottom_margin">0dp</dimen>
     <dimen name="stage_loading_indicator_size">48dp</dimen>
     <dimen name="twitter_auth_web_view_height">0dp</dimen>
-
-    <dimen name="featured_guide_detail_image_width">112dp</dimen>
-    <dimen name="featured_guide_detail_image_height">63dp</dimen>
 </resources>
