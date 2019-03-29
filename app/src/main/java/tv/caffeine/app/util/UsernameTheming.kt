@@ -7,7 +7,6 @@ import androidx.annotation.DimenRes
 import androidx.annotation.StyleRes
 import androidx.core.view.isVisible
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import tv.caffeine.app.R
@@ -15,8 +14,9 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
+import tv.caffeine.app.ui.loadAvatar
 
-class UserTheme(val avatarImageTransformation: Transformation, @StyleRes val usernameTextAppearance: Int)
+class UserTheme(@StyleRes val usernameTextAppearance: Int)
 
 fun User.configure(
         avatarImageView: ImageView,
@@ -28,13 +28,12 @@ fun User.configure(
         @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
         followedTheme: UserTheme,
         notFollowedTheme: UserTheme,
-        picasso: Picasso
+        picasso: Picasso // TODO (AND-210) Get the Picasso instance from the Context.
 ) {
-    val following = followManager.isFollowing(caid)
-    val theme = if (following) followedTheme else notFollowedTheme
-    val transformation = theme.avatarImageTransformation
+    val isFollowing = followManager.isFollowing(caid)
+    val theme = if (isFollowing) followedTheme else notFollowedTheme
     if (followButton != null) {
-        if (followManager.followersLoaded() && !following) {
+        if (followManager.followersLoaded() && !isFollowing) {
             FollowButtonDecorator(Style.FOLLOW).decorate(followButton)
             followButton.isVisible = true
             followButton.setOnClickListener {
@@ -48,7 +47,7 @@ fun User.configure(
                     }
                 }
             }
-        } else if (allowUnfollowing && followManager.followersLoaded() && following) {
+        } else if (allowUnfollowing && followManager.followersLoaded() && isFollowing) {
             FollowButtonDecorator(Style.FOLLOWING).decorate(followButton)
             followButton.isVisible = true
             followButton.setOnClickListener {
@@ -61,13 +60,7 @@ fun User.configure(
             followButton.setOnClickListener(null)
         }
     }
-    picasso
-            .load(avatarImageUrl)
-            .centerCrop()
-            .resizeDimen(avatarImageSize, avatarImageSize)
-            .placeholder(R.drawable.default_avatar_round)
-            .transform(transformation)
-            .into(avatarImageView)
+    avatarImageView.loadAvatar(avatarImageUrl, isFollowing, avatarImageSize)
     usernameTextView.apply {
         text = username
         setTextAppearance(theme.usernameTextAppearance)
@@ -75,3 +68,4 @@ fun User.configure(
         compoundDrawablePadding = if (isVerified) resources.getDimensionPixelSize(R.dimen.margin_line_spacing_small) else 0
     }
 }
+

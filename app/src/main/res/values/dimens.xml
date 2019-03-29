@@ -13,7 +13,10 @@
     <dimen name="avatar_explore">85dp</dimen>
     <dimen name="avatar_lobby_previous_broadcast">80dp</dimen>
     <dimen name="avatar_lobby_friend_watching">24dp</dimen>
-    <dimen name="avatar_rim_size">4dp</dimen>
+    <dimen name="avatar_rim_size_large">4dp</dimen>
+    <dimen name="avatar_rim_size_regular">2dp</dimen>
+    <dimen name="avatar_rim_size_not_following">1dp</dimen>
+    <dimen name="avatar_rim_size_threshold_on_avatar_size">150dp</dimen>
     <dimen name="avatar_featured_guide">60dp</dimen>
     <dimen name="unread_badge">6dp</dimen>
 
