@@ -37,21 +37,27 @@ jobs:
               - ~/.git/lfs
           key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
       - run:
+          name: Detekt
+          command: ./gradlew detekt || true
+      - run:
           name: Build Unit Tests
           command: ./gradlew assembleProdDebugUnitTest assembleStagingDebugUnitTest -PdisablePreDex --stacktrace
       - run:
           name: Run Unit Tests
           command: ./gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace
       - run:
-          name: Save test results
+          name: Save test and detekt results
           command: |
               mkdir -p ~/test-results/{xml,html}
               cp -r app/build/test-results/ ~/test-results/xml
               cp -r app/build/reports/tests/ ~/test-results/html
+              cp build/reports/detekt/detekt.html ~/detekt.html
       - store_test_results:
           path: ~/test-results/xml
       - store_artifacts:
           path: ~/test-results/html
+      - store_artifacts:
+          path: ~/detekt.html
 
   danger:
     <<: *defaults

@@ -38,6 +38,17 @@ buildscript {
 
 }
 
+plugins {
+    id("io.gitlab.arturbosch.detekt").version("1.0.0-RC14")
+}
+
+detekt {
+    toolVersion = "1.0.0-RC14"
+    input = files("app/src/main/java")
+    filters = ".*/resources/.*,.*/build/.*"
+    config = files("default-detekt-config.yml")
+}
+
 allprojects {
     repositories {
         google()
