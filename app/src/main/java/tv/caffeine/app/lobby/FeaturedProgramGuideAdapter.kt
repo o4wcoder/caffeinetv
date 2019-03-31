@@ -47,8 +47,7 @@ sealed class FeaturedGuideItem {
 
     data class ListingItem(
             var listing: FeaturedGuideListing,
-            var isExpanded: Boolean = false,
-            var detailHeight: Int = 0) : FeaturedGuideItem() {
+            var isExpanded: Boolean = false) : FeaturedGuideItem() {
         override fun getItemType() = FeaturedGuideItem.Type.LISTING_ITEM
     }
 
@@ -101,13 +100,7 @@ class FeaturedProgramGuideAdapter @Inject constructor(
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
         return when(getItem(position).getItemType()) {
             FeaturedGuideItem.Type.LISTING_ITEM -> {
-                (holder as ListingItemViewHolder).bind(getItem(position) as ListingItem) { clickedPosition, isExpanded ->
-                    getItem(clickedPosition).let {
-                        if (it is ListingItem) {
-                            it.isExpanded = isExpanded
-                        }
-                    }
-                }
+                (holder as ListingItemViewHolder).bind(getItem(position) as ListingItem)
             }
             FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
                 (holder as DateHeaderViewHolder).bind(getItem(position) as DateHeader)
@@ -151,7 +144,7 @@ class ListingItemViewHolder(
 
     var job: Job? = null
 
-    fun bind(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
+    fun bind(listingItem: ListingItem) {
         job?.cancel()
         clear()
 
@@ -182,8 +175,8 @@ class ListingItemViewHolder(
         binding.included.descriptionTextView.text = listingItem.listing.description
 
         // Click listeners
-        itemView.setOnClickListener { animateDetailView(listingItem, callback) }
-        binding.included.detailContainer.setOnClickListener { animateDetailView(listingItem, callback) }
+        itemView.setOnClickListener { animateDetailView(listingItem) }
+        binding.included.detailContainer.setOnClickListener { animateDetailView(listingItem) }
     }
 
     private fun createFollowHandler(user: User): FollowManager.FollowHandler {
@@ -209,27 +202,14 @@ class ListingItemViewHolder(
                 followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
     }
 
-    private fun animateDetailView(listingItem: ListingItem, callback: (clickedPosition: Int, isExpanded: Boolean) -> Unit) {
-        /**
-         * The animation listeners are unreliable that we can't trust them to reset the height
-         * if the animation has been interrupted. We initialize it here at the data layer since
-         * the view must have been measured when it's clicked.
-         */
-        if (listingItem.detailHeight == 0) {
-            listingItem.detailHeight = binding.included.detailContainer.height
-        }
+    private fun animateDetailView(listingItem: ListingItem) {
         if (listingItem.isExpanded) {
-            binding.included.detailContainer.animateSlideUpAndHide(listingItem.detailHeight)
+            binding.included.detailContainer.animateSlideUpAndHide()
         } else {
             binding.included.detailContainer.isVisible = true
             TransitionManager.beginDelayedTransition(itemView as ViewGroup)
         }
-        /**
-         * Due to the visual imperfectness of the default animation, we build our own animation.
-         * The callback only updates the isExpanded field so it's correct at the data layer
-         * in preparation for the next bind() call. The callback doesn't trigger a bind() call.
-         */
-        callback(adapterPosition, !listingItem.isExpanded)
+        listingItem.isExpanded = !listingItem.isExpanded
     }
 
     private fun clear() {
