@@ -26,25 +26,32 @@ jobs:
           command: git lfs pull
       - restore_cache:
           key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - restore_cache:
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - run:
           name: Download dependencies
-          command: ./gradlew androidDependencies
+          command: ./gradlew :app:downloadDependencies
+      - run:
+          name: Clean up before saving caches
+          command: |
+              rm -f ~/.gradle/caches/modules-2/modules-2.lock
+              rm -rf ~/.gradle/caches/*/plugin-resolution
       - save_cache:
           paths:
               - ~/.gradle/caches/
-              - ~/.gradle/wrapper/
               - ~/.android/build-cache
               - ~/.git/lfs
           key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - save_cache:
+          paths:
+              - ~/.gradle/wrapper/
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - run:
           name: Detekt
           command: ./gradlew detekt || true
       - run:
-          name: Build Unit Tests
-          command: ./gradlew assembleProdDebugUnitTest assembleStagingDebugUnitTest -PdisablePreDex --stacktrace
-      - run:
           name: Run Unit Tests
-          command: ./gradlew testProdDebugUnitTest testStagingDebugUnitTest -PdisablePreDex --stacktrace
+          command: ./gradlew testProdDebugUnitTest -PdisablePreDex --stacktrace
       - run:
           name: Save test and detekt results
           command: |
