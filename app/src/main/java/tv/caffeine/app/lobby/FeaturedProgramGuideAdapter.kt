@@ -164,10 +164,9 @@ class ListingItemViewHolder(
         binding.categoryTextView.text = listingItem.listing.category
         binding.titleTextView.text = listingItem.listing.title
 
-        (listingItem.listing.detailImageUrl != null).let { hasDetailImage->
-            binding.included.detailImageView.isVisible = hasDetailImage
-            binding.included.divider.isVisible = !hasDetailImage
-        }
+        val hasDetailImage = listingItem.listing.detailImageUrl != null
+        binding.included.detailImageView.isVisible = hasDetailImage
+        binding.included.divider.isVisible = !hasDetailImage
         listingItem.listing.detailImageUrl?.let {
             picasso.load(it)
                     .into(binding.included.detailImageView)

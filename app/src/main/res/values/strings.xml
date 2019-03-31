@@ -65,7 +65,7 @@
     <string name="search_button_content_description">Search</string>
     <string name="activity_button_content_description">Activity</string>
     <string name="profile_button_content_description">My Profile</string>
-    <string name="lobby_page_title_watch_now">Watch Now</string>
+    <string name="lobby_page_title_live_now">Live Now</string>
     <string name="lobby_page_title_upcoming">Upcoming</string>
 
     <string name="hint_current_password">Current Password</string>
