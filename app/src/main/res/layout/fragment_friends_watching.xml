@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:minHeight="300dp"
         tools:context=".stage.FriendsWatchingFragment"
-        tools:background="@color/dark_gray">
+        tools:background="@color/very_dark_gray">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/friends_watching_toolbar"

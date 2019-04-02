@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".lobby.FeaturedProgramGuide"
-        tools:background="@color/light_gray">
+        tools:background="@color/very_light_gray">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/guide_swipe_refresh_layout"

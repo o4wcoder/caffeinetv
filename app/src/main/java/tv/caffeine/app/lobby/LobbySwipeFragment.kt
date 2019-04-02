@@ -37,7 +37,7 @@ class LobbySwipeFragment : CaffeineFragment() {
     private lateinit var binding: FragmentLobbySwipeBinding
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
-    private val viewPagerBackgroundColors = listOf(R.color.white, R.color.light_gray)
+    private val viewPagerBackgroundColors = listOf(R.color.white, R.color.very_light_gray)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

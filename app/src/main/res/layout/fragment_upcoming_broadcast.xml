@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".broadcast.UpcomingBroadcastFragment"
-        tools:background="@color/dark_gray">
+        tools:background="@color/very_dark_gray">
 
         <tv.caffeine.app.ui.DialogActionBar
             android:id="@+id/action_bar"

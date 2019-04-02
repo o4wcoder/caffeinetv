@@ -175,7 +175,7 @@
         <item name="tabIndicatorColor">@color/black</item>
         <item name="tabIndicatorFullWidth">false</item>
         <item name="tabSelectedTextColor">@color/black</item>
-        <item name="tabTextColor">@color/light_gray_2</item>
+        <item name="tabTextColor">@color/light_gray</item>
         <item name="tabTextAppearance">@style/TabTextAppearance</item>
     </style>
     <style name="TabTextAppearance" parent="BoldDarkSubtitle">
@@ -246,7 +246,7 @@
     </style>
 
     <style name="LobbyBroadcastTitle" parent="@style/TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textColor">@color/very_dark_gray</item>
         <item name="android:textSize">12sp</item>
         <item name="android:letterSpacing">0.0</item>
     </style>
