@@ -267,4 +267,6 @@
     <string name="fpg_empty_message">There are currently no scheduled events.\nCheck back soon!</string>
     <string name="featured_event_image_content_description">Featured event image</string>
     <string name="us_only_label">| US Only</string><!-- the vertical bar is to separate this label from the username before it -->
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
 </resources>

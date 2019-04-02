@@ -1,5 +1,6 @@
 package tv.caffeine.app.lobby
 
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -125,11 +126,23 @@ class DateHeaderViewHolder(private val binding: FeaturedGuideDateHeaderBinding) 
     /**
      * TODO (AND-139): Localize the date format.
      */
-    private fun getDateText(dateHeader: DateHeader): String {
+    fun getDateText(dateHeader: DateHeader): String {
         return Calendar.getInstance().run {
             timeInMillis = TimeUnit.SECONDS.toMillis(dateHeader.startTimestamp)
-            SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
+            when {
+                isToday(timeInMillis) -> itemView.context.getString(R.string.today)
+                isTomorrow(timeInMillis) -> itemView.context.getString(R.string.tomorrow)
+                else -> SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
+            }
         }
+    }
+
+    private fun isToday(timeInMillis: Long): Boolean {
+        return DateUtils.isToday(timeInMillis)
+    }
+
+    private fun isTomorrow(timeInMillis: Long): Boolean {
+        return DateUtils.isToday(timeInMillis - DateUtils.DAY_IN_MILLIS)
     }
 }
 
