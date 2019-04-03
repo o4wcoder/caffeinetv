@@ -59,10 +59,27 @@ class AvatarCard(
         picasso: Picasso
 ) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
     override fun configure(item: LobbyItem) {
+        binding.username = (item as WelcomeCard).username
         itemView.setOnClickListener {
             val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToMyProfileFragment(true)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
+    }
+}
+
+class FollowPeopleCard(
+        val binding: LobbyFollowPeopleCardBinding,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        followManager: FollowManager,
+        followedTheme: UserTheme,
+        notFollowedTheme: UserTheme,
+        followedThemeLight: UserTheme,
+        notFollowedThemeLight: UserTheme,
+        picasso: Picasso
+) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    override fun configure(item: LobbyItem) {
+        binding.displayMessage = (item as FollowPeople).displayMessage
     }
 }
 

@@ -7,7 +7,8 @@ interface LobbyItem {
     val itemType: Type
 
     enum class Type {
-        AVATAR_CARD, HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD, PREVIOUS_BROADCAST_CARD, CARD_LIST, UPCOMING_BUTTON_CARD
+        AVATAR_CARD, FOLLOW_PEOPLE_CARD, HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD,
+        PREVIOUS_BROADCAST_CARD, CARD_LIST, UPCOMING_BUTTON_CARD
     }
 
     // An interface may not implement a method of 'Any'
@@ -16,8 +17,14 @@ interface LobbyItem {
     companion object {
 
         fun parse(result: Lobby): List<LobbyItem> {
-            return (result.header.avatarCard?.let { listOf(WelcomeCard("username", it.username)) } ?: listOf()).plus(
-            result.sections.flatMap { section ->
+            val lobbyItems = mutableListOf<LobbyItem>()
+            result.header.avatarCard?.let {
+                lobbyItems.add(WelcomeCard("username", it.username))
+            }
+            result.header.followPeople?.displayMessage?.let {
+                lobbyItems.add(FollowPeople(displayMessage = it))
+            }
+            return lobbyItems.plus(result.sections.flatMap { section ->
                 mutableListOf<LobbyItem>().apply {
                     if (section.name != null) {
                         add(Header(section.name, section.name))
@@ -44,6 +51,10 @@ interface LobbyItem {
 
 data class WelcomeCard(override val id: String, val username: String) : LobbyItem {
     override val itemType = LobbyItem.Type.AVATAR_CARD
+}
+
+data class FollowPeople(override val id: String = "followPeople", val displayMessage: String) : LobbyItem {
+    override val itemType = LobbyItem.Type.FOLLOW_PEOPLE_CARD
 }
 
 data class Header(override val id: String, val text: String) : LobbyItem {

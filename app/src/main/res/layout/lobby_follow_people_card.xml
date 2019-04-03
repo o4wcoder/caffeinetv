@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="displayMessage"
+            type="String"/>
+    </data>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lobby_card_flat_background"
+        android:paddingStart="60dp"
+        android:paddingEnd="60dp"
+        android:paddingTop="@dimen/margin_list"
+        android:paddingBottom="@dimen/margin_list"
+        android:text="@{displayMessage}"
+        android:textColor="@color/dark_gray"
+        android:textAlignment="center"
+        tools:text="When people you follow are watching or broadcasting you’ll see them here."/>
+</layout>

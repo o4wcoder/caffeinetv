@@ -51,6 +51,7 @@ class LobbyAdapter @Inject constructor(
         val itemType = LobbyItem.Type.values()[viewType]
         return when(itemType) {
             LobbyItem.Type.AVATAR_CARD -> avatarCard(inflater, parent)
+            LobbyItem.Type.FOLLOW_PEOPLE_CARD -> followPeopleCard(inflater, parent)
             LobbyItem.Type.HEADER -> headerCard(inflater, parent)
             LobbyItem.Type.SUBTITLE -> subtitleCard(inflater, parent)
             LobbyItem.Type.LIVE_BROADCAST_CARD -> liveBroadcastCard(inflater, parent)
@@ -63,6 +64,9 @@ class LobbyAdapter @Inject constructor(
 
     private fun avatarCard(inflater: LayoutInflater, parent: ViewGroup) =
             AvatarCard(LobbyAvatarCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
+
+    private fun followPeopleCard(inflater: LayoutInflater, parent: ViewGroup) =
+            FollowPeopleCard(LobbyFollowPeopleCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
 
     private fun headerCard(inflater: LayoutInflater, parent: ViewGroup) =
             HeaderCard(LobbyHeaderBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)

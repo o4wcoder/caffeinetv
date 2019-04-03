@@ -14,6 +14,7 @@ class Lobby(val tags: Map<String, Tag>, val content: Map<String, Content>, val h
                       val followingViewers: List<User>,
                       val followingViewersCount: Int)
     class Category(val id: String, val name: String, val broadcasters: Array<Broadcaster>)
-    class Header(val avatarCard: MiniUser? = null)
+    class Header(val avatarCard: MiniUser? = null, val followPeople: FollowPeoplePrompt? = null)
+    class FollowPeoplePrompt(val displayMessage: String?)
     class MiniUser(val username: String)
 }
