@@ -1,23 +1,27 @@
 # Mitsurugi (Android)
 
-[![Build Status](https://travis-ci.com/caffeinetv/android.svg?token=qBfqv76hyjADhUsCTEp6&branch=master)](https://travis-ci.com/caffeinetv/android) [![CircleCI](https://circleci.com/gh/caffeinetv/android.svg?style=svg)](https://circleci.com/gh/caffeinetv/android)
+[![CircleCI](https://circleci.com/gh/caffeinetv/android.svg?style=svg&circle-token=55b5ed44af44b4352f6b3d466030f1f40fb00582)](https://circleci.com/gh/caffeinetv/android)
 
 The Android app for Caffeine.
 
 <img alt="Mitsurugi" src="logo.png" width="356">
 
-### Setup
+### First-Time Setup
 
-1. Install Android Studio 3.4
-2. Configure an emulator.
-3. Run unit tests.
-4. Run android tests.
+1. Checkout the repo `git clone git@github.com:caffeinetv/android.git && cd android`
+2. Install Git LFS: `brew install git-lfs && git lfs install && git lfs pull`
+3. Run unit tests: `./gradlew testProdDebugUnitTest`
+4. Open the project in Android Studio
 
 ### About
 
 * Development is done in Kotlin and Android Studio
-  * Current version of Kotlin is 1.3.20
+  * Current version of Kotlin is 1.3.21
   * Current version of Android Studio is 3.4
+* CI is performed on CircleCI
+  * Unit tests - also runs Detekt
+  * Danger
+  * Test coverage
 * The app uses the following libraries:
   * AndroidX, JetPack, Support Libraries
     * AppCompat
@@ -27,8 +31,8 @@ The Android app for Caffeine.
   * Retrofit
   * OkHttp
   * Picasso
-* WebRTC for Android
-* Play Services
+  * WebRTC for Android
+  * Play Services
 
 ### Releasing
 
@@ -43,8 +47,10 @@ The Android app for Caffeine.
 
 ### Tools
 
+* [Danger](https://danger.systems) - automated code review chores
+* [Detekt](https://arturbosch.github.io/detekt/index.html) - static code analysis
+* [JaCoCo](https://www.jacoco.org/jacoco/) - code coverage
 * [Dexcount Gradle Plugin](https://github.com/KeepSafe/dexcount-gradle-plugin)
-* [Danger](https://danger.systems)
 
 ### Digital Items
 
