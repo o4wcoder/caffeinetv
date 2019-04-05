@@ -100,7 +100,7 @@ class TransactionHistoryViewHolder(
                     }
                 }
                 val fontColor = itemView.context.getHexColor(colorRes)
-                binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, username, fontColor))
+                binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, username, fontColor), avatarSizeDimen = R.dimen.tx_history_digital_item_size)
             }
         } else {
             itemView.setOnClickListener(null)

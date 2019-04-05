@@ -21,7 +21,7 @@ import tv.caffeine.app.net.AppMetaDataInterceptor
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.LongPollInterceptor
 import tv.caffeine.app.net.TokenAuthenticator
-import tv.caffeine.app.ui.ImgixRequestTransformer
+import tv.caffeine.app.ui.ImageServerRequestTransformer
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -216,6 +216,6 @@ class ImageLoadingModule {
     @Singleton
     fun providesPicasso(context: Context): Picasso = Picasso.Builder(context)
             .downloader(OkHttp3Downloader(OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build()))
-            .requestTransformer(ImgixRequestTransformer())
+            .requestTransformer(ImageServerRequestTransformer())
             .build()
 }

@@ -17,7 +17,7 @@ import tv.caffeine.app.R
 fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, cornerRadius: Float? = null) {
     if (imageUrl == null) return setImageDrawable(null)
     val picasso = Picasso.Builder(context)
-            .requestTransformer(ImgixRequestTransformer())
+            .requestTransformer(ImageServerRequestTransformer())
             .build()
     picasso
             .load(imageUrl)
@@ -32,7 +32,7 @@ fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, corner
 fun ImageView.loadRoundedImage(imageUrl: String?, placeholder: Drawable? = null) {
     if (imageUrl == null) return
     val picasso = Picasso.Builder(context)
-            .requestTransformer(ImgixRequestTransformer())
+            .requestTransformer(ImageServerRequestTransformer())
             .build()
     picasso
             .load(imageUrl)
