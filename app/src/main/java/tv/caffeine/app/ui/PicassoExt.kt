@@ -26,14 +26,20 @@ fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, corner
             .into(this)
 }
 
-@BindingAdapter("roundedImageUrl", "placeholder", requireAll = false)
-fun ImageView.loadRoundedImage(imageUrl: String?, placeholder: Drawable? = null) {
+@BindingAdapter("roundedImageUrl", "placeholder", "imageSizeRes", requireAll = false)
+fun ImageView.loadRoundedImage(imageUrl: String?, placeholder: Drawable? = null, @DimenRes imageSizeRes: Int? = null) {
     if (imageUrl == null) return
     val picasso = context.getPicasso()
     picasso
             .load(imageUrl)
+            .apply {
+                if (imageSizeRes != null) {
+                    resizeDimen(imageSizeRes, imageSizeRes)
+                } else {
+                    fit()
+                }
+            }
             .centerCrop()
-            .fit()
             .maybePlaceholder(placeholder)
             .transform(CropCircleTransformation())
             .into(this)
@@ -68,5 +74,5 @@ fun ImageView.loadAvatar(avatarImageUrl: String, isFollowing: Boolean, @DimenRes
                 R.drawable.avatar_rim_not_following
             }
     )
-    loadRoundedImage(avatarImageUrl, ContextCompat.getDrawable(context, R.drawable.default_avatar_round))
+    loadRoundedImage(avatarImageUrl, ContextCompat.getDrawable(context, R.drawable.default_avatar_round), avatarImageSizeRes)
 }
