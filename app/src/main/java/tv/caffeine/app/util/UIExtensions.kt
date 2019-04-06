@@ -26,9 +26,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import timber.log.Timber
+import tv.caffeine.app.CaffeineApplication
 import tv.caffeine.app.R
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -40,6 +42,11 @@ fun Context.dismissKeyboard(view: View) {
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = getSystemService<ConnectivityManager>() ?: return false
     return connectivityManager.activeNetworkInfo?.isConnected == true
+}
+
+fun Context.getPicasso(): Picasso {
+    val app = applicationContext as CaffeineApplication
+    return app.picasso
 }
 
 fun ConnectivityManager.safeUnregisterNetworkCallback(callback: ConnectivityManager.NetworkCallback) {

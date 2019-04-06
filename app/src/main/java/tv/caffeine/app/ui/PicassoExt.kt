@@ -6,19 +6,17 @@ import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.databinding.BindingAdapter
-import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import tv.caffeine.app.R
+import tv.caffeine.app.util.getPicasso
 
 
 @BindingAdapter("imageUrl", "placeholder", "cornerRadius", requireAll = false)
 fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, cornerRadius: Float? = null) {
     if (imageUrl == null) return setImageDrawable(null)
-    val picasso = Picasso.Builder(context)
-            .requestTransformer(ImageServerRequestTransformer())
-            .build()
+    val picasso = context.getPicasso()
     picasso
             .load(imageUrl)
             .centerCrop()
@@ -31,9 +29,7 @@ fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, corner
 @BindingAdapter("roundedImageUrl", "placeholder", requireAll = false)
 fun ImageView.loadRoundedImage(imageUrl: String?, placeholder: Drawable? = null) {
     if (imageUrl == null) return
-    val picasso = Picasso.Builder(context)
-            .requestTransformer(ImageServerRequestTransformer())
-            .build()
+    val picasso = context.getPicasso()
     picasso
             .load(imageUrl)
             .centerCrop()
