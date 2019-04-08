@@ -1,5 +1,9 @@
+version: 2
+
+working_directory: &working_directory ~/repo
+
 defaults: &defaults
-  working_directory: ~/repo
+  working_directory: *working_directory
   docker:
     - image: circleci/android:api-28-node
   environment:
@@ -7,7 +11,6 @@ defaults: &defaults
     GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false'
     TERM: dumb
 
-version: 2
 jobs:
   unit-tests:
     <<: *defaults
@@ -52,19 +55,41 @@ jobs:
       - run:
           name: Run Unit Tests
           command: ./gradlew testProdDebugUnitTest -PdisablePreDex --stacktrace
+      - persist_to_workspace:
+          root: *working_directory
+          paths:
+            - .
       - run:
           name: Save test and detekt results
           command: |
-              mkdir -p ~/test-results/{xml,html}
-              cp -r app/build/test-results/ ~/test-results/xml
-              cp -r app/build/reports/tests/ ~/test-results/html
-              cp build/reports/detekt/detekt.html ~/detekt.html
+              mkdir -p ~/reports/{xml,tests,lint,coverage}
+              cp -r app/build/test-results/ ~/reports/xml
+              cp -r app/build/reports/tests/testProdDebugUnitTest/ ~/reports/tests
+              cp build/reports/detekt/detekt.html ~/reports/lint/detekt.html
       - store_test_results:
-          path: ~/test-results/xml
+          path: ~/reports/xml
       - store_artifacts:
-          path: ~/test-results/html
+          path: ~/reports
+
+  test-coverage:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: *working_directory
+      - run:
+          name: Detekt
+          command: ./gradlew detekt || true
+      - run:
+          name: Check Test Coverage
+          command: ./gradlew testProdDebugUnitTestCoverage -PdisablePreDex --stacktrace
+      - run:
+          name: Save test coverage and detekt results
+          command: |
+              mkdir -p ~/reports/{xml,tests,lint,coverage}
+              cp -r app/build/reports/jacoco/testProdDebugUnitTestCoverage/html/ ~/reports/coverage
+              cp build/reports/detekt/detekt.html ~/reports/lint/detekt.html
       - store_artifacts:
-          path: ~/detekt.html
+          path: ~/reports
 
   danger:
     <<: *defaults
@@ -89,4 +114,7 @@ workflows:
     jobs:
       - danger
       - unit-tests
+      - test-coverage:
+          requires:
+            - unit-tests
 
