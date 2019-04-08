@@ -34,6 +34,18 @@ project.afterEvaluate {
                     '**/BuildConfig.*',
                     '**/Manifest*.*',
                     '**/*Test*.*',
+                    '**/*_AssistedFactory.*',
+                    '**/*_Factory.*',
+                    '**/*_MembersInjector.*',
+                    '**/*awaitAndParseErrors$response$*.*',
+                    '**/*awaitEmptyAndParseErrors$response$*.*',
+                    'tv/caffeine/app/BR.*',
+                    'tv/caffeine/app/DataBinderMapper*.*',
+                    'tv/caffeine/app/DataBindingInfo.*',
+                    'tv/caffeine/app/MainNavDirections*.*',
+                    'tv/caffeine/app/databinding/*.*',
+                    'tv/caffeine/app/di/*.*',
+                    'androidx/**/*.*',
                     'android/**/*.*'
             ]
             def javaClasses = fileTree(dir: variant.javaCompiler.destinationDir, excludes: excludes)
@@ -109,11 +121,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 
     // Jetpack
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.core:core-ktx:1.1.0-alpha05'
-    implementation 'androidx.fragment:fragment:1.1.0-alpha05'
-    implementation 'androidx.fragment:fragment-ktx:1.1.0-alpha05'
+    implementation 'androidx.fragment:fragment:1.1.0-alpha06'
+    implementation 'androidx.fragment:fragment-ktx:1.1.0-alpha06'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
     // Preferences
@@ -207,7 +219,7 @@ dependencies {
     testImplementation 'androidx.test:core:1.1.0'
     testImplementation 'androidx.test:runner:1.1.1'
     testImplementation 'androidx.test:rules:1.1.1'
-    debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha05'
+    debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha06'
     testImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
     testImplementation "androidx.test.espresso:espresso-intents:${versions.espresso}"
     androidTestImplementation 'io.mockk:mockk-android:1.9.2'
