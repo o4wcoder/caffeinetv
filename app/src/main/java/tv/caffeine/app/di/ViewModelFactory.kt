@@ -13,6 +13,7 @@ import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.explore.FindBroadcastersUseCase
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase
 import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
+import tv.caffeine.app.lobby.LoadFeaturedProgramGuideUseCase
 import tv.caffeine.app.lobby.LoadLobbyUseCase
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
@@ -40,6 +41,7 @@ class ViewModelFactory @Inject constructor(
         private val signInUseCase: SignInUseCase,
         private val acceptLegalUseCase: AcceptLegalUseCase,
         private val loadLobbyUseCase: LoadLobbyUseCase,
+        private val loadFeaturedProgramGuideUseCase: LoadFeaturedProgramGuideUseCase,
         private val loadFeatureConfigUseCase: LoadFeatureConfigUseCase,
         private val findBroadcastersUseCase: FindBroadcastersUseCase,
         private val usersService: UsersService,
@@ -91,7 +93,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, messageHandshakeFactory, gson)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
             modelClass.isAssignableFrom(GuideViewModel::class.java) -> GuideViewModel(dispatchConfig, broadcastsService, gson)
-            modelClass.isAssignableFrom(FeaturedProgramGuideViewModel::class.java) -> FeaturedProgramGuideViewModel(dispatchConfig, broadcastsService, followManager, gson)
+            modelClass.isAssignableFrom(FeaturedProgramGuideViewModel::class.java) -> FeaturedProgramGuideViewModel(dispatchConfig, loadFeaturedProgramGuideUseCase)
             modelClass.isAssignableFrom(LiveHostableBroadcastersViewModel::class.java) -> LiveHostableBroadcastersViewModel(dispatchConfig, broadcastsService, gson)
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         } as T
