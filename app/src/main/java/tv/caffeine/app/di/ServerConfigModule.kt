@@ -2,27 +2,27 @@ package tv.caffeine.app.di
 
 import dagger.Module
 import dagger.Provides
+import tv.caffeine.app.net.ServerConfig
 
 const val ASSETS_BASE_URL = "https://assets.caffeine.tv"
 const val IMAGES_BASE_URL = "https://images.caffeine.tv"
-const val REALTIME_WEBSOCKET_URL = "wss://realtime.caffeine.tv"
 
 @Module
 class ServerConfigModule {
 
     @Provides
     @CaffeineApi(Service.MainApi)
-    fun providesBaseUrl() = "https://api.caffeine.tv"
+    fun providesBaseUrl(serverConfig: ServerConfig) = serverConfig.api
 
     @Provides
     @CaffeineApi(Service.Realtime)
-    fun providesRealtimeBaseUrl() = "https://realtime.caffeine.tv"
+    fun providesRealtimeBaseUrl(serverConfig: ServerConfig) = serverConfig.realtime
 
     @Provides
     @CaffeineApi(Service.Payments)
-    fun providesPaymentsBaseUrl() = "https://payments.caffeine.tv"
+    fun providesPaymentsBaseUrl(serverConfig: ServerConfig) = serverConfig.payments
 
     @Provides
     @CaffeineApi(Service.Events)
-    fun providesEventsBaseUrl() = "https://events.caffeine.tv"
+    fun providesEventsBaseUrl(serverConfig: ServerConfig) = serverConfig.events
 }

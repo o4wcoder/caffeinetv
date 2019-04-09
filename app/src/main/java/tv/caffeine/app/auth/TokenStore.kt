@@ -51,7 +51,7 @@ class TokenStore @Inject constructor(
     }
 
     fun clear() {
-        settingsStorage.clear()
+        settingsStorage.clearCredentials()
         caid = null
         accessToken = null
         credential = null

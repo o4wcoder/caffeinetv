@@ -17,7 +17,7 @@ import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.di.REALTIME_WEBSOCKET_URL
+import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.realtime.WebSocketController
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.DispatchConfig
@@ -29,6 +29,7 @@ class MessageHandshake @AssistedInject constructor(
         private val followManager: FollowManager,
         private val usersService: UsersService,
         private val gson: Gson,
+        private val serverConfig: ServerConfig,
         @Assisted private val stageIdentifier: String
 ): CoroutineScope {
 
@@ -51,7 +52,7 @@ class MessageHandshake @AssistedInject constructor(
     }
 
     private fun connect() {
-        val url = "$REALTIME_WEBSOCKET_URL/v2/reaper/stages/$stageIdentifier/messages"
+        val url = "${serverConfig.realtimeWebSocket}/v2/reaper/stages/$stageIdentifier/messages"
         val caid = tokenStore.caid ?: return
         webSocketController?.close()
         launch {

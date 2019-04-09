@@ -2,18 +2,29 @@ package tv.caffeine.app.ui
 
 import android.net.Uri
 import com.squareup.picasso.Request
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import tv.caffeine.app.net.ServerConfig
+import tv.caffeine.app.settings.InMemorySettingsStorage
 
 @RunWith(RobolectricTestRunner::class)
 class ImageServerRequestTransformerTest {
+    lateinit var subject: ImageServerRequestTransformer
+
+    @Before
+    fun setup() {
+        val serverConfig = ServerConfig(InMemorySettingsStorage(environment = null))
+        subject = ImageServerRequestTransformer(serverConfig)
+    }
 
     @Test
     fun `assets requests are transformed`() {
         val request = makeRequest("https://assets.caffeine.tv/random.png")
-        val subject = ImageServerRequestTransformer()
         val result = subject.transformRequest(request)
         assertFalse(result === request)
     }
@@ -21,7 +32,6 @@ class ImageServerRequestTransformerTest {
     @Test
     fun `images requests are transformed`() {
         val request = makeRequest("https://images.caffeine.tv/random.png")
-        val subject = ImageServerRequestTransformer()
         val result = subject.transformRequest(request)
         assertFalse(result === request)
     }
@@ -29,7 +39,6 @@ class ImageServerRequestTransformerTest {
     @Test
     fun `non images or assets requests are not transformed`() {
         val request = makeRequest("https://api.caffeine.tv/random.png")
-        val subject = ImageServerRequestTransformer()
         val result = subject.transformRequest(request)
         assertTrue(result === request)
     }
@@ -38,7 +47,6 @@ class ImageServerRequestTransformerTest {
     fun `client side resize is removed on transformed requests`() {
         val request = makeRequest("https://assets.caffeine.tv/random.png", 100, 100)
         assertTrue(request.hasSize())
-        val subject = ImageServerRequestTransformer()
         val result = subject.transformRequest(request)
         assertFalse(result.hasSize())
     }
@@ -47,7 +55,6 @@ class ImageServerRequestTransformerTest {
     fun `client side resize is not removed on non-transformed requests`() {
         val request = makeRequest("https://api.caffeine.tv/random.png", 100, 100)
         assertTrue(request.hasSize())
-        val subject = ImageServerRequestTransformer()
         val result = subject.transformRequest(request)
         assertTrue(result.hasSize())
     }
@@ -64,19 +71,25 @@ class ImageServerTests {
 
     @Test
     fun `assets requests are processed via fastly`() {
-        val imageServer = ImageServer.Factory.makeRequestBuilder(Uri.parse("https://assets.caffeine.tv/random.png"))
+        val serverConfig = ServerConfig(InMemorySettingsStorage(environment = null))
+        val uri = Uri.parse("https://assets.caffeine.tv/random.png")
+        val imageServer = ImageServer.Factory.makeRequestBuilder(uri, serverConfig)
         assertTrue(imageServer is ImageServer.Fastly)
     }
 
     @Test
     fun `images requests are processed via imgix`() {
-        val imageServer = ImageServer.Factory.makeRequestBuilder(Uri.parse("https://images.caffeine.tv/random.png"))
+        val serverConfig = ServerConfig(InMemorySettingsStorage(environment = null))
+        val uri = Uri.parse("https://images.caffeine.tv/random.png")
+        val imageServer = ImageServer.Factory.makeRequestBuilder(uri, serverConfig)
         assertTrue(imageServer is ImageServer.Imgix)
     }
 
     @Test
     fun `requests other than production images or assets are not processed by an image server`() {
-        val imageServer = ImageServer.Factory.makeRequestBuilder(Uri.parse("https://api.caffeine.tv/random.png"))
+        val serverConfig = ServerConfig(InMemorySettingsStorage(environment = null))
+        val uri = Uri.parse("https://api.caffeine.tv/random.png")
+        val imageServer = ImageServer.Factory.makeRequestBuilder(uri, serverConfig)
         assertNull(imageServer)
     }
 

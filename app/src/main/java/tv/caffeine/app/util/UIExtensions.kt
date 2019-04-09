@@ -46,7 +46,7 @@ fun Context.isNetworkAvailable(): Boolean {
 
 fun Context.getPicasso(): Picasso {
     val app = applicationContext as CaffeineApplication
-    return app.picasso
+    return app.picassoProvider.get()
 }
 
 fun ConnectivityManager.safeUnregisterNetworkCallback(callback: ConnectivityManager.NetworkCallback) {

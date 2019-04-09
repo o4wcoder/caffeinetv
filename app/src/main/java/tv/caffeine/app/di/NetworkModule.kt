@@ -1,7 +1,12 @@
 package tv.caffeine.app.di
 
 import android.content.Context
-import com.google.gson.*
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
@@ -11,15 +16,34 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import org.webrtc.*
+import org.webrtc.DefaultVideoDecoderFactory
+import org.webrtc.DefaultVideoEncoderFactory
+import org.webrtc.EglBase
+import org.webrtc.Loggable
+import org.webrtc.Logging
+import org.webrtc.PeerConnectionFactory
+import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.analytics.ProfilingInterceptor
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.DevicesService
+import tv.caffeine.app.api.EventsService
+import tv.caffeine.app.api.FeatureConfigService
+import tv.caffeine.app.api.LobbyService
+import tv.caffeine.app.api.OAuthService
+import tv.caffeine.app.api.PaymentsClientService
+import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.api.RefreshTokenService
+import tv.caffeine.app.api.SearchService
+import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.VersionCheckService
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.net.AppMetaDataInterceptor
 import tv.caffeine.app.net.AuthorizationInterceptor
 import tv.caffeine.app.net.LongPollInterceptor
+import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.net.TokenAuthenticator
 import tv.caffeine.app.ui.ImageServerRequestTransformer
 import java.lang.reflect.Type
@@ -214,8 +238,8 @@ class WebRtcModule {
 class ImageLoadingModule {
     @Provides
     @Singleton
-    fun providesPicasso(context: Context): Picasso = Picasso.Builder(context)
+    fun providesPicasso(context: Context, serverConfig: ServerConfig): Picasso = Picasso.Builder(context)
             .downloader(OkHttp3Downloader(OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build()))
-            .requestTransformer(ImageServerRequestTransformer())
+            .requestTransformer(ImageServerRequestTransformer(serverConfig))
             .build()
 }

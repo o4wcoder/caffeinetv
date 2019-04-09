@@ -21,18 +21,26 @@ interface SettingsStorage {
     var caid: CAID?
     var clientId: String?
 
-    fun clear() {
+    var environment: String?
+
+    fun clearCredentials() {
         refreshToken = null
         caid = null
         clientId = null
     }
 }
 
-class InMemorySettingsStorage(override var refreshToken: String? = null, override var caid: CAID? = null, override var clientId: String? = null) : SettingsStorage
+class InMemorySettingsStorage(
+        override var refreshToken: String? = null,
+        override var caid: CAID? = null,
+        override var clientId: String? = null,
+        override var environment: String? = null
+) : SettingsStorage
 
 private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
 private const val CAID_KEY = "CAID"
 private const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
+private const val ENVIRONMENT = "ENVIRONMENT"
 
 class SharedPrefsStorage @Inject constructor(
         sharedPreferences: SharedPreferences
@@ -42,6 +50,8 @@ class SharedPrefsStorage @Inject constructor(
     override var caid: CAID? by SharedPrefsDelegate(sharedPreferences, CAID_KEY)
 
     override var clientId by SharedPrefsDelegate(sharedPreferences, CLIENT_ID_KEY)
+
+    override var environment by SharedPrefsDelegate(sharedPreferences, ENVIRONMENT)
 }
 
 class SharedPrefsDelegate(private val sharedPreferences: SharedPreferences, private val prefKey: String) {
@@ -78,11 +88,18 @@ class EncryptedSettingsStorage @Inject constructor(
             settingsStorage.clientId = value?.let { encryptValue(it) }
         }
 
+    override var environment: String?
+        get() = settingsStorage.environment?.let { decryptValue(it) }
+        set(value) {
+            settingsStorage.environment = value?.let { encryptValue(it) }
+        }
+
     private fun reset() {
         settingsStorage.apply {
             refreshToken = null
             caid = null
             clientId = null
+            environment = null
         }
         keyStoreHelper.regenerateKeys()
     }
