@@ -25,14 +25,26 @@ class SignInFragment : CaffeineFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = FragmentSignInBinding.inflate(inflater, container, false)
-        return binding.root
+        return FragmentSignInBinding.inflate(inflater, container, false).run {
+            configure(this)
+            binding = this
+            root
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    private fun configure(binding: FragmentSignInBinding) {
         binding.forgotButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
         binding.signInButton.setOnClickListener { login() }
         binding.passwordEditText.setOnActionGo { login() }
+        signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { outcome ->
+            when(outcome) {
+                is SignInOutcome.Success -> onSuccess()
+                is SignInOutcome.MFARequired -> onMfaRequired()
+                is SignInOutcome.MustAcceptTerms -> onMustAcceptTerms()
+                is SignInOutcome.Error -> onError(outcome)
+                is SignInOutcome.Failure -> onFailure(outcome.exception)
+            }
+        })
     }
 
     private fun clearErrors() {
@@ -45,15 +57,7 @@ class SignInFragment : CaffeineFragment() {
         clearErrors()
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
-        signInViewModel.login(username, password).observe(viewLifecycleOwner, Observer { outcome ->
-            when(outcome) {
-                is SignInOutcome.Success -> onSuccess()
-                is SignInOutcome.MFARequired -> onMfaRequired()
-                is SignInOutcome.MustAcceptTerms -> onMustAcceptTerms()
-                is SignInOutcome.Error -> onError(outcome)
-                is SignInOutcome.Failure -> onFailure(outcome.exception)
-            }
-        })
+        signInViewModel.login(username, password)
     }
 
     @UiThread

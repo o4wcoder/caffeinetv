@@ -22,17 +22,18 @@ class SignInViewModel(
         private val signInUseCase: SignInUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
-    fun login(username: String, password: String): LiveData<SignInOutcome> {
-        val liveData = MutableLiveData<SignInOutcome>()
+    private val _signInOutcome = MutableLiveData<SignInOutcome>()
+    val signInOutcome: LiveData<SignInOutcome> = Transformations.map(_signInOutcome) { it }
+
+    fun login(username: String, password: String) {
         launch {
             val result = signInUseCase(username, password)
-            liveData.value = when(result) {
+            _signInOutcome.value = when(result) {
                 is CaffeineResult.Success -> processSuccess(result.value)
                 is CaffeineResult.Error -> processError(result.error)
                 is CaffeineResult.Failure -> processFailure(result.throwable)
             }
         }
-        return Transformations.map(liveData) { it }
     }
 
     private fun processSuccess(signInResult: SignInResult) =

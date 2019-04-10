@@ -38,7 +38,8 @@ class SignInViewModelTests {
     @Test
     fun `accounts with two factor auth return MFARequired`() {
         coEvery { signInUseCase.invoke(any(), any()) } returns mfaRequired
-        subject.login("", "").observeForever {
+        subject.login("", "")
+        subject.signInOutcome.observeForever {
             assertEquals(SignInOutcome.MFARequired, it)
         }
     }
@@ -46,7 +47,8 @@ class SignInViewModelTests {
     @Test
     fun `old accounts must accept terms`() {
         coEvery { signInUseCase.invoke(any(), any()) } returns mustAcceptToc
-        subject.login("", "").observeForever {
+        subject.login("", "")
+        subject.signInOutcome.observeForever {
             assertEquals(SignInOutcome.MustAcceptTerms, it)
         }
     }
