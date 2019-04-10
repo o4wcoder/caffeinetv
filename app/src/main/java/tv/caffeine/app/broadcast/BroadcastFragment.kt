@@ -8,7 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import org.webrtc.*
+import org.webrtc.Camera2Enumerator
+import org.webrtc.CameraEnumerationAndroid
+import org.webrtc.CameraEnumerator
+import org.webrtc.CameraVideoCapturer
+import org.webrtc.EglBase
+import org.webrtc.PeerConnectionFactory
+import org.webrtc.Size
+import org.webrtc.SurfaceTextureHelper
+import org.webrtc.VideoTrack
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -30,8 +38,9 @@ private const val VIDEO_HEIGHT = 1080
 private const val VIDEO_FPS = 30
 
 class BroadcastFragment : CaffeineFragment(), EasyPermissions.PermissionCallbacks {
-    private val eglBaseContext = createEglBase14().eglBaseContext
-    private val surfaceTextureHelper = SurfaceTextureHelper.create("captureHelper", eglBaseContext)
+    @Inject lateinit var eglBase: EglBase
+    private val eglBaseContext by lazy { eglBase.eglBaseContext }
+    private val surfaceTextureHelper by lazy { SurfaceTextureHelper.create("captureHelper", eglBaseContext) }
 
     private lateinit var binding: FragmentBroadcastBinding
     private lateinit var cameraEnumerator: CameraEnumerator

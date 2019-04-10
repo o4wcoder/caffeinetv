@@ -19,10 +19,10 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.DefaultVideoEncoderFactory
 import org.webrtc.EglBase
+import org.webrtc.EglBase.CONFIG_PLAIN
 import org.webrtc.Loggable
 import org.webrtc.Logging
 import org.webrtc.PeerConnectionFactory
-import org.webrtc.createEglBase14
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.analytics.ProfilingInterceptor
@@ -213,7 +213,7 @@ class ApiModule {
 class WebRtcModule {
     @Provides
     @Singleton
-    fun providesEglBase() = createEglBase14()
+    fun providesEglBase(): EglBase = EglBase.createEgl14(CONFIG_PLAIN)
 
     @Provides
     @Singleton
