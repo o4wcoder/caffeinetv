@@ -10,7 +10,7 @@ import tv.caffeine.app.api.model.User
 
 
 private val dummyMessageBody = Message.Body("")
-private val dummyPublisher = User("0", "", null, null, "", 0, 0, false, null, "", mapOf(), null, null, "", null, null, null, false, false, null, null, false)
+private val dummyPublisher = User("0", "", null, null, "", 0, 0, false, false, null, "", mapOf(), null, null, "", null, null, null, false, false, null, null, false)
 private val preferredPositions = listOf(0, 1, 2, 3, 4, 5, 6)
 
 private const val CURRENT_BASELINE_TIME = 1526331991213L

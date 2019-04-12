@@ -19,8 +19,9 @@ import tv.caffeine.app.util.CropBorderedCircleTransformation
 private class ImageSpec(@DrawableRes val drawable: Int, val width: Int, val height: Int)
 
 private val inlineImages: Map<String, ImageSpec> = mapOf(
-        "checkmark" to ImageSpec(R.drawable.verified_small_white, R.dimen.checkmark_size, R.dimen.checkmark_size),
-        "bluecheckmark" to ImageSpec(R.drawable.verified_large, R.dimen.checkmark_size, R.dimen.checkmark_size),
+        "verified_white" to ImageSpec(R.drawable.verified_white, R.dimen.checkmark_size, R.dimen.checkmark_size),
+        "verified" to ImageSpec(R.drawable.verified, R.dimen.checkmark_size, R.dimen.checkmark_size),
+        "caster" to ImageSpec(R.drawable.caster, R.dimen.checkmark_size, R.dimen.checkmark_size),
         "goldcoin" to ImageSpec(R.drawable.gold_coin, R.dimen.coin_size, R.dimen.coin_size),
         "purplecoin" to ImageSpec(R.drawable.purple_coin, R.dimen.coin_size, R.dimen.coin_size)
 )

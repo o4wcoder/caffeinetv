@@ -100,7 +100,7 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Pica
         }
         hideInteractionOverlay()
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
-                R.dimen.avatar_size, followedTheme, notFollowedTheme, picasso)
+                R.dimen.avatar_size, followedTheme, notFollowedTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
@@ -158,7 +158,7 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         }
         hideInteractionOverlay()
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
-                R.dimen.avatar_size, followedTheme, notFollowedTheme, picasso)
+                R.dimen.avatar_size, followedTheme, notFollowedTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }

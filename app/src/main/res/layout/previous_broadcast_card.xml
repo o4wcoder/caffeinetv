@@ -71,7 +71,7 @@
                 android:layout_marginEnd="12dp"
                 android:drawablePadding="@dimen/verified_icon_padding"
                 android:textAppearance="@style/BroadcastCardUsername.NotFollowing.Previous"
-                tools:drawableEnd="@drawable/verified_large"
+                tools:drawableEnd="@drawable/verified"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"

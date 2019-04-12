@@ -30,7 +30,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
-        tools:drawableEnd="@drawable/verified_large"
+        tools:drawableEnd="@drawable/verified"
         tools:text="@sample/usernames" />
 
     <ImageView

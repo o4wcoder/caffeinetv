@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintEnd_toStartOf="@+id/follow_button"
-        tools:drawableEnd="@drawable/verified_large"
+        tools:drawableEnd="@drawable/verified"
         tools:text="@sample/usernames"/>
 
     <ImageView

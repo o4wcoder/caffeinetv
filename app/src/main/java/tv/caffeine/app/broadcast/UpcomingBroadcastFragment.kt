@@ -187,7 +187,7 @@ class GuideViewHolder(
         clear()
         job = scope.launch {
             val user = followManager.userDetails(guide.caid) ?: return@launch
-            user.configure(avatarImageView, usernameTextView, null, followManager, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
+            user.configure(avatarImageView, usernameTextView, null, followManager, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme)
         }
         dateTextView.isVisible = guide.shouldShowTimestamp
         dateTextView.text = getDateText(guide)

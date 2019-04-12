@@ -4,7 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.launch
-import tv.caffeine.app.api.model.*
+import tv.caffeine.app.R
+import tv.caffeine.app.api.model.Broadcast
+import tv.caffeine.app.api.model.CAID
+import tv.caffeine.app.api.model.CaffeineEmptyResult
+import tv.caffeine.app.api.model.User
+import tv.caffeine.app.api.model.isOnline
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
@@ -35,6 +40,11 @@ class ProfileViewModel(
     private fun configure(userDetails: User, broadcastDetails: Broadcast?) {
         val isLive = broadcastDetails?.isOnline() == true
         val broadcastImageUrl = if (isLive) broadcastDetails?.mainPreviewImageUrl else null
+        val userIcon = when {
+            userDetails.isVerified -> R.drawable.verified
+            userDetails.isCaster -> R.drawable.caster
+            else -> 0
+        }
         _userProfile.value = UserProfile(
                 userDetails.username,
                 userDetails.name,
@@ -45,6 +55,7 @@ class ProfileViewModel(
                 userDetails.bio,
                 followManager.isFollowing(userDetails.caid),
                 userDetails.isVerified,
+                userIcon,
                 userDetails.avatarImageUrl,
                 userDetails.mfaMethod,
                 broadcastImageUrl,

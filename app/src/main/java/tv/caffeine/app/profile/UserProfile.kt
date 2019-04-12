@@ -12,6 +12,7 @@ data class UserProfile(
         val bio: String?,
         val isFollowed: Boolean,
         val isVerified: Boolean,
+        val userIcon: Int,
         val avatarImageUrl: String,
         val mfaMethod: MfaMethod?,
         val stageImageUrl: String?,

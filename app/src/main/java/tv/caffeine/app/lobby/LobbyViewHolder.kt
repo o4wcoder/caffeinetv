@@ -21,7 +21,15 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
-import tv.caffeine.app.databinding.*
+import tv.caffeine.app.databinding.CardListBinding
+import tv.caffeine.app.databinding.LiveBroadcastCardBinding
+import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding
+import tv.caffeine.app.databinding.LobbyAvatarCardBinding
+import tv.caffeine.app.databinding.LobbyFollowPeopleCardBinding
+import tv.caffeine.app.databinding.LobbyHeaderBinding
+import tv.caffeine.app.databinding.LobbySubtitleBinding
+import tv.caffeine.app.databinding.PreviousBroadcastCardBinding
+import tv.caffeine.app.databinding.UpcomingButtonCardBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.UserTheme
@@ -159,8 +167,7 @@ abstract class BroadcasterCard(
                 null,
                 R.dimen.avatar_size,
                 if (isLight) followedThemeLight else followedTheme,
-                if (isLight) notFollowedThemeLight else notFollowedTheme,
-                picasso
+                if (isLight) notFollowedThemeLight else notFollowedTheme
         )
         dotTextView?.isVisible = !followManager.isFollowing(singleCard.broadcaster.user.caid)
         avatarImageView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
@@ -244,14 +251,9 @@ class LiveBroadcastWithFriendsCard(
         super.configure(item)
         val liveBroadcastItem = item as LiveBroadcastWithFriends
         binding.previewImageView.clipToOutline = true
-        val firstFriendVerified = item.broadcaster.followingViewers.firstOrNull()?.isVerified == true
-        val singleFriendWatchingResId = if (firstFriendVerified) R.string.verified_user_watching else R.string.user_watching
-        val multipleFriendsWatchingResId = if (firstFriendVerified) R.plurals.verified_user_and_friends_watching else R.plurals.user_and_friends_watching
-        val friendsWatchingString = when(item.broadcaster.followingViewersCount) {
-            0 -> null
-            1 -> itemView.context.getString(singleFriendWatchingResId, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl)
-            else -> itemView.context.resources.getQuantityString(multipleFriendsWatchingResId, item.broadcaster.followingViewersCount - 1, item.broadcaster.followingViewers[0].username, item.broadcaster.followingViewers[0].avatarImageUrl, item.broadcaster.followingViewersCount - 1)
-        }
+        val broadcaster = item.broadcaster
+        val context = itemView.context
+        val friendsWatchingString = formatFriendsWatchingString(context, broadcaster)
         friendsWatchingString?.let { binding.friendsWatchingTextView.formatUsernameAsHtml(picasso, it, true, R.dimen.avatar_lobby_friend_watching) }
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
@@ -264,7 +266,7 @@ class LiveBroadcastWithFriendsCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStageFragment(item.broadcaster.user.username)
+            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStageFragment(broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }

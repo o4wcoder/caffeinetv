@@ -16,7 +16,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -137,7 +141,7 @@ class FriendWatchingViewHolder(
             val user = followManager.userDetails(item.caid) ?: return@launch
             followButton.isVisible = false
             user.configure(avatarImageView, usernameTextView, null, followManager, false, null, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme, picasso)
+                    followedTheme, notFollowedTheme)
         }
         itemView.setOnClickListener { callback(item.caid) }
     }

@@ -132,7 +132,7 @@ class UserViewHolder(
 
     fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         item.user.configure(avatarImageView, usernameTextView, followButton, followManager, true, followHandler,
-                R.dimen.avatar_explore, followedTheme, notFollowedTheme, picasso)
+                R.dimen.avatar_explore, followedTheme, notFollowedTheme)
         numberOfFollowersTextView?.apply {
             val followersCount = item.user.followersCount
             val compactFollowersCount = compactNumberFormat(followersCount)

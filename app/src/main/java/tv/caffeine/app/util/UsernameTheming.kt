@@ -5,8 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.StyleRes
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.isVisible
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import tv.caffeine.app.R
@@ -27,8 +27,7 @@ fun User.configure(
         followHandler: FollowManager.FollowHandler? = null,
         @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
         followedTheme: UserTheme,
-        notFollowedTheme: UserTheme,
-        picasso: Picasso // TODO (AND-210) Get the Picasso instance from the Context.
+        notFollowedTheme: UserTheme
 ) {
     val isFollowing = followManager.isFollowing(caid)
     val theme = if (isFollowing) followedTheme else notFollowedTheme
@@ -61,11 +60,15 @@ fun User.configure(
         }
     }
     avatarImageView.loadAvatar(avatarImageUrl, isFollowing, avatarImageSize)
-    usernameTextView.apply {
+    (usernameTextView as AppCompatTextView).apply {
         text = username
         setTextAppearance(theme.usernameTextAppearance)
-        setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, if (isVerified) R.drawable.verified_large else 0, 0)
-        compoundDrawablePadding = if (isVerified) resources.getDimensionPixelSize(R.dimen.margin_line_spacing_small) else 0
+        val userIcon = when {
+            isVerified -> R.drawable.verified
+            isCaster -> R.drawable.caster
+            else -> 0
+        }
+        setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, userIcon, 0)
+        compoundDrawablePadding = if (userIcon != 0) resources.getDimensionPixelSize(R.dimen.margin_line_spacing_small) else 0
     }
 }
-

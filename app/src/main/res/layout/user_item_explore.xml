@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:drawableEnd="@drawable/verified_large"
+        tools:drawableEnd="@drawable/verified"
         tools:text="@sample/usernames" />
 
     <TextView

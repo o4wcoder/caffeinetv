@@ -14,7 +14,13 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.Reaction
 import tv.caffeine.app.api.Realtime
 import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.*
+import tv.caffeine.app.api.model.CaffeineEmptyResult
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.api.model.MessageWrapper
+import tv.caffeine.app.api.model.User
+import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
@@ -125,7 +131,7 @@ class ChatViewModel(
         displayMessages()
     }
 
-    private val dummyPublisher = User("0", "", null, null, "", 0, 0, false, null, "", mapOf(), null, null, "", null, null, null, false, false, null, null, false)
+    private val dummyPublisher = User("0", "", null, null, "", 0, 0, false, false, null, "", mapOf(), null, null, "", null, null, null, false, false, null, null, false)
     private val dummyMessageBody = Message.Body("")
     private val dummyMessage = Message(dummyPublisher, "", Message.Type.dummy, dummyMessageBody, 0)
 

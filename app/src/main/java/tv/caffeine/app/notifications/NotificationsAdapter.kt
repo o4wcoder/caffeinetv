@@ -139,7 +139,7 @@ class FollowNotificationViewHolder(
             followButton.isVisible = caidRecord !is CaidRecord.IgnoreRecord
             val maybeFollowButton = if (caidRecord is CaidRecord.IgnoreRecord) null else followButton
             user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme, picasso)
+                    followedTheme, notFollowedTheme)
         }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(caidRecord.caid)

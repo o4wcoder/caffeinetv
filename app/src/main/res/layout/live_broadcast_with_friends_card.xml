@@ -57,7 +57,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
                 app:layout_constraintStart_toStartOf="@+id/preview_image_view"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:drawableStart="@drawable/verified_large"
                 tools:text="ben is watching" />
 
             <ImageView
@@ -112,7 +111,7 @@
                 android:textAppearance="@style/BroadcastCardUsername.NotFollowing"
                 app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
                 app:layout_constraintTop_toBottomOf="@id/preview_image_view"
-                tools:drawableEnd="@drawable/verified_large"
+                tools:drawableEnd="@drawable/verified"
                 tools:text="@sample/usernames" />
 
             <TextView

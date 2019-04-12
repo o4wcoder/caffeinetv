@@ -211,7 +211,7 @@ class ListingItemViewHolder(
     private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {
         user.configure(binding.avatarImageView, binding.usernameTextView, binding.followButton, followManager,
                 followHandler = followHandler, avatarImageSize = R.dimen.avatar_featured_guide,
-                followedTheme = followedTheme, notFollowedTheme = notFollowedTheme, picasso = picasso)
+                followedTheme = followedTheme, notFollowedTheme = notFollowedTheme)
     }
 
     private fun animateDetailView(listingItem: ListingItem) {

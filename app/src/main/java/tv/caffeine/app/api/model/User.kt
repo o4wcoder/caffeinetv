@@ -18,6 +18,7 @@ data class User(
         val followingCount: Int,
         val followersCount: Int,
         val isVerified: Boolean,
+        val isCaster: Boolean = true,
         val broadcastId: String?,
         val stageId: String,
         val abilities: Map<String, Boolean>,

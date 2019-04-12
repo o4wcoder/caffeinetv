@@ -71,8 +71,6 @@
     <string name="hint_current_password">Current Password</string>
     <string name="update_button">Update</string>
 
-    <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s is watching]]></string>
-    <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> is watching]]></string>
     <string name="live_indicator">LIVE</string>
     <string name="follow_button">Follow</string>
     <string name="following_button">Following</string>
@@ -108,13 +106,20 @@
     <string name="followers">Followers</string>
     <string name="unread_notification_badge_content_description">unread notification badge</string>
     <string name="read_notification_badge_content_description">read notification badge</string>
+    <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s is watching]]></string>
+    <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="verified_white"/> is watching]]></string>
+    <string name="caster_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="caster"/> is watching]]></string>
     <plurals name="user_and_friends_watching">
         <item quantity="one"><![CDATA[<img src="%2$s"> %1$s and one other are watching]]></item>
         <item quantity="other"><![CDATA[<img src="%2$s"> %1$s and %3$s others are watching]]></item>
     </plurals>
     <plurals name="verified_user_and_friends_watching">
-        <item quantity="one"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> and one other are watching]]></item>
-        <item quantity="other"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="checkmark"/> and %3$s others are watching]]></item>
+        <item quantity="one"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="verified_white"/> and one other are watching]]></item>
+        <item quantity="other"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="verified_white"/> and %3$s others are watching]]></item>
+    </plurals>
+    <plurals name="caster_and_friends_watching">
+        <item quantity="one"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="caster"/> and one other are watching]]></item>
+        <item quantity="other"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="caster"/> and %3$s others are watching]]></item>
     </plurals>
     <plurals name="number_of_followers">
         <item quantity="one"><![CDATA[<b>1</b>]]> follower</item>
@@ -150,8 +155,6 @@
     <string name="verify_email_to_follow_more_users">Verify your email to follow more users</string>
 
     <string name="user_avatar_content_description">User avatar</string>
-    <string name="user_avatar_username_not_verified"><![CDATA[<img src="%2$s">]]> <xliff:g example="Caffeine" id="username">%1$s</xliff:g></string>
-    <string name="user_avatar_username_verified"><![CDATA[<img src="%2$s">]]> <xliff:g example="Caffeine" id="username">%1$s</xliff:g> <![CDATA[<img src="bluecheckmark">]]></string>
 
     <string name="error_out_of_capacity">Caffeine servers are full.\nCheck back later.</string>
     <string name="out_of_capacity_title">Caffeine servers are full</string>
