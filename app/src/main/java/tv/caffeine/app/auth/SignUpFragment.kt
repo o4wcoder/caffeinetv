@@ -21,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.safetynet.SafetyNet
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -30,6 +31,8 @@ import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
+import tv.caffeine.app.analytics.FirebaseEvent
+import tv.caffeine.app.analytics.logEvent
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
@@ -50,6 +53,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var gson: Gson
     @Inject lateinit var analytics: Analytics
+    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var binding: FragmentSignUpBinding
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -161,6 +165,7 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
 
     private fun onSuccess(credentials: CaffeineCredentials) {
         analytics.trackEvent(AnalyticsEvent.NewRegistration(credentials.caid))
+        firebaseAnalytics.logEvent(FirebaseEvent.SignUpSuccess)
         tokenStore.storeCredentials(credentials)
         val navController = findNavController()
         val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()

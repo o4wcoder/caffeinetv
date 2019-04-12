@@ -1,8 +1,10 @@
 package tv.caffeine.app.analytics
 
+import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.IdentityProvider
+import tv.caffeine.app.ui.CaffeineFragment
 
 interface Analytics {
     fun initialize()
@@ -36,4 +38,19 @@ sealed class AnalyticsEvent {
     data class SocialSignInClicked(val identityProvider: IdentityProvider) : AnalyticsEvent()
     data class Notification(val userId: CAID?, val notification: NotificationEvent) : AnalyticsEvent()
     object NewAccountClicked : AnalyticsEvent()
+}
+
+enum class FirebaseEvent {
+    ContinueWithFacebookClicked, FacebookSignInSuccess, FacebookContinueToMFA, FacebookContinueToSignUp,
+    ContinueWithTwitterClicked, TwitterSignInSuccess, TwitterContinueToMFA, TwitterContinueToSignUp,
+    SocialOAuthEdgeCase, NewAccountClicked, SignUpSuccess,
+    SignInClicked, SignInSuccess, SignInContinueToMFA, SignInContinueToTerms, MFASignInSuccess
+}
+
+fun FirebaseAnalytics.logEvent(event: FirebaseEvent) {
+    logEvent(event.name, null)
+}
+
+fun FirebaseAnalytics.logScreen(fragment: CaffeineFragment) {
+    logEvent("Screen_${fragment.javaClass.simpleName}", null)
 }

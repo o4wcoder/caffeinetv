@@ -10,14 +10,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.FirebaseEvent
+import tv.caffeine.app.analytics.logEvent
 import tv.caffeine.app.databinding.FragmentSignInBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
 import tv.caffeine.app.util.safeNavigate
+import javax.inject.Inject
 
 class SignInFragment : CaffeineFragment() {
+
+    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var binding: FragmentSignInBinding
 
@@ -62,6 +68,7 @@ class SignInFragment : CaffeineFragment() {
 
     @UiThread
     private fun onSuccess() {
+        firebaseAnalytics.logEvent(FirebaseEvent.SignInSuccess)
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
         navController.safeNavigate(R.id.lobbySwipeFragment)
@@ -69,6 +76,7 @@ class SignInFragment : CaffeineFragment() {
 
     @UiThread
     private fun onMfaRequired() {
+        firebaseAnalytics.logEvent(FirebaseEvent.SignInContinueToMFA)
         val navController = findNavController()
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
@@ -79,6 +87,7 @@ class SignInFragment : CaffeineFragment() {
 
     @UiThread
     private fun onMustAcceptTerms() {
+        firebaseAnalytics.logEvent(FirebaseEvent.SignInContinueToTerms)
         val action = SignInFragmentDirections.actionSignInFragmentToLegalAgreementFragment()
         findNavController().safeNavigate(action)
     }

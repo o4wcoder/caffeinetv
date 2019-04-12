@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.facebook.CallbackManager
@@ -15,12 +14,12 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.analytics.Analytics
-import tv.caffeine.app.analytics.AnalyticsEvent
+import tv.caffeine.app.analytics.*
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.IdentityProvider
@@ -41,6 +40,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     @Inject lateinit var gson: Gson
     @Inject lateinit var authWatcher: AuthWatcher
     @Inject lateinit var analytics: Analytics
+    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
     @Inject lateinit var facebookLoginManager: LoginManager
 
     private lateinit var binding: FragmentLandingBinding
@@ -55,6 +55,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        firebaseAnalytics.logScreen(this)
         binding = FragmentLandingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -62,16 +63,22 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.newAccountButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.NewAccountClicked)
+            firebaseAnalytics.logEvent(FirebaseEvent.NewAccountClicked)
             val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment()
             findNavController().safeNavigate(action)
         }
-        binding.signInWithEmailButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.signInFragment))
+        binding.signInWithEmailButton.setOnClickListener {
+            firebaseAnalytics.logEvent(FirebaseEvent.SignInClicked)
+            findNavController().safeNavigate(LandingFragmentDirections.actionLandingFragmentToSignInFragment())
+        }
         binding.facebookSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.facebook))
+            firebaseAnalytics.logEvent(FirebaseEvent.ContinueWithFacebookClicked)
             facebookLoginManager.logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
         }
         binding.twitterSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.twitter))
+            firebaseAnalytics.logEvent(FirebaseEvent.ContinueWithTwitterClicked)
             val fragment = TwitterAuthFragment()
             fragment.setTargetFragment(this, 0)
             fragment.maybeShow(fragmentManager, "twitterAuth")
@@ -98,7 +105,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
         when(result) {
             is CaffeineResult.Success -> {
                 Timber.d("Twitter OAuth login success, ${result.value}")
-                processOAuthResult(result.value)
+                processOAuthResult(result.value, IdentityProvider.twitter)
             }
             is CaffeineResult.Error -> {
                 activity?.showSnackbar(R.string.twitter_login_failed)
@@ -117,17 +124,38 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
             val deferred = oauthService.submitFacebookToken(FacebookTokenBody(token))
             val result = deferred.awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> processOAuthResult(result.value)
+                is CaffeineResult.Success -> processOAuthResult(result.value, IdentityProvider.facebook)
             }
         }
     }
 
-    private fun processOAuthResult(oauthCallbackResult: OAuthCallbackResult) {
+    private fun processOAuthResult(oauthCallbackResult: OAuthCallbackResult, identityProvider: IdentityProvider) {
         when {
-            oauthCallbackResult.credentials != null -> onSuccess(oauthCallbackResult.credentials)
-            oauthCallbackResult.next == NextAccountAction.mfa_otp_required -> continueToMfaCode(oauthCallbackResult)
-            oauthCallbackResult.oauth != null -> continueToSignUp(oauthCallbackResult)
-            else -> attemptSignIn(oauthCallbackResult)
+            oauthCallbackResult.credentials != null -> {
+                when(identityProvider) {
+                    IdentityProvider.facebook -> firebaseAnalytics.logEvent(FirebaseEvent.FacebookSignInSuccess)
+                    IdentityProvider.twitter-> firebaseAnalytics.logEvent(FirebaseEvent.TwitterSignInSuccess)
+                }
+                onSuccess(oauthCallbackResult.credentials)
+            }
+            oauthCallbackResult.next == NextAccountAction.mfa_otp_required -> {
+                when(identityProvider) {
+                    IdentityProvider.facebook -> firebaseAnalytics.logEvent(FirebaseEvent.FacebookContinueToMFA)
+                    IdentityProvider.twitter-> firebaseAnalytics.logEvent(FirebaseEvent.TwitterContinueToMFA)
+                }
+                continueToMfaCode(oauthCallbackResult)
+            }
+            oauthCallbackResult.oauth != null -> {
+                when(identityProvider) {
+                    IdentityProvider.facebook -> firebaseAnalytics.logEvent(FirebaseEvent.FacebookContinueToSignUp)
+                    IdentityProvider.twitter-> firebaseAnalytics.logEvent(FirebaseEvent.TwitterContinueToSignUp)
+                }
+                continueToSignUp(oauthCallbackResult)
+            }
+            else -> {
+                firebaseAnalytics.logEvent(FirebaseEvent.SocialOAuthEdgeCase)
+                attemptSignIn(oauthCallbackResult)
+            }
         }
     }
 

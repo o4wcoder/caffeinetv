@@ -10,10 +10,13 @@ import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.FirebaseEvent
+import tv.caffeine.app.analytics.logEvent
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
@@ -30,6 +33,7 @@ class MfaCodeFragment : CaffeineFragment() {
     @Inject lateinit var gson: Gson
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var authWatcher: AuthWatcher
+    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var binding: FragmentMfaCodeBinding
     private val args by navArgs<MfaCodeFragmentArgs>()
@@ -77,6 +81,7 @@ class MfaCodeFragment : CaffeineFragment() {
 
     @UiThread
     private fun onSuccess(result: SignInResult) {
+        firebaseAnalytics.logEvent(FirebaseEvent.MFASignInSuccess)
         tokenStore.storeSignInResult(result)
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)

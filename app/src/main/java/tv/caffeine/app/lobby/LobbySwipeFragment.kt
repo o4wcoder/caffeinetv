@@ -14,9 +14,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.logScreen
 import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbySwipeBinding
 import tv.caffeine.app.feature.Feature
@@ -33,6 +35,7 @@ class LobbySwipeFragment : CaffeineFragment() {
 
     @Inject lateinit var featureConfig: FeatureConfig
     @Inject lateinit var picasso: Picasso
+    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var binding: FragmentLobbySwipeBinding
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
@@ -47,6 +50,7 @@ class LobbySwipeFragment : CaffeineFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        firebaseAnalytics.logScreen(this)
         FragmentLobbySwipeBinding.inflate(inflater, container, false).apply {
             binding = this
             configure(this)
