@@ -207,7 +207,7 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
     @UiThread
     private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
-        binding.formErrorTextView.text = listOfNotNull(error.generalErrorsString, error.usernameErrorsString, error.passwordErrorsString)
-                .joinToString("\n")
+        showSnackbar(listOfNotNull(error.generalErrorsString, error.usernameErrorsString, error.passwordErrorsString)
+                .joinToString("\n"))
     }
 }

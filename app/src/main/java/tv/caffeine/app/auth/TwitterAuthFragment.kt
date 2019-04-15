@@ -69,7 +69,7 @@ class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<DialogActionBar>(R.id.action_bar).apply {
             isVisible = resources.isFullscreenDialog()
-            setTitle(getString(R.string.sign_in_with_twitter))
+            setTitle(getString(R.string.continue_with_twitter))
             setDismissListener { dismissAllowingStateLoss() }
         }
         webView = view.findViewById(R.id.web_view)

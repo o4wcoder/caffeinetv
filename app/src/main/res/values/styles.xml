@@ -79,19 +79,23 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="SocialSignInButton">
-        <!-- The icon's width is 16dp. paddingEnd = paddingStart + width + 8 (magic number) -->
-        <item name="android:paddingStart">10dp</item>
-        <item name="android:paddingEnd">34dp</item>
+    <style name="Button.Big">
+        <item name="cornerRadius">30dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
-    <style name="SocialSignInButton.Facebook">
-        <item name="android:backgroundTint">#3a5ca9</item>
-        <item name="icon">@drawable/facebook_sign_in_button_icon</item>
+    <style name="Button.Big.Facebook">
+        <item name="android:backgroundTint">#4267b2</item>
     </style>
-    <style name="SocialSignInButton.Twitter">
+    <style name="Button.Big.Twitter">
         <item name="android:backgroundTint">#1da1f2</item>
-        <item name="icon">@drawable/twitter_sign_in_button_icon</item>
+    </style>
+    <style name="Button.Big.Email">
+        <item name="android:backgroundTint">@color/black</item>
     </style>
 
     <style name="MenuTextView" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
@@ -127,6 +131,20 @@
     </style>
 
     <!-- Text -->
+    <!-- Start of the new text design from Apr. 2019 (Landing page) -->
+    <style name="CaffeineText">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="LightText" parent="CaffeineText">
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="LinkText" parent="LightText">
+        <item name="android:textColor">@color/caffeine_blue</item>
+    </style>
+    <!-- End of the new text design from Apr. 2019 (Landing page) -->
+
     <style name="ScreenTitle" parent="@style/TextAppearance.MaterialComponents.Headline5"/>
     <style name="ScreenTitle2">
         <item name="android:textSize">20sp</item>

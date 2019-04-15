@@ -23,6 +23,8 @@
     <dimen name="game_logo_width">120dp</dimen>
     <dimen name="game_logo_height">90dp</dimen>
 
+    <dimen name="big_button_width">280dp</dimen>
+    <dimen name="big_button_height">60dp</dimen>
     <dimen name="info_screen_icon">96dp</dimen>
     <dimen name="toolbar_icon_size">24dp</dimen>
     <dimen name="verified_icon_padding">4dp</dimen>

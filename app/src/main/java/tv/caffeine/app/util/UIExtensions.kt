@@ -127,6 +127,11 @@ fun Fragment.showSnackbar(@StringRes resId: Int) {
     Snackbar.make(view, resId, Snackbar.LENGTH_SHORT).show()
 }
 
+fun Fragment.showSnackbar(text: CharSequence) {
+    val view = this.view ?: return
+    Snackbar.make(view, text, Snackbar.LENGTH_SHORT).show()
+}
+
 fun DialogFragment.maybeShow(fragmentManager: FragmentManager?, tag: String) {
     if (fragmentManager == null) return
     show(fragmentManager, tag)
