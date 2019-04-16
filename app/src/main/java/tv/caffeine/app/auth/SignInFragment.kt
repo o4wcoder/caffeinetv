@@ -39,7 +39,12 @@ class SignInFragment : CaffeineFragment() {
     }
 
     private fun configure(binding: FragmentSignInBinding) {
-        binding.forgotButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.forgotFragment))
+        View.OnClickListener {
+            Navigation.createNavigateOnClickListener(R.id.forgotFragment)
+        }.let {
+            binding.resetPasswordTextView.setOnClickListener(it)
+            binding.resetPasswordPromptTextView.setOnClickListener(it)
+        }
         binding.signInButton.setOnClickListener { login() }
         binding.passwordEditText.setOnActionGo { login() }
         signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { outcome ->
@@ -54,9 +59,7 @@ class SignInFragment : CaffeineFragment() {
     }
 
     private fun clearErrors() {
-        binding.formErrorTextView.text = null
-        binding.usernameTextInputLayout.error = null
-        binding.passwordTextInputLayout.error = null
+        binding.formErrorTextView.text = getString(R.string.sign_in_description)
     }
 
     private fun login() {
@@ -95,9 +98,12 @@ class SignInFragment : CaffeineFragment() {
     @UiThread
     private fun onError(error: SignInOutcome.Error) {
         Timber.d("Error: $error")
-        binding.formErrorTextView.text = error.formError
-        binding.usernameTextInputLayout.error = error.usernameError
-        binding.passwordTextInputLayout.error = error.passwordError
+        binding.formErrorTextView.text = when {
+            !error.formError.isNullOrEmpty() -> error.formError
+            !error.usernameError.isNullOrEmpty() -> error.usernameError
+            !error.passwordError.isNullOrEmpty() -> error.passwordError
+            else -> getString(R.string.sign_in_description)
+        }
     }
 
     @UiThread

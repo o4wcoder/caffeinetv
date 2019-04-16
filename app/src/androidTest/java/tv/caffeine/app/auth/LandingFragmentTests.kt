@@ -40,7 +40,7 @@ class LandingFragmentTests : BaseNavigationTest() {
         onView(withId(R.id.facebook_sign_in_button)).check(matches(isDisplayed()))
         onView(withId(R.id.twitter_sign_in_button)).check(matches(isDisplayed()))
         onView(withId(R.id.new_account_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.sign_in_with_email_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.sign_in_with_username_text_view)).check(matches(isDisplayed()))
     }
 
     @Test

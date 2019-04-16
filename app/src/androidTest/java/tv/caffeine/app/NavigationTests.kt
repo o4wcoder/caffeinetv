@@ -31,7 +31,7 @@ class NavigationTests {
 
 //    @Test
     fun signInWithEmailButtonNavigatesToTheSignInFragment() {
-        check(click = R.id.sign_in_with_email_button, destination = R.id.signInFragment)
+        check(click = R.id.sign_in_with_username_text_view, destination = R.id.signInFragment)
     }
 
 //    @Test

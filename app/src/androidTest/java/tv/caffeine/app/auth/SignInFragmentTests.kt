@@ -34,7 +34,7 @@ class SignInFragmentTests : BaseNavigationTest() {
 
     override fun navigateToTestDestination() {
         navController.navigateToLanding()
-        onView(withId(R.id.sign_in_with_email_button)).perform(click())
+        onView(withId(R.id.sign_in_with_username_text_view)).perform(click())
     }
 
     @Test

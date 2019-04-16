@@ -80,12 +80,18 @@
     </style>
 
     <style name="Button.Big">
-        <item name="cornerRadius">30dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_height">@dimen/big_button_height</item>
         <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">30dp</item>
+    </style>
+    <style name="Button.VeryBig" parent="Button.Big">
+        <item name="android:layout_height">@dimen/very_big_button_height</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textSize">24sp</item>
+        <item name="cornerRadius">40dp</item>
     </style>
 
     <style name="Button.Big.Facebook">
@@ -138,10 +144,27 @@
     </style>
     <style name="LightText" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
-        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="UnauthScreenTitle" parent="LightText">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textAlignment">center</item>
     </style>
     <style name="LinkText" parent="LightText">
         <item name="android:textColor">@color/caffeine_blue</item>
+    </style>
+    <style name="FormErrorText" parent="LightText">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/medium_gray</item>
+    </style>
+
+    <style name="BigEditText" parent="LightText">
+        <item name="android:layout_width">@dimen/big_button_width</item>
+        <item name="android:layout_height">@dimen/big_button_height</item>
+        <item name="android:background">@drawable/big_edit_text_background</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/medium_gray</item>
+        <item name="android:textSize">24sp</item>
     </style>
     <!-- End of the new text design from Apr. 2019 (Landing page) -->
 
@@ -166,10 +189,6 @@
         <item name="android:textColor">@color/medium_gray</item>
     </style>
 
-    <style name="FormErrorText">
-        <item name="android:textColor">@color/warning_red</item>
-        <item name="android:textStyle">bold</item>
-    </style>
     <style name="FollowCount" parent="@style/TextAppearance.MaterialComponents.Headline5">
         <item name="android:textSize">27sp</item>
     </style>

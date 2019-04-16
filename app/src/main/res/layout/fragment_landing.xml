@@ -20,7 +20,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="44dp"
                 android:src="@drawable/ic_caffeine_logo"
                 android:contentDescription="@string/caffeine_logo_content_description"/>
 
@@ -43,15 +43,13 @@
                 tools:ignore="SmallSp"/>
 
             <TextView
-                style="@style/LightText"
+                style="@style/UnauthScreenTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
-                android:text="@string/landing_signup_prompt"
-                android:textAlignment="center"
-                android:textSize="32sp"/>
+                android:text="@string/landing_signup_prompt"/>
 
             <Button
                 style="@style/Button.Big.Facebook"
@@ -74,22 +72,23 @@
                 android:id="@+id/new_account_button"
                 android:layout_width="@dimen/big_button_width"
                 android:layout_height="@dimen/big_button_height"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="48dp"
                 android:text="@string/sign_up_with_email"/>
 
             <TextView
                 style="@style/LightText"
+                android:id="@+id/sign_in_with_username_prompt_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/sign_in_with_email_prompt"/>
+                android:text="@string/sign_in_with_username_prompt"/>
             <TextView
                 style="@style/LinkText"
-                android:id="@+id/sign_in_with_email_button"
+                android:id="@+id/sign_in_with_username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:text="@string/sign_in_with_email"/>
+                android:paddingBottom="24dp"
+                android:text="@string/sign_in_with_username"/>
         </LinearLayout>
     </ScrollView>
 </layout>

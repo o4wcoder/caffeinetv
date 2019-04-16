@@ -67,9 +67,12 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
             val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment()
             findNavController().safeNavigate(action)
         }
-        binding.signInWithEmailButton.setOnClickListener {
+        View.OnClickListener {
             firebaseAnalytics.logEvent(FirebaseEvent.SignInClicked)
             findNavController().safeNavigate(LandingFragmentDirections.actionLandingFragmentToSignInFragment())
+        }.let {
+            binding.signInWithUsernameTextView.setOnClickListener(it)
+            binding.signInWithUsernamePromptTextView.setOnClickListener(it)
         }
         binding.facebookSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.facebook))

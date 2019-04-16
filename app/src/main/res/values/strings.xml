@@ -16,8 +16,9 @@
     <string name="sign_up_with_email">Sign up with email</string>
     <string name="error_facebook_callback">Error connecting to Facebook</string>
     <string name="new_account">New Account</string>
-    <string name="sign_in_with_email_prompt">Already have an account?</string>
-    <string name="sign_in_with_email">Sign in with email</string>
+    <string name="sign_in_with_username_prompt">Already have an account?</string>
+    <string name="sign_in_with_username">Sign in with username</string>
+    <string name="sign_in_description">Sign in to Caffeine using your username and password.</string>
     <string name="twitter_login">Twitter Login</string>
     <string name="twitter_login_failed">Twitter login failed</string>
     <string name="success_disconnecting_social_account">Social account disconnected</string>
@@ -26,8 +27,9 @@
 
     <string name="sign_in_hint_username">Username</string>
     <string name="sign_in_hint_password">Password</string>
-    <string name="sign_in_button">Sign In</string>
-    <string name="forgot_button">Forgot?</string>
+    <string name="sign_in_button">Sign in</string>
+    <string name="reset_your_password">Reset your password</string>
+    <string name="reset_your_password_prompt">Forgot something?</string>
     <string name="sign_in_hint_email">Email</string>
     <string name="sign_up_button">Sign Up</string>
     <string name="i_agree_to_legal"><![CDATA[I have read and agree to the <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>]]></string>
@@ -35,7 +37,7 @@
     <string name="sign_in_hint_dob">Date of Birth</string>
     <string name="send_email_button">Send Email</string>
     <string name="caffeine_logo_content_description">Caffeine logo</string>
-    <string name="sign_in_title">Sign In</string>
+    <string name="sign_in_title">Sign in\nto Caffeine</string>
     <string name="forgot_password_title">Forgot Password</string>
     <string name="forgot_password_subtitle">That\'s ok. We\'ll send you an email with a link to reset your password.</string>
     <string name="forgot_password_email_sent">Email Sent. Please check your inbox.</string>
