@@ -119,7 +119,7 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="tv.caffeine.app.auth.SignUpFragment"
-        android:label="@string/new_account"
+        android:label="@string/sign_up_for_caffeine"
         tools:layout="@layout/fragment_sign_up" >
         <action
             android:id="@+id/action_signUpFragment_to_legalDocsFragment"

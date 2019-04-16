@@ -149,9 +149,8 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
         val email = binding.emailEditText.text.toString()
         val dob = binding.dobEditText.tag as? String ?: ""
         val countryCode = "US"
-        val agreedToTos = binding.agreeToLegalCheckbox.isChecked
         val account = SignUpAccount(username, password, email, dob, countryCode)
-        val signUpBody = SignUpBody(account, iid, agreedToTos, token)
+        val signUpBody = SignUpBody(account, iid, true, token)
         // TODO: better error handling before calling the API
         launch {
             val result = accountsService.signUp(signUpBody).awaitAndParseErrors(gson)
@@ -174,20 +173,18 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
 
     private fun clearErrors() {
         binding.formErrorTextView.text = null
-        binding.usernameTextInputLayout.error = null
-        binding.passwordTextInputLayout.error = null
-        binding.emailTextInputLayout.error = null
-        binding.dobTextInputLayout.error = null
     }
 
     private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
-        binding.formErrorTextView.text = listOfNotNull(error.generalErrorsString, error.deniedErrorsString)
-                .joinToString("\n")
-        binding.usernameTextInputLayout.error = error.usernameErrorsString
-        binding.passwordTextInputLayout.error = error.passwordErrorsString
-        binding.emailTextInputLayout.error = error.emailErrorsString
-        binding.dobTextInputLayout.error = error.dobErrorsString
+        val errorMessages= listOfNotNull(
+                listOfNotNull(error.generalErrorsString, error.deniedErrorsString).joinToString("\n"),
+                error.emailErrorsString,
+                error.usernameErrorsString,
+                error.passwordErrorsString,
+                error.dobErrorsString,
+                getString(R.string.sign_up_description))
+        binding.formErrorTextView.text = errorMessages.first { it.isNotEmpty() }
     }
 
 

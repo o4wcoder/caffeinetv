@@ -98,12 +98,13 @@ class SignInFragment : CaffeineFragment() {
     @UiThread
     private fun onError(error: SignInOutcome.Error) {
         Timber.d("Error: $error")
-        binding.formErrorTextView.text = when {
-            !error.formError.isNullOrEmpty() -> error.formError
-            !error.usernameError.isNullOrEmpty() -> error.usernameError
-            !error.passwordError.isNullOrEmpty() -> error.passwordError
-            else -> getString(R.string.sign_in_description)
-        }
+        val errorMessages = listOfNotNull(
+                error.formError,
+                error.usernameError,
+                error.passwordError,
+                getString(R.string.sign_in_description)
+        )
+        binding.formErrorTextView.text = errorMessages.first { it.isNotEmpty() }
     }
 
     @UiThread

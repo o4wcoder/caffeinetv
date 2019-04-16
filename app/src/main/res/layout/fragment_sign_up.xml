@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -9,148 +8,79 @@
     <ScrollView
         style="@style/NoBarScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".auth.SignUpFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin"
-            tools:context=".auth.SignInFragment">
-
-            <ImageView
-                android:id="@+id/logo_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logo"
-                android:contentDescription="@string/caffeine_logo_content_description"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
             <TextView
-                style="@style/ScreenTitle"
-                android:id="@+id/sign_up_text_view"
-                android:layout_width="wrap_content"
+                style="@style/UnauthScreenTitle"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:text="@string/new_account"
-                app:layout_constraintTop_toBottomOf="@+id/logo_image_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:layout_marginTop="44dp"
+                android:text="@string/sign_up_for_caffeine"/>
 
             <TextView
                 style="@style/FormErrorText"
                 android:id="@+id/form_error_text_view"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@+id/sign_up_text_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:layout_marginTop="16dp"
+                android:text="@string/sign_up_description"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/email_text_input_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:hint="@string/sign_in_hint_email"
-                app:layout_constraintTop_toBottomOf="@+id/form_error_text_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BigEditText.FixedSize"
+                android:id="@+id/email_edit_text"
+                android:layout_marginTop="20dp"
+                android:hint="@string/unauth_hint_email"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionNext"/>
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/email_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:imeOptions="actionNext" />
-            </com.google.android.material.textfield.TextInputLayout>
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BigEditText.FixedSize"
+                android:id="@+id/username_edit_text"
+                android:layout_marginTop="12dp"
+                android:hint="@string/unauth_hint_username"
+                android:inputType="text"
+                android:maxLength="@integer/max_username_length"
+                android:imeOptions="actionNext"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_text_input_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_username"
-                app:layout_constraintTop_toBottomOf="@+id/email_text_input_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BigEditText.FixedSize"
+                android:id="@+id/password_edit_text"
+                android:layout_marginTop="12dp"
+                android:hint="@string/unauth_hint_password"
+                android:inputType="textPassword"
+                android:imeOptions="actionNext"/>
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/username_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLength="@integer/max_username_length"
-                    android:imeOptions="actionNext" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_text_input_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_password"
-                app:layout_constraintTop_toBottomOf="@+id/username_text_input_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/password_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:imeOptions="actionNext" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/dob_text_input_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/sign_in_hint_dob"
-                app:layout_constraintTop_toBottomOf="@+id/password_text_input_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/dob_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:editable="false"
-                    android:textIsSelectable="false"
-                    android:imeOptions="actionNext" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <CheckBox
-                android:id="@+id/agree_to_legal_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/dob_text_input_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintEnd_toStartOf="@id/agree_to_legal_text_view"
-                tools:ignore="RtlSymmetry"/>
-
-            <TextView
-                android:id="@+id/agree_to_legal_text_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
-                app:layout_constraintTop_toBottomOf="@+id/dob_text_input_layout"
-                app:layout_constraintStart_toEndOf="@id/agree_to_legal_checkbox"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="I have read and agree to the Terms of Service, Privacy Policy, Community Guidelines"/>
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BigEditText.FixedSize"
+                android:id="@+id/dob_edit_text"
+                android:layout_marginTop="12dp"
+                android:hint="@string/sign_up_hint_birthday"
+                android:inputType="none"
+                android:editable="false"
+                android:textIsSelectable="false"
+                android:imeOptions="actionNext"/>
 
             <Button
+                style="@style/Button.VeryBig.FixedSize"
                 android:id="@+id/sign_up_button"
-                android:layout_width="0dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/sign_up_button"/>
+
+            <TextView
+                style="@style/LightText"
+                android:id="@+id/agree_to_legal_text_view"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
-                android:text="@string/sign_up_button"
-                app:layout_constraintTop_toBottomOf="@+id/agree_to_legal_text_view"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_margin="16dp"
+                android:textAlignment="center"
+                tools:text="By continuing, you agree to Caffeine's Terms of Service, Privacy Policy and Community Guidelines"/>
+        </LinearLayout>
     </ScrollView>
 </layout>

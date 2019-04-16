@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:inputType="textEmailAddress"
-                android:hint="@string/sign_in_hint_email">
+                android:hint="@string/unauth_hint_email">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/email_edit_text"

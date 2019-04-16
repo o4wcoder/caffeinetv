@@ -8,14 +8,14 @@
     <ScrollView
         style="@style/NoBarScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".auth.SignInFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            tools:context=".auth.SignInFragment">
+            android:gravity="center_horizontal">
 
             <TextView
                 style="@style/UnauthScreenTitle"
@@ -33,31 +33,25 @@
                 android:text="@string/sign_in_description"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText"
+                style="@style/BigEditText.FixedSize"
                 android:id="@+id/username_edit_text"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="@dimen/big_button_height"
                 android:layout_marginTop="20dp"
-                android:hint="@string/sign_in_hint_username"
+                android:hint="@string/unauth_hint_username"
                 android:inputType="text"
                 android:maxLength="@integer/max_username_length"
                 android:imeOptions="actionNext"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText"
+                style="@style/BigEditText.FixedSize"
                 android:id="@+id/password_edit_text"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="@dimen/big_button_height"
                 android:layout_marginTop="12dp"
-                android:hint="@string/sign_in_hint_password"
+                android:hint="@string/unauth_hint_password"
                 android:inputType="textPassword"
                 android:imeOptions="actionGo"/>
 
             <Button
-                style="@style/Button.VeryBig"
+                style="@style/Button.VeryBig.FixedSize"
                 android:id="@+id/sign_in_button"
-                android:layout_width="@dimen/very_big_button_width"
-                android:layout_height="@dimen/very_big_button_height"
                 android:layout_marginTop="20dp"
                 android:text="@string/sign_in_button" />
 
