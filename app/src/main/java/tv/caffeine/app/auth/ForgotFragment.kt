@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.UiThread
+import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -46,7 +47,7 @@ class ForgotFragment : CaffeineFragment() {
             val result = accountsService.forgotPassword(ForgotPasswordBody(email)).awaitEmptyAndParseErrors(gson)
             when (result) {
                 is CaffeineEmptyResult.Success -> {
-                    activity?.showSnackbar(R.string.forgot_password_email_sent)
+                    activity?.showSnackbar(R.string.email_sent_message)
                     findNavController().navigateUp()
                 }
                 is CaffeineEmptyResult.Error -> onError(result.error)
@@ -56,20 +57,21 @@ class ForgotFragment : CaffeineFragment() {
     }
 
     private fun clearErrorMessages() {
-        binding.formErrorTextView.text = null
-        binding.emailTextInputLayout.error = null
+        binding.formErrorTextView.isInvisible = true
     }
 
     @UiThread
     private fun onError(error: ApiErrorResult) {
-        binding.formErrorTextView.text = error.generalErrorsString
-        binding.emailTextInputLayout.error = error.emailErrorsString
+        val errorMessages = listOfNotNull(error.generalErrorsString, error.emailErrorsString)
+        errorMessages.firstOrNull { it.isNotEmpty() }?.let {
+            binding.formErrorTextView.text = it
+            binding.formErrorTextView.isInvisible = false
+        }
     }
 
     @UiThread
     private fun onFailure(t: Throwable) {
-        Timber.e(t)
-        binding.formErrorTextView.setText(R.string.forgot_password_cannot_reset_password)
+        Timber.e(t, "reset your password failure")
+        showSnackbar(R.string.reset_your_password_failure)
     }
-
 }

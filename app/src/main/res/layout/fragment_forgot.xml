@@ -8,64 +8,41 @@
     <ScrollView
         style="@style/NoBarScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".auth.ForgotFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/margin"
-            tools:context=".auth.ForgotFragment">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logo"
-                android:contentDescription="@string/caffeine_logo_content_description" />
+            android:gravity="center_horizontal">
 
             <TextView
-                style="@style/ScreenTitle"
-                android:layout_width="wrap_content"
+                style="@style/UnauthScreenTitle"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:text="@string/forgot_password_title"/>
-
-            <TextView
-                style="@style/ScreenSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
-                android:layout_marginStart="@dimen/margin"
-                android:layout_marginEnd="@dimen/margin"
-                android:gravity="center"
-                android:text="@string/forgot_password_subtitle"/>
+                android:layout_marginTop="44dp"
+                android:text="@string/reset_your_password"/>
 
             <TextView
                 style="@style/FormErrorText"
                 android:id="@+id/form_error_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/email_text_input_layout"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:inputType="textEmailAddress"
-                android:hint="@string/unauth_hint_email">
+                android:layout_marginTop="16dp"
+                android:text="@string/reset_your_password_description"/>
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/email_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:imeOptions="actionSend"/>
-            </com.google.android.material.textfield.TextInputLayout>
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BigEditText.FixedSize"
+                android:id="@+id/email_edit_text"
+                android:layout_marginTop="20dp"
+                android:hint="@string/unauth_hint_email"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionSend"/>
 
             <Button
+                style="@style/Button.VeryBig.FixedSize"
                 android:id="@+id/send_email_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin"
                 android:text="@string/send_email_button"/>
         </LinearLayout>

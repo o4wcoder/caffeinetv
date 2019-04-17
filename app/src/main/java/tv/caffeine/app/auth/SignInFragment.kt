@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
+import androidx.core.view.isInvisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -19,6 +20,7 @@ import tv.caffeine.app.databinding.FragmentSignInBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 class SignInFragment : CaffeineFragment() {
@@ -39,9 +41,7 @@ class SignInFragment : CaffeineFragment() {
     }
 
     private fun configure(binding: FragmentSignInBinding) {
-        View.OnClickListener {
-            Navigation.createNavigateOnClickListener(R.id.forgotFragment)
-        }.let {
+        Navigation.createNavigateOnClickListener(R.id.forgotFragment).let {
             binding.resetPasswordTextView.setOnClickListener(it)
             binding.resetPasswordPromptTextView.setOnClickListener(it)
         }
@@ -59,7 +59,7 @@ class SignInFragment : CaffeineFragment() {
     }
 
     private fun clearErrors() {
-        binding.formErrorTextView.text = getString(R.string.sign_in_description)
+        binding.formErrorTextView.isInvisible = true
     }
 
     private fun login() {
@@ -104,12 +104,15 @@ class SignInFragment : CaffeineFragment() {
                 error.passwordError,
                 getString(R.string.sign_in_description)
         )
-        binding.formErrorTextView.text = errorMessages.first { it.isNotEmpty() }
+        errorMessages.firstOrNull { it.isNotEmpty() }?.let {
+            binding.formErrorTextView.text = it
+            binding.formErrorTextView.isInvisible = false
+        }
     }
 
     @UiThread
     private fun onFailure(t: Throwable) {
-        Timber.e(t, "Error while trying to sign in") // TODO show error message
-        binding.formErrorTextView.setText(R.string.unknown_error)
+        Timber.e(t, "sign in failure")
+        showSnackbar(R.string.sign_in_failure)
     }
 }

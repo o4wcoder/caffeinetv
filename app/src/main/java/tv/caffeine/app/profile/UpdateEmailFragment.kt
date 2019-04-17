@@ -34,7 +34,7 @@ class UpdateEmailFragment : CaffeineFragment() {
             viewModel.updateEmail(currentPassword, email).observe(viewLifecycleOwner, Observer { result ->
                 when (result) {
                     is CaffeineResult.Success -> {
-                        activity?.showSnackbar(R.string.forgot_password_email_sent)
+                        activity?.showSnackbar(R.string.email_sent_message)
                         findNavController().navigateUp()
                     }
                     is CaffeineResult.Error -> onError(result)

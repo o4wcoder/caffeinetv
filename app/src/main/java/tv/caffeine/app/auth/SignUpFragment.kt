@@ -13,7 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TextView
+import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -157,11 +160,12 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
             when(result) {
                 is CaffeineResult.Success -> onSuccess(result.value.credentials)
                 is CaffeineResult.Error -> onError(result.error)
-                is CaffeineResult.Failure -> handleFailure(result)
+                is CaffeineResult.Failure -> onFailure(result.throwable)
             }
         }
     }
 
+    @UiThread
     private fun onSuccess(credentials: CaffeineCredentials) {
         analytics.trackEvent(AnalyticsEvent.NewRegistration(credentials.caid))
         firebaseAnalytics.logEvent(FirebaseEvent.SignUpSuccess)
@@ -172,9 +176,10 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun clearErrors() {
-        binding.formErrorTextView.text = null
+        binding.formErrorTextView.isInvisible = true
     }
 
+    @UiThread
     private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
         val errorMessages= listOfNotNull(
@@ -184,9 +189,17 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
                 error.passwordErrorsString,
                 error.dobErrorsString,
                 getString(R.string.sign_up_description))
-        binding.formErrorTextView.text = errorMessages.first { it.isNotEmpty() }
+        errorMessages.firstOrNull { it.isNotEmpty() }?.let {
+            binding.formErrorTextView.text = it
+            binding.formErrorTextView.isInvisible = false
+        }
     }
 
+    @UiThread
+    private fun onFailure(t: Throwable) {
+        Timber.e(t, "sign up failure")
+        showSnackbar(R.string.sign_up_failure)
+    }
 
     private fun legalDocLinkSpanFactory(url: String?) =
             LegalDocLinkSpan(url, findNavController(), resources)
