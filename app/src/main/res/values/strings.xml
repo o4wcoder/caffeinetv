@@ -40,7 +40,7 @@
     <string name="sign_up_hint_birthday">Birthday</string>
     <string name="send_email_button">Send email</string>
     <string name="caffeine_logo_content_description">Caffeine logo</string>
-    <string name="sign_in_title">Sign in\nto Caffeine</string>
+    <string name="sign_in_title">Sign in to Caffeine</string>
     <string name="reset_your_password_description">We\'ll send you an email with a link to reset your password.</string>
     <string name="reset_your_password_failure">Could not reset your password. Please try again later.</string>
     <string name="email_sent_message">Email Sent. Please check your inbox.</string>

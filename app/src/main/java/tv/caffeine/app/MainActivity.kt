@@ -3,6 +3,7 @@ package tv.caffeine.app
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -38,6 +39,8 @@ private val destinationsWithCustomToolbar = arrayOf(
         R.id.stageFragment,
         R.id.needsUpdateFragment)
 
+private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)
+
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
 
 class MainActivity : DaggerAppCompatActivity() {
@@ -59,6 +62,11 @@ class MainActivity : DaggerAppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             dismissKeyboard()
             binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
+            requestedOrientation = if (destination.id in destinationInPortrait) {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
             firebaseAnalytics.setCurrentScreen(this, destination.label.toString(), null)
         }
         firebaseInstanceId.instanceId.addOnCompleteListener { task ->

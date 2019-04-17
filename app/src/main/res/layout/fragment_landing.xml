@@ -44,11 +44,9 @@
 
             <TextView
                 style="@style/UnauthScreenTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
                 android:text="@string/landing_signup_prompt"/>
 
             <Button
