@@ -51,6 +51,7 @@
     <string name="submit_mfa_code">Submit</string>
     <string name="mfa_status_on">On</string>
     <string name="mfa_status_off">Off</string>
+    <string name="mfa_failure">Could not verify the code. Please try again later.</string>
     <string name="manage_mfa_coming_soon">Please manage two factor authentication on the web</string>
     <string name="sign_out_button">Sign Out</string>
     <string name="sign_out_question">Sign out of account?</string>

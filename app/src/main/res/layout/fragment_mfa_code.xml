@@ -8,61 +8,50 @@
     <ScrollView
         style="@style/NoBarScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".auth.MfaCodeFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/margin"
-            tools:context=".auth.MfaCodeFragment">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logo"
-                android:contentDescription="@string/caffeine_logo_content_description"/>
+            android:gravity="center_horizontal">
 
             <TextView
-                style="@style/ScreenTitle"
-                android:layout_width="wrap_content"
+                style="@style/UnauthScreenTitle"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
                 android:text="@string/mfa_code_title"/>
 
             <TextView
-                style="@style/ScreenSubtitle"
+                style="@style/FormErrorText"
                 android:id="@+id/mfa_code_subtitle"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="@string/mfa_code_subtitle"/>
 
             <TextView
                 style="@style/FormErrorText"
                 android:id="@+id/form_error_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/mfa_code_text_input_layout"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:hint="@string/mfa_code_hint">
+                android:layout_marginTop="16dp"
+                android:visibility="gone"/>
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/mfa_code_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:imeOptions="actionGo"/>
-            </com.google.android.material.textfield.TextInputLayout>
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/BigEditText.FixedSize"
+                android:id="@+id/mfa_code_edit_text"
+                android:layout_marginTop="20dp"
+                android:hint="@string/mfa_code_hint"
+                android:inputType="number"
+                android:imeOptions="actionGo"/>
 
             <Button
+                style="@style/Button.VeryBig.FixedSize"
                 android:id="@+id/submit_mfa_code_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
+                android:layout_marginTop="20dp"
                 android:text="@string/submit_mfa_code"/>
         </LinearLayout>
     </ScrollView>

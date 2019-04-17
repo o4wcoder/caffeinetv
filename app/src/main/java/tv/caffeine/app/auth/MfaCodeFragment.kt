@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -25,6 +26,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
 import tv.caffeine.app.util.convertLinks
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 class MfaCodeFragment : CaffeineFragment() {
@@ -62,7 +64,14 @@ class MfaCodeFragment : CaffeineFragment() {
         }
     }
 
+    private fun clearErrors() {
+        binding.formErrorTextView.apply {
+            visibility = if (text.isEmpty()) View.GONE else View.INVISIBLE
+        }
+    }
+
     private fun submitMfaCode(skipMfaCode: Boolean = false) {
+        clearErrors()
         val username = args.username
         val password = args.password
         val caid = args.caid
@@ -74,7 +83,7 @@ class MfaCodeFragment : CaffeineFragment() {
             when(result) {
                 is CaffeineResult.Success -> onSuccess(result.value)
                 is CaffeineResult.Error -> onError(result.error)
-                is CaffeineResult.Failure -> handleFailure(result)
+                is CaffeineResult.Failure -> onFailure(result.throwable)
             }
         }
     }
@@ -92,8 +101,16 @@ class MfaCodeFragment : CaffeineFragment() {
     @UiThread
     private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
-        binding.formErrorTextView.text = error.generalErrorsString
-        binding.mfaCodeTextInputLayout.error = error.otpErrorsString
+        val errorMessages = listOfNotNull(error.generalErrorsString, error.otpErrorsString)
+        errorMessages.firstOrNull { it.isNotEmpty() }?.let {
+            binding.formErrorTextView.text = it
+            binding.formErrorTextView.isVisible = true
+        }
     }
 
+    @UiThread
+    private fun onFailure(t: Throwable) {
+        Timber.e(t, "sign in failure")
+        showSnackbar(R.string.sign_in_failure)
+    }
 }
