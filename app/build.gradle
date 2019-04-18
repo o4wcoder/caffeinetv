@@ -7,58 +7,8 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'jacoco'
-
-jacoco {
-    toolVersion = '0.8.3'
-}
-
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-}
-
-project.afterEvaluate {
-    android.applicationVariants.all { variant ->
-        def variantName = variant.name
-        def testTaskName = "test${variantName.capitalize()}UnitTest"
-        tasks.create(name: "${testTaskName}Coverage", type: JacocoReport, dependsOn: "$testTaskName") {
-            group = "Reporting"
-            description = "Generate Jacoco coverage report for ${variantName.capitalize()}"
-            reports {
-                html.enabled = true
-                xml.enabled = true
-            }
-            def excludes = [
-                    '**/R.class',
-                    '**/R$*.class',
-                    '**/BuildConfig.*',
-                    '**/Manifest*.*',
-                    '**/*Test*.*',
-                    '**/*_AssistedFactory.*',
-                    '**/*_Factory.*',
-                    '**/*_MembersInjector.*',
-                    '**/*awaitAndParseErrors$response$*.*',
-                    '**/*awaitEmptyAndParseErrors$response$*.*',
-                    'tv/caffeine/app/BR.*',
-                    'tv/caffeine/app/DataBinderMapper*.*',
-                    'tv/caffeine/app/DataBindingInfo.*',
-                    'tv/caffeine/app/MainNavDirections*.*',
-                    'tv/caffeine/app/databinding/*.*',
-                    'tv/caffeine/app/di/*.*',
-                    'androidx/**/*.*',
-                    'android/**/*.*'
-            ]
-            def javaClasses = fileTree(dir: variant.javaCompiler.destinationDir, excludes: excludes)
-            def kotlinClasses = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${variantName}", excludes: excludes)
-            classDirectories = files([javaClasses, kotlinClasses])
-            sourceDirectories = files([
-                    "$project.projectDir/src/main/java",
-                    "$project.projectDir/src/${variantName}/java"
-            ])
-            executionData = files("${project.buildDir}/jacoco/${testTaskName}.exec")
-        }
-    }
-}
+apply from: 'jacoco.gradle'
+apply from: 'version.gradle'
 
 android {
     compileSdkVersion 28
@@ -66,8 +16,8 @@ android {
         applicationId "tv.caffeine.app"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 94
-        versionName "0.16 ($versionCode)"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -28,9 +28,9 @@ jobs:
           name: Git LFS pull
           command: git lfs pull
       - restore_cache:
-          key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+          key: &gradle_key gradle-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
       - restore_cache:
-          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          key: &gradle_wrapper_key gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - run:
           name: Download dependencies
           command: ./gradlew :app:downloadDependencies
@@ -44,11 +44,11 @@ jobs:
               - ~/.gradle/caches/
               - ~/.android/build-cache
               - ~/.git/lfs
-          key: jar-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+          key: *gradle_key
       - save_cache:
           paths:
               - ~/.gradle/wrapper/
-          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          key: *gradle_wrapper_key
       - run:
           name: Detekt
           command: ./gradlew detekt || true
@@ -91,17 +91,36 @@ jobs:
       - store_artifacts:
           path: ~/reports
 
+  build-debug-apk:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: *working_directory
+      - run:
+          name: Android development debug signing key
+          command: echo "$DEBUG_KEY_STORE" | base64 --decode > ~/.android/debug.keystore
+      - run:
+          name: Build Debug APK
+          command: ./gradlew assembleProdDebug -PdisablePreDex --stacktrace
+      - run:
+          name: Save APK
+          command: |
+              mkdir ~/apk
+              cp -r app/build/outputs/apk/prod/debug/app-prod-debug.apk ~/apk/caffeine.apk
+      - store_artifacts:
+          path: ~/apk
+
   danger:
     <<: *defaults
     steps:
       - checkout
       - restore_cache:
-          key: v2-yarn-{{ checksum "yarn.lock" }}
+          key: &yarn_key v2-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Install Yarn Dependencies
           command: yarn ci:skip-native-if-possible || yarn install --ignore-engines
       - save_cache:
-          key: v2-yarn-{{ checksum "yarn.lock" }}
+          key: *yarn_key
           paths:
             - node_modules
       - run:
@@ -117,4 +136,10 @@ workflows:
       - test-coverage:
           requires:
             - unit-tests
+      - hold:
+          type: approval
+      - build-debug-apk:
+          requires:
+            - unit-tests
+            - hold
 
