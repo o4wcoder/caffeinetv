@@ -79,7 +79,6 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
                 if (hasFocus) { setDate() }
             }
             setOnClickListener { setDate() }
-            setOnKeyListener { _, _, _ -> true }
         }
         arguments?.let { arguments ->
             binding.usernameEditText.setText(args.possibleUsername)
