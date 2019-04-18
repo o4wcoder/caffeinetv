@@ -21,10 +21,12 @@
             android:id="@+id/digital_item_image_view"
             android:layout_width="@dimen/digital_item_size"
             android:layout_height="@dimen/digital_item_size"
+            android:contentDescription="@string/digital_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
+            tools:srcCompat="@drawable/ic_digital_items"
+            tools:tint="@color/caffeine_blue"/>
 
         <TextView
             style="@style/DigitalItemQuantity"

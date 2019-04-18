@@ -27,7 +27,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/di_quantity_number_picker"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/logo" />
+            tools:src="@drawable/ic_digital_items"
+            tools:tint="@color/caffeine_blue"/>
 
         <NumberPicker
             android:id="@+id/di_quantity_number_picker"

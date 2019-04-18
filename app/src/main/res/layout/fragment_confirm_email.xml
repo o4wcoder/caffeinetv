@@ -6,11 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <Button
+        style="@style/Button.Big.FixedSize"
         android:id="@+id/continue_button"
-        style="@style/Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="24dp"
         android:text="@string/continue_to_use_app"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,37 +16,39 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible"/>
 
+
     <ImageView
         android:id="@+id/caffeine_logo_image_view"
-        android:layout_width="@dimen/info_screen_icon"
-        android:layout_height="@dimen/info_screen_icon"
-        android:src="@drawable/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_caffeine_logo"
         android:contentDescription="@string/caffeine_logo_content_description"
         app:layout_constraintBottom_toTopOf="@+id/title_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"/>
 
     <TextView
+        style="@style/UnauthScreenTitle"
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/verified_icon_padding"
         android:text="@string/verifying_your_email"
-        android:textAppearance="@style/ScreenTitle"
         app:layout_constraintBottom_toTopOf="@+id/subtitle_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/caffeine_logo_image_view" />
 
     <TextView
+        style="@style/FormErrorText"
         android:id="@+id/subtitle_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/verified_icon_padding"
         android:gravity="center"
-        android:textAppearance="@style/ScreenCaption"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
