@@ -26,20 +26,45 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.webrtc.*
+import org.webrtc.EglBase
+import org.webrtc.MediaCodecVideoDecoder
+import org.webrtc.RendererCommon
+import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoTrack
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.api.*
-import tv.caffeine.app.api.model.*
+import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.DigitalItem
+import tv.caffeine.app.api.NewReyes
+import tv.caffeine.app.api.VersionCheckError
+import tv.caffeine.app.api.isMustVerifyEmailError
+import tv.caffeine.app.api.model.CaffeineEmptyResult
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.model.iconImageUrl
+import tv.caffeine.app.api.model.isOnline
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.CropBorderedCircleTransformation
+import tv.caffeine.app.util.broadcasterUsername
+import tv.caffeine.app.util.isNetworkAvailable
+import tv.caffeine.app.util.maybeShow
+import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
+import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.safeUnregisterNetworkCallback
+import tv.caffeine.app.util.setDarkMode
+import tv.caffeine.app.util.setImmersiveSticky
+import tv.caffeine.app.util.showSnackbar
+import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 import kotlin.collections.set
 
@@ -66,6 +91,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private var broadcastName: String? = null
 
+    private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
     private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
@@ -81,6 +107,9 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             findNavController().safeNavigate(MainNavDirections.actionGlobalHardwareNotSupportedFragment())
             return
         }
+        sessionCheckViewModel.sessionCheck.observe(this, Observer { result ->
+            handle(result) {}
+        })
         retainInstance = true
         context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
                 NetworkRequest.Builder().build(), networkCallback)
