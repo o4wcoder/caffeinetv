@@ -100,6 +100,20 @@
         <item name="android:layout_height">@dimen/very_big_button_height</item>
     </style>
 
+    <style name="Button.Stage" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textSize">24sp</item>
+        <item name="cornerRadius">40dp</item>
+        <item name="android:letterSpacing">0.0</item>
+    </style>
+
+    <style name="Button.Stage.FixedSize">
+        <item name="android:layout_width">280dp</item>
+        <item name="android:layout_height">90dp</item>
+    </style>
+
     <style name="Button.Big.FixedSize.Facebook">
         <item name="android:backgroundTint">#4267b2</item>
     </style>
@@ -174,6 +188,11 @@
         <item name="android:layout_width">@dimen/big_button_width</item>
         <item name="android:layout_height">@dimen/big_button_height</item>
     </style>
+
+    <style name="ScreenTitle.Stage">
+        <item name="fontFamily">@font/poppins</item>
+    </style>
+
     <!-- End of the new text design from Apr. 2019 (Landing page) -->
 
     <style name="ScreenTitle" parent="@style/TextAppearance.MaterialComponents.Headline5"/>
