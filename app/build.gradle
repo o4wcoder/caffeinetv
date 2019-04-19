@@ -1,14 +1,21 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'androidx.navigation.safeargs.kotlin'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
-apply plugin: 'com.google.android.gms.oss-licenses-plugin'
-apply plugin: 'com.getkeepsafe.dexcount'
-apply plugin: 'com.google.firebase.firebase-perf'
+plugins {
+    id('com.android.application')
+    id('com.github.triplet.play') version "2.2.0"
+    id('kotlin-android')
+    id('androidx.navigation.safeargs.kotlin')
+    id('kotlin-android-extensions')
+    id('kotlin-kapt')
+    id('io.fabric')
+    id('com.google.android.gms.oss-licenses-plugin')
+    id('com.getkeepsafe.dexcount')
+    id('com.google.firebase.firebase-perf')
+}
 apply from: 'jacoco.gradle'
 apply from: 'version.gradle'
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 28
@@ -20,26 +27,22 @@ android {
         versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        playStoreBundleUpload {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.playStoreBundleUpload
         }
         debug {
             applicationIdSuffix ".debug"
-        }
-    }
-    flavorDimensions "environment"
-    productFlavors {
-        prod {
-            dimension "environment"
-            applicationIdSuffix ""
-            versionNameSuffix ""
-        }
-        staging {
-            dimension "environment"
-            applicationIdSuffix ".staging"
-            versionNameSuffix " (staging)"
         }
     }
     compileOptions {
@@ -54,6 +57,12 @@ android {
         unitTests.returnDefaultValues = true
         unitTests.includeAndroidResources = true
     }
+}
+
+play {
+    defaultToAppBundles = true
+    track = "internal"
+    serviceAccountCredentials = file("caffeine-ci-build-publisher.json")
 }
 
 androidExtensions {
