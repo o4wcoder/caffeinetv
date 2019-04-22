@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -25,7 +29,11 @@ import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.maybeShow
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -128,7 +136,6 @@ class CaidViewHolder(itemView: View, private val followHandler: FollowManager.Fo
     private fun clear() {
         avatarImageView.setImageResource(R.drawable.default_avatar_round)
         usernameTextView.text = null
-        usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
         followButton.apply {
             isVisible = false
             setText(R.string.follow_button)

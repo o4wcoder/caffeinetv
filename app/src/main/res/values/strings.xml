@@ -114,6 +114,9 @@
     <string name="followers">Followers</string>
     <string name="unread_notification_badge_content_description">unread notification badge</string>
     <string name="read_notification_badge_content_description">read notification badge</string>
+    <string name="username_plain">%1$s</string>
+    <string name="username_verified"><![CDATA[<b>%1$s</b> <img src="verified"/>]]></string>
+    <string name="username_caster"><![CDATA[<b>%1$s</b> <img src="caster"/>]]></string>
     <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s is watching]]></string>
     <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="verified_white"/> is watching]]></string>
     <string name="caster_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="caster"/> is watching]]></string>

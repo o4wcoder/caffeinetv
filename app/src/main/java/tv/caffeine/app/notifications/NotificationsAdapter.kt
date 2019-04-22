@@ -150,7 +150,6 @@ class FollowNotificationViewHolder(
     private fun clear() {
         avatarImageView.setImageResource(R.drawable.default_avatar_round)
         usernameTextView.text = null
-        usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
         followButton.apply {
             isVisible = false
             FollowButtonDecorator(Style.FOLLOW).decorate(this)
