@@ -43,6 +43,7 @@ import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.iconImageUrl
 import tv.caffeine.app.api.model.isOnline
@@ -93,6 +94,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
     private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
+    private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
     private var isFollowingBroadcaster = false
@@ -137,6 +139,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 connectStreams(userDetails.username)
                 launch(dispatchConfig.main) {
                     connectMessages(userDetails.stageId)
+                    connectFriendsWatching(userDetails.stageId)
                 }
             }
         }
@@ -147,6 +150,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         connectStageJob = null
         disconnectStreams()
         chatViewModel.disconnect()
+        friendsWatchingViewModel.disconnect()
     }
 
     private var title: String? = null
@@ -176,8 +180,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private var viewJob: Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val profileAvatarTransform = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
-                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
         view.setOnClickListener { toggleAppBarVisibility() }
         viewJob = launch {
             launch(dispatchConfig.main) {
@@ -211,7 +213,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                     if (userDetails != null) {
                         val broadcastId = userDetails.broadcastId ?: break
                         updateBroadcastDetails(broadcastId)
-                        updateFriendsWatching(broadcastId, profileAvatarTransform)
                     }
                     delay(5000L)
                 }
@@ -333,27 +334,20 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
     }
 
-    private suspend fun updateFriendsWatching(broadcastId: String, profileAvatarTransform: CropBorderedCircleTransformation) {
-        val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
+    private fun updateFriendsWatching(friendsWatching: List<User>, profileAvatarTransform: CropBorderedCircleTransformation) {
         if (binding.friendsWatchingButton == null) return
-        when (result) {
-            is CaffeineResult.Success -> {
-                val friendAvatarImageUrl = result.value.firstOrNull()?.let { followManager.userDetails(it.caid)?.avatarImageUrl }
-                if (friendAvatarImageUrl == null) {
-                    binding.friendsWatchingButton?.isEnabled = false
-                    binding.friendsWatchingButton?.setImageDrawable(null)
-                } else {
-                    binding.friendsWatchingButton?.isEnabled = true
-                    binding.friendsWatchingButton?.imageTintList = null
-                    picasso.load(friendAvatarImageUrl)
-                            .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
-                            .placeholder(R.drawable.ic_profile)
-                            .transform(profileAvatarTransform)
-                            .into(binding.friendsWatchingButton)
-                }
-            }
-            is CaffeineResult.Error -> Timber.e("Failed to fetch friends watching ${result.error}")
-            is CaffeineResult.Failure -> Timber.e(result.throwable)
+        val friendAvatarImageUrl = friendsWatching.firstOrNull()?.avatarImageUrl
+        if (friendAvatarImageUrl == null) {
+            binding.friendsWatchingButton?.isEnabled = false
+            binding.friendsWatchingButton?.setImageDrawable(null)
+        } else {
+            binding.friendsWatchingButton?.isEnabled = true
+            binding.friendsWatchingButton?.imageTintList = null
+            picasso.load(friendAvatarImageUrl)
+                    .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
+                    .placeholder(R.drawable.ic_profile)
+                    .transform(profileAvatarTransform)
+                    .into(binding.friendsWatchingButton)
         }
     }
 
@@ -455,6 +449,22 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         })
     }
 
+    private fun connectFriendsWatching(stageIdentifier: String) {
+        val profileAvatarTransform = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
+        friendsWatchingViewModel.load(stageIdentifier)
+        friendsWatchingViewModel.friendsWatching.observe(this, Observer { friendsWatching ->
+            updateFriendsWatching(friendsWatching, profileAvatarTransform)
+        })
+        binding.friendsWatchingButton?.setOnClickListener {
+            val fragmentManager = fragmentManager ?: return@setOnClickListener
+            val fragment = FriendsWatchingFragment()
+            val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(stageIdentifier)
+            fragment.arguments = action.arguments
+            fragment.show(fragmentManager, "FW")
+        }
+    }
+
     private fun disconnectStreams() {
         newReyesController?.close()
         newReyesController = null
@@ -473,13 +483,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             })
         }
         binding.chatButton?.setOnClickListener { openSendMessage() }
-        binding.friendsWatchingButton?.setOnClickListener {
-            val fragmentManager = fragmentManager ?: return@setOnClickListener
-            val fragment = FriendsWatchingFragment()
-            val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(broadcasterUsername)
-            fragment.arguments = action.arguments
-            fragment.show(fragmentManager, "FW")
-        }
         binding.giftButton?.setOnClickListener {
             sendDigitalItemWithMessage(null)
         }

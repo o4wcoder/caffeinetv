@@ -5,8 +5,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.login.LoginManager
 import com.google.gson.Gson
-import tv.caffeine.app.api.*
-import tv.caffeine.app.auth.*
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.OAuthService
+import tv.caffeine.app.api.PaymentsClientService
+import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.auth.AcceptLegalUseCase
+import tv.caffeine.app.auth.LegalAgreementViewModel
+import tv.caffeine.app.auth.SignInUseCase
+import tv.caffeine.app.auth.SignInViewModel
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.broadcast.GuideViewModel
 import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.explore.ExploreViewModel
@@ -15,14 +24,31 @@ import tv.caffeine.app.feature.LoadFeatureConfigUseCase
 import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
 import tv.caffeine.app.lobby.LoadFeaturedProgramGuideUseCase
 import tv.caffeine.app.lobby.LoadLobbyUseCase
-import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
-import tv.caffeine.app.profile.*
+import tv.caffeine.app.profile.DeleteAccountViewModel
+import tv.caffeine.app.profile.IgnoreUserViewModel
+import tv.caffeine.app.profile.MyProfileViewModel
+import tv.caffeine.app.profile.ProfileViewModel
+import tv.caffeine.app.profile.ReportUserViewModel
+import tv.caffeine.app.profile.UpdateEmailUseCase
+import tv.caffeine.app.profile.UpdatePasswordUseCase
+import tv.caffeine.app.profile.UpdateProfileViewModel
+import tv.caffeine.app.profile.UploadAvatarUseCase
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.settings.*
+import tv.caffeine.app.session.SessionCheckViewModel
+import tv.caffeine.app.settings.GoldBundlesViewModel
+import tv.caffeine.app.settings.LoadGoldBundlesUseCase
+import tv.caffeine.app.settings.NotificationSettingsViewModel
+import tv.caffeine.app.settings.ProcessPlayStorePurchaseUseCase
+import tv.caffeine.app.settings.PurchaseGoldBundleUseCase
+import tv.caffeine.app.settings.SettingsViewModel
+import tv.caffeine.app.settings.TransactionHistoryUseCase
+import tv.caffeine.app.settings.TransactionHistoryViewModel
 import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
+import tv.caffeine.app.stage.FriendsWatchingController
+import tv.caffeine.app.stage.FriendsWatchingViewModel
 import tv.caffeine.app.stage.MessageHandshake
 import tv.caffeine.app.stage.SendDigitalItemViewModel
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
@@ -62,6 +88,7 @@ class ViewModelFactory @Inject constructor(
         private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
         private val oauthService: OAuthService,
         private val messageHandshakeFactory: MessageHandshake.Factory,
+        private val friendsWatchingControllerFactory: FriendsWatchingController.Factory,
         private val broadcastsService: BroadcastsService,
         private val facebookLoginManager: LoginManager,
         private val gson: Gson
@@ -91,6 +118,7 @@ class ViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(GoldBundlesViewModel::class.java) -> GoldBundlesViewModel(dispatchConfig, context, tokenStore, walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
             modelClass.isAssignableFrom(UpdateProfileViewModel::class.java) -> UpdateProfileViewModel(dispatchConfig, updateEmailUseCase, updatePasswordUseCase)
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> ChatViewModel(dispatchConfig, context, realtime, tokenStore, usersService, followManager, messageHandshakeFactory, gson)
+            modelClass.isAssignableFrom(FriendsWatchingViewModel::class.java) -> FriendsWatchingViewModel(dispatchConfig, followManager, friendsWatchingControllerFactory)
             modelClass.isAssignableFrom(SendDigitalItemViewModel::class.java) -> SendDigitalItemViewModel(dispatchConfig, gson, digitalItemRepository, paymentsClientService)
             modelClass.isAssignableFrom(GuideViewModel::class.java) -> GuideViewModel(dispatchConfig, broadcastsService, gson)
             modelClass.isAssignableFrom(FeaturedProgramGuideViewModel::class.java) -> FeaturedProgramGuideViewModel(dispatchConfig, loadFeaturedProgramGuideUseCase)

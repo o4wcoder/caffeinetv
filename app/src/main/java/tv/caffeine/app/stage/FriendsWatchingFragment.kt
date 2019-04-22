@@ -9,25 +9,20 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.api.BroadcastsService
-import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
@@ -42,10 +37,9 @@ import kotlin.coroutines.CoroutineContext
 
 class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
     @Inject lateinit var followManager: FollowManager
-    @Inject lateinit var broadcastsService: BroadcastsService
     @Inject lateinit var usersAdapter: FriendsWatchingAdapter
-    @Inject lateinit var gson: Gson
     private val args by navArgs<FriendsWatchingFragmentArgs>()
+    private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
@@ -63,17 +57,11 @@ class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
             navController?.safeNavigate(action)
             dismiss()
         }
-        val broadcaster = args.broadcaster
-        launch {
-            val userDetails = followManager.userDetails(broadcaster) ?: return@launch
-            val broadcastId = userDetails.broadcastId ?: return@launch
-            val result = broadcastsService.friendsWatching(broadcastId).awaitAndParseErrors(gson)
-            when(result) {
-                is CaffeineResult.Success -> usersAdapter.submitList(result.value)
-                is CaffeineResult.Error -> Timber.e("Failed to fetch friends watching ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
-            }
-        }
+        val stageIdentifier = args.stageIdentifier
+        friendsWatchingViewModel.load(stageIdentifier)
+        friendsWatchingViewModel.friendsWatching.observe(viewLifecycleOwner, Observer {
+            usersAdapter.submitList(it)
+        })
     }
 
 }
@@ -82,12 +70,11 @@ class FriendsWatchingAdapter @Inject constructor(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
-) : ListAdapter<CaidRecord, FriendWatchingViewHolder>(
-        object : DiffUtil.ItemCallback<CaidRecord?>() {
-            override fun areItemsTheSame(oldItem: CaidRecord, newItem: CaidRecord) = oldItem === newItem
-            override fun areContentsTheSame(oldItem: CaidRecord, newItem: CaidRecord) = oldItem.caid == newItem.caid
+        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+) : ListAdapter<User, FriendWatchingViewHolder>(
+        object : DiffUtil.ItemCallback<User?>() {
+            override fun areItemsTheSame(oldItem: User, newItem: User) = oldItem === newItem
+            override fun areContentsTheSame(oldItem: User, newItem: User) = oldItem.caid == newItem.caid
         }
 ), CoroutineScope {
 
@@ -102,7 +89,7 @@ class FriendsWatchingAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendWatchingViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
-        return FriendWatchingViewHolder(view, this, followManager, followedTheme, notFollowedTheme, picasso) { caid ->
+        return FriendWatchingViewHolder(view, followManager, followedTheme, notFollowedTheme) { caid ->
             callback?.invoke(caid)
         }
     }
@@ -120,11 +107,9 @@ class FriendsWatchingAdapter @Inject constructor(
 
 class FriendWatchingViewHolder(
         itemView: View,
-        private val scope: CoroutineScope,
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
         private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso,
         private val callback: (String) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
@@ -132,29 +117,11 @@ class FriendWatchingViewHolder(
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)
 
-    var job: Job? = null
-
-    fun bind(item: CaidRecord) {
-        job?.cancel()
-        clear()
-        job = scope.launch {
-            val user = followManager.userDetails(item.caid) ?: return@launch
-            followButton.isVisible = false
-            user.configure(avatarImageView, usernameTextView, null, followManager, false, null, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme)
-        }
-        itemView.setOnClickListener { callback(item.caid) }
+    fun bind(user: User) {
+        followButton.isVisible = false
+        user.configure(avatarImageView, usernameTextView, null, followManager, false, null, R.dimen.avatar_size,
+                followedTheme, notFollowedTheme)
+        itemView.setOnClickListener { callback(user.caid) }
     }
 
-    private fun clear() {
-        avatarImageView.setImageResource(R.drawable.default_avatar_round)
-        usernameTextView.text = null
-        usernameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-        followButton.apply {
-            isVisible = false
-            setText(R.string.follow_button)
-            setOnClickListener(null)
-        }
-        itemView.setOnClickListener(null)
-    }
 }

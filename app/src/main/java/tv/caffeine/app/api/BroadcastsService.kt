@@ -6,16 +6,12 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.di.ASSETS_BASE_URL
 
 interface BroadcastsService {
     @GET("v1/broadcasts/{broadcastId}")
     fun broadcastDetails(@Path("broadcastId") broadcastId: String): Deferred<Response<BroadcastEnvelope>>
-
-    @GET("v1/broadcasts/{broadcastId}/friends-watching")
-    fun friendsWatching(@Path("broadcastId") broadcastId: String): Deferred<Response<List<CaidRecord.FriendWatching>>>
 
     @GET("v1/guide")
     fun guide(): Deferred<Response<GuideList>>
@@ -40,4 +36,3 @@ class FeaturedGuideList(val listings: List<FeaturedGuideListing>)
 class FeaturedGuideListing(val caid: CAID, val id: String, val category: String, val title: String, val startTimestamp: Long, val endTimestamp: Long, val description: String, private val detailImage: String?, val isUsOnly: Boolean) {
     val detailImageUrl get() = detailImage?.let {"$ASSETS_BASE_URL$it"}
 }
-

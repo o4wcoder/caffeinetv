@@ -223,7 +223,7 @@
         android:label="@string/friends_watching_title"
         tools:layout="@layout/fragment_friends_watching">
         <argument
-            android:name="broadcaster"
+            android:name="stageIdentifier"
             app:argType="string"/>
     </fragment>
     <fragment
