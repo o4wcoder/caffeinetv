@@ -258,7 +258,7 @@
     <string name="is_first_time_on_stage" translatable="false">is_first_time_on_stage</string>
 
     <string name="browse_more_broadcasts">See what\'s LIVE</string>
-    <string name="broadcaster_show_is_over"><xliff:g example="Caffeine" id="broadcaster">%s</xliff:g> is no longer live</string>
+    <string name="broadcaster_show_is_over"><xliff:g example="Caffeine" id="broadcaster">%s</xliff:g> isn\'t live right now</string>
 
     <!-- Notifications -->
     <string name="notification_channel_general_name">General</string>
