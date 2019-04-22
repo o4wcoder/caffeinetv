@@ -96,6 +96,7 @@
             android:id="@+id/avatar_image_view"
             android:layout_width="@dimen/chat_avatar_size"
             android:layout_height="@dimen/chat_avatar_size"
+            android:contentDescription="@string/user_avatar_content_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/username_text_view"
             app:layout_constraintHorizontal_chainStyle="packed"

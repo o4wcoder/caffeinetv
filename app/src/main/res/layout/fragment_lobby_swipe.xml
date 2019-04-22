@@ -46,56 +46,56 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
-                        android:id="@+id/cameraButton"
                         style="@android:style/Widget.Material.ActionButton"
+                        android:id="@+id/cameraButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_camera_light"
                         android:tint="@color/medium_gray"
                         android:contentDescription="@string/camera_button_content_description"
+                        app:srcCompat="@drawable/ic_camera_light"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
-                        android:id="@+id/searchButton"
                         style="@android:style/Widget.Material.ActionButton"
+                        android:id="@+id/searchButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_search_light"
                         android:tint="@color/medium_gray"
                         android:contentDescription="@string/search_button_content_description"
+                        app:srcCompat="@drawable/ic_search_light"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/cameraButton"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
-                        android:id="@+id/profileButton"
                         style="@android:style/Widget.Material.ActionButton"
+                        android:id="@+id/profileButton"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_profile_light"
                         android:contentDescription="@string/profile_button_content_description"
+                        app:srcCompat="@drawable/ic_profile_light"
                         app:layout_constraintDimensionRatio="V,1:1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
-                        android:id="@+id/activityButton"
                         style="@android:style/Widget.Material.ActionButton"
+                        android:id="@+id/activityButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_alert_light"
                         android:tint="@color/medium_gray"
                         android:contentDescription="@string/activity_button_content_description"
+                        app:srcCompat="@drawable/ic_alert_light"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/profileButton"
                         app:layout_constraintTop_toTopOf="parent" />

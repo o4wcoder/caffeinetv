@@ -151,63 +151,63 @@
                 android:layout_height="wrap_content">
 
                 <ImageButton
-                    android:id="@+id/share_button"
                     style="@android:style/Widget.Material.ActionButton"
+                    android:id="@+id/share_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_share_dark"
                     android:tint="@color/white"
                     android:paddingBottom="6dp"
+                    android:contentDescription="@string/share_button_content_description"
+                    app:srcCompat="@drawable/ic_share_dark"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/chat_button"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="@string/share_button_content_description" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <ImageButton
-                    android:id="@+id/chat_button"
                     style="@android:style/Widget.Material.ActionButton"
+                    android:id="@+id/chat_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_messages"
                     android:tint="@color/white"
                     android:paddingTop="4dp"
+                    android:contentDescription="@string/chat_button_content_description"
+                    app:srcCompat="@drawable/ic_messages"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/gift_button"
                     app:layout_constraintStart_toEndOf="@+id/share_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="@string/chat_button_content_description" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <ImageButton
-                    android:id="@+id/gift_button"
                     style="@android:style/Widget.Material.ActionButton"
+                    android:id="@+id/gift_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_digital_items"
                     android:tint="@color/white"
+                    android:contentDescription="@string/gift_button_content_description"
+                    app:srcCompat="@drawable/ic_digital_items"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/friends_watching_button"
                     app:layout_constraintStart_toEndOf="@+id/chat_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="@string/gift_button_content_description" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <ImageButton
-                    android:id="@+id/friends_watching_button"
                     style="@android:style/Widget.Material.ActionButton"
+                    android:id="@+id/friends_watching_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_profile"
                     android:tint="@color/white"
+                    android:contentDescription="@string/friends_watching_button_content_description"
+                    app:srcCompat="@drawable/ic_profile"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/gift_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="@string/friends_watching_button_content_description" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -184,6 +184,7 @@
     <string name="gold_and_credits_help_html"><![CDATA[<div>Use <img src="goldcoin"> Gold to buy items to send to broadcasters.</div><div>Received items become <img src="purplecoin"> Credits.</div><div>You can buy <img src="goldcoin"> Gold with <img src="purplecoin"> Credits.</div>]]></string>
     <string name="gold_formatted"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_amount">%s</xliff:g></string>
     <string name="credits_formatted"><![CDATA[<img src="purplecoin">]]> <xliff:g example="42" id="credits_amount">%s</xliff:g></string>
+    <string name="gold_coin_content_description">gold coin</string>
 
     <string name="info_button">Info</string>
     <string name="transaction_history">Transaction History</string>

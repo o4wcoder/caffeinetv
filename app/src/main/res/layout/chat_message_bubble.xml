@@ -76,6 +76,7 @@
             android:id="@+id/avatar_image_view"
             android:layout_width="@dimen/chat_avatar_size"
             android:layout_height="@dimen/chat_avatar_size"
+            android:contentDescription="@string/user_avatar_content_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/username_text_view"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -117,7 +118,8 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/speech_bubble_text_view"
-            app:srcCompat="@drawable/chat_bubble_triangle" />
+            app:srcCompat="@drawable/chat_bubble_triangle"
+            tools:ignore="ContentDescription"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

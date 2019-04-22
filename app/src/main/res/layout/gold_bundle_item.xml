@@ -31,6 +31,7 @@
             android:id="@+id/gold_coin_image_view"
             android:layout_width="@dimen/coin_size"
             android:layout_height="@dimen/coin_size"
+            android:contentDescription="@string/gold_coin_content_description"
             app:layout_constraintBottom_toBottomOf="@+id/gold_cost_text_view"
             app:layout_constraintEnd_toStartOf="@+id/gold_cost_text_view"
             app:layout_constraintHorizontal_chainStyle="packed"
