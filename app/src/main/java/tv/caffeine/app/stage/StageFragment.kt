@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.text.Spannable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
+import androidx.core.text.HtmlCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -58,6 +60,7 @@ import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.CropBorderedCircleTransformation
 import tv.caffeine.app.util.broadcasterUsername
+import tv.caffeine.app.util.getHexColor
 import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
@@ -187,6 +190,14 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             launch(dispatchConfig.main) {
                 val userDetails = followManager.userDetails(broadcasterUsername)
                 if (userDetails != null) {
+                    val colorRes = when {
+                        followManager.isFollowing(userDetails.caid) -> R.color.caffeine_blue
+                        else -> R.color.white
+                    }
+                    val fontColor = context?.getHexColor(colorRes)
+                    val string = getString(R.string.say_something_to_user, broadcasterUsername, fontColor)
+                    val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, null, null) as Spannable
+                    binding.saySomethingTextView?.text = html
                     profileViewModel.load(userDetails.caid)
                     binding.stageToolbar.apply {
                         inflateMenu(R.menu.stage_menu)
@@ -468,6 +479,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         chatViewModel.load(stageIdentifier)
         chatViewModel.messages.observe(this, Observer { messages ->
             chatMessageAdapter.submitList(messages)
+            binding.saySomethingTextView?.isVisible = messages.all { it.type == Message.Type.dummy }
         })
     }
 

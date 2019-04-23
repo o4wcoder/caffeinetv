@@ -33,6 +33,7 @@ class StageFragmentVisibilityTests {
     @MockK(relaxed = true) lateinit var largeAvatarImageView: ImageView
     @MockK(relaxed = true) lateinit var liveIndicatorAndAvatarContainer: FrameLayout
     @MockK(relaxed = true) lateinit var liveIndicatorTextView: TextView
+    @MockK(relaxed = true) lateinit var saySomethingTextView: TextView
     @MockK(relaxed = true) lateinit var showIsOverTextView: TextView
     @MockK(relaxed = true) lateinit var stageAppBar: AppBarLayout
 
@@ -48,6 +49,7 @@ class StageFragmentVisibilityTests {
                 largeAvatarImageView,
                 liveIndicatorAndAvatarContainer,
                 liveIndicatorTextView,
+                saySomethingTextView,
                 showIsOverTextView,
                 stageAppBar
         )
@@ -141,6 +143,7 @@ private class StageFragmentVisibilityTestBindings(
         largeAvatarImageView: ImageView,
         liveIndicatorAndAvatarContainer: FrameLayout,
         liveIndicatorTextView: TextView,
+        saySomethingTextView: TextView,
         showIsOverTextView: TextView,
         stageAppBar: AppBarLayout
 ) : FragmentStageBinding(
@@ -161,6 +164,7 @@ private class StageFragmentVisibilityTestBindings(
         mockk(),
         mockk(),
         mockk(),
+        saySomethingTextView,
         mockk(),
         mockk(),
         mockk(),
