@@ -346,7 +346,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                 picasso
                         .load(broadcast.game?.iconImageUrl)
                         .into(binding.gameLogoImageView)
-                updateShowIsOverVisibility(broadcast.isOnline())
+                updateBroadcastOnlineState(broadcast.isOnline())
             }
             is CaffeineResult.Error -> Timber.e("Error loading broadcast details ${result.error}")
             is CaffeineResult.Failure -> Timber.e(result.throwable)
@@ -371,9 +371,9 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     @VisibleForTesting
-    fun updateShowIsOverVisibility(broadcastIsOnline: Boolean) {
+    fun updateBroadcastOnlineState(broadcastIsOnline: Boolean) {
         stageIsLive = broadcastIsOnline
-        if (broadcastIsOnline) showOverlays()
+        if (!broadcastIsOnline) showOverlays()
         binding.largeAvatarImageView.isVisible = !broadcastIsOnline
         binding.showIsOverTextView.isVisible = !broadcastIsOnline
         binding.backToLobbyButton.isVisible = !broadcastIsOnline

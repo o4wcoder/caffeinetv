@@ -102,7 +102,7 @@ class StageFragmentVisibilityTests {
 
     @Test
     fun `stage going offline shows offline views`() {
-        subject.updateShowIsOverVisibility(false)
+        subject.updateBroadcastOnlineState(false)
         verify { subject.binding.largeAvatarImageView.isVisible = true }
         verify { subject.binding.showIsOverTextView.isVisible = true }
         verify { subject.binding.backToLobbyButton.isVisible = true }
@@ -110,10 +110,25 @@ class StageFragmentVisibilityTests {
 
     @Test
     fun `stage going live hides offline views`() {
-        subject.updateShowIsOverVisibility(true)
+        subject.updateBroadcastOnlineState(true)
         verify { subject.binding.largeAvatarImageView.isVisible = false }
         verify { subject.binding.showIsOverTextView.isVisible = false }
         verify { subject.binding.backToLobbyButton.isVisible = false }
+    }
+
+    @Test
+    fun `stage going offline shows overlay but hides live indicator and game logo`() {
+        subject.updateBroadcastOnlineState(false)
+        verify { subject.binding.liveIndicatorAndAvatarContainer.isVisible = true }
+        verify { subject.binding.gameLogoImageView.isVisible = false }
+        verify { subject.binding.liveIndicatorTextView.isVisible = false }
+    }
+
+    @Test
+    fun `stage going live does not change visibility of game logo and small user avatar`() {
+        subject.updateBroadcastOnlineState(true)
+        verify(exactly = 0) { subject.binding.liveIndicatorAndAvatarContainer.visibility = any() }
+        verify(exactly = 0) { subject.binding.gameLogoImageView.visibility = any() }
     }
 
 }
