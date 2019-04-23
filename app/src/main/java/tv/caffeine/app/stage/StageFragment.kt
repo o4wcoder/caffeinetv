@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -83,7 +84,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     @Inject lateinit var isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
     @Inject lateinit var picasso: Picasso
 
-    private lateinit var binding: FragmentStageBinding
+    @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
@@ -100,6 +101,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private var isFollowingBroadcaster = false
     private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
+    @VisibleForTesting var stageIsLive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -288,23 +290,40 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     private var appBarVisibilityJob: Job? = null
 
-    private fun toggleAppBarVisibility() {
-        val viewsToToggle = listOf(binding.stageAppbar, binding.gameLogoImageView, binding.liveIndicatorAndAvatarContainer)
+    @VisibleForTesting
+    fun toggleAppBarVisibility() {
         appBarVisibilityJob?.cancel()
         if (!binding.stageAppbar.isVisible) {
+            showOverlays()
+            appBarVisibilityJob = launch {
+                delay(3000)
+                hideOverlays()
+            }
+        } else {
+            hideOverlays()
+        }
+    }
+
+    @VisibleForTesting
+    fun showOverlays() = setAppBarVisible(true)
+
+    @VisibleForTesting
+    fun hideOverlays() = setAppBarVisible(false)
+
+    @VisibleForTesting
+    fun setAppBarVisible(visible: Boolean) {
+        val viewsToToggle = listOf(binding.stageAppbar, binding.liveIndicatorAndAvatarContainer)
+        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView)
+        if (visible) {
             viewsToToggle.forEach {
                 it.isVisible = true
             }
-            if (!isFollowingBroadcaster && !isMe) binding.followButton.isVisible = true
-            appBarVisibilityJob = launch {
-                delay(3000)
-                viewsToToggle.forEach {
-                    it.isInvisible = true
-                }
-                binding.followButton.isVisible = false
+            viewsForLiveOnly.forEach {
+                it.isVisible = stageIsLive
             }
+            if (!isFollowingBroadcaster && !isMe) binding.followButton.isVisible = true
         } else {
-            viewsToToggle.forEach {
+            viewsToToggle.plus(viewsForLiveOnly).forEach {
                 it.isInvisible = true
             }
             binding.followButton.isVisible = false
@@ -351,7 +370,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         }
     }
 
-    private fun updateShowIsOverVisibility(broadcastIsOnline: Boolean) {
+    @VisibleForTesting
+    fun updateShowIsOverVisibility(broadcastIsOnline: Boolean) {
+        stageIsLive = broadcastIsOnline
+        if (broadcastIsOnline) showOverlays()
         binding.largeAvatarImageView.isVisible = !broadcastIsOnline
         binding.showIsOverTextView.isVisible = !broadcastIsOnline
         binding.backToLobbyButton.isVisible = !broadcastIsOnline

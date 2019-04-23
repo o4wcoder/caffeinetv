@@ -4,14 +4,28 @@ import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import io.mockk.mockk
-import tv.caffeine.app.api.*
+import org.webrtc.EglBase
+import org.webrtc.PeerConnectionFactory
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.DevicesService
+import tv.caffeine.app.api.EventsService
+import tv.caffeine.app.api.FeatureConfigService
+import tv.caffeine.app.api.LobbyService
+import tv.caffeine.app.api.OAuthService
+import tv.caffeine.app.api.PaymentsClientService
+import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.api.RefreshTokenService
+import tv.caffeine.app.api.SearchService
+import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.VersionCheckService
 import javax.inject.Singleton
 
 @Module(includes = [
     GsonModule::class,
     OkHttpModule::class,
     FakeApiModule::class,
-    WebRtcModule::class,
+    FakeWebRtcModule::class,
     FakeImageLoadingModule::class,
     ServerConfigModule::class
 ])
@@ -35,8 +49,20 @@ class FakeApiModule {
 }
 
 @Module
+class FakeWebRtcModule {
+    @Provides
+    @Singleton
+    fun providesEglBase(): EglBase = mockk(relaxed = true)
+
+    @Provides
+    @Singleton
+    fun providesPeerConnectionFactory(): PeerConnectionFactory = mockk(relaxed = true)
+}
+
+@Module
 class FakeImageLoadingModule {
     @Provides
     @Singleton
-    fun providesPicasso(): Picasso = mockk<Picasso>(relaxed = true)
+    fun providesPicasso(): Picasso = mockk(relaxed = true)
 }
+
