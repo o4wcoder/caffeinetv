@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
 import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -36,8 +37,7 @@ abstract class UsersAdapter(
         private val dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
+        private val notFollowedTheme: UserTheme
 ) : ListAdapter<SearchUserItem, UserViewHolder>(
         object : DiffUtil.ItemCallback<SearchUserItem?>() {
             override fun areItemsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem === newItem
@@ -91,7 +91,7 @@ abstract class UsersAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(userItemLayout, parent, false)
-        return UserViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), picasso)
+        return UserViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback))
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
@@ -104,9 +104,8 @@ class SearchUsersAdapter @Inject constructor(
         dispatchConfig: DispatchConfig,
         followManager: FollowManager,
         @ThemeFollowedExplore followedTheme: UserTheme,
-        @ThemeNotFollowedExplore notFollowedTheme: UserTheme,
-        picasso: Picasso)
-    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme, picasso) {
+        @ThemeNotFollowedExplore notFollowedTheme: UserTheme)
+    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
     override val userItemLayout = R.layout.user_item_search
 }
 
@@ -114,25 +113,24 @@ class ExploreAdapter @Inject constructor(
         dispatchConfig: DispatchConfig,
         followManager: FollowManager,
         @ThemeFollowedExplore followedTheme: UserTheme,
-        @ThemeNotFollowedExplore notFollowedTheme: UserTheme,
-        picasso: Picasso)
-    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme, picasso) {
+        @ThemeNotFollowedExplore notFollowedTheme: UserTheme)
+    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
     override val userItemLayout = R.layout.user_item_explore
 }
 
 class UserViewHolder(
         itemView: View,
-        private val followHandler: FollowManager.FollowHandler,
-        private val picasso: Picasso
+        private val followHandler: FollowManager.FollowHandler
 ) : RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
-    private val followButton: Button = itemView.findViewById(R.id.follow_button)
+    @VisibleForTesting val followButton: Button = itemView.findViewById(R.id.follow_button)
     private val numberOfFollowersTextView: TextView? = itemView.findViewById(R.id.number_of_followers_text_view)
 
     fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         item.user.configure(avatarImageView, usernameTextView, followButton, followManager, true, followHandler,
                 R.dimen.avatar_explore, followedTheme, notFollowedTheme)
+        followButton.isVisible = !followManager.isSelf(item.id)
         numberOfFollowersTextView?.apply {
             val followersCount = item.user.followersCount
             val compactFollowersCount = compactNumberFormat(followersCount)
