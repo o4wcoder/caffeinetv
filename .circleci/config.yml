@@ -62,7 +62,7 @@ jobs:
       - run:
           name: Save test and detekt results
           command: |
-              mkdir -p ~/reports/{xml,tests,lint,coverage}
+              mkdir -p ~/reports/{xml,tests,lint}
               cp -r app/build/test-results/ ~/reports/xml
               cp -r app/build/reports/tests/testDebugUnitTest/ ~/reports/tests
               cp build/reports/detekt/detekt.html ~/reports/lint/detekt.html
@@ -77,17 +77,13 @@ jobs:
       - attach_workspace:
           at: *working_directory
       - run:
-          name: Detekt
-          command: ./gradlew detekt || true
-      - run:
           name: Check Test Coverage
           command: ./gradlew testDebugUnitTestCoverage -PdisablePreDex --stacktrace
       - run:
           name: Save test coverage and detekt results
           command: |
-              mkdir -p ~/reports/{xml,tests,lint,coverage}
+              mkdir -p ~/reports/coverage
               cp -r app/build/reports/jacoco/testDebugUnitTestCoverage/html/ ~/reports/coverage
-              cp build/reports/detekt/detekt.html ~/reports/lint/detekt.html
       - store_artifacts:
           path: ~/reports
 
