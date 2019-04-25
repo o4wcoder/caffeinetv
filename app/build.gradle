@@ -63,6 +63,10 @@ play {
     defaultToAppBundles = true
     track = "internal"
     serviceAccountCredentials = file("caffeine-ci-build-publisher.json")
+    resolutionStrategy = "auto"
+    outputProcessor {
+        versionNameOverride = "$versionNameOverride ($versionCode)"
+    }
 }
 
 androidExtensions {
