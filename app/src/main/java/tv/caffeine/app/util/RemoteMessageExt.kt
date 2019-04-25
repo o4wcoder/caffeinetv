@@ -33,7 +33,7 @@ fun RemoteMessage.buildNotification(context: Context, largeImage: Bitmap? = null
     intent.notificationTag = tag
     val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     return NotificationCompat.Builder(context, "general")
-            .setSmallIcon(R.drawable.caffeine_wireframe_logo)
+            .setSmallIcon(R.drawable.caffeine_logo_32)
             .setColor(ContextCompat.getColor(context, R.color.caffeine_blue))
             .setTicker(title)
             .setContentTitle(title)
