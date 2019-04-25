@@ -101,7 +101,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
-    private var isFollowingBroadcaster = false
     private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
     @VisibleForTesting var stageIsLive = false
@@ -137,10 +136,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         if (connectStageJob == null) {
             connectStageJob = launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-                launch {
-                    followManager.refreshFollowedUsers()
-                    isFollowingBroadcaster = followManager.isFollowing(userDetails.caid)
-                }
                 connectStreams(userDetails.username)
                 launch(dispatchConfig.main) {
                     connectMessages(userDetails.stageId)
@@ -186,10 +181,16 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.setOnClickListener { toggleAppBarVisibility() }
+        profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
+            binding.userProfile = userProfile
+            binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
+        })
         viewJob = launch {
             launch(dispatchConfig.main) {
                 val userDetails = followManager.userDetails(broadcasterUsername)
                 if (userDetails != null) {
+                    profileViewModel.load(userDetails.caid)
+
                     val colorRes = when {
                         followManager.isFollowing(userDetails.caid) -> R.color.caffeine_blue
                         else -> R.color.white
@@ -198,7 +199,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                     val string = getString(R.string.say_something_to_user, broadcasterUsername, fontColor)
                     val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, null, null) as Spannable
                     binding.saySomethingTextView?.text = html
-                    profileViewModel.load(userDetails.caid)
                     binding.stageToolbar.apply {
                         inflateMenu(R.menu.stage_menu)
                         menu.findItem(R.id.stage_overflow_menu).setOnMenuItemClickListener {
@@ -210,11 +210,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
                             true
                         }
                     }
-                    profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
-                        binding.userProfile = userProfile
-                        binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
-
-                    })
 
                     isMe = followManager.isSelf(userDetails.caid)
                     updateViewsOnMyStageVisibility()
@@ -332,12 +327,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
             viewsForLiveOnly.forEach {
                 it.isVisible = stageIsLive
             }
-            if (!isFollowingBroadcaster && !isMe) binding.followButton.isVisible = true
         } else {
             viewsToToggle.plus(viewsForLiveOnly).forEach {
                 it.isInvisible = true
             }
-            binding.followButton.isVisible = false
         }
     }
 
@@ -526,22 +519,19 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         binding.followButton.setOnClickListener {
             launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-                val result = followManager.followUser(userDetails.caid)
-                when(result) {
-                    is CaffeineEmptyResult.Success -> {
-                        isFollowingBroadcaster = true
-                        binding.followButton.isVisible = false
-                    }
-                    is CaffeineEmptyResult.Error -> {
-                        if (result.error.isMustVerifyEmailError()) {
-                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.maybeShow(fragmentManager, "verifyEmail")
-                        } else {
-                            Timber.e("Couldn't follow user ${result.error}")
+                profileViewModel.follow(userDetails.caid).observe(viewLifecycleOwner, Observer { result ->
+                    when(result) {
+                        is CaffeineEmptyResult.Error -> {
+                            if (result.error.isMustVerifyEmailError()) {
+                                val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                                fragment.maybeShow(fragmentManager, "verifyEmail")
+                            } else {
+                                Timber.e("Couldn't follow user ${result.error}")
+                            }
                         }
+                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
                     }
-                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                }
+                })
             }
         }
         binding.backToLobbyButton.setOnClickListener {

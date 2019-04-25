@@ -72,7 +72,8 @@ class MyProfileViewModel(
                 user.avatarImageUrl,
                 user.mfaMethod,
                 null,
-                false
+                false,
+                followManager.isSelf(user.caid)
         )
     }
 

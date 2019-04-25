@@ -103,6 +103,18 @@ class StageFragmentVisibilityTests {
     }
 
     @Test
+    fun `showing overlays does not change the visibility of the follow button`() {
+        subject.showOverlays()
+        verify(exactly = 0) { subject.binding.followButton.visibility = any() }
+    }
+
+    @Test
+    fun `hiding overlays does not change the visibility of the follow button`() {
+        subject.hideOverlays()
+        verify(exactly = 0) { subject.binding.followButton.visibility = any() }
+    }
+
+    @Test
     fun `stage going offline shows offline views`() {
         subject.updateBroadcastOnlineState(false)
         verify { subject.binding.largeAvatarImageView.isVisible = true }

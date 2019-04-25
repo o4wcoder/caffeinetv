@@ -4,11 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
             name="userProfile"
             type="tv.caffeine.app.profile.UserProfile"/>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -174,7 +173,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="60dp"
                 android:text="@string/follow_button"
-                android:visibility="gone"
+                android:visibility="@{userProfile.shouldShowFollow ? View.VISIBLE : View.GONE}"
                 tools:visibility="visible" />
 
             <ImageView

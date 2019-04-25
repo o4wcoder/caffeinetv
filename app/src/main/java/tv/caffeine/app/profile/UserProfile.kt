@@ -16,5 +16,7 @@ data class UserProfile(
         val avatarImageUrl: String,
         val mfaMethod: MfaMethod?,
         val stageImageUrl: String?,
-        val isLive: Boolean
+        val isLive: Boolean,
+        val isMe: Boolean,
+        val shouldShowFollow: Boolean = !isFollowed && !isMe
 )

@@ -59,7 +59,8 @@ class ProfileViewModel(
                 userDetails.avatarImageUrl,
                 userDetails.mfaMethod,
                 broadcastImageUrl,
-                isLive
+                isLive,
+                followManager.isSelf(userDetails.caid)
         )
     }
 
