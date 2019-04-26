@@ -121,7 +121,7 @@ jobs:
             - node_modules
       - run:
           name: Danger
-          command: yarn danger ci
+          command: yarn danger ci --failOnErrors 
 
   publish-to-play:
     <<: *defaults

@@ -1,4 +1,4 @@
-import { warn, danger } from "danger"
+import { warn, fail, danger } from "danger"
 const { _ } = require('lodash');
 
 // Encourage smaller PRs
@@ -31,7 +31,7 @@ for (let module of modules) {
 
     if (moduleChanges.edited && !testChanges.modified && !testChanges.created) {
         if (!danger.github.pr.body.match(new RegExp(`No ${module.sourceDirectory} test changes because`, 'i'))) {
-            warn(`No test changes were detected for module ${module.sourceDirectory}.
+            fail(`No test changes were detected for module ${module.sourceDirectory}.
 
 If there's a reason why you haven't added or changed any tests, please add text to the PR in the format:
 "No ${module.sourceDirectory} test changes because *your reason*" and link a JIRA ticket for any follow up work to make this change testable, if applicable.`);
