@@ -8,8 +8,7 @@ import tv.caffeine.app.profile.UserProfile
 import java.util.concurrent.TimeUnit
 
 /**
- * Share other's stage.
- * TODO: implement sharing the user's own stage.
+ * Build an intent to share other's stage or the user's own stage.
  */
 
 private const val stageUrlPrefix = "https://www.caffeine.tv"
@@ -28,6 +27,7 @@ class StageShareIntentBuilder(val userProfile: UserProfile, val sharerId: String
         val twitterUsername = userProfile.twitterUsername
         val url = buildShareUrl()
         return when {
+            userProfile.isMe -> resources.getString(R.string.share_own_stage, broadcastName, url)
             twitterUsername != null -> resources.getString(R.string.share_others_stage_with_twitter_username,
                     username, broadcastName, twitterUsername, url)
             else -> resources.getString(R.string.share_others_stage_without_twitter_username,
