@@ -7,13 +7,17 @@ import tv.caffeine.app.R
 import tv.caffeine.app.profile.UserProfile
 import java.util.concurrent.TimeUnit
 
-/**
- * Build an intent to share other's stage or the user's own stage.
- */
 
 private const val stageUrlPrefix = "https://www.caffeine.tv"
 
-class StageShareIntentBuilder(val userProfile: UserProfile, val sharerId: String?, val resources: Resources, val clock: Clock) {
+/**
+ * Build an intent to share other's stage or the user's own stage.
+ */
+class StageShareIntentBuilder(
+        private val userProfile: UserProfile,
+        private val sharerId: String?,
+        private val resources: Resources,
+        private val clock: Clock) {
 
     fun build(): Intent = Intent.createChooser(
             Intent(Intent.ACTION_SEND).apply {
