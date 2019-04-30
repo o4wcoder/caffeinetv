@@ -4,6 +4,8 @@ import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import io.mockk.mockk
+import org.webrtc.DefaultVideoDecoderFactory
+import org.webrtc.DefaultVideoEncoderFactory
 import org.webrtc.EglBase
 import org.webrtc.PeerConnectionFactory
 import tv.caffeine.app.api.AccountsService
@@ -53,6 +55,15 @@ class FakeWebRtcModule {
     @Provides
     @Singleton
     fun providesEglBase(): EglBase = mockk(relaxed = true)
+
+    @Provides
+    @Singleton
+    fun providesVideoEncoderFactory(eglBase: EglBase): DefaultVideoEncoderFactory = mockk(relaxed = true)
+
+
+    @Provides
+    @Singleton
+    fun providesVideoDecoderFactory(eglBase: EglBase): DefaultVideoDecoderFactory = mockk(relaxed = true)
 
     @Provides
     @Singleton

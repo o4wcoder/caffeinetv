@@ -217,15 +217,38 @@ class WebRtcModule {
 
     @Provides
     @Singleton
-    fun providesPeerConnectionFactory(context: Context, eglBase: EglBase, webRtcLoggable: Loggable?, webRtcLogLevel: Logging.Severity): PeerConnectionFactory {
-        val initializationOptions = PeerConnectionFactory.InitializationOptions
-                .builder(context)
-                .setInjectableLogger(webRtcLoggable, webRtcLogLevel)
-                .createInitializationOptions()
+    fun providesPeerConnectionFactoryInitializationOptions(
+            context: Context,
+            webRtcLoggable: Loggable?,
+            webRtcLogLevel: Logging.Severity
+    ) = PeerConnectionFactory.InitializationOptions
+            .builder(context)
+            .setInjectableLogger(webRtcLoggable, webRtcLogLevel)
+            .createInitializationOptions()
+
+    @Provides
+    @Singleton
+    fun providesPeerConnectionFactoryOptions() = PeerConnectionFactory.Options()
+
+    @Provides
+    @Singleton
+    fun providesVideoEncoderFactory(eglBase: EglBase) =
+            DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
+
+    @Provides
+    @Singleton
+    fun providesVideoDecoderFactory(eglBase: EglBase) =
+            DefaultVideoDecoderFactory(eglBase.eglBaseContext)
+
+    @Provides
+    @Singleton
+    fun providesPeerConnectionFactory(
+            initializationOptions: PeerConnectionFactory.InitializationOptions,
+            options: PeerConnectionFactory.Options,
+            videoEncoderFactory: DefaultVideoEncoderFactory,
+            videoDecoderFactory: DefaultVideoDecoderFactory
+    ): PeerConnectionFactory {
         PeerConnectionFactory.initialize(initializationOptions)
-        val options = PeerConnectionFactory.Options()
-        val videoEncoderFactory = DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
-        val videoDecoderFactory = DefaultVideoDecoderFactory(eglBase.eglBaseContext)
         return PeerConnectionFactory.builder()
                 .setOptions(options)
                 .setVideoEncoderFactory(videoEncoderFactory)
