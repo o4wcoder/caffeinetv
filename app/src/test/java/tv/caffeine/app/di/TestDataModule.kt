@@ -19,7 +19,8 @@ import javax.inject.Singleton
     AuthWatcherModule::class,
     FeatureConfigModule::class,
     FakeFacebookModule::class,
-    FakeFirebaseModule::class
+    FakeFirebaseModule::class,
+    ClockModule::class
 ])
 class TestDataModule
 
@@ -46,3 +47,4 @@ class FakeFirebaseModule {
     @Singleton
     fun providesFirebaseInstanceId(): FirebaseInstanceId = mockk(relaxed = true)
 }
+

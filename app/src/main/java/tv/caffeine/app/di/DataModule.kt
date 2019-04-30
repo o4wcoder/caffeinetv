@@ -7,6 +7,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
 import dagger.Module
 import dagger.Provides
+import org.threeten.bp.Clock
 import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.notifications.NotificationAuthWatcher
@@ -26,7 +27,8 @@ private const val CAFFEINE_SHARED_PREFERENCES = "caffeine"
     AuthWatcherModule::class,
     FeatureConfigModule::class,
     FacebookModule::class,
-    FirebaseModule::class
+    FirebaseModule::class,
+    ClockModule::class
 ])
 class DataModule
 
@@ -80,3 +82,11 @@ class FirebaseModule {
     @Singleton
     fun providesFirebaseInstanceId(): FirebaseInstanceId = FirebaseInstanceId.getInstance()
 }
+
+@Module
+class ClockModule {
+    @Provides
+    @Singleton
+    fun providesClock(): Clock = Clock.systemDefaultZone()
+}
+

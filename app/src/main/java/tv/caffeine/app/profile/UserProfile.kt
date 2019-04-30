@@ -18,5 +18,7 @@ data class UserProfile(
         val stageImageUrl: String?,
         val isLive: Boolean,
         val isMe: Boolean,
-        val shouldShowFollow: Boolean = !isFollowed && !isMe
+        val shouldShowFollow: Boolean = !isFollowed && !isMe,
+        val twitterUsername: String? = null,
+        val broadcastName: String? = null
 )

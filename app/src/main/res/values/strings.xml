@@ -137,7 +137,8 @@
         <item quantity="other"><![CDATA[<b>]]><xliff:g example="1k" id="followers_count">%s</xliff:g><![CDATA[</b>]]> followers</item>
     </plurals>
     <string name="stage_image_content_description">Stage image</string>
-    <string name="watching_caffeine_live_with_description">Watching <xliff:g example="caffeine" id="broadcaster">%1$s</xliff:g> LIVE: \"<xliff:g example="LIVE on Caffeine" id="stage_name">%2$s</xliff:g>\". #caffeinetv  https://www.caffeine.tv/<xliff:g example="caffeine" id="broadcaster">%1$s</xliff:g></string>
+    <string name="share_others_stage_with_twitter_username">Watching <xliff:g example="caffeine" id="broadcaster">%1$s</xliff:g> LIVE: \"<xliff:g example="LIVE on Caffeine" id="stage_name">%2$s</xliff:g>\". #caffeinetv <xliff:g example="@caffeine" id="twitter_username">%3$s</xliff:g> <xliff:g example="https://..." id="url">%4$s</xliff:g></string>
+    <string name="share_others_stage_without_twitter_username">Watching <xliff:g example="caffeine" id="broadcaster">%1$s</xliff:g> LIVE: \"<xliff:g example="LIVE on Caffeine" id="stage_name">%2$s</xliff:g>\". #caffeinetv <xliff:g example="https://..." id="url">%3$s</xliff:g></string>
     <string name="watching_caffeine_live">Watching caffeine LIVE. #caffeinetv  @caffeine</string>
     <string name="share_chooser_title">Share</string>
     <string name="buy_gold_button">Buy Gold</string>

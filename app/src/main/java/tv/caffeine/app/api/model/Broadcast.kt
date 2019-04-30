@@ -11,7 +11,8 @@ class Broadcast(
         private val previewImagePath: String,
         val state: State,
         val dateText: String,
-        val externalStreamId: String?
+        val externalStreamId: String?,
+        val twitterUsername: String?
 ) {
     val hasLiveHostedBroadcaster get() = liveHostedBroadcaster != null
     val previewImageUrl get() = "$IMAGES_BASE_URL$previewImagePath"

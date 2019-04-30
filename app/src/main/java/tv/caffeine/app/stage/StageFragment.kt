@@ -1,7 +1,6 @@
 package tv.caffeine.app.stage
 
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -29,6 +28,7 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.threeten.bp.Clock
 import org.webrtc.EglBase
 import org.webrtc.MediaCodecVideoDecoder
 import org.webrtc.RendererCommon
@@ -86,6 +86,7 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     @Inject lateinit var gson: Gson
     @Inject lateinit var isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
     @Inject lateinit var picasso: Picasso
+    @Inject lateinit var clock: Clock
 
     @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
@@ -183,6 +184,10 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         view.setOnClickListener { toggleAppBarVisibility() }
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
+            binding.shareButton?.setOnClickListener {
+                val sharerId = followManager.currentUserDetails()?.caid
+                startActivity(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
+            }
             binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
         })
         viewJob = launch {
@@ -499,16 +504,6 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
     }
 
     private fun configureButtons() {
-        binding.shareButton?.setOnClickListener {
-            profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    val textToShare = broadcastName?.let { getString(R.string.watching_caffeine_live_with_description, userProfile.username, it) } ?: getString(R.string.watching_caffeine_live)
-                    putExtra(Intent.EXTRA_TEXT, textToShare)
-                    type = "text/plain"
-                }
-                startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
-            })
-        }
         binding.chatButton?.setOnClickListener { openSendMessage() }
         binding.giftButton?.setOnClickListener {
             sendDigitalItemWithMessage(null)

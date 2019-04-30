@@ -60,7 +60,9 @@ class ProfileViewModel(
                 userDetails.mfaMethod,
                 broadcastImageUrl,
                 isLive,
-                followManager.isSelf(userDetails.caid)
+                followManager.isSelf(userDetails.caid),
+                twitterUsername = broadcastDetails?.twitterUsername,
+                broadcastName = broadcastDetails?.name
         )
     }
 
