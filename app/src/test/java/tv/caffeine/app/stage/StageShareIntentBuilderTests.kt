@@ -8,12 +8,12 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.threeten.bp.Clock
-import tv.caffeine.app.R
 import tv.caffeine.app.profile.UserProfile
 import java.util.concurrent.TimeUnit
 
@@ -43,40 +43,22 @@ class StageShareIntentBuilderTests {
 
     @Test
     fun `share text matches the pattern when other's stage is shared and the twitter username is available`() {
-        val delimiter = "+"
         val shareText = getShareText(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
-        val segments = resources
-                .getString(R.string.share_others_stage_with_twitter_username, delimiter, delimiter, delimiter, delimiter)
-                .split(delimiter)
-        for (text in segments) {
-            assertTrue(text in shareText)
-        }
+        assertEquals("Watching username LIVE: \"broadcastName\". #caffeinetv @twitterUsername https://www.caffeine.tv/username?bst=true&share_time=123&sharer_id=CAID456", shareText)
     }
 
     @Test
     fun `share text matches the pattern when other's stage is shared and the twitter username is unavailable`() {
         every { userProfile.twitterUsername } returns null
-        val delimiter = "+"
         val shareText = getShareText(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
-        val segments = resources
-                .getString(R.string.share_others_stage_without_twitter_username, delimiter, delimiter, delimiter)
-                .split(delimiter)
-        for (text in segments) {
-            assertTrue(text in shareText)
-        }
+        assertEquals("Watching username LIVE: \"broadcastName\". #caffeinetv https://www.caffeine.tv/username?bst=true&share_time=123&sharer_id=CAID456", shareText)
     }
 
     @Test
     fun `share text matches the pattern when the user's own stage is shared`() {
         every { userProfile.isMe } returns true
-        val delimiter = "+"
         val shareText = getShareText(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
-        val segments = resources
-                .getString(R.string.share_own_stage, delimiter, delimiter)
-                .split(delimiter)
-        for (text in segments) {
-            assertTrue(text in shareText)
-        }
+        assertEquals("I'm LIVE: \"broadcastName\". #caffeinetv https://www.caffeine.tv/username?bst=true&share_time=123&sharer_id=CAID456", shareText)
     }
 
     @Test
