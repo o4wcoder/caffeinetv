@@ -3,7 +3,14 @@ package tv.caffeine.app.di
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import tv.caffeine.app.MainActivity
-import tv.caffeine.app.auth.*
+import tv.caffeine.app.auth.ConfirmEmailFragment
+import tv.caffeine.app.auth.ForgotFragment
+import tv.caffeine.app.auth.LandingFragment
+import tv.caffeine.app.auth.LegalAgreementFragment
+import tv.caffeine.app.auth.MfaCodeFragment
+import tv.caffeine.app.auth.SignInFragment
+import tv.caffeine.app.auth.SignUpFragment
+import tv.caffeine.app.auth.TwitterAuthFragment
 import tv.caffeine.app.broadcast.BroadcastFragment
 import tv.caffeine.app.broadcast.LiveBroadcastPickerFragment
 import tv.caffeine.app.broadcast.UpcomingBroadcastFragment
@@ -13,9 +20,26 @@ import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
 import tv.caffeine.app.notifications.CaffeineFirebaseMessagingService
 import tv.caffeine.app.notifications.NotificationsFragment
-import tv.caffeine.app.profile.*
-import tv.caffeine.app.settings.*
-import tv.caffeine.app.stage.*
+import tv.caffeine.app.profile.DeleteAccountDialogFragment
+import tv.caffeine.app.profile.EditBioFragment
+import tv.caffeine.app.profile.MyProfileFragment
+import tv.caffeine.app.profile.ProfileFragment
+import tv.caffeine.app.profile.ReportDialogFragment
+import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
+import tv.caffeine.app.profile.UpdateEmailFragment
+import tv.caffeine.app.profile.UpdatePasswordFragment
+import tv.caffeine.app.settings.BuyGoldUsingCreditsDialogFragment
+import tv.caffeine.app.settings.DisconnectIdentityDialogFragment
+import tv.caffeine.app.settings.GoldAndCreditsFragment
+import tv.caffeine.app.settings.GoldBundlesFragment
+import tv.caffeine.app.settings.SettingsFragment
+import tv.caffeine.app.settings.TransactionHistoryFragment
+import tv.caffeine.app.stage.DICatalogFragment
+import tv.caffeine.app.stage.FriendsWatchingFragment
+import tv.caffeine.app.stage.SendDigitalItemFragment
+import tv.caffeine.app.stage.SendMessageFragment
+import tv.caffeine.app.stage.StageFragment
+import tv.caffeine.app.stage.StagePagerFragment
 import tv.caffeine.app.update.NeedsUpdateFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowingFragment
@@ -34,6 +58,7 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun lobbyFragment(): LobbyFragment
     @ContributesAndroidInjector abstract fun featuredProgramGuideFragment(): FeaturedProgramGuideFragment
     @ContributesAndroidInjector abstract fun stageFragment(): StageFragment
+    @ContributesAndroidInjector abstract fun stagePagerFragment(): StagePagerFragment
     @ContributesAndroidInjector abstract fun broadcastFragment(): BroadcastFragment
     @ContributesAndroidInjector abstract fun liveBroadcastPickerFragment(): LiveBroadcastPickerFragment
     @ContributesAndroidInjector abstract fun upcomingBroadcastFragment(): UpcomingBroadcastFragment
