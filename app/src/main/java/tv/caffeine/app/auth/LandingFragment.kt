@@ -2,9 +2,7 @@ package tv.caffeine.app.auth
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,11 +17,27 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.analytics.*
-import tv.caffeine.app.api.*
+import tv.caffeine.app.analytics.Analytics
+import tv.caffeine.app.analytics.AnalyticsEvent
+import tv.caffeine.app.analytics.FirebaseEvent
+import tv.caffeine.app.analytics.logEvent
+import tv.caffeine.app.analytics.logScreen
+import tv.caffeine.app.api.Account
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.CaffeineCredentials
+import tv.caffeine.app.api.FacebookTokenBody
+import tv.caffeine.app.api.NextAccountAction
+import tv.caffeine.app.api.OAuthCallbackResult
+import tv.caffeine.app.api.OAuthService
+import tv.caffeine.app.api.SignInBody
+import tv.caffeine.app.api.SignInResult
+import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.passwordErrorsString
+import tv.caffeine.app.api.usernameErrorsString
 import tv.caffeine.app.databinding.FragmentLandingBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.maybeShow
@@ -32,7 +46,7 @@ import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 
-class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
+class LandingFragment : CaffeineFragment(R.layout.fragment_landing), TwitterAuthFragment.Callback {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
@@ -53,14 +67,9 @@ class LandingFragment : CaffeineFragment(), TwitterAuthFragment.Callback {
         facebookLoginManager.registerCallback(callbackManager, facebookCallback)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        firebaseAnalytics.logScreen(this)
-        binding = FragmentLandingBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        firebaseAnalytics.logScreen(this)
+        binding = FragmentLandingBinding.bind(view)
         binding.newAccountButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.NewAccountClicked)
             firebaseAnalytics.logEvent(FirebaseEvent.NewAccountClicked)

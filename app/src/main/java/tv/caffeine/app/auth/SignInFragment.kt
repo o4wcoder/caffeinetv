@@ -2,9 +2,7 @@ package tv.caffeine.app.auth
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.core.view.isInvisible
 import androidx.fragment.app.viewModels
@@ -23,7 +21,7 @@ import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class SignInFragment : CaffeineFragment() {
+class SignInFragment : CaffeineFragment(R.layout.fragment_sign_in) {
 
     @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -31,13 +29,9 @@ class SignInFragment : CaffeineFragment() {
 
     private val signInViewModel: SignInViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return FragmentSignInBinding.inflate(inflater, container, false).run {
-            configure(this)
-            binding = this
-            root
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentSignInBinding.bind(view)
+        configure(binding)
     }
 
     private fun configure(binding: FragmentSignInBinding) {

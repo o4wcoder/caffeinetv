@@ -4,9 +4,7 @@ import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import org.webrtc.Camera2Enumerator
 import org.webrtc.CameraEnumerationAndroid
@@ -37,7 +35,7 @@ private const val VIDEO_WIDTH = 1920
 private const val VIDEO_HEIGHT = 1080
 private const val VIDEO_FPS = 30
 
-class BroadcastFragment : CaffeineFragment(), EasyPermissions.PermissionCallbacks {
+class BroadcastFragment : CaffeineFragment(R.layout.fragment_broadcast), EasyPermissions.PermissionCallbacks {
     @Inject lateinit var eglBase: EglBase
     private val eglBaseContext by lazy { eglBase.eglBaseContext }
     private val surfaceTextureHelper by lazy { SurfaceTextureHelper.create("captureHelper", eglBaseContext) }
@@ -51,13 +49,9 @@ class BroadcastFragment : CaffeineFragment(), EasyPermissions.PermissionCallback
     private var cameraCapture: CameraVideoCapturer? = null
     private var videoTrack: VideoTrack? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentBroadcastBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentBroadcastBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
         if (!Camera2Enumerator.isSupported(context)) {
             AlertDialogFragment.withMessage(R.string.camera2_api_not_supported)
             return Timber.e("Camera2 API not supported")

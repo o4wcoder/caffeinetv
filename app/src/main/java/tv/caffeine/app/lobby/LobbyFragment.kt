@@ -3,9 +3,7 @@ package tv.caffeine.app.lobby
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,7 +18,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LobbyFragment : CaffeineFragment() {
+class LobbyFragment : CaffeineFragment(R.layout.fragment_lobby) {
 
     @Inject lateinit var lobbyAdapter: LobbyAdapter
 
@@ -28,13 +26,10 @@ class LobbyFragment : CaffeineFragment() {
     private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        val binding = FragmentLobbyBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val binding = FragmentLobbyBinding.bind(view)
         configure(binding)
         this.binding = binding
-        return binding.root
     }
 
     private fun configure(binding: FragmentLobbyBinding) {

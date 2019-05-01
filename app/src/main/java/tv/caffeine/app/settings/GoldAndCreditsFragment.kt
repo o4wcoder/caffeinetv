@@ -2,9 +2,7 @@ package tv.caffeine.app.settings
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -24,20 +22,14 @@ enum class BuyGoldOption: Parcelable {
     UsingPlayStore, UsingCredits
 }
 
-class GoldAndCreditsFragment : CaffeineFragment() {
+class GoldAndCreditsFragment : CaffeineFragment(R.layout.fragment_gold_and_credits) {
     @Inject lateinit var picasso: Picasso
-    private lateinit var binding: FragmentGoldAndCreditsBinding
     private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentGoldAndCreditsBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-        }
-        binding.walletViewModel = walletViewModel
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val binding = FragmentGoldAndCreditsBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.walletViewModel = walletViewModel
         val numberFormat = NumberFormat.getIntegerInstance()
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
             binding.goldBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.gold_formatted, numberFormat.format(wallet.gold)))

@@ -1,9 +1,7 @@
 package tv.caffeine.app.users
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.R
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
@@ -26,16 +25,15 @@ import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
-class FollowingFragment : CaffeineFragment() {
+class FollowingFragment : CaffeineFragment(R.layout.user_list_fragment) {
 
     @Inject lateinit var caidListAdapter: CaidListAdapter
 
     private val viewModel: FollowingViewModel by viewModels { viewModelFactory }
     private val args by navArgs<FollowingFragmentArgs>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val binding = UserListFragmentBinding.inflate(layoutInflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val binding = UserListFragmentBinding.bind(view)
         caidListAdapter.fragmentManager = fragmentManager
         binding.userListRecyclerView.apply {
             adapter = caidListAdapter
@@ -45,7 +43,6 @@ class FollowingFragment : CaffeineFragment() {
         viewModel.following.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)
         })
-        return binding.root
     }
 }
 

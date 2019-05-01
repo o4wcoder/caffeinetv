@@ -2,9 +2,7 @@ package tv.caffeine.app.lobby
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -31,7 +29,7 @@ import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
-class LobbySwipeFragment : CaffeineFragment() {
+class LobbySwipeFragment : CaffeineFragment(R.layout.fragment_lobby_swipe) {
 
     @Inject lateinit var featureConfig: FeatureConfig
     @Inject lateinit var picasso: Picasso
@@ -49,12 +47,11 @@ class LobbySwipeFragment : CaffeineFragment() {
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         firebaseAnalytics.logScreen(this)
-        FragmentLobbySwipeBinding.inflate(inflater, container, false).apply {
+        FragmentLobbySwipeBinding.bind(view).apply {
             binding = this
             configure(this)
-            return root
         }
     }
 

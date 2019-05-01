@@ -1,9 +1,7 @@
 package tv.caffeine.app.profile
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -16,18 +14,13 @@ import tv.caffeine.app.databinding.FragmentUpdateEmailBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.showSnackbar
 
-class UpdateEmailFragment : CaffeineFragment() {
+class UpdateEmailFragment : CaffeineFragment(R.layout.fragment_update_email) {
 
     private lateinit var binding: FragmentUpdateEmailBinding
     private val viewModel: UpdateProfileViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = FragmentUpdateEmailBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentUpdateEmailBinding.bind(view)
         binding.updateButton.setOnClickListener {
             val currentPassword = binding.currentPasswordEditText.text.toString()
             val email = binding.emailEditText.text.toString()

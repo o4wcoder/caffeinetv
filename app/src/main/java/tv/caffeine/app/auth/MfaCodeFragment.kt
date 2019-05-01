@@ -4,9 +4,7 @@ package tv.caffeine.app.auth
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -18,9 +16,16 @@ import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.FirebaseEvent
 import tv.caffeine.app.analytics.logEvent
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.Account
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.MfaCode
+import tv.caffeine.app.api.SignInBody
+import tv.caffeine.app.api.SignInResult
+import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.otpErrorsString
 import tv.caffeine.app.databinding.FragmentMfaCodeBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.setOnActionGo
@@ -29,7 +34,7 @@ import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class MfaCodeFragment : CaffeineFragment() {
+class MfaCodeFragment : CaffeineFragment(R.layout.fragment_mfa_code) {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var gson: Gson
@@ -40,14 +45,8 @@ class MfaCodeFragment : CaffeineFragment() {
     private lateinit var binding: FragmentMfaCodeBinding
     private val args by navArgs<MfaCodeFragmentArgs>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        binding = FragmentMfaCodeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentMfaCodeBinding.bind(view)
         binding.submitMfaCodeButton.setOnClickListener { submitMfaCode() }
         binding.mfaCodeEditText.setOnActionGo { submitMfaCode() }
         binding.mfaCodeSubtitle.apply {

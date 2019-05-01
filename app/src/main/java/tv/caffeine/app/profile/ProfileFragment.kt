@@ -2,9 +2,7 @@ package tv.caffeine.app.profile
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -25,7 +23,7 @@ import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.navigateToUnfollowUserDialog
 import tv.caffeine.app.util.safeNavigate
 
-class ProfileFragment : CaffeineFragment() {
+class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
 
     private val viewModel: ProfileViewModel by viewModels { viewModelFactory }
     private val args by navArgs<ProfileFragmentArgs>()
@@ -59,9 +57,8 @@ class ProfileFragment : CaffeineFragment() {
         caid = args.caid
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentProfileBinding.bind(view)
         viewModel.load(caid)
         viewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
@@ -86,7 +83,6 @@ class ProfileFragment : CaffeineFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }
-        return binding.root
     }
 
     private fun showFollowingList() {

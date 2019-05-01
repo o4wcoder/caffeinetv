@@ -8,9 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TextView
 import androidx.annotation.UiThread
@@ -35,9 +33,19 @@ import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
 import tv.caffeine.app.analytics.FirebaseEvent
 import tv.caffeine.app.analytics.logEvent
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.CaffeineCredentials
+import tv.caffeine.app.api.SignUpAccount
+import tv.caffeine.app.api.SignUpBody
+import tv.caffeine.app.api.deniedErrorsString
+import tv.caffeine.app.api.dobErrorsString
+import tv.caffeine.app.api.emailErrorsString
+import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.passwordErrorsString
+import tv.caffeine.app.api.usernameErrorsString
 import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
@@ -49,7 +57,7 @@ import java.util.*
 import javax.inject.Inject
 
 
-class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
+class SignUpFragment : CaffeineFragment(R.layout.fragment_sign_up), DatePickerDialog.OnDateSetListener {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
@@ -61,14 +69,8 @@ class SignUpFragment : CaffeineFragment(), DatePickerDialog.OnDateSetListener {
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val args by navArgs<SignUpFragmentArgs>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        binding = FragmentSignUpBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentSignUpBinding.bind(view)
         binding.signUpButton.setOnClickListener { signUpClicked() }
         binding.agreeToLegalTextView.apply {
             text = convertLinks(R.string.i_agree_to_legal, resources, ::legalDocLinkSpanFactory)

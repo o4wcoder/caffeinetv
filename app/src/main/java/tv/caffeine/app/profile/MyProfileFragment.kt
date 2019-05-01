@@ -7,9 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
@@ -36,7 +34,12 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.ui.setOnAction
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.decodeToBitmap
+import tv.caffeine.app.util.getBitmapInSampleSize
+import tv.caffeine.app.util.maybeShow
+import tv.caffeine.app.util.navigateToLanding
+import tv.caffeine.app.util.rotate
+import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.wallet.WalletViewModel
 import java.io.File
 import java.text.NumberFormat
@@ -47,7 +50,7 @@ import javax.inject.Inject
 private const val REQUEST_GET_PHOTO = 1
 private const val CAMERA_IMAGE_PATH = "CAMERA_IMAGE_PATH"
 
-class MyProfileFragment : CaffeineFragment() {
+class MyProfileFragment : CaffeineFragment(R.layout.fragment_my_profile) {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var tokenStore: TokenStore
@@ -78,14 +81,9 @@ class MyProfileFragment : CaffeineFragment() {
         outState.putString(CAMERA_IMAGE_PATH, cameraImagePath)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = FragmentMyProfileBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentMyProfileBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
         viewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
         })

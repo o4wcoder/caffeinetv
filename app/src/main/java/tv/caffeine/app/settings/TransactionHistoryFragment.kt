@@ -2,9 +2,7 @@ package tv.caffeine.app.settings
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -17,31 +15,26 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.PaddingItemDecoration
 import javax.inject.Inject
 
-class TransactionHistoryFragment : CaffeineFragment() {
+class TransactionHistoryFragment : CaffeineFragment(R.layout.fragment_transaction_history) {
 
     @Inject lateinit var adapter: TransactionHistoryAdapter
 
-    private lateinit var binding: FragmentTransactionHistoryBinding
     private val viewModel: TransactionHistoryViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        binding = FragmentTransactionHistoryBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            transactionHistoryRecyclerView.adapter = adapter
-            val padding = resources.getDimensionPixelSize(R.dimen.margin_line_spacing)
-            val paddingItemDecoration = PaddingItemDecoration(paddingLeft = 0, paddingTop = padding, paddingRight = 0, paddingBottom = padding)
-            transactionHistoryRecyclerView.addItemDecoration(paddingItemDecoration)
-            val drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.gray_top_divider) }
-            if (drawable != null) {
-                transactionHistoryRecyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply { setDrawable(drawable) })
-            }
-        }
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val binding = FragmentTransactionHistoryBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.transactionHistoryRecyclerView.adapter = adapter
+        val padding = resources.getDimensionPixelSize(R.dimen.margin_line_spacing)
+        val paddingItemDecoration = PaddingItemDecoration(paddingLeft = 0, paddingTop = padding, paddingRight = 0, paddingBottom = padding)
+        binding.transactionHistoryRecyclerView.addItemDecoration(paddingItemDecoration)
+        val drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.gray_top_divider) }
+        if (drawable != null) {
+            val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
+                setDrawable(drawable)
+            }
+            binding.transactionHistoryRecyclerView.addItemDecoration(dividerItemDecoration)
+        }
         viewModel.transactionHistory.observe(viewLifecycleOwner, Observer { result ->
             Timber.d("Got transaction history results")
             handle(result) { paymentsEnvelope ->

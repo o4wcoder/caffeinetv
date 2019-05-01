@@ -2,9 +2,7 @@ package tv.caffeine.app.auth
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.UiThread
 import androidx.core.view.isInvisible
@@ -13,7 +11,11 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.ForgotPasswordBody
+import tv.caffeine.app.api.emailErrorsString
+import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.databinding.FragmentForgotBinding
@@ -22,20 +24,15 @@ import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class ForgotFragment : CaffeineFragment() {
+class ForgotFragment : CaffeineFragment(R.layout.fragment_forgot) {
 
     @Inject lateinit var accountsService: AccountsService
     @Inject lateinit var gson: Gson
 
     private lateinit var binding: FragmentForgotBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = FragmentForgotBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentForgotBinding.bind(view)
         binding.sendEmailButton.setOnClickListener { sendForgotPasswordEmail() }
         binding.emailEditText.setOnAction(EditorInfo.IME_ACTION_SEND) { sendForgotPasswordEmail() }
     }

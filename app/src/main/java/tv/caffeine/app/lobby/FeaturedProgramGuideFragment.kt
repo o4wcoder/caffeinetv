@@ -1,9 +1,7 @@
 package tv.caffeine.app.lobby
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -12,23 +10,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
-class FeaturedProgramGuideFragment : CaffeineFragment() {
+class FeaturedProgramGuideFragment : CaffeineFragment(R.layout.fragment_featured_program_guide) {
 
     @Inject lateinit var guideAdapter: FeaturedProgramGuideAdapter
     private var binding: FragmentFeaturedProgramGuideBinding? = null
     private val viewModel: FeaturedProgramGuideViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentFeaturedProgramGuideBinding.inflate(inflater, container, false).run {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentFeaturedProgramGuideBinding.bind(view).apply {
             configure(this)
-            binding = this
-            root
         }
     }
 

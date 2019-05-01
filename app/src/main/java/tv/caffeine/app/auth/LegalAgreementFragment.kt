@@ -4,9 +4,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -32,19 +30,15 @@ import tv.caffeine.app.util.convertLinks
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
-class LegalAgreementFragment : CaffeineFragment() {
+class LegalAgreementFragment : CaffeineFragment(R.layout.fragment_legal_agreement) {
 
     private lateinit var binding: FragmentLegalAgreementBinding
 
     private val legalAgreementViewModel: LegalAgreementViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentLegalAgreementBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentLegalAgreementBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.legalAgreementTextView.apply {
             text = convertLinks(R.string.must_agree_to_legal, resources, ::legalDocLinkSpanFactory)
             movementMethod = LinkMovementMethod.getInstance()

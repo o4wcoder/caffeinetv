@@ -1,8 +1,14 @@
 package tv.caffeine.app.ui
 
+import android.content.Context
 import android.os.Bundle
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import dagger.android.support.DaggerFragment
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -12,11 +18,26 @@ import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.isVersionCheckError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.di.ViewModelFactory
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.isNetworkAvailable
+import tv.caffeine.app.util.navigateToLanding
+import tv.caffeine.app.util.navigateToNeedsUpdate
+import tv.caffeine.app.util.navigateToNoNetwork
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class CaffeineFragment : DaggerFragment(), CoroutineScope {
+abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId),
+        HasSupportFragmentInjector, CoroutineScope {
+
+    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var dispatchConfig: DispatchConfig
 

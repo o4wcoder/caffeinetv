@@ -7,9 +7,7 @@ import android.net.NetworkRequest
 import android.os.Bundle
 import android.text.Spannable
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
@@ -76,7 +74,7 @@ import kotlin.collections.set
 private const val PICK_DIGITAL_ITEM = 0
 private const val SEND_MESSAGE = 1
 
-class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessageFragment.Callback {
+class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragment.Callback, SendMessageFragment.Callback {
 
     @Inject lateinit var factory: NewReyesController.Factory
     @Inject lateinit var eglBase: EglBase
@@ -166,21 +164,16 @@ class StageFragment : CaffeineFragment(), DICatalogFragment.Callback, SendMessag
         super.onDestroy()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    private var viewJob: Job? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         activity?.apply {
             setDarkMode(true)
             setImmersiveSticky()
         }
         // Inflate the layout for this fragment
-        binding = FragmentStageBinding.inflate(inflater, container, false)
+        binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
-        return binding.root
-    }
-
-    private var viewJob: Job? = null
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.setOnClickListener { toggleAppBarVisibility() }
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile

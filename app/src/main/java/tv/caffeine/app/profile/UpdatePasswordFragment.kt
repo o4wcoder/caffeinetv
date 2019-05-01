@@ -1,12 +1,11 @@
 package tv.caffeine.app.profile
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import tv.caffeine.app.R
 import tv.caffeine.app.api.currentPasswordErrorsString
 import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
@@ -14,17 +13,12 @@ import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.databinding.FragmentUpdatePasswordBinding
 import tv.caffeine.app.ui.CaffeineFragment
 
-class UpdatePasswordFragment : CaffeineFragment() {
+class UpdatePasswordFragment : CaffeineFragment(R.layout.fragment_update_password) {
     private lateinit var binding: FragmentUpdatePasswordBinding
     private val viewModel: UpdateProfileViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        binding = FragmentUpdatePasswordBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding = FragmentUpdatePasswordBinding.bind(view)
         binding.updateButton.setOnClickListener {
             val currentPassword = binding.currentPasswordEditText.text.toString()
             val password1 = binding.password1EditText.text.toString()
