@@ -1,15 +1,11 @@
 package tv.caffeine.app.stage
 
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.text.Spannable
 import android.util.TypedValue
 import android.view.View
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
-import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -53,11 +49,9 @@ import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.CropBorderedCircleTransformation
 import tv.caffeine.app.util.broadcasterUsername
 import tv.caffeine.app.util.getHexColor
-import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
-import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 import kotlin.collections.set
@@ -97,8 +91,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         super.onCreate(savedInstanceState)
         broadcasterUsername = args.broadcasterUsername()
         retainInstance = true
-        context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
-                NetworkRequest.Builder().build(), networkCallback)
 
         launch {
             connectStage()
@@ -107,7 +99,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
 
     private var connectStageJob: Job? = null
 
-    private fun connectStage() {
+    fun connectStage() {
         if (connectStageJob == null) {
             connectStageJob = launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
@@ -120,7 +112,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         }
     }
 
-    private fun disconnectStage() {
+    fun disconnectStage() {
         connectStageJob?.cancel()
         connectStageJob = null
         disconnectStreams()
@@ -136,7 +128,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
 
     override fun onDestroy() {
         disconnectStage()
-        context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
         super.onDestroy()
     }
 
@@ -531,37 +522,4 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         renderers.clear()
     }
 
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        private var wasNetworkLost = false
-
-        override fun onAvailable(network: Network?) {
-            super.onAvailable(network)
-            if (wasNetworkLost) {
-                wasNetworkLost = false
-                launch {
-                    connectStage()
-                }
-            }
-        }
-
-        /**
-         * 1. AP on, wifi off -> stage -> wifi on -> AP off -> isNetworkAvailable = true -> connectStage()
-         * 2. AP on, wifi on -> stage -> wifi off -> isNetworkAvailable = false -> onAvailable() -> connectStage()
-         * 3. Wifi on, AP on/off -> stage -> AP off/on -> no callbacks
-         *
-         * There is a potential Android bug in scenario #1 after the "wifi on" step.
-         * The data is still being funneled through AP, but Android thinks wifi is the active network.
-         * When we turn off AP, we need to disconnect the stage on AP and re-connect it on wifi.
-         */
-        override fun onLost(network: Network?) {
-            super.onLost(network)
-            wasNetworkLost = true
-            disconnectStage()
-            if (context?.isNetworkAvailable() == true) {
-                launch {
-                    connectStage()
-                }
-            }
-        }
-    }
 }
