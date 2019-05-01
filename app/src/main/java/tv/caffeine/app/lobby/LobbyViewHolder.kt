@@ -230,7 +230,7 @@ open class LiveBroadcastCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStageFragment(item.broadcaster.user.username)
+            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
@@ -266,7 +266,7 @@ class LiveBroadcastWithFriendsCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStageFragment(broadcaster.user.username)
+            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }

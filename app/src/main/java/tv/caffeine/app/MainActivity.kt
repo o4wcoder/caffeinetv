@@ -26,7 +26,15 @@ import tv.caffeine.app.analytics.NotificationEvent
 import tv.caffeine.app.analytics.Profiling
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.ActivityMainBinding
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.closeNoNetwork
+import tv.caffeine.app.util.dismissKeyboard
+import tv.caffeine.app.util.isNetworkAvailable
+import tv.caffeine.app.util.navigateToNoNetwork
+import tv.caffeine.app.util.notificationId
+import tv.caffeine.app.util.notificationTag
+import tv.caffeine.app.util.safeUnregisterNetworkCallback
+import tv.caffeine.app.util.setImmersiveSticky
+import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
 private val destinationsWithCustomToolbar = arrayOf(
@@ -36,7 +44,7 @@ private val destinationsWithCustomToolbar = arrayOf(
         R.id.signUpFragment,
         R.id.forgotFragment,
         R.id.mfaCodeFragment,
-        R.id.stageFragment,
+        R.id.stagePagerFragment,
         R.id.needsUpdateFragment)
 
 private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)

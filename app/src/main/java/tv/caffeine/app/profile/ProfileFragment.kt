@@ -96,6 +96,6 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
     }
 
     private fun watchBroadcast(username: String) {
-        findNavController().safeNavigate(ProfileFragmentDirections.actionProfileFragmentToStageFragment(username))
+        findNavController().safeNavigate(ProfileFragmentDirections.actionProfileFragmentToStagePagerFragment(username))
     }
 }

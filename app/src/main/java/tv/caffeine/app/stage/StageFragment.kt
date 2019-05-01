@@ -1,13 +1,14 @@
 package tv.caffeine.app.stage
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.text.Spannable
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
@@ -28,7 +29,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
 import org.webrtc.EglBase
-import org.webrtc.MediaCodecVideoDecoder
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
@@ -67,7 +67,6 @@ import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.showSnackbar
-import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 import kotlin.collections.set
 
@@ -101,17 +100,12 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
     private var isMe = false
-    private val args by navArgs<StageFragmentArgs>()
+    private val args by navArgs<StagePagerFragmentArgs>()
     @VisibleForTesting var stageIsLive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         broadcasterUsername = args.broadcasterUsername()
-        if (!MediaCodecVideoDecoder.isH264HwSupported()) {
-            Timber.e(Exception("Failed to decode H264"))
-            findNavController().safeNavigate(MainNavDirections.actionGlobalHardwareNotSupportedFragment())
-            return
-        }
         sessionCheckViewModel.sessionCheck.observe(this, Observer { result ->
             handle(result) {}
         })
@@ -167,10 +161,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
     private var viewJob: Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activity?.apply {
-            setDarkMode(true)
-            setImmersiveSticky()
-        }
         // Inflate the layout for this fragment
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -246,18 +236,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         viewJob?.cancel()
         viewJob = null
         deinitSurfaceViewRenderers()
-        activity?.apply {
-            unsetImmersiveSticky()
-            setDarkMode(false)
-
-            getPreferences(Context.MODE_PRIVATE)?.let {
-                val key = getString(R.string.is_first_time_on_stage)
-                if (it.getBoolean(key, true)) {
-                    // This will re-enable the immersive mode function in MainActivity.onWindowFocusChanged().
-                    it.edit().putBoolean(key, false).apply()
-                }
-            }
-        }
         super.onDestroyView()
     }
 
@@ -484,7 +462,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         binding.friendsWatchingButton?.setOnClickListener {
             val fragmentManager = fragmentManager ?: return@setOnClickListener
             val fragment = FriendsWatchingFragment()
-            val action = StageFragmentDirections.actionStageFragmentToFriendsWatchingFragment(stageIdentifier)
+            val action = StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(stageIdentifier)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "FW")
         }
@@ -530,7 +508,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
     override fun sendDigitalItemWithMessage(message: String?) {
         val fragmentManager = fragmentManager ?: return
         val fragment = DICatalogFragment()
-        val action = StageFragmentDirections.actionStageFragmentToDigitalItemListDialogFragment(broadcasterUsername, message)
+        val action = StagePagerFragmentDirections.actionStagePagerFragmentToDigitalItemListDialogFragment(broadcasterUsername, message)
         fragment.setTargetFragment(this, PICK_DIGITAL_ITEM)
         fragment.arguments = action.arguments
         fragment.show(fragmentManager, "DI")
@@ -544,7 +522,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
     private fun openSendMessage(message: String? = null) {
         val fragmentManager = fragmentManager ?: return
         val fragment = SendMessageFragment()
-        val action = StageFragmentDirections.actionStageFragmentToSendMessageFragment(message, !isMe)
+        val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendMessageFragment(message, !isMe)
         fragment.arguments = action.arguments
         fragment.show(fragmentManager, "sendMessage")
         fragment.setTargetFragment(this, SEND_MESSAGE)
@@ -555,7 +533,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         launch {
             val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
             val fragment = SendDigitalItemFragment()
-            val action = StageFragmentDirections.actionStageFragmentToSendDigitalItemFragment(digitalItem.id, userDetails.caid, message)
+            val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendDigitalItemFragment(digitalItem.id, userDetails.caid, message)
             fragment.arguments = action.arguments
             fragment.show(fm, "sendDigitalItem")
         }

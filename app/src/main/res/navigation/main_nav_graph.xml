@@ -160,8 +160,8 @@
             android:id="@+id/action_lobbySwipeFragment_to_myProfileFragment"
             app:destination="@+id/myProfileFragment"/>
         <action
-            android:id="@+id/action_lobbySwipeFragment_to_stageFragment"
-            app:destination="@+id/stageFragment"/>
+            android:id="@+id/action_lobbySwipeFragment_to_stagePagerFragment"
+            app:destination="@+id/stagePagerFragment"/>
     </fragment>
     <fragment
         android:id="@+id/lobbyFragment"
@@ -179,7 +179,12 @@
         android:id="@+id/stageFragment"
         android:name="tv.caffeine.app.stage.StageFragment"
         android:label="@string/stage"
-        tools:layout="@layout/fragment_stage" >
+        tools:layout="@layout/fragment_stage" />
+    <fragment
+        android:id="@+id/stagePagerFragment"
+        android:name="tv.caffeine.app.stage.StagePagerFragment"
+        android:label="@string/stage"
+        tools:layout="@layout/fragment_stage_pager" >
         <argument
             android:name="broadcastLink"
             app:argType="string"/>
@@ -195,16 +200,16 @@
         <deepLink
             app:uri="preview.caffeine.tv/{broadcastLink}"/>
         <action
-            android:id="@+id/action_stageFragment_to_friendsWatchingFragment"
+            android:id="@+id/action_stagePagerFragment_to_friendsWatchingFragment"
             app:destination="@+id/friendsWatchingFragment"/>
         <action
-            android:id="@+id/action_stageFragment_to_digitalItemListDialogFragment"
+            android:id="@+id/action_stagePagerFragment_to_digitalItemListDialogFragment"
             app:destination="@+id/digitalItemListDialogFragment"/>
         <action
-            android:id="@+id/action_stageFragment_to_sendMessageFragment"
+            android:id="@+id/action_stagePagerFragment_to_sendMessageFragment"
             app:destination="@id/sendMessageFragment" />
         <action
-            android:id="@+id/action_stageFragment_to_sendDigitalItemFragment"
+            android:id="@+id/action_stagePagerFragment_to_sendDigitalItemFragment"
             app:destination="@id/sendDigitalItemFragment" />
     </fragment>
     <fragment
@@ -342,9 +347,9 @@
             android:id="@+id/action_profileFragment_to_followingFragment"
             app:destination="@+id/followingFragment"/>
         <action
-            android:id="@+id/action_profileFragment_to_stageFragment"
+            android:id="@+id/action_profileFragment_to_stagePagerFragment"
             app:popUpTo="@id/lobbySwipeFragment"
-            app:destination="@+id/stageFragment"/>
+            app:destination="@+id/stagePagerFragment"/>
     </fragment>
     <fragment
         android:id="@+id/reportOrIgnoreDialogFragment"

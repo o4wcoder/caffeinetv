@@ -1,6 +1,6 @@
 package tv.caffeine.app.util
 
-import tv.caffeine.app.stage.StageFragmentArgs
+import tv.caffeine.app.stage.StagePagerFragmentArgs
 
-fun StageFragmentArgs.broadcasterUsername() = broadcastLink.substringBefore('?').substringBefore('/')
+fun StagePagerFragmentArgs.broadcasterUsername() = broadcastLink.substringBefore('?').substringBefore('/')
 
