@@ -81,7 +81,7 @@ sealed class LegalAgreementOutcome {
     class Failure(val exception: Throwable) : LegalAgreementOutcome()
 }
 
-class LegalAgreementViewModel(
+class LegalAgreementViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val acceptLegalUseCase: AcceptLegalUseCase
 ) : CaffeineViewModel(dispatchConfig) {

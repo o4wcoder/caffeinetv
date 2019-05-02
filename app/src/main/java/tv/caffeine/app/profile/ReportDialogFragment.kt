@@ -83,7 +83,7 @@ class ReportDialogFragment : CaffeineDialogFragment() {
     }
 }
 
-class ReportUserViewModel(
+class ReportUserViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val usersService: UsersService,
         private val gson: Gson

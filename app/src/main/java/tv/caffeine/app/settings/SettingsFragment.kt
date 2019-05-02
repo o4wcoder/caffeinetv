@@ -29,8 +29,20 @@ import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.*
-import tv.caffeine.app.api.model.*
+import tv.caffeine.app.api.AccountsService
+import tv.caffeine.app.api.FacebookTokenBody
+import tv.caffeine.app.api.NotificationSettings
+import tv.caffeine.app.api.OAuthCallbackResult
+import tv.caffeine.app.api.OAuthService
+import tv.caffeine.app.api.UsersService
+import tv.caffeine.app.api.isIdentityRateLimitExceeded
+import tv.caffeine.app.api.model.CaffeineEmptyResult
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.IdentityProvider
+import tv.caffeine.app.api.model.MfaMethod
+import tv.caffeine.app.api.model.User
+import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.auth.TwitterAuthFragment
 import tv.caffeine.app.di.ViewModelFactory
@@ -287,7 +299,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     }
 }
 
-class SettingsViewModel(
+class SettingsViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val tokenStore: TokenStore,
         private val followManager: FollowManager,
@@ -355,7 +367,7 @@ class SettingsViewModel(
     }
 }
 
-class NotificationSettingsViewModel(
+class NotificationSettingsViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val accountsService: AccountsService,
         private val gson: Gson

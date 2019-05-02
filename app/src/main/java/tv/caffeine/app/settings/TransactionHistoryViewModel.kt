@@ -9,8 +9,9 @@ import tv.caffeine.app.api.TransactionHistoryPayload
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
-class TransactionHistoryViewModel(
+class TransactionHistoryViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val transactionHistoryUseCase: TransactionHistoryUseCase
 ): CaffeineViewModel(dispatchConfig) {

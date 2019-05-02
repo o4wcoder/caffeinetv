@@ -4,10 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.launch
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.NextAccountAction
+import tv.caffeine.app.api.SignInResult
+import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.passwordErrorsString
+import tv.caffeine.app.api.usernameErrorsString
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
 sealed class SignInOutcome {
     object Success : SignInOutcome()
@@ -17,7 +23,7 @@ sealed class SignInOutcome {
     class Failure(val exception: Throwable) : SignInOutcome()
 }
 
-class SignInViewModel(
+class SignInViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val signInUseCase: SignInUseCase
 ) : CaffeineViewModel(dispatchConfig) {

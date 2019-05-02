@@ -13,8 +13,9 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
-class NotificationsViewModel(
+class NotificationsViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val gson: Gson,
         private val usersService: UsersService,

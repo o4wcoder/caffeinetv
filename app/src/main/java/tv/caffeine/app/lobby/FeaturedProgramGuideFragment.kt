@@ -47,7 +47,7 @@ class FeaturedProgramGuideFragment : CaffeineFragment(R.layout.fragment_featured
     }
 }
 
-class FeaturedProgramGuideViewModel(
+class FeaturedProgramGuideViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val loadFeaturedProgramGuideUseCase: LoadFeaturedProgramGuideUseCase
 ) : CaffeineViewModel(dispatchConfig) {

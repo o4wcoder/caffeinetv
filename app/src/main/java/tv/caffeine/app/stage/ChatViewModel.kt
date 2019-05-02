@@ -25,10 +25,11 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
 private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
 
-class ChatViewModel(
+class ChatViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         context: Context,
         private val realtime: Realtime,

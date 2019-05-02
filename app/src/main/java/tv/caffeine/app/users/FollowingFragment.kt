@@ -46,7 +46,7 @@ class FollowingFragment : CaffeineFragment(R.layout.user_list_fragment) {
     }
 }
 
-class FollowingViewModel(
+class FollowingViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val gson: Gson,
         private val usersService: UsersService

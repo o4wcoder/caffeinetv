@@ -10,8 +10,9 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
-class FriendsWatchingViewModel(
+class FriendsWatchingViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         private val friendsWatchingControllerFactory: FriendsWatchingController.Factory

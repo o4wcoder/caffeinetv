@@ -22,7 +22,11 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSendDigitalItemBinding
-import tv.caffeine.app.ui.*
+import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
+import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.ui.formatUsernameAsHtml
+import tv.caffeine.app.ui.prepopulateText
+import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.DigitalItemRepository
 import tv.caffeine.app.wallet.WalletViewModel
@@ -104,7 +108,7 @@ class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
 
 }
 
-class SendDigitalItemViewModel(
+class SendDigitalItemViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val gson: Gson,
         private val digitalItemRepository: DigitalItemRepository,

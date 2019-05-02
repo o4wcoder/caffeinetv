@@ -19,7 +19,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.BroadcastsService
@@ -86,7 +90,7 @@ class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
     }
 }
 
-class GuideViewModel(
+class GuideViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val broadcastsService: BroadcastsService,
         private val gson: Gson

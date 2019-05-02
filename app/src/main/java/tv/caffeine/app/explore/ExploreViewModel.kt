@@ -8,8 +8,9 @@ import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
-class ExploreViewModel(
+class ExploreViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val findBroadcastersUseCase: FindBroadcastersUseCase
 ) : CaffeineViewModel(dispatchConfig) {

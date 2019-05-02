@@ -77,7 +77,7 @@ class DeleteAccountDialogFragment : CaffeineDialogFragment() {
     }
 }
 
-class DeleteAccountViewModel(
+class DeleteAccountViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val accountsService: AccountsService,
         private val tokenStore: TokenStore,

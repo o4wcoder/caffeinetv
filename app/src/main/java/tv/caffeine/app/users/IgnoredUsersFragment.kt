@@ -38,7 +38,7 @@ class IgnoredUsersFragment : CaffeineFragment(R.layout.user_list_fragment) {
     }
 }
 
-class IgnoredUsersViewModel(
+class IgnoredUsersViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val gson: Gson,
         private val tokenStore: TokenStore,

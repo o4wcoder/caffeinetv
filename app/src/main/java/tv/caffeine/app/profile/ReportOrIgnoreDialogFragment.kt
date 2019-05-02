@@ -81,7 +81,7 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
     }
 }
 
-class IgnoreUserViewModel(
+class IgnoreUserViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val tokenStore: TokenStore,
         private val usersService: UsersService,

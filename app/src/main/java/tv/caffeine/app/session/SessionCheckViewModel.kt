@@ -8,8 +8,9 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
-class SessionCheckViewModel(
+class SessionCheckViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val tokenStore: TokenStore
 ) : CaffeineViewModel(dispatchConfig) {

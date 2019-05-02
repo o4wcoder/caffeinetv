@@ -6,7 +6,13 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.SkuDetailsParams
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -22,6 +28,7 @@ import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.WalletRepository
+import javax.inject.Inject
 import kotlin.coroutines.resume
 
 sealed class PurchaseStatus {
@@ -32,7 +39,7 @@ sealed class PurchaseStatus {
     data class GooglePlayError(val responseCode: Int) : PurchaseStatus()
 }
 
-class GoldBundlesViewModel(
+class GoldBundlesViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         context: Context,
         private val tokenStore: TokenStore,

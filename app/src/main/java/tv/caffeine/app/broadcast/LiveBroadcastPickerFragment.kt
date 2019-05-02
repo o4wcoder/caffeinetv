@@ -27,7 +27,12 @@ import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeFollowedLobbyLight
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
-import tv.caffeine.app.lobby.*
+import tv.caffeine.app.lobby.LiveBroadcast
+import tv.caffeine.app.lobby.LiveBroadcastPickerCard
+import tv.caffeine.app.lobby.LobbyItem
+import tv.caffeine.app.lobby.LobbyViewHolder
+import tv.caffeine.app.lobby.UpcomingButtonCard
+import tv.caffeine.app.lobby.UpcomingButtonItem
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.CaffeineViewModel
@@ -101,7 +106,7 @@ class LiveBroadcastPickerFragment : CaffeineBottomSheetDialogFragment() {
     }
 }
 
-class LiveHostableBroadcastersViewModel(
+class LiveHostableBroadcastersViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val broadcastsService: BroadcastsService,
         private val gson: Gson

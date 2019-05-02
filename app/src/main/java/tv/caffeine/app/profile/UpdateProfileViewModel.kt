@@ -7,8 +7,9 @@ import tv.caffeine.app.api.AccountUpdateResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
-class UpdateProfileViewModel(
+class UpdateProfileViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val updateEmailUseCase: UpdateEmailUseCase,
         private val updatePasswordUseCase: UpdatePasswordUseCase

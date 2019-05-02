@@ -14,8 +14,9 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import java.text.NumberFormat
+import javax.inject.Inject
 
-class ProfileViewModel(
+class ProfileViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         val followManager: FollowManager
 ) : CaffeineViewModel(dispatchConfig) {

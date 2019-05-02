@@ -16,8 +16,9 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.DispatchConfig
+import javax.inject.Inject
 
-class LobbyViewModel(
+class LobbyViewModel @Inject constructor(
         dispatchConfig: DispatchConfig,
         private val followManager: FollowManager,
         private val loadLobbyUseCase: LoadLobbyUseCase,

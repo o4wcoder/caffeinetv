@@ -1,6 +1,9 @@
 package tv.caffeine.app.di
 
+import androidx.lifecycle.ViewModel
+import dagger.MapKey
 import javax.inject.Qualifier
+import kotlin.reflect.KClass
 
 
 @Qualifier
@@ -46,3 +49,8 @@ annotation class CaffeineApi(val api: Service)
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ClientType(val authorizationType: AuthorizationType)
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+@Retention(AnnotationRetention.RUNTIME)
+@MapKey
+annotation class ViewModelKey(val value: KClass<out ViewModel>)

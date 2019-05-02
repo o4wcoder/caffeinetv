@@ -2,16 +2,17 @@ package tv.caffeine.app.di
 
 import android.content.Context
 import android.content.res.Resources
-import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import dagger.Module
 import dagger.Provides
 import tv.caffeine.app.R
-import tv.caffeine.app.util.CropBorderedCircleTransformation
 import tv.caffeine.app.util.UserTheme
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [
+    UserThemeModule::class,
+    ViewModelBinds::class
+])
 class UIModule {
     @Provides
     fun providesResources(context: Context): Resources = context.resources
@@ -19,6 +20,10 @@ class UIModule {
     @Provides
     fun providesRecycledViewPool() = RecyclerView.RecycledViewPool()
 
+}
+
+@Module
+class UserThemeModule {
     @Provides
     @Singleton
     @ThemeFollowedExplore
