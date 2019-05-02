@@ -48,7 +48,7 @@ import tv.caffeine.app.util.NoNetworkFragment
 
 @Module
 abstract class InjectionModule {
-    @ContributesAndroidInjector abstract fun mainActivity(): MainActivity
+    @ContributesAndroidInjector(modules = [NavHostModule::class]) abstract fun mainActivity(): MainActivity
     @ContributesAndroidInjector abstract fun caffeineFirebaseMessagingService(): CaffeineFirebaseMessagingService
     @ContributesAndroidInjector abstract fun signInFragment(): SignInFragment
     @ContributesAndroidInjector abstract fun signUpFragment(): SignUpFragment
