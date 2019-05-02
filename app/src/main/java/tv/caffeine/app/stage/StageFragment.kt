@@ -161,9 +161,9 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
                     val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, null, null) as Spannable
                     binding.saySomethingTextView?.text = html
                     binding.stageToolbar.apply {
-                        inflateMenu(R.menu.stage_menu)
-                        menu.findItem(R.id.stage_overflow_menu).setOnMenuItemClickListener {
-                            if (it.itemId == R.id.stage_overflow_menu) {
+                        inflateMenu(R.menu.overflow_menu)
+                        menu.findItem(R.id.overflow_menu_item).setOnMenuItemClickListener {
+                            if (it.itemId == R.id.overflow_menu_item) {
                                 fragmentManager?.navigateToReportOrIgnoreDialog(
                                         userDetails.caid, userDetails.username, true
                                 )

@@ -78,21 +78,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/username_text_view"/>
 
-            <ImageView
-                android:id="@+id/more_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:contentDescription="@string/more"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_more_horizontal"
-                app:layout_constraintStart_toEndOf="@id/follow_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintTop_toTopOf="@id/follow_button"
-                app:layout_constraintBottom_toBottomOf="@id/follow_button"
-                tools:visibility="visible"/>
-
             <LinearLayout
                 style="@style/FollowCountContainer"
                 android:id="@+id/following_container"

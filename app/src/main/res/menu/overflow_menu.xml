@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/stage_overflow_menu"
+        android:id="@+id/overflow_menu_item"
         android:title="@string/more"
-        android:icon="@drawable/ic_more_horizontal"
+        android:icon="@drawable/ic_more_vertical"
         app:showAsAction="always"/>
 </menu>

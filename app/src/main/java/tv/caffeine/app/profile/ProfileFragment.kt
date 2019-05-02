@@ -2,6 +2,9 @@ package tv.caffeine.app.profile
 
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -61,11 +64,8 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
         binding = FragmentProfileBinding.bind(view)
         viewModel.load(caid)
         viewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
+            setHasOptionsMenu(true)
             binding.userProfile = userProfile
-            binding.moreButton.apply {
-                visibility = View.VISIBLE
-                setOnClickListener { fragmentManager?.navigateToReportOrIgnoreDialog(caid, userProfile.username, true) }
-            }
             binding.followButton.setOnClickListener {
                 if (isFollowed) {
                     fragmentManager?.navigateToUnfollowUserDialog(caid, userProfile.username, callback)
@@ -97,5 +97,20 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
 
     private fun watchBroadcast(username: String) {
         findNavController().safeNavigate(ProfileFragmentDirections.actionProfileFragmentToStagePagerFragment(username))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.overflow_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.overflow_menu_item) {
+            binding.userProfile?.username?.let { username ->
+                fragmentManager?.navigateToReportOrIgnoreDialog(caid, username, true)
+                return true
+            }
+        }
+        return false
     }
 }
