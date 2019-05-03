@@ -84,7 +84,7 @@ class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCre
                     showSnackbar(R.string.user_cancel_buying_gold_using_in_app_billing)
                 }
                 is PurchaseStatus.Error -> {
-                    Timber.e("Failed to process purchase")
+                    Timber.e("Failed to process purchase ${getString(purchaseStatus.error)}")
                     showSnackbar(R.string.failure_processing_in_app_purchase)
                 }
                 is PurchaseStatus.CreditsSuccess -> {

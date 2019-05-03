@@ -169,34 +169,25 @@ class GoldBundlesViewModel @Inject constructor(
     }
 
     private fun consumeInAppPurchase(purchase: Purchase) {
-        try {
-            billingClient.consumeAsync(purchase.purchaseToken) { responseCode, purchaseToken ->
-                when (responseCode) {
-                    BillingClient.BillingResponse.OK -> {
-                        processInAppPurchase(purchase, purchaseToken)
-                        Timber.d("Successfully consumed the purchase $purchaseToken")
-                    }
-                    BillingClient.BillingResponse.USER_CANCELED -> {
-                        Timber.d("User canceled purchase")
-                        postPurchaseStatus(PurchaseStatus.CanceledByUser)
-                    }
-                    BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
-                        Timber.e(Exception("Item already owned, processing purchase"))
-                        processInAppPurchase(purchase, purchaseToken)
-                    }
-                    else -> {
-                        Timber.e(Exception("Failed to consume the purchase $responseCode, $purchaseToken"))
-                        postPurchaseStatus(PurchaseStatus.GooglePlayError(responseCode))
-                    }
+        billingClient.consumeAsync(purchase.purchaseToken) { responseCode, purchaseToken ->
+            when (responseCode) {
+                BillingClient.BillingResponse.OK -> {
+                    processInAppPurchase(purchase, purchaseToken)
+                    Timber.d("Successfully consumed the purchase $purchaseToken")
+                }
+                BillingClient.BillingResponse.USER_CANCELED -> {
+                    Timber.d("User canceled purchase")
+                    postPurchaseStatus(PurchaseStatus.CanceledByUser)
+                }
+                BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
+                    Timber.e(Exception("Item already owned, processing purchase"))
+                    processInAppPurchase(purchase, purchaseToken)
+                }
+                else -> {
+                    Timber.e(Exception("Failed to consume the purchase $responseCode, $purchaseToken"))
+                    postPurchaseStatus(PurchaseStatus.GooglePlayError(responseCode))
                 }
             }
-        } catch (nie: NotImplementedError) {
-            // This will happen when using BillingX testing library,
-            // since v 0.8.0 doesn't implement consuming IAB purchases
-            Timber.d("Debug build, using BillingX library, consuming purchases isn't supported")
-            processInAppPurchase(purchase)
-        } catch (t: Throwable) {
-            Timber.e(t)
         }
     }
 
