@@ -58,12 +58,12 @@ class FakeWebRtcModule {
 
     @Provides
     @Singleton
-    fun providesVideoEncoderFactory(eglBase: EglBase): DefaultVideoEncoderFactory = mockk(relaxed = true)
+    fun providesVideoEncoderFactory(): DefaultVideoEncoderFactory = mockk(relaxed = true)
 
 
     @Provides
     @Singleton
-    fun providesVideoDecoderFactory(eglBase: EglBase): DefaultVideoDecoderFactory = mockk(relaxed = true)
+    fun providesVideoDecoderFactory(): DefaultVideoDecoderFactory = mockk(relaxed = true)
 
     @Provides
     @Singleton

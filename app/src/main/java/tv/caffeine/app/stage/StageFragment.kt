@@ -34,14 +34,11 @@ import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
-import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.api.model.awaitAndParseErrors
-import tv.caffeine.app.api.model.iconImageUrl
-import tv.caffeine.app.api.model.isOnline
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
+import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
@@ -77,7 +74,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
     private var newReyesController: NewReyesController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
-    private var broadcastName: String? = null
 
     private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
@@ -120,12 +116,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         friendsWatchingViewModel.disconnect()
     }
 
-    private var title: String? = null
-        set(value) {
-            field = value
-            binding.stageToolbar.title = value
-        }
-
     override fun onDestroy() {
         disconnectStage()
         super.onDestroy()
@@ -144,52 +134,49 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
                 val sharerId = followManager.currentUserDetails()?.caid
                 startActivity(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
             }
-            binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
-        })
-        viewJob = launch {
-            launch(dispatchConfig.main) {
-                val userDetails = followManager.userDetails(broadcasterUsername)
-                if (userDetails != null) {
-                    profileViewModel.load(userDetails.caid)
-
-                    val colorRes = when {
-                        followManager.isFollowing(userDetails.caid) -> R.color.caffeine_blue
-                        else -> R.color.white
-                    }
-                    val fontColor = context?.getHexColor(colorRes)
-                    val string = getString(R.string.say_something_to_user, broadcasterUsername, fontColor)
-                    val html = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, null, null) as Spannable
-                    binding.saySomethingTextView?.text = html
-                    binding.stageToolbar.apply {
-                        inflateMenu(R.menu.overflow_menu)
-                        menu.findItem(R.id.overflow_menu_item).setOnMenuItemClickListener {
-                            if (it.itemId == R.id.overflow_menu_item) {
-                                fragmentManager?.navigateToReportOrIgnoreDialog(
-                                        userDetails.caid, userDetails.username, true
-                                )
+            binding.followButton.setOnClickListener {
+                profileViewModel.follow(userProfile.caid).observe(viewLifecycleOwner, Observer { result ->
+                    when(result) {
+                        is CaffeineEmptyResult.Error -> {
+                            if (result.error.isMustVerifyEmailError()) {
+                                val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                                fragment.maybeShow(fragmentManager, "verifyEmail")
+                            } else {
+                                Timber.e("Couldn't follow user ${result.error}")
                             }
-                            true
                         }
+                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
                     }
+                })
+            }
+            binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
+            binding.saySomethingTextView?.text = saySomethingToBroadcasterText(userProfile)
 
-                    isMe = followManager.isSelf(userDetails.caid)
-                    updateViewsOnMyStageVisibility()
+            binding.stageToolbar.apply {
+                if (menu.findItem(R.id.overflow_menu_item) != null) return@apply
+                inflateMenu(R.menu.overflow_menu)
+                menu.findItem(R.id.overflow_menu_item).setOnMenuItemClickListener {
+                    if (it.itemId == R.id.overflow_menu_item) {
+                        fragmentManager?.navigateToReportOrIgnoreDialog(
+                                userProfile.caid, userProfile.username, true
+                        )
+                    }
+                    true
                 }
             }
-            launch {
-                while(isActive) {
-                    val userDetails = followManager.loadUserDetails(broadcasterUsername)
-                    if (userDetails != null) {
-                        val broadcastId = userDetails.broadcastId ?: break
-                        updateBroadcastDetails(broadcastId)
-                    }
-                    delay(5000L)
-                }
+
+            isMe = userProfile.isMe
+            updateViewsOnMyStageVisibility()
+            updateBroadcastOnlineState(userProfile.isLive)
+        })
+        viewJob = launch {
+            while(isActive) {
+                profileViewModel.load(broadcasterUsername)
+                delay(5000L)
             }
         }
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
-        title = broadcastName
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
         chatMessageAdapter.callback = object: ChatMessageAdapter.Callback {
             override fun replyClicked(message: Message) {
@@ -203,6 +190,16 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         }
         initSurfaceViewRenderer()
         configureButtons()
+    }
+
+    private fun saySomethingToBroadcasterText(userProfile: UserProfile): Spannable {
+        val colorRes = when {
+            userProfile.isFollowed -> R.color.caffeine_blue
+            else -> R.color.white
+        }
+        val fontColor = context?.getHexColor(colorRes)
+        val string = getString(R.string.say_something_to_user, broadcasterUsername, fontColor)
+        return HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, null, null) as Spannable
     }
 
     override fun onDestroyView() {
@@ -286,23 +283,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
     private fun updateViewsOnMyStageVisibility() {
         listOf(binding.giftButton, binding.friendsWatchingButton, binding.followButton, binding.avatarImageView).forEach {
             it?.isVisible = !isMe
-        }
-    }
-
-    private suspend fun updateBroadcastDetails(broadcastId: String) {
-        val result = broadcastsService.broadcastDetails(broadcastId).awaitAndParseErrors(gson)
-        when (result) {
-            is CaffeineResult.Success -> {
-                val broadcast = result.value.broadcast
-                broadcastName = broadcast.name
-                title = broadcastName
-                picasso
-                        .load(broadcast.game?.iconImageUrl)
-                        .into(binding.gameLogoImageView)
-                updateBroadcastOnlineState(broadcast.isOnline())
-            }
-            is CaffeineResult.Error -> Timber.e("Error loading broadcast details ${result.error}")
-            is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
     }
 
@@ -454,24 +434,6 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         }
         binding.avatarImageView.setOnClickListener {
             findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(broadcasterUsername))
-        }
-        binding.followButton.setOnClickListener {
-            launch {
-                val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-                profileViewModel.follow(userDetails.caid).observe(viewLifecycleOwner, Observer { result ->
-                    when(result) {
-                        is CaffeineEmptyResult.Error -> {
-                            if (result.error.isMustVerifyEmailError()) {
-                                val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                                fragment.maybeShow(fragmentManager, "verifyEmail")
-                            } else {
-                                Timber.e("Couldn't follow user ${result.error}")
-                            }
-                        }
-                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                    }
-                })
-            }
         }
         binding.backToLobbyButton.setOnClickListener {
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)

@@ -7,7 +7,6 @@ import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.User
@@ -54,28 +53,7 @@ class MyProfileViewModel @Inject constructor(
     private suspend fun loadUserProfile(caid: CAID) = followManager.loadUserDetails(caid)
 
     private suspend fun updateViewModel(user: User) = withContext(dispatchConfig.main) {
-        val userIcon = when {
-            user.isVerified -> R.drawable.verified
-            user.isCaster -> R.drawable.caster
-            else -> 0
-        }
-        _userProfile.value = UserProfile(
-                user.username,
-                user.name,
-                user.email,
-                user.emailVerified,
-                numberFormat.format(user.followersCount),
-                numberFormat.format(user.followingCount),
-                user.bio,
-                false,
-                user.isVerified,
-                userIcon,
-                user.avatarImageUrl,
-                user.mfaMethod,
-                null,
-                false,
-                followManager.isSelf(user.caid)
-        )
+        _userProfile.value = UserProfile(user, null, numberFormat, followManager)
     }
 
     fun updateName(name: String) {

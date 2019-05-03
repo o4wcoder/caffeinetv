@@ -1,6 +1,5 @@
 package tv.caffeine.app.di
 
-import android.content.Context
 import com.facebook.login.LoginManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
@@ -41,7 +40,7 @@ class FakeFacebookModule {
 class FakeFirebaseModule {
     @Provides
     @Singleton
-    fun providesFirebaseAnalytics(context: Context): FirebaseAnalytics = mockk(relaxed = true)
+    fun providesFirebaseAnalytics(): FirebaseAnalytics = mockk(relaxed = true)
 
     @Provides
     @Singleton
