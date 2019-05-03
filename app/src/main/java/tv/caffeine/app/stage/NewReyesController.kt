@@ -275,8 +275,14 @@ class NewReyesController @AssistedInject constructor(
                 val heartbeatUrl = result.value.urls.heartbeat
                 heartbeatUrls[stream.id] = heartbeatUrl
             }
-            is CaffeineResult.Error -> Timber.d("Error: ${result.error}")
-            is CaffeineResult.Failure -> Timber.d("Failure: ${result.throwable}")
+            is CaffeineResult.Error -> {
+                Timber.d("Error: ${result.error}")
+                return peerConnection.disposeAndReturnNull()
+            }
+            is CaffeineResult.Failure -> {
+                Timber.e(result.throwable)
+                return peerConnection.disposeAndReturnNull()
+            }
         }
         val result2 = peerConnection.setLocalDescription(localSessionDescription)
         return configureConnections(peerConnection)
