@@ -65,8 +65,8 @@ sealed class ImageServer(protected val baseUri: Uri) {
 
     class Imgix(baseUri: Uri) : ImageServer(baseUri) {
         override fun buildUri(): Uri = baseUri.buildUpon().apply {
-            appendQueryParameter("auto", "compress")
-            appendQueryParameter("fit", "min")
+            appendQueryParameter("auto", "compress") // https://docs.imgix.com/apis/url/auto/auto
+            appendQueryParameter("fit", "clip") // https://docs.imgix.com/apis/url/size/fit#clip
             width?.let { appendQueryParameter("w", it.toString()) }
             height?.let { appendQueryParameter("h", it.toString()) }
         }.build()

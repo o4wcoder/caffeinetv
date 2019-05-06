@@ -2,6 +2,7 @@ package tv.caffeine.app.ui
 
 import android.net.Uri
 import com.squareup.picasso.Request
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -116,6 +117,22 @@ class FastlyTests {
         assertTrue(uri.queryParameterNames.contains("height"))
     }
 
+    @Test
+    fun `requests with resize include the optimize parameter`() {
+        val subject = ImageServer.Fastly(Uri.parse("https://assets.caffeine.tv/random.png"))
+        subject.resize(1, 1)
+        val uri = subject.buildUri()
+        assertTrue(uri.queryParameterNames.contains("optimize"))
+    }
+
+    @Test
+    fun `requests with resize create correct uri`() {
+        val subject = ImageServer.Fastly(Uri.parse("https://assets.caffeine.tv/random.png"))
+        subject.resize(1, 1)
+        val uri = subject.buildUri()
+        assertEquals("https://assets.caffeine.tv/random.png?optimize=true&width=1&height=1", uri.toString())
+    }
+
 }
 
 @RunWith(RobolectricTestRunner::class)
@@ -136,6 +153,23 @@ class ImgixTests {
         val uri = subject.buildUri()
         assertTrue(uri.queryParameterNames.contains("w"))
         assertTrue(uri.queryParameterNames.contains("h"))
+    }
+
+    @Test
+    fun `requests with resize include the auto and fit parameters`() {
+        val subject = ImageServer.Imgix(Uri.parse("https://assets.caffeine.tv/random.png"))
+        subject.resize(1, 1)
+        val uri = subject.buildUri()
+        assertTrue(uri.queryParameterNames.contains("auto"))
+        assertTrue(uri.queryParameterNames.contains("fit"))
+    }
+
+    @Test
+    fun `requests with resize create correct uri`() {
+        val subject = ImageServer.Imgix(Uri.parse("https://assets.caffeine.tv/random.png"))
+        subject.resize(1, 1)
+        val uri = subject.buildUri()
+        assertEquals("https://assets.caffeine.tv/random.png?auto=compress&fit=clip&w=1&h=1", uri.toString())
     }
 
 }
