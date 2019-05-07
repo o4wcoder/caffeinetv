@@ -35,6 +35,7 @@ class MyProfileViewModelTests {
         coEvery { fakeFollowManager.userDetails(any()) } returns justUser
         coEvery { fakeFollowManager.loadUserDetails(any()) } returns justUser
         coEvery { fakeFollowManager.isSelf(any()) } returns false
+        coEvery { fakeFollowManager.isFollowing(any()) } returns false
         val fakeUploadAvatarUseCase = mockk<UploadAvatarUseCase>()
         subject = MyProfileViewModel(TestDispatchConfig, fakeTokenStore, fakeFollowManager, fakeUploadAvatarUseCase)
     }
