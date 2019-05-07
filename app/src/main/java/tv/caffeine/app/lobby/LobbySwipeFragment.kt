@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import tv.caffeine.app.R
@@ -29,11 +31,12 @@ import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
-class LobbySwipeFragment : CaffeineFragment(R.layout.fragment_lobby_swipe) {
-
-    @Inject lateinit var featureConfig: FeatureConfig
-    @Inject lateinit var picasso: Picasso
-    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
+class LobbySwipeFragment @Inject constructor(
+        private val featureConfig: FeatureConfig,
+        private val picasso: Picasso,
+        private val firebaseAnalytics: FirebaseAnalytics,
+        private val adapterFactory: LobbyPagerAdapter.Factory
+) : CaffeineFragment(R.layout.fragment_lobby_swipe) {
 
     private lateinit var binding: FragmentLobbySwipeBinding
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
@@ -79,7 +82,7 @@ class LobbySwipeFragment : CaffeineFragment(R.layout.fragment_lobby_swipe) {
         binding.profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
 
         binding.lobbyViewPager.apply {
-            adapter = LobbyPagerAdapter(childFragmentManager, resources)
+            adapter = adapterFactory.create(childFragmentManager)
             addOnPageChangeListener(ViewPagerColorOnPageChangeListener(this,
                     viewPagerBackgroundColors.map {
                         ContextCompat.getColor(context, it)
@@ -97,13 +100,23 @@ class LobbySwipeFragment : CaffeineFragment(R.layout.fragment_lobby_swipe) {
     }
 }
 
-class LobbyPagerAdapter(fm: FragmentManager, val resources: Resources) : FragmentStatePagerAdapter(fm) {
+class LobbyPagerAdapter @AssistedInject constructor(
+        @Assisted fm: FragmentManager,
+        private val resources: Resources,
+        private val lobbyAdapter: LobbyAdapter,
+        private val guideAdapter: FeaturedProgramGuideAdapter
+) : FragmentStatePagerAdapter(fm) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(fm: FragmentManager): LobbyPagerAdapter
+    }
 
     override fun getCount() = 2
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> LobbyFragment()
-            else -> FeaturedProgramGuideFragment()
+            0 -> LobbyFragment(lobbyAdapter)
+            else -> FeaturedProgramGuideFragment(guideAdapter)
         }
     }
 

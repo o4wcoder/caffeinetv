@@ -34,7 +34,6 @@ import javax.inject.Inject
 
 class ReportDialogFragment : CaffeineDialogFragment() {
 
-    @Inject lateinit var usersService: UsersService
     private val viewModel: ReportUserViewModel by viewModels { viewModelFactory }
     private lateinit var caid: CAID
     private lateinit var username: String
@@ -43,7 +42,7 @@ class ReportDialogFragment : CaffeineDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullscreenDialogTheme)
+        setStyle(STYLE_NORMAL, R.style.FullscreenDialogTheme)
         caid = args.caid
         username = args.username
         shouldNavigateBackWhenDone = args.shouldNavigateBackWhenDone

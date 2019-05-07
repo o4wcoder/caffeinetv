@@ -43,9 +43,11 @@ import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class LiveBroadcastPickerFragment : CaffeineBottomSheetDialogFragment() {
+class LiveBroadcastPickerFragment @Inject constructor(
+        private val liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter,
+        private val guideAdapter: GuideAdapter
+): CaffeineBottomSheetDialogFragment() {
 
-    @Inject lateinit var liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter
     private var binding: FragmentLiveBroadcastPickerBinding? = null
     private val viewModel: LiveHostableBroadcastersViewModel by viewModels { viewModelFactory }
 
@@ -101,7 +103,7 @@ class LiveBroadcastPickerFragment : CaffeineBottomSheetDialogFragment() {
     private fun openUpcomingBroadcastFragment() {
         dismiss()
         fragmentManager?.let {
-            UpcomingBroadcastFragment().show(it, "upcomingBroadcast")
+            UpcomingBroadcastFragment(guideAdapter).show(it, "upcomingBroadcast")
         }
     }
 }

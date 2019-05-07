@@ -17,7 +17,7 @@ import javax.inject.Singleton
     TestNetworkModule::class,
     UIModule::class,
     CoroutinesModule::class,
-    AnalyticsModule::class,
+    TestAnalyticsModule::class,
     CaffeineAssistedModule::class,
     TestDataModule::class
 ])

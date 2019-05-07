@@ -15,9 +15,9 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.PaddingItemDecoration
 import javax.inject.Inject
 
-class TransactionHistoryFragment : CaffeineFragment(R.layout.fragment_transaction_history) {
-
-    @Inject lateinit var adapter: TransactionHistoryAdapter
+class TransactionHistoryFragment @Inject constructor(
+        private val adapter: TransactionHistoryAdapter
+): CaffeineFragment(R.layout.fragment_transaction_history) {
 
     private val viewModel: TransactionHistoryViewModel by viewModels { viewModelFactory }
 

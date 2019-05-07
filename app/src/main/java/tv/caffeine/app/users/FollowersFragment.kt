@@ -25,9 +25,9 @@ import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
-class FollowersFragment : CaffeineFragment(R.layout.user_list_fragment) {
-
-    @Inject lateinit var caidListAdapter: CaidListAdapter
+class FollowersFragment @Inject constructor(
+        private val caidListAdapter: CaidListAdapter
+): CaffeineFragment(R.layout.user_list_fragment) {
 
     private val viewModel: FollowersViewModel by viewModels { viewModelFactory }
     private val args by navArgs<FollowersFragmentArgs>()

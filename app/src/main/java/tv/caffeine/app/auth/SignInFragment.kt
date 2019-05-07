@@ -21,9 +21,9 @@ import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class SignInFragment : CaffeineFragment(R.layout.fragment_sign_in) {
-
-    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
+class SignInFragment @Inject constructor(
+        private val firebaseAnalytics: FirebaseAnalytics
+): CaffeineFragment(R.layout.fragment_sign_in) {
 
     private lateinit var binding: FragmentSignInBinding
 

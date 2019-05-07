@@ -33,11 +33,11 @@ import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
 import javax.inject.Inject
 
-class SendDigitalItemFragment : CaffeineBottomSheetDialogFragment() {
+class SendDigitalItemFragment @Inject constructor(
+        private val picasso: Picasso
+): CaffeineBottomSheetDialogFragment() {
+
     private lateinit var binding: FragmentSendDigitalItemBinding
-
-    @Inject lateinit var picasso: Picasso
-
     private lateinit var digitalItemId: String
     private lateinit var recipientCaid: CAID
     private var message: String? = null

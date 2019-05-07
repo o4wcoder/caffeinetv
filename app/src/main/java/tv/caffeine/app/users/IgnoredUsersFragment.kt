@@ -22,9 +22,9 @@ import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
-class IgnoredUsersFragment : CaffeineFragment(R.layout.user_list_fragment) {
-
-    @Inject lateinit var caidListAdapter: CaidListAdapter
+class IgnoredUsersFragment @Inject constructor(
+        private val caidListAdapter: CaidListAdapter
+): CaffeineFragment(R.layout.user_list_fragment) {
 
     private val viewModel: IgnoredUsersViewModel by viewModels { viewModelFactory }
     private lateinit var binding: UserListFragmentBinding

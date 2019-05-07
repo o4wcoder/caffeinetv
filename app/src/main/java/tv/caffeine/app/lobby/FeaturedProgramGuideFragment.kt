@@ -17,9 +17,10 @@ import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
-class FeaturedProgramGuideFragment : CaffeineFragment(R.layout.fragment_featured_program_guide) {
+class FeaturedProgramGuideFragment @Inject constructor(
+        private val guideAdapter: FeaturedProgramGuideAdapter
+): CaffeineFragment(R.layout.fragment_featured_program_guide) {
 
-    @Inject lateinit var guideAdapter: FeaturedProgramGuideAdapter
     private var binding: FragmentFeaturedProgramGuideBinding? = null
     private val viewModel: FeaturedProgramGuideViewModel by viewModels { viewModelFactory }
 

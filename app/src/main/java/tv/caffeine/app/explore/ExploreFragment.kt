@@ -15,10 +15,10 @@ import tv.caffeine.app.util.clearItemDecoration
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
-class ExploreFragment : CaffeineFragment(R.layout.fragment_explore) {
-
-    @Inject lateinit var exploreAdapter: ExploreAdapter
-    @Inject lateinit var searchUsersAdapter: SearchUsersAdapter
+class ExploreFragment @Inject constructor(
+        private val exploreAdapter: ExploreAdapter,
+        private val searchUsersAdapter: SearchUsersAdapter
+): CaffeineFragment(R.layout.fragment_explore) {
 
     private val viewModel: ExploreViewModel by viewModels { viewModelFactory }
     private lateinit var binding: FragmentExploreBinding

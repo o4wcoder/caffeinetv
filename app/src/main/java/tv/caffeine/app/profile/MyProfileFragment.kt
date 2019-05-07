@@ -17,7 +17,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.facebook.login.LoginManager
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,7 +29,6 @@ import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
-import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.ui.setOnAction
@@ -50,15 +48,13 @@ import javax.inject.Inject
 private const val REQUEST_GET_PHOTO = 1
 private const val CAMERA_IMAGE_PATH = "CAMERA_IMAGE_PATH"
 
-class MyProfileFragment : CaffeineFragment(R.layout.fragment_my_profile) {
-
-    @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var tokenStore: TokenStore
-    @Inject lateinit var followManager: FollowManager
-    @Inject lateinit var gson: Gson
-    @Inject lateinit var authWatcher: AuthWatcher
-    @Inject lateinit var picasso: Picasso
-    @Inject lateinit var facebookLoginManager: LoginManager
+class MyProfileFragment @Inject constructor(
+        private val accountsService: AccountsService,
+        private val tokenStore: TokenStore,
+        private val authWatcher: AuthWatcher,
+        private val picasso: Picasso,
+        private val facebookLoginManager: LoginManager
+): CaffeineFragment(R.layout.fragment_my_profile) {
 
     private lateinit var binding: FragmentMyProfileBinding
 

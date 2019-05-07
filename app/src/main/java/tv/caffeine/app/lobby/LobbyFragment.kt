@@ -18,9 +18,9 @@ import tv.caffeine.app.ui.CaffeineFragment
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LobbyFragment : CaffeineFragment(R.layout.fragment_lobby) {
-
-    @Inject lateinit var lobbyAdapter: LobbyAdapter
+class LobbyFragment @Inject constructor(
+        private val lobbyAdapter: LobbyAdapter
+) : CaffeineFragment(R.layout.fragment_lobby) {
 
     private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
     private var binding: FragmentLobbyBinding? = null

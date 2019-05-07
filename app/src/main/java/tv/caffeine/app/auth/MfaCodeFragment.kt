@@ -34,13 +34,13 @@ import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class MfaCodeFragment : CaffeineFragment(R.layout.fragment_mfa_code) {
-
-    @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var gson: Gson
-    @Inject lateinit var tokenStore: TokenStore
-    @Inject lateinit var authWatcher: AuthWatcher
-    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
+class MfaCodeFragment @Inject constructor(
+        private val accountsService: AccountsService,
+        private val gson: Gson,
+        private val tokenStore: TokenStore,
+        private val authWatcher: AuthWatcher,
+        private val firebaseAnalytics: FirebaseAnalytics
+): CaffeineFragment(R.layout.fragment_mfa_code) {
 
     private lateinit var binding: FragmentMfaCodeBinding
     private val args by navArgs<MfaCodeFragmentArgs>()

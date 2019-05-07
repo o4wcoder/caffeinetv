@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
+import androidx.annotation.VisibleForTesting
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.facebook.CallbackManager
@@ -46,16 +47,16 @@ import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 
-class LandingFragment : CaffeineFragment(R.layout.fragment_landing), TwitterAuthFragment.Callback {
-
-    @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var tokenStore: TokenStore
-    @Inject lateinit var oauthService: OAuthService
-    @Inject lateinit var gson: Gson
-    @Inject lateinit var authWatcher: AuthWatcher
-    @Inject lateinit var analytics: Analytics
-    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
-    @Inject lateinit var facebookLoginManager: LoginManager
+class LandingFragment @Inject constructor(
+        private val accountsService: AccountsService,
+        private val tokenStore: TokenStore,
+        private val oauthService: OAuthService,
+        private val gson: Gson,
+        private val authWatcher: AuthWatcher,
+        @VisibleForTesting var analytics: Analytics,
+        private val firebaseAnalytics: FirebaseAnalytics,
+        private val facebookLoginManager: LoginManager
+): CaffeineFragment(R.layout.fragment_landing), TwitterAuthFragment.Callback {
 
     private lateinit var binding: FragmentLandingBinding
     private lateinit var callbackManager: CallbackManager
@@ -91,7 +92,7 @@ class LandingFragment : CaffeineFragment(R.layout.fragment_landing), TwitterAuth
         binding.twitterSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.twitter))
             firebaseAnalytics.logEvent(FirebaseEvent.ContinueWithTwitterClicked)
-            val fragment = TwitterAuthFragment()
+            val fragment = TwitterAuthFragment(oauthService, gson, dispatchConfig)
             fragment.setTargetFragment(this, 0)
             fragment.maybeShow(fragmentManager, "twitterAuth")
         }

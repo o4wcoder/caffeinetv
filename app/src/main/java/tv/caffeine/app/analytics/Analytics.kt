@@ -5,13 +5,16 @@ import timber.log.Timber
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.ui.CaffeineFragment
+import javax.inject.Inject
+import javax.inject.Singleton
 
 interface Analytics {
     fun initialize()
     fun trackEvent(event: AnalyticsEvent)
 }
 
-class LogAnalytics : Analytics {
+@Singleton
+class LogAnalytics @Inject constructor(): Analytics {
     override fun initialize() {
         Timber.d("LogAnalytics initialization")
     }

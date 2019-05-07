@@ -45,10 +45,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class UpcomingBroadcastFragment : CaffeineBottomSheetDialogFragment() {
+class UpcomingBroadcastFragment @Inject constructor(
+        private val guideAdapter: GuideAdapter
+): CaffeineBottomSheetDialogFragment() {
 
-    @Inject lateinit var guideAdapter: GuideAdapter
-    @Inject lateinit var gson: Gson
     private var binding: FragmentUpcomingBroadcastBinding? = null
     private val viewModel: GuideViewModel by viewModels { viewModelFactory }
 

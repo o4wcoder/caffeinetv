@@ -13,6 +13,8 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.After
@@ -26,29 +28,29 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
-import tv.caffeine.app.analytics.LogAnalytics
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
 
 @RunWith(RobolectricTestRunner::class)
 class LandingFragmentUnitTests {
-    private lateinit var analytics: Analytics
+
+    @MockK(relaxed = true) lateinit var analytics: Analytics
     private lateinit var fragment: LandingFragment
     private lateinit var scenario: FragmentScenario<LandingFragment>
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
+        MockKAnnotations.init(this)
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
         val testComponent = DaggerTestComponent.builder().create(app)
         app.setApplicationInjector(testComponent)
         val directions = MainNavDirections.actionGlobalLandingFragment(null)
-        scenario = launchFragmentInContainer<LandingFragment>(directions.arguments)
+        scenario = launchFragmentInContainer<LandingFragment>(directions.arguments,
+                instantiate = { LandingFragment(mockk(), mockk(), mockk(), mockk(), mockk(), analytics, mockk(relaxed = true), mockk(relaxed = true)) })
         val navController = mockk<NavController>(relaxed = true)
         scenario.onFragment {
-            analytics = mockk<LogAnalytics>(relaxed = true)
-            it.analytics = analytics
             Navigation.setViewNavController(it.view!!, navController)
             fragment = it
         }
@@ -79,5 +81,5 @@ class LandingFragmentUnitTests {
         onView(withId(R.id.new_account_button)).perform(scrollTo()).perform(click())
         verify(exactly = 1) { analytics.trackEvent(AnalyticsEvent.NewAccountClicked) }
     }
-
 }
+

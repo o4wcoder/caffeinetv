@@ -24,10 +24,10 @@ import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-class ForgotFragment : CaffeineFragment(R.layout.fragment_forgot) {
-
-    @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var gson: Gson
+class ForgotFragment @Inject constructor(
+        private val accountsService: AccountsService,
+        private val gson: Gson
+) : CaffeineFragment(R.layout.fragment_forgot) {
 
     private lateinit var binding: FragmentForgotBinding
 

@@ -60,12 +60,15 @@ import kotlin.collections.set
 
 private const val DISCONNECT_IDENTITY = 1
 
-class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
-        DisconnectIdentityDialogFragment.Callback, TwitterAuthFragment.Callback {
-
-    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-    @Inject lateinit var facebookLoginManager: LoginManager
+class SettingsFragment @Inject constructor(
+        private val childFragmentInjector: DispatchingAndroidInjector<Fragment>,
+        private val viewModelFactory: ViewModelFactory,
+        private val facebookLoginManager: LoginManager,
+        private val oauthService: OAuthService,
+        private val gson: Gson,
+        private val dispatchConfig: DispatchConfig
+): PreferenceFragmentCompat(), HasSupportFragmentInjector,
+DisconnectIdentityDialogFragment.Callback, TwitterAuthFragment.Callback {
 
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
@@ -205,7 +208,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
                         fragment.maybeShow(fragmentManager, "disconnectTwitter")
                     } else {
-                        val fragment = TwitterAuthFragment()
+                        val fragment = TwitterAuthFragment(oauthService, gson, dispatchConfig)
                         fragment.setTargetFragment(this, 0)
                         fragment.maybeShow(fragmentManager, "twitterAuth")
                     }

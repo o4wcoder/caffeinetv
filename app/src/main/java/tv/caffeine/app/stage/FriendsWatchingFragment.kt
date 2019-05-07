@@ -35,9 +35,10 @@ import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class FriendsWatchingFragment : CaffeineBottomSheetDialogFragment() {
-    @Inject lateinit var followManager: FollowManager
-    @Inject lateinit var usersAdapter: FriendsWatchingAdapter
+class FriendsWatchingFragment @Inject constructor(
+        private val usersAdapter: FriendsWatchingAdapter
+): CaffeineBottomSheetDialogFragment() {
+
     private val args by navArgs<FriendsWatchingFragmentArgs>()
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
 

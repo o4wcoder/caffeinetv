@@ -35,16 +35,19 @@ private const val VIDEO_WIDTH = 1920
 private const val VIDEO_HEIGHT = 1080
 private const val VIDEO_FPS = 30
 
-class BroadcastFragment : CaffeineFragment(R.layout.fragment_broadcast), EasyPermissions.PermissionCallbacks {
-    @Inject lateinit var eglBase: EglBase
+class BroadcastFragment @Inject constructor(
+        private val eglBase: EglBase,
+        private val peerConnectionFactory: PeerConnectionFactory,
+        private val application: Application,
+        private val liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter,
+        private val guideAdapter: GuideAdapter
+): CaffeineFragment(R.layout.fragment_broadcast), EasyPermissions.PermissionCallbacks {
+
     private val eglBaseContext by lazy { eglBase.eglBaseContext }
     private val surfaceTextureHelper by lazy { SurfaceTextureHelper.create("captureHelper", eglBaseContext) }
 
     private lateinit var binding: FragmentBroadcastBinding
     private lateinit var cameraEnumerator: CameraEnumerator
-
-    @Inject lateinit var peerConnectionFactory: PeerConnectionFactory
-    @Inject lateinit var application: Application
 
     private var cameraCapture: CameraVideoCapturer? = null
     private var videoTrack: VideoTrack? = null
@@ -175,7 +178,7 @@ class BroadcastFragment : CaffeineFragment(R.layout.fragment_broadcast), EasyPer
 
     private fun openLiveBroadcastPicker() {
         val fragmentManager = fragmentManager ?: return
-        LiveBroadcastPickerFragment().apply {
+        LiveBroadcastPickerFragment(liveBroadcastPickerAdapter, guideAdapter).apply {
             setTargetFragment(this@BroadcastFragment, PICK_LIVE_BROADCAST)
             show(fragmentManager, "liveBroadcastPicker")
         }

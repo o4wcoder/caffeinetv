@@ -17,10 +17,10 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
-class ConfirmEmailFragment : CaffeineFragment(R.layout.fragment_confirm_email) {
-
-    @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var gson: Gson
+class ConfirmEmailFragment @Inject constructor(
+        private val accountsService: AccountsService,
+        private val gson: Gson
+): CaffeineFragment(R.layout.fragment_confirm_email) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val data = activity?.intent?.data ?: return exit()

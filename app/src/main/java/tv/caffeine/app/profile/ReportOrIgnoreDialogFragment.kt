@@ -28,7 +28,6 @@ import javax.inject.Inject
 
 class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
 
-    @Inject lateinit var usersService: UsersService
     private val viewModel: IgnoreUserViewModel by viewModels { viewModelFactory }
     private var shouldNavigateBackWhenDone = false
     private val args by navArgs<ReportOrIgnoreDialogFragmentArgs>()

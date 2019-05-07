@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.consumeEach
@@ -29,7 +28,6 @@ import org.webrtc.VideoTrack
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.isMustVerifyEmailError
@@ -56,16 +54,15 @@ import kotlin.collections.set
 private const val PICK_DIGITAL_ITEM = 0
 private const val SEND_MESSAGE = 1
 
-class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragment.Callback, SendMessageFragment.Callback {
-
-    @Inject lateinit var factory: NewReyesController.Factory
-    @Inject lateinit var eglBase: EglBase
-    @Inject lateinit var followManager: FollowManager
-    @Inject lateinit var broadcastsService: BroadcastsService
-    @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
-    @Inject lateinit var gson: Gson
-    @Inject lateinit var picasso: Picasso
-    @Inject lateinit var clock: Clock
+class StageFragment @Inject constructor(
+        private val factory: NewReyesController.Factory,
+        private val eglBase: EglBase,
+        private val followManager: FollowManager,
+        private val chatMessageAdapter: ChatMessageAdapter,
+        private val friendsWatchingAdapter: FriendsWatchingAdapter,
+        private val picasso: Picasso,
+        private val clock: Clock
+): CaffeineFragment(R.layout.fragment_stage), DICatalogFragment.Callback, SendMessageFragment.Callback {
 
     @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
@@ -414,7 +411,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         })
         binding.friendsWatchingButton?.setOnClickListener {
             val fragmentManager = fragmentManager ?: return@setOnClickListener
-            val fragment = FriendsWatchingFragment()
+            val fragment = FriendsWatchingFragment(friendsWatchingAdapter)
             val action = StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(stageIdentifier)
             fragment.arguments = action.arguments
             fragment.show(fragmentManager, "FW")
@@ -442,7 +439,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
 
     override fun sendDigitalItemWithMessage(message: String?) {
         val fragmentManager = fragmentManager ?: return
-        val fragment = DICatalogFragment()
+        val fragment = DICatalogFragment(picasso)
         val action = StagePagerFragmentDirections.actionStagePagerFragmentToDigitalItemListDialogFragment(broadcasterUsername, message)
         fragment.setTargetFragment(this, PICK_DIGITAL_ITEM)
         fragment.arguments = action.arguments
@@ -467,7 +464,7 @@ class StageFragment : CaffeineFragment(R.layout.fragment_stage), DICatalogFragme
         val fm = fragmentManager ?: return
         launch {
             val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-            val fragment = SendDigitalItemFragment()
+            val fragment = SendDigitalItemFragment(picasso)
             val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendDigitalItemFragment(digitalItem.id, userDetails.caid, message)
             fragment.arguments = action.arguments
             fragment.show(fm, "sendDigitalItem")

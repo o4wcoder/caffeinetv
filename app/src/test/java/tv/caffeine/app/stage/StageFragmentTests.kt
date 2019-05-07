@@ -40,7 +40,7 @@ class StageFragmentVisibilityTests {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        subject = StageFragment()
+        subject = StageFragment(mockk(), mockk(), mockk(), mockk(), mockk(), mockk(), mockk())
         subject.binding = StageFragmentVisibilityTestBindings(
                 avatarImageView,
                 backToLobbyButton,

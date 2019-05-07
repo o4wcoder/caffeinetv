@@ -14,8 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
 import tv.caffeine.app.CaffeineApplication
-import tv.caffeine.app.MainNavDirections
-import tv.caffeine.app.auth.LandingFragment
 import tv.caffeine.app.auth.LegalAgreementViewModel
 import tv.caffeine.app.auth.SignInViewModel
 import tv.caffeine.app.broadcast.GuideViewModel
@@ -42,6 +40,7 @@ import tv.caffeine.app.stage.SendDigitalItemViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
+import tv.caffeine.app.util.NoNetworkFragment
 import tv.caffeine.app.wallet.WalletViewModel
 
 @RunWith(ParameterizedRobolectricTestRunner::class)
@@ -88,8 +87,7 @@ class ViewModelFactoryTest(private val modelClass: Class<out ViewModel>) {
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
         val testComponent = DaggerTestComponent.builder().create(app)
         app.setApplicationInjector(testComponent)
-        val directions = MainNavDirections.actionGlobalLandingFragment(null)
-        val scenario = launchFragmentInContainer<LandingFragment>(directions.arguments)
+        val scenario = launchFragmentInContainer<NoNetworkFragment>()
         val navController = mockk<NavController>(relaxed = true)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)

@@ -1,5 +1,6 @@
 package tv.caffeine.app.di
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import dagger.MapKey
 import javax.inject.Qualifier
@@ -54,3 +55,9 @@ annotation class ClientType(val authorizationType: AuthorizationType)
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey
 annotation class ViewModelKey(val value: KClass<out ViewModel>)
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+@Retention(value = AnnotationRetention.RUNTIME)
+@MapKey
+internal annotation class FragmentKey(val value: KClass<out Fragment>)
+

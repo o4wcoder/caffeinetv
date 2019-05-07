@@ -14,7 +14,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
+import org.threeten.bp.Clock
+import org.webrtc.EglBase
 import org.webrtc.MediaCodecVideoDecoder
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
@@ -24,6 +29,7 @@ import tv.caffeine.app.api.VersionCheckError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.databinding.FragmentStagePagerBinding
+import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
@@ -35,12 +41,14 @@ import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
-class StagePagerFragment : CaffeineFragment(R.layout.fragment_stage_pager) {
+class StagePagerFragment @Inject constructor(
+        private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
+        private val adapterFactory: StagePagerAdapter.Factory
+): CaffeineFragment(R.layout.fragment_stage_pager) {
 
     private lateinit var binding: FragmentStagePagerBinding
     private val args by navArgs<StagePagerFragmentArgs>()
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
-    @Inject lateinit var isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
     private var stagePagerAdapter: StagePagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +84,7 @@ class StagePagerFragment : CaffeineFragment(R.layout.fragment_stage_pager) {
         }
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStagePagerBinding.bind(view)
-        stagePagerAdapter = StagePagerAdapter(this, args.broadcastLink)
+        stagePagerAdapter = adapterFactory.create(this, args.broadcastLink)
         binding.stageViewPager.adapter = stagePagerAdapter
     }
 
@@ -142,11 +150,28 @@ class StagePagerFragment : CaffeineFragment(R.layout.fragment_stage_pager) {
 
 }
 
-class StagePagerAdapter(fragment: Fragment, private val broadcasterName: String) : FragmentStateAdapter(fragment) {
+class StagePagerAdapter @AssistedInject constructor(
+        @Assisted fragment: Fragment,
+        @Assisted private val broadcasterName: String,
+        private val factory: NewReyesController.Factory,
+        private val eglBase: EglBase,
+        private val followManager: FollowManager,
+        private val chatMessageAdapter: ChatMessageAdapter,
+        private val friendsWatchingAdapter: FriendsWatchingAdapter,
+        private val picasso: Picasso,
+        private val clock: Clock
+) : FragmentStateAdapter(fragment) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(fragment: Fragment, broadcasterName: String): StagePagerAdapter
+    }
+
     var currentStage: StageFragment? = null
 
     override fun getItem(position: Int): Fragment {
-        val stageFragment = StageFragment()
+        val stageFragment = StageFragment(
+                factory, eglBase, followManager, chatMessageAdapter, friendsWatchingAdapter, picasso, clock)
         stageFragment.arguments = bundleOf("broadcastLink" to broadcasterName)
         currentStage = stageFragment
         return stageFragment

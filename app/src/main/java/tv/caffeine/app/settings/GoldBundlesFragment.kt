@@ -22,9 +22,9 @@ import tv.caffeine.app.util.showSnackbar
 import java.text.NumberFormat
 import javax.inject.Inject
 
-class GoldBundlesFragment : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
-
-    @Inject lateinit var picasso: Picasso
+class GoldBundlesFragment @Inject constructor(
+        private val picasso: Picasso
+): CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
 
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel: GoldBundlesViewModel by activityViewModels { viewModelFactory }

@@ -24,13 +24,13 @@ import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
 import javax.inject.Inject
 
-class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
+class DICatalogFragment @Inject constructor(
+        private val picasso: Picasso
+): CaffeineBottomSheetDialogFragment() {
 
     interface Callback {
         fun digitalItemSelected(digitalItem: DigitalItem, message: String? = null)
     }
-
-    @Inject lateinit var picasso: Picasso
 
     private val args by navArgs<DICatalogFragmentArgs>()
 
@@ -69,7 +69,7 @@ class DICatalogFragment : CaffeineBottomSheetDialogFragment() {
         })
         binding.buyGoldButton.setOnClickListener {
             val action = DICatalogFragmentDirections.actionDigitalItemListDialogFragmentToGoldBundlesFragment(BuyGoldOption.UsingPlayStore)
-            val fragment = GoldBundlesFragment()
+            val fragment = GoldBundlesFragment(picasso)
             fragment.arguments = action.arguments
             fragment.maybeShow(fragmentManager, "buyGold")
         }

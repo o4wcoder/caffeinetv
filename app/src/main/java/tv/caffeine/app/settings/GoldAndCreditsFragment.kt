@@ -22,8 +22,10 @@ enum class BuyGoldOption: Parcelable {
     UsingPlayStore, UsingCredits
 }
 
-class GoldAndCreditsFragment : CaffeineFragment(R.layout.fragment_gold_and_credits) {
-    @Inject lateinit var picasso: Picasso
+class GoldAndCreditsFragment @Inject constructor(
+        private val picasso: Picasso
+): CaffeineFragment(R.layout.fragment_gold_and_credits) {
+
     private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

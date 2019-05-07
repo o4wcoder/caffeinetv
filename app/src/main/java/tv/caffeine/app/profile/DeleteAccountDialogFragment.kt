@@ -29,7 +29,6 @@ import javax.inject.Inject
 
 class DeleteAccountDialogFragment : CaffeineDialogFragment() {
 
-    @Inject lateinit var accountsService: AccountsService
     private lateinit var username: String
     private lateinit var passwordEditText: EditText
     private val viewModel: DeleteAccountViewModel by viewModels { viewModelFactory }

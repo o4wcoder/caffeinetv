@@ -14,7 +14,6 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.StreamResetException
 import tv.caffeine.app.R
-import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.OAuthCallbackResult
 import tv.caffeine.app.api.OAuthService
 import tv.caffeine.app.api.model.CaffeineResult
@@ -26,17 +25,15 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class TwitterAuthFragment : CaffeineDialogFragment(), CoroutineScope {
+class TwitterAuthFragment @Inject constructor(
+        private val oauthService: OAuthService,
+        private val gson: Gson,
+        private val dispatchConfig: DispatchConfig
+): CaffeineDialogFragment(), CoroutineScope {
 
     interface Callback {
         fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>)
     }
-
-    @Inject lateinit var tokenStore: TokenStore
-    @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var oauthService: OAuthService
-    @Inject lateinit var gson: Gson
-    @Inject lateinit var dispatchConfig: DispatchConfig
 
     private lateinit var webView: WebView
 

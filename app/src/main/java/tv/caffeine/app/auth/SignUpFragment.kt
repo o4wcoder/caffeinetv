@@ -57,13 +57,14 @@ import java.util.*
 import javax.inject.Inject
 
 
-class SignUpFragment : CaffeineFragment(R.layout.fragment_sign_up), DatePickerDialog.OnDateSetListener {
+class SignUpFragment @Inject constructor(
+        private val accountsService: AccountsService,
+        private val tokenStore: TokenStore,
+        private val gson: Gson,
+        private val analytics: Analytics,
+        private val firebaseAnalytics: FirebaseAnalytics
+): CaffeineFragment(R.layout.fragment_sign_up), DatePickerDialog.OnDateSetListener {
 
-    @Inject lateinit var accountsService: AccountsService
-    @Inject lateinit var tokenStore: TokenStore
-    @Inject lateinit var gson: Gson
-    @Inject lateinit var analytics: Analytics
-    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var binding: FragmentSignUpBinding
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
