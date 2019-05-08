@@ -92,7 +92,7 @@
     <string name="settings">Settings</string>
     <string name="search">Search</string>
     <string name="more">more</string>
-    <string name="report_user_more_dialog_option"><![CDATA[<font color="#FF0000">Report <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
+    <string name="report_user_more_dialog_option"><![CDATA[<font color=\"#FF0000\">Report <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
     <string name="report_user">Report <xliff:g example="randomUser" id="username">%1$s</xliff:g></string>
     <string name="close">Close</string>
     <string name="reason">Reason</string>
@@ -103,7 +103,7 @@
     <string name="spam">Spam</string>
     <string name="other">Other</string>
     <string name="report_description">Caffeine will be notified and <xliff:g example="randomUser" id="username">%1$s</xliff:g> will be added to your ignored list.</string>
-    <string name="ignore_user_dialog_option"><![CDATA[<font color="#FF0000">Ignore <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
+    <string name="ignore_user_dialog_option"><![CDATA[<font color=\"#FF0000\">Ignore <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
     <string name="user_ignored">User ignored.</string>
     <string name="failed_to_ignore_the_user">Failed to ignore the user.</string>
     <string name="user_reported">User reported.</string>
@@ -115,22 +115,22 @@
     <string name="unread_notification_badge_content_description">unread notification badge</string>
     <string name="read_notification_badge_content_description">read notification badge</string>
     <string name="username_plain">%1$s</string>
-    <string name="username_verified"><![CDATA[<b>%1$s</b> <img src="verified"/>]]></string>
-    <string name="username_caster"><![CDATA[<b>%1$s</b> <img src="caster"/>]]></string>
-    <string name="user_watching"><![CDATA[<img src="%2$s"> %1$s is watching]]></string>
-    <string name="verified_user_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="verified_white"/> is watching]]></string>
-    <string name="caster_watching"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="caster"/> is watching]]></string>
+    <string name="username_verified"><![CDATA[<b>%1$s</b> <img src=\"verified\"/>]]></string>
+    <string name="username_caster"><![CDATA[<b>%1$s</b> <img src=\"caster\"/>]]></string>
+    <string name="user_watching"><![CDATA[<img src=\"%2$s\"> %1$s is watching]]></string>
+    <string name="verified_user_watching"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"verified_white\"/> is watching]]></string>
+    <string name="caster_watching"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/> is watching]]></string>
     <plurals name="user_and_friends_watching">
-        <item quantity="one"><![CDATA[<img src="%2$s"> %1$s and one other are watching]]></item>
-        <item quantity="other"><![CDATA[<img src="%2$s"> %1$s and %3$s others are watching]]></item>
+        <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s and one other are watching]]></item>
+        <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s and %3$s others are watching]]></item>
     </plurals>
     <plurals name="verified_user_and_friends_watching">
-        <item quantity="one"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="verified_white"/> and one other are watching]]></item>
-        <item quantity="other"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="verified_white"/> and %3$s others are watching]]></item>
+        <item quantity="one"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"verified_white\"/> and one other are watching]]></item>
+        <item quantity="other"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"verified_white\"/> and %3$s others are watching]]></item>
     </plurals>
     <plurals name="caster_and_friends_watching">
-        <item quantity="one"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="caster"/> and one other are watching]]></item>
-        <item quantity="other"><![CDATA[<img src="%2$s"> <b>%1$s</b> <img src="caster"/> and %3$s others are watching]]></item>
+        <item quantity="one"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/> and one other are watching]]></item>
+        <item quantity="other"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/> and %3$s others are watching]]></item>
     </plurals>
     <plurals name="number_of_followers">
         <item quantity="one"><![CDATA[<b>1</b>]]> follower</item>
@@ -147,7 +147,7 @@
     <string name="buy_gold">Buy Gold</string>
     <string name="buy">Buy</string>
     <string name="buy_gold_for_credits"><xliff:g example="2" id="gold">%1$s</xliff:g> for <xliff:g example="9" id="credits">%2$s</xliff:g></string>
-    <string name="buy_gold_for_credits_html"><![CDATA[<img src="goldcoin">]]> <xliff:g example="2" id="gold">%1$s</xliff:g> for <![CDATA[<img src="purplecoin">]]> <xliff:g example="9" id="credits">%2$s</xliff:g></string>
+    <string name="buy_gold_for_credits_html"><![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="2" id="gold">%1$s</xliff:g> for <![CDATA[<img src=\"purplecoin\">]]> <xliff:g example="9" id="credits">%2$s</xliff:g></string>
     <string name="error_loading_gold_bundles">Error loading gold bundles</string>
     <string name="error_buying_gold_using_credits">Error buying gold using credits</string>
     <string name="success_buying_gold_using_in_app_billing">Success buying gold</string>
@@ -178,14 +178,14 @@
     <string name="gold_and_credits_button">Gold &amp; Credits</string>
     <string name="gold_and_credits_title">Gold &amp; Credits</string>
     <string name="gold_buy_purpose">Gold buys items to send to broadcasters</string>
-    <string name="wallet_balance"><![CDATA[<img src="goldcoin">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
-    <string name="you_have_gold_balance">You have <![CDATA[<img src="goldcoin">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
-    <string name="you_have_gold_and_credits_balance">You have <![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> and <![CDATA[<img src="purplecoin">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
-    <string name="gold_and_credits_button_balance"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> <![CDATA[<img src="purplecoin">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
+    <string name="wallet_balance"><![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
+    <string name="you_have_gold_balance">You have <![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
+    <string name="you_have_gold_and_credits_balance">You have <![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> and <![CDATA[<img src=\"purplecoin\">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
+    <string name="gold_and_credits_button_balance"><![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="42" id="gold_count">%1$s</xliff:g> <![CDATA[<img src=\"purplecoin\">]]> <xliff:g example="1,000" id="credits_balance">%2$s</xliff:g></string>
     <string name="gold_and_credits_help">Use Gold to buy items to send to broadcasters.\n\nReceived items become Credits.\nYou can buy Gold with Credits.</string>
-    <string name="gold_and_credits_help_html"><![CDATA[<div>Use <img src="goldcoin"> Gold to buy items to send to broadcasters.</div><div>Received items become <img src="purplecoin"> Credits.</div><div>You can buy <img src="goldcoin"> Gold with <img src="purplecoin"> Credits.</div>]]></string>
-    <string name="gold_formatted"><![CDATA[<img src="goldcoin">]]> <xliff:g example="42" id="gold_amount">%s</xliff:g></string>
-    <string name="credits_formatted"><![CDATA[<img src="purplecoin">]]> <xliff:g example="42" id="credits_amount">%s</xliff:g></string>
+    <string name="gold_and_credits_help_html"><![CDATA[<div>Use <img src=\"goldcoin\"> Gold to buy items to send to broadcasters.</div><div>Received items become <img src=\"purplecoin\"> Credits.</div><div>You can buy <img src=\"goldcoin\"> Gold with <img src=\"purplecoin\"> Credits.</div>]]></string>
+    <string name="gold_formatted"><![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="42" id="gold_amount">%s</xliff:g></string>
+    <string name="credits_formatted"><![CDATA[<img src=\"purplecoin\">]]> <xliff:g example="42" id="credits_amount">%s</xliff:g></string>
     <string name="gold_coin_content_description">gold coin</string>
 
     <string name="info_button">Info</string>
@@ -194,17 +194,17 @@
 
     <string name="edit_bio_prompt">Add a description of yourself</string>
 
-    <string name="transaction_item_cashout_pending">Your cash out of <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]> is pending</string>
-    <string name="transaction_item_cashout_success">Your cash out of <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]> was successful</string>
-    <string name="transaction_item_cashout_failed">Your cash out of <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]> failed</string>
-    <string name="transaction_item_adjustment_credit"><![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> awarded you <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%1$s</xliff:g><![CDATA[</b>]]></string>
-    <string name="transaction_item_adjustment_debit"><![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> debited you <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%1$s</xliff:g><![CDATA[</b>]]></string>
-    <string name="transaction_item_purchased">You purchased <![CDATA[<img src="goldcoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%2$s</xliff:g><![CDATA[</b>]]></string>
-    <string name="transaction_item_purchased_using_credits">You redeemed <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="credits_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src="goldcoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]></string>
-    <string name="transaction_item_sent">You sent <![CDATA[<img src="]]><xliff:g id="digital_item_url">%1$s</xliff:g><![CDATA[">]]> for <![CDATA[<img src="goldcoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]>, watching <![CDATA[<font color="%4$s"><b>]]><xliff:g id="username">%3$s</xliff:g><![CDATA[</b></font>]]></string>
-    <string name="transaction_items_sent">You sent <![CDATA[<img src="]]><xliff:g id="digital_item_url">%1$s</xliff:g><![CDATA[">]]><![CDATA[<b>]]>x<xliff:g example="2" id="item_count">%5$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src="goldcoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]>, watching <![CDATA[<font color="%4$s"><b>]]><xliff:g id="username">%3$s</xliff:g><![CDATA[</b></font>]]></string>
-    <string name="transaction_item_received"><![CDATA[<font color="%2$s"><b>]]><xliff:g id="username">%1$s</xliff:g><![CDATA[</b></font>]]> sent <![CDATA[<img src="]]><xliff:g id="digital_item_url">%3$s</xliff:g><![CDATA[">]]>, <![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> awarded <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%4$s</xliff:g><![CDATA[</b>]]></string>
-    <string name="transaction_items_received"><![CDATA[<font color="%2$s"><b>]]><xliff:g id="username">%1$s</xliff:g><![CDATA[</b></font>]]> sent <![CDATA[<img src="]]><xliff:g id="digital_item_url">%3$s</xliff:g><![CDATA[">]]><![CDATA[<b>]]>x<xliff:g example="2" id="item_count">%5$s</xliff:g><![CDATA[</b>]]>, <![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> awarded <![CDATA[<img src="purplecoin">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%4$s</xliff:g><![CDATA[</b>]]></string>
+    <string name="transaction_item_cashout_pending">Your cash out of <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]> is pending</string>
+    <string name="transaction_item_cashout_success">Your cash out of <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]> was successful</string>
+    <string name="transaction_item_cashout_failed">Your cash out of <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]> failed</string>
+    <string name="transaction_item_adjustment_credit"><![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> awarded you <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%1$s</xliff:g><![CDATA[</b>]]></string>
+    <string name="transaction_item_adjustment_debit"><![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> debited you <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%1$s</xliff:g><![CDATA[</b>]]></string>
+    <string name="transaction_item_purchased">You purchased <![CDATA[<img src=\"goldcoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<b>]]><xliff:g example="$42.00" id="currency_amount">%2$s</xliff:g><![CDATA[</b>]]></string>
+    <string name="transaction_item_purchased_using_credits">You redeemed <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="credits_amount">%1$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src=\"goldcoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]></string>
+    <string name="transaction_item_sent">You sent <![CDATA[<img src=\"]]><xliff:g id="digital_item_url">%1$s</xliff:g><![CDATA[\">]]> for <![CDATA[<img src=\"goldcoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]>, watching <![CDATA[<font color=\"%4$s\"><b>]]><xliff:g id="username">%3$s</xliff:g><![CDATA[</b></font>]]></string>
+    <string name="transaction_items_sent">You sent <![CDATA[<img src=\"]]><xliff:g id="digital_item_url">%1$s</xliff:g><![CDATA[\">]]><![CDATA[<b>]]>x<xliff:g example="2" id="item_count">%5$s</xliff:g><![CDATA[</b>]]> for <![CDATA[<img src=\"goldcoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%2$s</xliff:g><![CDATA[</b>]]>, watching <![CDATA[<font color=\"%4$s\"><b>]]><xliff:g id="username">%3$s</xliff:g><![CDATA[</b></font>]]></string>
+    <string name="transaction_item_received"><![CDATA[<font color=\"%2$s\"><b>]]><xliff:g id="username">%1$s</xliff:g><![CDATA[</b></font>]]> sent <![CDATA[<img src=\"]]><xliff:g id="digital_item_url">%3$s</xliff:g><![CDATA[\">]]>, <![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> awarded <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%4$s</xliff:g><![CDATA[</b>]]></string>
+    <string name="transaction_items_received"><![CDATA[<font color=\"%2$s\"><b>]]><xliff:g id="username">%1$s</xliff:g><![CDATA[</b></font>]]> sent <![CDATA[<img src=\"]]><xliff:g id="digital_item_url">%3$s</xliff:g><![CDATA[\">]]><![CDATA[<b>]]>x<xliff:g example="2" id="item_count">%5$s</xliff:g><![CDATA[</b>]]>, <![CDATA[<b>]]>Caffeine<![CDATA[</b>]]> awarded <![CDATA[<img src=\"purplecoin\">]]> <![CDATA[<b>]]><xliff:g example="42" id="coin_count">%4$s</xliff:g><![CDATA[</b>]]></string>
     <string name="transaction_history_username_placeholder">…</string>
     <string name="transaction_history_deleted_account">Caffeine User</string>
     <string name="credits_available">Available</string>
@@ -265,7 +265,7 @@
 
     <string name="browse_more_broadcasts">See what\'s LIVE</string>
     <string name="broadcaster_show_is_over"><xliff:g example="Caffeine" id="broadcaster">%s</xliff:g> isn\'t live right now</string>
-    <string name="say_something_to_user">Say something to<![CDATA[<br><br><b><font color="%2$s">]]><xliff:g id="username" example="Caffeine">%1$s</xliff:g><![CDATA[</font></b><br><br>]]>↓</string>
+    <string name="say_something_to_user">Say something to<![CDATA[<br><br><b><font color=\"%2$s\">]]><xliff:g id="username" example="Caffeine">%1$s</xliff:g><![CDATA[</font></b><br><br>]]>↓</string>
 
     <!-- Notifications -->
     <string name="notification_channel_general_name">General</string>

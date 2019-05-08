@@ -159,9 +159,12 @@ workflows:
     jobs:
       - danger
       - unit-tests
+      - approve-coverage:
+          type: approval
       - test-coverage:
           requires:
             - unit-tests
+            - approve-coverage
       - approve-debug-apk:
           type: approval
       - build-debug-apk:
