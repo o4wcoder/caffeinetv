@@ -161,7 +161,7 @@ class StageFragment @Inject constructor(
                 inflateMenu(R.menu.overflow_menu)
                 menu.findItem(R.id.overflow_menu_item).setOnMenuItemClickListener {
                     if (it.itemId == R.id.overflow_menu_item) {
-                        fragmentManager?.navigateToReportOrIgnoreDialog(
+                        findNavController().navigateToReportOrIgnoreDialog(
                                 userProfile.caid, userProfile.username, true
                         )
                     }

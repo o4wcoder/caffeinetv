@@ -351,7 +351,7 @@
             app:popUpTo="@id/lobbySwipeFragment"
             app:destination="@+id/stagePagerFragment"/>
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/reportOrIgnoreDialogFragment"
         android:name="tv.caffeine.app.profile.ReportOrIgnoreDialogFragment">
         <action
@@ -366,7 +366,7 @@
         <argument
             android:name="shouldNavigateBackWhenDone"
             app:argType="boolean"/>
-    </fragment>
+    </dialog>
     <fragment
         android:id="@+id/reportDialogFragment"
         android:name="tv.caffeine.app.profile.ReportDialogFragment">

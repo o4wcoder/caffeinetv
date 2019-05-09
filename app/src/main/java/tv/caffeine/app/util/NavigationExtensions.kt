@@ -12,7 +12,6 @@ import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
 import tv.caffeine.app.profile.UnfollowUserDialogFragment
 import tv.caffeine.app.session.FollowManager
 
@@ -93,12 +92,10 @@ fun NavController.closeNoNetwork() {
     if (currentDestination?.id == R.id.noNetworkFragment) popBackStack()
 }
 
-fun FragmentManager.navigateToReportOrIgnoreDialog(caid: CAID, username: String, shouldNavigateBackWhenDone: Boolean) {
-    ReportOrIgnoreDialogFragment().apply {
-        arguments = MainNavDirections.actionGlobalReportOrIgnoreDialogFragment(
-                caid, username, shouldNavigateBackWhenDone).arguments
-        show(this@navigateToReportOrIgnoreDialog, "reportOrIgnoreUser")
-    }
+fun NavController.navigateToReportOrIgnoreDialog(caid: CAID, username: String, shouldNavigateBackWhenDone: Boolean) {
+    val action = MainNavDirections.actionGlobalReportOrIgnoreDialogFragment(
+            caid, username, shouldNavigateBackWhenDone)
+    safeNavigate(action)
 }
 
 fun FragmentManager.navigateToUnfollowUserDialog(caid: CAID, username: String, callback: FollowManager.Callback) {

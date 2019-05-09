@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -31,7 +32,7 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
     private val viewModel: ProfileViewModel by viewModels { viewModelFactory }
     private val args by navArgs<ProfileFragmentArgs>()
     private lateinit var caid: CAID
-    private lateinit var binding: FragmentProfileBinding
+    @VisibleForTesting lateinit var binding: FragmentProfileBinding
     private var isFollowed: Boolean = false
     private val callback = object: FollowManager.Callback() {
         override fun follow(caid: CAID) {
@@ -107,7 +108,7 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.overflow_menu_item) {
             binding.userProfile?.username?.let { username ->
-                fragmentManager?.navigateToReportOrIgnoreDialog(caid, username, true)
+                findNavController().navigateToReportOrIgnoreDialog(caid, username, true)
                 return true
             }
         }

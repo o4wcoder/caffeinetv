@@ -11,8 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -274,7 +274,7 @@ class LiveBroadcastWithFriendsCard(
 
 private class MoreButtonClickListener(val caid: CAID, val username: String) : View.OnClickListener {
     override fun onClick(v: View?) {
-        (v?.context as? FragmentActivity)?.supportFragmentManager?.navigateToReportOrIgnoreDialog(caid, username, false)
+        v?.findNavController()?.navigateToReportOrIgnoreDialog(caid, username, false)
     }
 }
 

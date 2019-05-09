@@ -45,7 +45,9 @@ private val destinationsWithCustomToolbar = arrayOf(
         R.id.forgotFragment,
         R.id.mfaCodeFragment,
         R.id.stagePagerFragment,
-        R.id.needsUpdateFragment)
+        R.id.needsUpdateFragment,
+        R.id.reportOrIgnoreDialogFragment
+)
 
 private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)
 

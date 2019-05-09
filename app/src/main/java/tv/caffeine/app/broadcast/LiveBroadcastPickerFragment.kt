@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.gson.Gson
@@ -83,7 +84,7 @@ class LiveBroadcastPickerFragment @Inject constructor(
                     }
 
                     override fun onMoreButtonClicked(caid: CAID, username:  String) {
-                        fragmentManager?.navigateToReportOrIgnoreDialog(caid, username, false)
+                        findNavController().navigateToReportOrIgnoreDialog(caid, username, false)
                     }
                 }
                 it.upcomingButtonCallback = object : UpcomingButtonCard.Callback {
