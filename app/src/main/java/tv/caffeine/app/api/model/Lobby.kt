@@ -17,4 +17,14 @@ class Lobby(val tags: Map<String, Tag>, val content: Map<String, Content>, val h
     class Header(val avatarCard: MiniUser? = null, val followPeople: FollowPeoplePrompt? = null)
     class FollowPeoplePrompt(val displayMessage: String?)
     class MiniUser(val username: String)
+
+    fun getAllBroadcasters(): List<String> {
+        return sections.flatMap { section ->
+            (section.broadcasters?.map { it.user.username } ?: listOf()).plus(
+                    section.categories?.flatMap { category ->
+                        category.broadcasters.map { it.user.username }
+                    } ?: listOf()
+            )
+        }
+    }
 }

@@ -58,11 +58,12 @@ class StageFragment @Inject constructor(
         private val factory: NewReyesController.Factory,
         private val eglBase: EglBase,
         private val followManager: FollowManager,
-        private val chatMessageAdapter: ChatMessageAdapter,
-        private val friendsWatchingAdapter: FriendsWatchingAdapter,
         private val picasso: Picasso,
         private val clock: Clock
 ): CaffeineFragment(R.layout.fragment_stage), DICatalogFragment.Callback, SendMessageFragment.Callback {
+
+    @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
+    @Inject lateinit var friendsWatchingAdapter: FriendsWatchingAdapter
 
     @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
@@ -84,10 +85,6 @@ class StageFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         broadcasterUsername = args.broadcasterUsername()
         retainInstance = true
-
-        launch {
-            connectStage()
-        }
     }
 
     private var connectStageJob: Job? = null
@@ -103,11 +100,21 @@ class StageFragment @Inject constructor(
                 }
             }
         }
+        if (viewJob == null) {
+            viewJob = launch {
+                do {
+                    profileViewModel.load(broadcasterUsername)
+                    delay(5000L)
+                } while (isActive)
+            }
+        }
     }
 
     fun disconnectStage() {
         connectStageJob?.cancel()
         connectStageJob = null
+        viewJob?.cancel()
+        viewJob = null
         disconnectStreams()
         chatViewModel.disconnect()
         friendsWatchingViewModel.disconnect()
@@ -166,12 +173,6 @@ class StageFragment @Inject constructor(
             updateViewsOnMyStageVisibility()
             updateBroadcastOnlineState(userProfile.isLive)
         })
-        viewJob = launch {
-            while(isActive) {
-                profileViewModel.load(broadcasterUsername)
-                delay(5000L)
-            }
-        }
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
@@ -200,22 +201,20 @@ class StageFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        viewJob?.cancel()
-        viewJob = null
         deinitSurfaceViewRenderers()
         super.onDestroyView()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         connectStage()
     }
 
     private fun isChangingConfigurations() = activity?.isChangingConfigurations != false
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
         if (!isChangingConfigurations()) disconnectStage()
+        super.onPause()
     }
 
     private fun initSurfaceViewRenderer() {
@@ -482,3 +481,4 @@ class StageFragment @Inject constructor(
     }
 
 }
+

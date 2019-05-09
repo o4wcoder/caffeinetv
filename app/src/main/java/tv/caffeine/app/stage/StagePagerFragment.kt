@@ -9,11 +9,11 @@ import android.view.View
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
@@ -29,10 +29,12 @@ import tv.caffeine.app.api.VersionCheckError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.databinding.FragmentStagePagerBinding
+import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
+import tv.caffeine.app.util.broadcasterUsername
 import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.safeUnregisterNetworkCallback
@@ -46,10 +48,15 @@ class StagePagerFragment @Inject constructor(
         private val adapterFactory: StagePagerAdapter.Factory
 ): CaffeineFragment(R.layout.fragment_stage_pager) {
 
-    private lateinit var binding: FragmentStagePagerBinding
+    private var binding: FragmentStagePagerBinding? = null
     private val args by navArgs<StagePagerFragmentArgs>()
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
+    private val lobbyViewModel: LobbyViewModel by viewModels { viewModelFactory }
     private var stagePagerAdapter: StagePagerAdapter? = null
+        set(value) {
+            binding?.stageViewPager?.adapter = value
+            field = value
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +91,16 @@ class StagePagerFragment @Inject constructor(
         }
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStagePagerBinding.bind(view)
-        stagePagerAdapter = adapterFactory.create(this, args.broadcastLink)
-        binding.stageViewPager.adapter = stagePagerAdapter
+        lobbyViewModel.refresh()
+        lobbyViewModel.lobby.observe(this, Observer {
+            handle(it) { lobby ->
+                val stageBroadcasters = args.broadcasterUsername().let { broadcasterName ->
+                    listOf(broadcasterName).plus(lobby.getAllBroadcasters().minus(broadcasterName))
+                }
+                stagePagerAdapter = adapterFactory.create(this, stageBroadcasters)
+                binding?.stageViewPager?.currentItem = savedInstanceState?.getInt("currentItem") ?: 0
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -101,9 +116,14 @@ class StagePagerFragment @Inject constructor(
                 }
             }
         }
-        binding.stageViewPager.adapter = null
         stagePagerAdapter = null
+        binding = null
         super.onDestroyView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("currentItem", binding?.stageViewPager?.currentItem ?: 0)
     }
 
     private fun connectStage() {
@@ -147,36 +167,33 @@ class StagePagerFragment @Inject constructor(
             }
         }
     }
-
 }
 
 class StagePagerAdapter @AssistedInject constructor(
         @Assisted fragment: Fragment,
-        @Assisted private val broadcasterName: String,
+        @Assisted private val broadcasters: List<String>,
         private val factory: NewReyesController.Factory,
         private val eglBase: EglBase,
         private val followManager: FollowManager,
-        private val chatMessageAdapter: ChatMessageAdapter,
-        private val friendsWatchingAdapter: FriendsWatchingAdapter,
         private val picasso: Picasso,
         private val clock: Clock
-) : FragmentStateAdapter(fragment) {
+) : FragmentStatePagerAdapter(fragment.childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(fragment: Fragment, broadcasterName: String): StagePagerAdapter
+        fun create(fragment: Fragment, broadcasters: List<String>): StagePagerAdapter
     }
 
     var currentStage: StageFragment? = null
 
     override fun getItem(position: Int): Fragment {
         val stageFragment = StageFragment(
-                factory, eglBase, followManager, chatMessageAdapter, friendsWatchingAdapter, picasso, clock)
-        stageFragment.arguments = bundleOf("broadcastLink" to broadcasterName)
+                factory, eglBase, followManager, picasso, clock)
+        stageFragment.arguments = bundleOf("broadcastLink" to broadcasters[position])
         currentStage = stageFragment
         return stageFragment
     }
 
-    override fun getItemCount(): Int = 1
-
+    override fun getCount() = broadcasters.size
 }
+

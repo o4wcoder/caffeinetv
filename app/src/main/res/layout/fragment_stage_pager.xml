@@ -5,10 +5,9 @@
 
     </data>
 
-    <androidx.viewpager2.widget.ViewPager2
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/stage_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.viewpager2.widget.ViewPager2>
+        android:layout_height="match_parent"
+        android:background="@color/black"/>
 </layout>
