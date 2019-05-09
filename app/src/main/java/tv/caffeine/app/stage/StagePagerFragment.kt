@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
@@ -94,11 +95,17 @@ class StagePagerFragment @Inject constructor(
         lobbyViewModel.refresh()
         lobbyViewModel.lobby.observe(this, Observer {
             handle(it) { lobby ->
-                val stageBroadcasters = args.broadcasterUsername().let { broadcasterName ->
-                    listOf(broadcasterName).plus(lobby.getAllBroadcasters().minus(broadcasterName))
+                val initialBroadcaster = args.broadcasterUsername()
+                val lobbyBroadcasters = lobby.getAllBroadcasters()
+                val initialBroadcasterIndex = lobbyBroadcasters.indexOf(initialBroadcaster)
+                val allBroadcasters = if (initialBroadcasterIndex == -1) {
+                    listOf(initialBroadcaster).plus(lobbyBroadcasters)
+                } else {
+                    lobbyBroadcasters
                 }
-                stagePagerAdapter = adapterFactory.create(this, stageBroadcasters)
-                binding?.stageViewPager?.currentItem = savedInstanceState?.getInt("currentItem") ?: 0
+                val currentIndex = if (initialBroadcasterIndex == -1) 0 else initialBroadcasterIndex
+                stagePagerAdapter = adapterFactory.create(this, allBroadcasters)
+                binding?.stageViewPager?.currentItem = savedInstanceState?.getInt("currentItem") ?: currentIndex
             }
         })
     }
@@ -195,5 +202,8 @@ class StagePagerAdapter @AssistedInject constructor(
     }
 
     override fun getCount() = broadcasters.size
+
+    // Do not let the adapter save the state. The current index is saved in the fragment.
+    override fun saveState():Parcelable? = null
 }
 

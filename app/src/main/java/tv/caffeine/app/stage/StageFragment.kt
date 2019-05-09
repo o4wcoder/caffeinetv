@@ -207,6 +207,7 @@ class StageFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = true
         connectStage()
     }
 
@@ -302,7 +303,10 @@ class StageFragment @Inject constructor(
     @VisibleForTesting
     fun updateBroadcastOnlineState(broadcastIsOnline: Boolean) {
         stageIsLive = broadcastIsOnline
-        if (!broadcastIsOnline) showOverlays()
+        if (!broadcastIsOnline) {
+            showOverlays()
+            loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = false
+        }
         binding.largeAvatarImageView.isVisible = !broadcastIsOnline
         binding.showIsOverTextView.isVisible = !broadcastIsOnline
         binding.backToLobbyButton.isVisible = !broadcastIsOnline
