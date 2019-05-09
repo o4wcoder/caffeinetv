@@ -5,11 +5,11 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -104,7 +104,7 @@ class StagePagerFragment @Inject constructor(
                     lobbyBroadcasters
                 }
                 val currentIndex = if (initialBroadcasterIndex == -1) 0 else initialBroadcasterIndex
-                stagePagerAdapter = adapterFactory.create(this, allBroadcasters)
+                stagePagerAdapter = adapterFactory.create(this@StagePagerFragment.childFragmentManager, allBroadcasters)
                 binding?.stageViewPager?.currentItem = savedInstanceState?.getInt("currentItem") ?: currentIndex
             }
         })
@@ -123,7 +123,6 @@ class StagePagerFragment @Inject constructor(
                 }
             }
         }
-        stagePagerAdapter = null
         binding = null
         super.onDestroyView()
     }
@@ -177,18 +176,18 @@ class StagePagerFragment @Inject constructor(
 }
 
 class StagePagerAdapter @AssistedInject constructor(
-        @Assisted fragment: Fragment,
+        @Assisted fragmentManager: FragmentManager,
         @Assisted private val broadcasters: List<String>,
         private val factory: NewReyesController.Factory,
         private val eglBase: EglBase,
         private val followManager: FollowManager,
         private val picasso: Picasso,
         private val clock: Clock
-) : FragmentStatePagerAdapter(fragment.childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(fragment: Fragment, broadcasters: List<String>): StagePagerAdapter
+        fun create(fragmentManager: FragmentManager, broadcasters: List<String>): StagePagerAdapter
     }
 
     var currentStage: StageFragment? = null
@@ -202,8 +201,5 @@ class StagePagerAdapter @AssistedInject constructor(
     }
 
     override fun getCount() = broadcasters.size
-
-    // Do not let the adapter save the state. The current index is saved in the fragment.
-    override fun saveState():Parcelable? = null
 }
 
