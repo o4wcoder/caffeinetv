@@ -91,6 +91,7 @@ class StageFragment @Inject constructor(
 
     fun connectStage() {
         if (connectStageJob == null) {
+            loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = true
             connectStageJob = launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
                 connectStreams(userDetails.username)
@@ -207,7 +208,6 @@ class StageFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = true
         connectStage()
     }
 
@@ -374,7 +374,6 @@ class StageFragment @Inject constructor(
 
     private fun manageConnections(controller: NewReyesController) = launch {
         controller.connectionChannel.consumeEach { feedInfo ->
-            loadingIndicators[feedInfo.role]?.isVisible = false
             val connectionInfo = feedInfo.connectionInfo
             val videoTrack = connectionInfo.videoTrack
             renderers[feedInfo.role]?.let {
@@ -385,6 +384,7 @@ class StageFragment @Inject constructor(
             renderers[feedInfo.role]?.let {
                 configureRenderer(it, feedInfo.feed, videoTrack)
             }
+            loadingIndicators[feedInfo.role]?.isVisible = false
         }
     }
 

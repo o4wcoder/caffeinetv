@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -44,6 +45,8 @@ import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
+private const val BUNDLE_KEY_BROADCASTERS = "broadcasters"
+
 class StagePagerFragment @Inject constructor(
         private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
         private val adapterFactory: StagePagerAdapter.Factory
@@ -53,6 +56,7 @@ class StagePagerFragment @Inject constructor(
     private val args by navArgs<StagePagerFragmentArgs>()
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
     private val lobbyViewModel: LobbyViewModel by viewModels { viewModelFactory }
+    @VisibleForTesting var broadcasters = listOf<String>()
     private var stagePagerAdapter: StagePagerAdapter? = null
         set(value) {
             binding?.stageViewPager?.adapter = value
@@ -92,22 +96,38 @@ class StagePagerFragment @Inject constructor(
         }
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStagePagerBinding.bind(view)
-        lobbyViewModel.refresh()
-        lobbyViewModel.lobby.observe(this, Observer {
-            handle(it) { lobby ->
-                val initialBroadcaster = args.broadcasterUsername()
-                val lobbyBroadcasters = lobby.getAllBroadcasters()
-                val initialBroadcasterIndex = lobbyBroadcasters.indexOf(initialBroadcaster)
-                val allBroadcasters = if (initialBroadcasterIndex == -1) {
-                    listOf(initialBroadcaster).plus(lobbyBroadcasters)
-                } else {
-                    lobbyBroadcasters
+        savedInstanceState?.getStringArrayList(BUNDLE_KEY_BROADCASTERS)?.let { broadcasters = it }
+        if (broadcasters.isEmpty()) {
+            lobbyViewModel.refresh()
+            lobbyViewModel.lobby.observe(this, Observer {
+                handle(it) { lobby ->
+                    val (configuredBroadcasters, index) = configureBroadcasters(
+                            args.broadcasterUsername(), lobby.getAllBroadcasters())
+                    broadcasters = configuredBroadcasters
+                    stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters)
+                    binding?.stageViewPager?.currentItem = index
                 }
-                val currentIndex = if (initialBroadcasterIndex == -1) 0 else initialBroadcasterIndex
-                stagePagerAdapter = adapterFactory.create(this@StagePagerFragment.childFragmentManager, allBroadcasters)
-                binding?.stageViewPager?.currentItem = savedInstanceState?.getInt("currentItem") ?: currentIndex
-            }
-        })
+            })
+        } else {
+            // The view pager restores the index.
+            stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters)
+        }
+    }
+
+    /**
+     * Configure the broadcasters given the initial broadcaster and the lobby broadcasters.
+     *
+     * @return the configured broadcasters list and the index in a pair.
+     */
+    @VisibleForTesting fun configureBroadcasters(initialBroadcaster: String, lobbyBroadcasters: List<String>): Pair<List<String>, Int>{
+        val initialBroadcasterIndex = lobbyBroadcasters.indexOf(initialBroadcaster)
+        val broadcasters = if (initialBroadcasterIndex == -1) {
+            listOf(initialBroadcaster).plus(lobbyBroadcasters)
+        } else {
+            lobbyBroadcasters
+        }
+        val index = if (initialBroadcasterIndex == -1) 0 else initialBroadcasterIndex
+        return Pair(broadcasters, index)
     }
 
     override fun onDestroyView() {
@@ -129,7 +149,7 @@ class StagePagerFragment @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt("currentItem", binding?.stageViewPager?.currentItem ?: 0)
+        outState.putStringArrayList(BUNDLE_KEY_BROADCASTERS, ArrayList(broadcasters))
     }
 
     private fun connectStage() {
