@@ -45,11 +45,11 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.auth.TwitterAuthViewModel
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
@@ -64,12 +64,8 @@ private const val DISCONNECT_IDENTITY = 1
 class SettingsFragment @Inject constructor(
         private val childFragmentInjector: DispatchingAndroidInjector<Fragment>,
         private val viewModelFactory: ViewModelFactory,
-        private val facebookLoginManager: LoginManager,
-        private val oauthService: OAuthService,
-        private val gson: Gson,
-        private val dispatchConfig: DispatchConfig
-) : PreferenceFragmentCompat(), HasSupportFragmentInjector,
-DisconnectIdentityDialogFragment.Callback {
+        private val facebookLoginManager: LoginManager
+) : PreferenceFragmentCompat(), HasSupportFragmentInjector, DisconnectIdentityDialogFragment.Callback {
 
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }

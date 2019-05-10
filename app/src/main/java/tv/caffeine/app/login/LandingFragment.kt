@@ -1,4 +1,4 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -41,7 +41,10 @@ import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.api.usernameErrorsString
+import tv.caffeine.app.auth.AuthWatcher
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentLandingBinding
+import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar

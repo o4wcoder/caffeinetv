@@ -1,4 +1,4 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.social
 
 import android.os.Bundle
 import android.view.View

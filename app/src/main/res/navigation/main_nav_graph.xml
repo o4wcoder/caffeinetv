@@ -8,7 +8,7 @@
     <!-- Confirm email and general Caffeine link -->
     <fragment
         android:id="@+id/confirmEmailFragment"
-        android:name="tv.caffeine.app.auth.ConfirmEmailFragment"
+        android:name="tv.caffeine.app.login.ConfirmEmailFragment"
         android:label="@string/confirm_email">
         <deepLink
             android:id="@+id/deepLink7"
@@ -408,7 +408,7 @@
             app:nullable="true" />
         <fragment
             android:id="@+id/landingFragment"
-            android:name="tv.caffeine.app.auth.LandingFragment"
+            android:name="tv.caffeine.app.login.LandingFragment"
             android:label="@string/landing"
             tools:layout="@layout/fragment_landing">
             <action
@@ -430,7 +430,7 @@
         </fragment>
         <fragment
             android:id="@+id/signInFragment"
-            android:name="tv.caffeine.app.auth.SignInFragment"
+            android:name="tv.caffeine.app.login.SignInFragment"
             android:label="@string/sign_in_title"
             tools:layout="@layout/fragment_sign_in">
             <action
@@ -445,12 +445,12 @@
         </fragment>
         <fragment
             android:id="@+id/forgotFragment"
-            android:name="tv.caffeine.app.auth.ForgotFragment"
+            android:name="tv.caffeine.app.login.ForgotFragment"
             android:label="@string/reset_your_password"
             tools:layout="@layout/fragment_forgot" />
         <fragment
             android:id="@+id/mfaCodeFragment"
-            android:name="tv.caffeine.app.auth.MfaCodeFragment"
+            android:name="tv.caffeine.app.login.MfaCodeFragment"
             android:label="@string/enter_code_title"
             tools:layout="@layout/fragment_mfa_code">
             <argument
@@ -472,7 +472,7 @@
         </fragment>
         <fragment
             android:id="@+id/signUpFragment"
-            android:name="tv.caffeine.app.auth.SignUpFragment"
+            android:name="tv.caffeine.app.login.SignUpFragment"
             android:label="@string/sign_up_for_caffeine"
             tools:layout="@layout/fragment_sign_up">
             <action
@@ -496,7 +496,7 @@
         </fragment>
         <fragment
             android:id="@+id/legalAgreementFragment"
-            android:name="tv.caffeine.app.auth.LegalAgreementFragment"
+            android:name="tv.caffeine.app.login.LegalAgreementFragment"
             android:label="@string/legal_documents"
             tools:layout="@layout/fragment_legal_agreement">
             <action
@@ -505,7 +505,7 @@
         </fragment>
         <fragment
             android:id="@+id/twitterAuthFragment"
-            android:name="tv.caffeine.app.auth.TwitterAuthForLogin"
+            android:name="tv.caffeine.app.social.TwitterAuthForLogin"
             android:label="@string/twitter_login">
         </fragment>
         <fragment
@@ -584,7 +584,7 @@
             android:label="@string/update_password_title" />
         <fragment
             android:id="@+id/twitterAuthFragment"
-            android:name="tv.caffeine.app.auth.TwitterAuthForSettings"
+            android:name="tv.caffeine.app.social.TwitterAuthForSettings"
             android:label="@string/twitter_login">
         </fragment>
         <fragment

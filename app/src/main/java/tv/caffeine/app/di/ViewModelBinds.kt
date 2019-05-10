@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import tv.caffeine.app.auth.LegalAgreementViewModel
-import tv.caffeine.app.auth.SignInViewModel
-import tv.caffeine.app.auth.TwitterAuthViewModel
+import tv.caffeine.app.login.LegalAgreementViewModel
+import tv.caffeine.app.login.SignInViewModel
+import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.broadcast.GuideViewModel
 import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.explore.ExploreViewModel

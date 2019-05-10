@@ -1,9 +1,11 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.login
 
 import com.google.gson.Gson
 import tv.caffeine.app.api.*
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.auth.AuthWatcher
+import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(

@@ -1,4 +1,4 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.login
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.MockKAnnotations

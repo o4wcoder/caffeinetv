@@ -1,4 +1,4 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.login
 
 import android.app.DatePickerDialog
 import android.content.DialogInterface
@@ -46,6 +46,7 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.api.usernameErrorsString
+import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment

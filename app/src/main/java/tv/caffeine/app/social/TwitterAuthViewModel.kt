@@ -1,4 +1,4 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.social
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

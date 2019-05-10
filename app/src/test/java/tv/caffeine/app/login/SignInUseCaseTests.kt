@@ -1,4 +1,4 @@
-package tv.caffeine.app.auth
+package tv.caffeine.app.login
 
 import com.google.gson.Gson
 import io.mockk.*
@@ -11,6 +11,8 @@ import retrofit2.Response
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.NextAccountAction
 import tv.caffeine.app.api.SignInResult
+import tv.caffeine.app.auth.AuthWatcher
+import tv.caffeine.app.auth.TokenStore
 
 class SignInUseCaseTests {
     @MockK lateinit var gson: Gson
