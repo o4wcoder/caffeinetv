@@ -7,7 +7,7 @@ buildscript {
         android_plugin: '3.5.0-beta01',
         navigation: '2.1.0-alpha03',
         fragments: '1.1.0-alpha08',
-        dagger: '2.21',
+        dagger: '2.22.1',
         coroutines: '1.2.1',
         espresso: '3.1.1',
         robolectric: '4.2.1'
