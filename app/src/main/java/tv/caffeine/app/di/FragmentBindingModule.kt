@@ -8,11 +8,11 @@ import dagger.multibindings.IntoMap
 import tv.caffeine.app.auth.ConfirmEmailFragment
 import tv.caffeine.app.auth.ForgotFragment
 import tv.caffeine.app.auth.LandingFragment
-import tv.caffeine.app.auth.LegalAgreementFragment
 import tv.caffeine.app.auth.MfaCodeFragment
 import tv.caffeine.app.auth.SignInFragment
 import tv.caffeine.app.auth.SignUpFragment
-import tv.caffeine.app.auth.TwitterAuthFragment
+import tv.caffeine.app.auth.TwitterAuthForLogin
+import tv.caffeine.app.auth.TwitterAuthForSettings
 import tv.caffeine.app.broadcast.BroadcastFragment
 import tv.caffeine.app.broadcast.LiveBroadcastPickerFragment
 import tv.caffeine.app.broadcast.UpcomingBroadcastFragment
@@ -21,16 +21,7 @@ import tv.caffeine.app.lobby.FeaturedProgramGuideFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
 import tv.caffeine.app.notifications.NotificationsFragment
-import tv.caffeine.app.profile.DeleteAccountDialogFragment
-import tv.caffeine.app.profile.EditBioFragment
 import tv.caffeine.app.profile.MyProfileFragment
-import tv.caffeine.app.profile.ProfileFragment
-import tv.caffeine.app.profile.ReportDialogFragment
-import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
-import tv.caffeine.app.profile.UpdateEmailFragment
-import tv.caffeine.app.profile.UpdatePasswordFragment
-import tv.caffeine.app.settings.BuyGoldUsingCreditsDialogFragment
-import tv.caffeine.app.settings.DisconnectIdentityDialogFragment
 import tv.caffeine.app.settings.GoldAndCreditsFragment
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.settings.SettingsFragment
@@ -38,14 +29,11 @@ import tv.caffeine.app.settings.TransactionHistoryFragment
 import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.SendDigitalItemFragment
-import tv.caffeine.app.stage.SendMessageFragment
 import tv.caffeine.app.stage.StageFragment
 import tv.caffeine.app.stage.StagePagerFragment
-import tv.caffeine.app.update.NeedsUpdateFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowingFragment
 import tv.caffeine.app.users.IgnoredUsersFragment
-import tv.caffeine.app.util.NoNetworkFragment
 
 @Module
 abstract class FragmentBindingModule {
@@ -185,8 +173,13 @@ abstract class FragmentBindingModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(TwitterAuthFragment::class)
-    abstract fun bindTwitterAuthFragment(fragment: TwitterAuthFragment): Fragment
+    @FragmentKey(TwitterAuthForLogin::class)
+    abstract fun bindTwitterAuthForLogin(fragment: TwitterAuthForLogin): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(TwitterAuthForSettings::class)
+    abstract fun bindTwitterAuthForSettings(fragment: TwitterAuthForSettings): Fragment
 
     @Binds
     @IntoMap

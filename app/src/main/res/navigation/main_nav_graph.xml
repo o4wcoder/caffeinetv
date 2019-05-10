@@ -505,7 +505,7 @@
         </fragment>
         <fragment
             android:id="@+id/twitterAuthFragment"
-            android:name="tv.caffeine.app.auth.TwitterAuthFragment"
+            android:name="tv.caffeine.app.auth.TwitterAuthForLogin"
             android:label="@string/twitter_login">
         </fragment>
         <fragment
@@ -584,7 +584,7 @@
             android:label="@string/update_password_title" />
         <fragment
             android:id="@+id/twitterAuthFragment"
-            android:name="tv.caffeine.app.auth.TwitterAuthFragment"
+            android:name="tv.caffeine.app.auth.TwitterAuthForSettings"
             android:label="@string/twitter_login">
         </fragment>
         <fragment

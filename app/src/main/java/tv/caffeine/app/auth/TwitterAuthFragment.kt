@@ -1,17 +1,16 @@
 package tv.caffeine.app.auth
 
-import android.content.res.Resources
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.google.gson.Gson
-import kotlinx.coroutines.*
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import okhttp3.internal.http2.StreamResetException
 import tv.caffeine.app.R
 import tv.caffeine.app.api.OAuthCallbackResult
@@ -19,37 +18,37 @@ import tv.caffeine.app.api.OAuthService
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.awaitAndParseErrors
-import tv.caffeine.app.ui.CaffeineDialogFragment
-import tv.caffeine.app.ui.DialogActionBar
-import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class TwitterAuthFragment @Inject constructor(
+class TwitterAuthForLogin @Inject constructor(
+        oauthService: OAuthService,
+        gson: Gson
+) : TwitterAuthFragment(oauthService, gson) {
+    override val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.login) { viewModelFactory }
+}
+
+class TwitterAuthForSettings @Inject constructor(
+        oauthService: OAuthService,
+        gson: Gson
+) : TwitterAuthFragment(oauthService, gson) {
+    override val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.settings) { viewModelFactory }
+}
+
+abstract class TwitterAuthFragment(
         private val oauthService: OAuthService,
-        private val gson: Gson,
-        private val dispatchConfig: DispatchConfig
-): CaffeineDialogFragment(), CoroutineScope {
-
-    interface Callback {
-        fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>)
-    }
+        private val gson: Gson
+): CaffeineFragment(R.layout.fragment_twitter_auth) {
 
     private lateinit var webView: WebView
-
-    private lateinit var job: Job
-    override val coroutineContext: CoroutineContext
-        get() = dispatchConfig.main + job
+    abstract val twitterAuth: TwitterAuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (resources.isFullscreenDialog()) {
-            // On Lenovo Tab 4 plus, none of the themes works with this dialog due to dynamic sizing.
-            setStyle(DialogFragment.STYLE_NORMAL, R.style.FullscreenDialogTheme)
-        }
-        // prevent the long poll from holding onto the old dialog and dismissing it on screen rotation
+        // prevent the long poll from holding onto the old instance and dismissing it on screen rotation
         retainInstance = true
         job = SupervisorJob()
+        twitterAuth.oauthResult
     }
 
     override fun onDestroy() {
@@ -58,17 +57,7 @@ class TwitterAuthFragment @Inject constructor(
         super.onDestroy()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_twitter_auth, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        view.findViewById<DialogActionBar>(R.id.action_bar).apply {
-            isVisible = resources.isFullscreenDialog()
-            setTitle(getString(R.string.continue_with_twitter))
-            setDismissListener { dismissAllowingStateLoss() }
-        }
         webView = view.findViewById(R.id.web_view)
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = object : WebViewClient() {
@@ -81,38 +70,36 @@ class TwitterAuthFragment @Inject constructor(
 
     private suspend fun twitterLogin() {
         val result = oauthService.authenticateWith(IdentityProvider.twitter).awaitAndParseErrors(gson)
-        val callback = targetFragment as? Callback
         when(result) {
             is CaffeineResult.Success -> {
                 val oauthResponse = result.value
                 webView.loadUrl(oauthResponse.authUrl)
-                longPoll(oauthResponse.longpollUrl, callback)
+                longPoll(oauthResponse.longpollUrl)
             }
             is CaffeineResult.Error -> {
-                callback?.processTwitterOAuthResult(CaffeineResult.Error(result.error))
-                dismissAllowingStateLoss()
+                twitterAuth.processTwitterOAuthResult(CaffeineResult.Error(result.error))
+                findNavController().popBackStack()
             }
             is CaffeineResult.Failure -> {
-                callback?.processTwitterOAuthResult(CaffeineResult.Failure(result.throwable))
-                dismissAllowingStateLoss()
+                twitterAuth.processTwitterOAuthResult(CaffeineResult.Failure(result.throwable))
+                findNavController().popBackStack()
             }
         }
     }
 
-    private suspend fun longPoll(longPollUrl: String, callback: Callback?) {
+    private suspend fun longPoll(longPollUrl: String) {
         var longPollResult: CaffeineResult<OAuthCallbackResult>?
         do {
+            if (!isActive) return
             longPollResult = oauthService.longPoll(longPollUrl).awaitAndParseErrors(gson)
-        } while(isActive && shouldRetry(longPollResult))
-        longPollResult?.let { callback?.processTwitterOAuthResult(it) }
-        dismissAllowingStateLoss()
+        } while(shouldRetry(longPollResult))
+        if (!isActive) return
+        longPollResult?.let { twitterAuth.processTwitterOAuthResult(it) }
+        findNavController().popBackStack()
     }
 
     private fun shouldRetry(result: CaffeineResult<OAuthCallbackResult>?): Boolean {
         return result is CaffeineResult.Failure && result.throwable is StreamResetException
     }
 
-    private fun Resources.isFullscreenDialog(): Boolean {
-        return getBoolean(R.bool.isFullscreenDialog)
-    }
 }

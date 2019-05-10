@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import tv.caffeine.app.auth.LegalAgreementViewModel
 import tv.caffeine.app.auth.SignInViewModel
+import tv.caffeine.app.auth.TwitterAuthViewModel
 import tv.caffeine.app.broadcast.GuideViewModel
 import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.explore.ExploreViewModel
@@ -168,5 +169,10 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(LiveHostableBroadcastersViewModel::class)
     abstract fun bindLiveHostableBroadcastersViewModel(viewModel: LiveHostableBroadcastersViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TwitterAuthViewModel::class)
+    abstract fun bindTwitterAuthViewModel(viewModel: TwitterAuthViewModel): ViewModel
 
 }

@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -41,7 +43,6 @@ import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.api.usernameErrorsString
 import tv.caffeine.app.databinding.FragmentLandingBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
@@ -56,11 +57,12 @@ class LandingFragment @Inject constructor(
         @VisibleForTesting var analytics: Analytics,
         private val firebaseAnalytics: FirebaseAnalytics,
         private val facebookLoginManager: LoginManager
-): CaffeineFragment(R.layout.fragment_landing), TwitterAuthFragment.Callback {
+): CaffeineFragment(R.layout.fragment_landing) {
 
     private lateinit var binding: FragmentLandingBinding
     private lateinit var callbackManager: CallbackManager
     private val args by navArgs<LandingFragmentArgs>()
+    private val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.login) { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,10 +94,11 @@ class LandingFragment @Inject constructor(
         binding.twitterSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.twitter))
             firebaseAnalytics.logEvent(FirebaseEvent.ContinueWithTwitterClicked)
-            val fragment = TwitterAuthFragment(oauthService, gson, dispatchConfig)
-            fragment.setTargetFragment(this, 0)
-            fragment.maybeShow(fragmentManager, "twitterAuth")
+            findNavController().navigate(LandingFragmentDirections.actionLandingFragmentToTwitterAuthFragment())
         }
+        twitterAuth.oauthResult.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }
+        })
         args.message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
         }
@@ -114,7 +117,7 @@ class LandingFragment @Inject constructor(
         }
     }
 
-    override fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
+    private fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
         when(result) {
             is CaffeineResult.Success -> {
                 Timber.d("Twitter OAuth login success, ${result.value}")

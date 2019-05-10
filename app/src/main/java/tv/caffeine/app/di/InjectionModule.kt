@@ -10,7 +10,8 @@ import tv.caffeine.app.auth.LegalAgreementFragment
 import tv.caffeine.app.auth.MfaCodeFragment
 import tv.caffeine.app.auth.SignInFragment
 import tv.caffeine.app.auth.SignUpFragment
-import tv.caffeine.app.auth.TwitterAuthFragment
+import tv.caffeine.app.auth.TwitterAuthForLogin
+import tv.caffeine.app.auth.TwitterAuthForSettings
 import tv.caffeine.app.broadcast.BroadcastFragment
 import tv.caffeine.app.broadcast.LiveBroadcastPickerFragment
 import tv.caffeine.app.broadcast.UpcomingBroadcastFragment
@@ -87,7 +88,8 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun sendDigitalItemFragment(): SendDigitalItemFragment
     @ContributesAndroidInjector abstract fun sendMessageFragment(): SendMessageFragment
     @ContributesAndroidInjector abstract fun legalAgreementFragment(): LegalAgreementFragment
-    @ContributesAndroidInjector abstract fun twitterAuthFragment(): TwitterAuthFragment
+    @ContributesAndroidInjector abstract fun twitterAuthForLogin(): TwitterAuthForLogin
+    @ContributesAndroidInjector abstract fun twitterAuthForSettings(): TwitterAuthForSettings
     @ContributesAndroidInjector abstract fun needsUpdateFragment(): NeedsUpdateFragment
     @ContributesAndroidInjector abstract fun noNetworkFragment(): NoNetworkFragment
     @ContributesAndroidInjector abstract fun confirmEmailFragment(): ConfirmEmailFragment

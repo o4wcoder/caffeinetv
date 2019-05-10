@@ -28,7 +28,6 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
-import tv.caffeine.app.api.OAuthService
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
@@ -37,7 +36,7 @@ import tv.caffeine.app.di.setApplicationInjector
 class LandingFragmentUnitTests {
 
     @MockK(relaxed = true) lateinit var analytics: Analytics
-    @MockK(relaxed = true) lateinit var oauthService: OAuthService
+    @MockK(relaxed = true) lateinit var navController: NavController
     private lateinit var fragment: LandingFragment
     private lateinit var scenario: FragmentScenario<LandingFragment>
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
@@ -49,12 +48,21 @@ class LandingFragmentUnitTests {
         val testComponent = DaggerTestComponent.builder().create(app)
         app.setApplicationInjector(testComponent)
         val directions = MainNavDirections.actionGlobalLandingFragment(null)
-        scenario = launchFragmentInContainer<LandingFragment>(directions.arguments,
-                instantiate = { LandingFragment(mockk(), mockk(), oauthService, mockk(), mockk(), analytics, mockk(relaxed = true), mockk(relaxed = true)) })
-        val navController = mockk<NavController>(relaxed = true)
+        scenario = launchFragmentInContainer<LandingFragment>(directions.arguments) {
+            createLandingFragment(analytics, navController)
+        }
         scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
             fragment = it
+        }
+    }
+
+    private fun createLandingFragment(analytics: Analytics, navController: NavController) = LandingFragment(
+            mockk(), mockk(), mockk(), mockk(), mockk(), analytics, mockk(relaxed = true), mockk(relaxed = true)
+    ).also { fragment ->
+        fragment.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+            if (viewLifecycleOwner != null) {
+                Navigation.setViewNavController(fragment.requireView(), navController)
+            }
         }
     }
 

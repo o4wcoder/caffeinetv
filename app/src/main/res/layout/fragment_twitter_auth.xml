@@ -5,19 +5,11 @@
     android:layout_height="match_parent"
     tools:context="tv.caffeine.app.auth.TwitterAuthFragment">
 
-    <tv.caffeine.app.ui.DialogActionBar
-        android:id="@+id/action_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/twitter_auth_web_view_height"
-        app:layout_constraintTop_toBottomOf="@id/action_bar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

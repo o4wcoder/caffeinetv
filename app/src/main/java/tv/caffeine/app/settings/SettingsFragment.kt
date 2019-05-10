@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.preference.CheckBoxPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
@@ -44,7 +45,7 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.auth.TwitterAuthFragment
+import tv.caffeine.app.auth.TwitterAuthViewModel
 import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.profile.MyProfileViewModel
@@ -67,11 +68,12 @@ class SettingsFragment @Inject constructor(
         private val oauthService: OAuthService,
         private val gson: Gson,
         private val dispatchConfig: DispatchConfig
-): PreferenceFragmentCompat(), HasSupportFragmentInjector,
-DisconnectIdentityDialogFragment.Callback, TwitterAuthFragment.Callback {
+) : PreferenceFragmentCompat(), HasSupportFragmentInjector,
+DisconnectIdentityDialogFragment.Callback {
 
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
+    private val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.settings) { viewModelFactory }
     private val notificationSettingsViewModel: NotificationSettingsViewModel by activityViewModels { viewModelFactory }
 
     private val callbackManager: CallbackManager = CallbackManager.Factory.create()
@@ -178,7 +180,7 @@ DisconnectIdentityDialogFragment.Callback, TwitterAuthFragment.Callback {
         }
     }
 
-    override fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
+    private fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
         when(result) {
             is CaffeineResult.Success -> viewModel.processTwitterAuth(result.value)
             is CaffeineResult.Error -> {
@@ -193,6 +195,9 @@ DisconnectIdentityDialogFragment.Callback, TwitterAuthFragment.Callback {
     }
 
     private fun configureSocialAccounts() {
+        twitterAuth.oauthResult.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }
+        })
         findPreference("manage_twitter_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer { user ->
                 val twitter = user?.connectedAccounts?.get("twitter")
@@ -208,9 +213,7 @@ DisconnectIdentityDialogFragment.Callback, TwitterAuthFragment.Callback {
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
                         fragment.maybeShow(fragmentManager, "disconnectTwitter")
                     } else {
-                        val fragment = TwitterAuthFragment(oauthService, gson, dispatchConfig)
-                        fragment.setTargetFragment(this, 0)
-                        fragment.maybeShow(fragmentManager, "twitterAuth")
+                        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToTwitterAuthFragment())
                     }
                     true
                 }
