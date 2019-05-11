@@ -104,7 +104,7 @@ class StageFragment @Inject constructor(
         if (viewJob == null) {
             viewJob = launch {
                 do {
-                    profileViewModel.load(broadcasterUsername)
+                    profileViewModel.forceLoad(broadcasterUsername)
                     delay(5000L)
                 } while (isActive)
             }

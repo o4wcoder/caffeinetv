@@ -63,7 +63,7 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentProfileBinding.bind(view)
-        viewModel.load(caid)
+        viewModel.forceLoad(caid)
         viewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             setHasOptionsMenu(true)
             binding.userProfile = userProfile

@@ -30,7 +30,10 @@ class ProfileViewModel @Inject constructor(
         configure(userDetails, broadcastDetails)
     }
 
-    private fun forceLoad(caid: CAID) = launch {
+    /**
+     * Force load when the UI relies on whether the broadcaster is live.
+     */
+    fun forceLoad(caid: CAID) = launch {
         val userDetails = followManager.loadUserDetails(caid) ?: return@launch
         val broadcastDetails = followManager.broadcastDetails(userDetails)
         configure(userDetails, broadcastDetails)
@@ -54,5 +57,4 @@ class ProfileViewModel @Inject constructor(
         followManager.unfollowUser(caid)
         forceLoad(caid)
     }
-
 }
