@@ -35,5 +35,4 @@ class DisconnectIdentityDialogFragment : CaffeineDialogFragment() {
                 .setNegativeButton(R.string.cancel, null)
                 .create()
     }
-
 }

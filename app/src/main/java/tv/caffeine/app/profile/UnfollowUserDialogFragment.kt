@@ -25,8 +25,7 @@ class UnfollowUserDialogFragment : DialogFragment() {
         return AlertDialog.Builder(activity)
                 .setTitle(getString(R.string.unfollow_question, username))
                 .setPositiveButton(R.string.unfollow_button, positiveClickListener)
-                .setNegativeButton(R.string.cancel ) { _, _ -> dismiss() }
+                .setNegativeButton(R.string.cancel) { _, _ -> dismiss() }
                 .create()
     }
 }
-

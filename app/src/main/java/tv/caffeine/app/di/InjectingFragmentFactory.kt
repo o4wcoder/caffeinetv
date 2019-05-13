@@ -3,13 +3,11 @@ package tv.caffeine.app.di
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import timber.log.Timber
-import java.lang.Exception
-import java.lang.RuntimeException
 import javax.inject.Inject
 import javax.inject.Provider
 
 class InjectingFragmentFactory @Inject constructor(
-        private val creators: Map<Class<out Fragment>, @JvmSuppressWildcards Provider<Fragment>>
+    private val creators: Map<Class<out Fragment>, @JvmSuppressWildcards Provider<Fragment>>
 ) : FragmentFactory() {
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
@@ -28,4 +26,3 @@ class InjectingFragmentFactory @Inject constructor(
         return super.instantiate(classLoader, className)
     }
 }
-

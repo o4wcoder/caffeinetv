@@ -30,14 +30,14 @@ import javax.inject.Inject
 private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
 
 class ChatViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        context: Context,
-        private val realtime: Realtime,
-        private val tokenStore: TokenStore,
-        private val usersService: UsersService,
-        private val followManager: FollowManager,
-        private val messageHandshakeFactory: MessageHandshake.Factory,
-        private val gson: Gson
+    dispatchConfig: DispatchConfig,
+    context: Context,
+    private val realtime: Realtime,
+    private val tokenStore: TokenStore,
+    private val usersService: UsersService,
+    private val followManager: FollowManager,
+    private val messageHandshakeFactory: MessageHandshake.Factory,
+    private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
     private var messageHandshake: MessageHandshake? = null
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
@@ -69,7 +69,7 @@ class ChatViewModel @Inject constructor(
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val caid = tokenStore.caid ?: return@launch Timber.e("Not logged in")
             val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
-            val publisher = when(result) {
+            val publisher = when (result) {
                 is CaffeineResult.Success -> result.value.token
                 is CaffeineResult.Error -> return@launch Timber.e("Failed to get signed user details")
                 is CaffeineResult.Failure -> return@launch Timber.e(result.throwable)
@@ -77,7 +77,7 @@ class ChatViewModel @Inject constructor(
             val stageId = userDetails.stageId
             val message = Reaction("reaction", publisher, Message.Body(text))
             val result2 = realtime.sendMessage(stageId, message).awaitAndParseErrors(gson)
-            when(result2) {
+            when (result2) {
                 is CaffeineResult.Success -> Timber.d("Sent message $text with result $result")
                 is CaffeineResult.Error -> Timber.e("Failed to send message")
                 is CaffeineResult.Failure -> Timber.e(result2.throwable)
@@ -88,7 +88,7 @@ class ChatViewModel @Inject constructor(
     fun endorseMessage(message: Message) {
         launch {
             val result = realtime.endorseMessage(message.id).awaitEmptyAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineEmptyResult.Success -> Timber.d("Successfully endorsed a message")
                 is CaffeineEmptyResult.Error -> Timber.e(result.error.toString())
                 is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
@@ -100,7 +100,7 @@ class ChatViewModel @Inject constructor(
 
     private fun processMessage(messageWrapper: MessageWrapper) {
         val message = messageWrapper.message
-        when(message.type) {
+        when (message.type) {
             Message.Type.reaction, Message.Type.digital_item, Message.Type.share -> processReaction(messageWrapper)
             Message.Type.join, Message.Type.leave, Message.Type.follow -> processPresence(messageWrapper)
             Message.Type.rescind -> processRescind(messageWrapper)

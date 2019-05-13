@@ -62,9 +62,9 @@ import kotlin.collections.set
 private const val DISCONNECT_IDENTITY = 1
 
 class SettingsFragment @Inject constructor(
-        private val childFragmentInjector: DispatchingAndroidInjector<Fragment>,
-        private val viewModelFactory: ViewModelFactory,
-        private val facebookLoginManager: LoginManager
+    private val childFragmentInjector: DispatchingAndroidInjector<Fragment>,
+    private val viewModelFactory: ViewModelFactory,
+    private val facebookLoginManager: LoginManager
 ) : PreferenceFragmentCompat(), HasSupportFragmentInjector, DisconnectIdentityDialogFragment.Callback {
 
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
@@ -114,7 +114,7 @@ class SettingsFragment @Inject constructor(
             true
         }
         myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
-            @StringRes val status = when(userProfile.mfaMethod) {
+            @StringRes val status = when (userProfile.mfaMethod) {
                 MfaMethod.EMAIL, MfaMethod.TOTP -> R.string.mfa_status_on
                 else -> R.string.mfa_status_off
             }
@@ -177,7 +177,7 @@ class SettingsFragment @Inject constructor(
     }
 
     private fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> viewModel.processTwitterAuth(result.value)
             is CaffeineResult.Error -> {
                 Timber.e("Error connecting Twitter, ${result.error}")
@@ -241,7 +241,6 @@ class SettingsFragment @Inject constructor(
                             override fun onError(error: FacebookException?) {
                                 activity?.showSnackbar(R.string.error_facebook_callback)
                             }
-
                         })
                         facebookLoginManager.logInWithReadPermissions(this, resources.getStringArray(R.array.facebook_permissions).toList())
                     }
@@ -302,13 +301,13 @@ class SettingsFragment @Inject constructor(
 }
 
 class SettingsViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val tokenStore: TokenStore,
-        private val followManager: FollowManager,
-        private val usersService: UsersService,
-        private val oauthService: OAuthService,
-        private val facebookLoginManager: LoginManager,
-        private val gson: Gson
+    dispatchConfig: DispatchConfig,
+    private val tokenStore: TokenStore,
+    private val followManager: FollowManager,
+    private val usersService: UsersService,
+    private val oauthService: OAuthService,
+    private val facebookLoginManager: LoginManager,
+    private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
     private val _userDetails = MutableLiveData<User>()
     val userDetails: LiveData<User?> = Transformations.map(_userDetails) { it }
@@ -329,7 +328,7 @@ class SettingsViewModel @Inject constructor(
         val token = loginResult?.accessToken?.token ?: return@launch
         val deferred = oauthService.submitFacebookToken(FacebookTokenBody(token))
         val result = deferred.awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> Timber.d("Successful Facebook login")
             is CaffeineResult.Error -> Timber.d("Error attempting Facebook login ${result.error}")
             is CaffeineResult.Failure -> Timber.d("Failure attempting Facebook login ${result.throwable}")
@@ -347,10 +346,10 @@ class SettingsViewModel @Inject constructor(
         launch {
             val caid = tokenStore.caid ?: return@launch
             val result = usersService.disconnectIdentity(caid, socialUid, identityProvider).awaitEmptyAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineEmptyResult.Success -> {
                     Timber.d("Successfully disconnected identity")
-                    when(identityProvider) {
+                    when (identityProvider) {
                         IdentityProvider.facebook -> {
                             facebookLoginManager.logOut()
                         }
@@ -370,15 +369,15 @@ class SettingsViewModel @Inject constructor(
 }
 
 class NotificationSettingsViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val accountsService: AccountsService,
-        private val gson: Gson
-): CaffeineViewModel(dispatchConfig) {
+    dispatchConfig: DispatchConfig,
+    private val accountsService: AccountsService,
+    private val gson: Gson
+) : CaffeineViewModel(dispatchConfig) {
 
     private val _notificationSettings = MutableLiveData<NotificationSettings>()
     val notificationSettings: LiveData<NotificationSettings> = Transformations.map(_notificationSettings) { it }
-    val pushCount:LiveData<Int> = Transformations.map(_notificationSettings) { getPushCount(it) }
-    val emailCount:LiveData<Int> = Transformations.map(_notificationSettings) { getEmailCount(it) }
+    val pushCount: LiveData<Int> = Transformations.map(_notificationSettings) { getPushCount(it) }
+    val emailCount: LiveData<Int> = Transformations.map(_notificationSettings) { getEmailCount(it) }
 
     fun load() {
         launch {

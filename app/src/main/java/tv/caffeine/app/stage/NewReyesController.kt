@@ -3,32 +3,56 @@ package tv.caffeine.app.stage
 import com.google.gson.Gson
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
-import org.webrtc.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import org.webrtc.AudioTrack
+import org.webrtc.IceCandidate
+import org.webrtc.MediaConstraints
+import org.webrtc.PeerConnection
+import org.webrtc.PeerConnectionFactory
+import org.webrtc.RTCStatsReport
+import org.webrtc.SessionDescription
+import org.webrtc.VideoTrack
 import timber.log.Timber
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.CumulativeCounters
+import tv.caffeine.app.api.EventsService
+import tv.caffeine.app.api.IndividualIceCandidate
+import tv.caffeine.app.api.NewReyes
+import tv.caffeine.app.api.Realtime
+import tv.caffeine.app.api.StatsDimensions
+import tv.caffeine.app.api.StatsSnippet
+import tv.caffeine.app.api.isOutOfCapacityError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.settings.SettingsStorage
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.webrtc.*
-import java.util.*
+import tv.caffeine.app.webrtc.SimplePeerConnectionObserver
+import tv.caffeine.app.webrtc.createAnswer
+import tv.caffeine.app.webrtc.getStats
+import tv.caffeine.app.webrtc.setLocalDescription
+import tv.caffeine.app.webrtc.setRemoteDescription
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 class NewReyesFeedInfo(
-        val connectionInfo: NewReyesConnectionInfo,
-        val feed: NewReyes.Feed,
-        val streamId: String,
-        val role: NewReyes.Feed.Role
+    val connectionInfo: NewReyesConnectionInfo,
+    val feed: NewReyes.Feed,
+    val streamId: String,
+    val role: NewReyes.Feed.Role
 )
 
 class NewReyesConnectionInfo(
-        val peerConnection: PeerConnection,
-        val videoTrack: VideoTrack?,
-        val audioTrack: AudioTrack?
+    val peerConnection: PeerConnection,
+    val videoTrack: VideoTrack?,
+    val audioTrack: AudioTrack?
 )
 
 private const val HEARTBEAT_PERIOD_SECONDS = 15L
@@ -36,14 +60,14 @@ private const val STATS_REPORTING_PERIOD_SECONDS = 3L
 private const val DEFAULT_RETRY_DELAY_SECONDS = 10L
 
 class NewReyesController @AssistedInject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val gson: Gson,
-        private val realtime: Realtime,
-        private val eventsService: EventsService,
-        private val peerConnectionFactory: PeerConnectionFactory,
-        private val settingsStorage: SettingsStorage,
-        @Assisted private val username: String
-): CoroutineScope {
+    private val dispatchConfig: DispatchConfig,
+    private val gson: Gson,
+    private val realtime: Realtime,
+    private val eventsService: EventsService,
+    private val peerConnectionFactory: PeerConnectionFactory,
+    private val settingsStorage: SettingsStorage,
+    @Assisted private val username: String
+) : CoroutineScope {
 
     @AssistedInject.Factory
     interface Factory {
@@ -85,7 +109,7 @@ class NewReyesController @AssistedInject constructor(
         do {
             var retryIn: Long? = null
             val result = realtime.getStage(username, message).awaitAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineResult.Success -> {
                     onSuccess(result.value)
                     message = result.value.copy()
@@ -95,11 +119,11 @@ class NewReyesController @AssistedInject constructor(
                 is CaffeineResult.Failure -> onFailure(result.throwable)
             }
             delay(TimeUnit.SECONDS.toMillis(retryIn ?: DEFAULT_RETRY_DELAY_SECONDS))
-        } while(shouldContinue(result))
+        } while (shouldContinue(result))
     }
 
     private fun heartbeat() = launch {
-        while(isActive) {
+        while (isActive) {
             heartbeatUrls.values.forEach { url ->
                 val result = realtime.heartbeat(url, Object()).awaitAndParseErrors(gson)
             }
@@ -108,7 +132,7 @@ class NewReyesController @AssistedInject constructor(
     }
 
     private fun stats() = launch {
-        while(isActive) {
+        while (isActive) {
             peerConnections.forEach {
                 val streamId = it.key
                 val peerConnection = it.value
@@ -150,7 +174,7 @@ class NewReyesController @AssistedInject constructor(
             stateChange?.let { stateChangeList.add(it) }
         }
         stateChangeList.sortBy {
-            when(it) {
+            when (it) {
                 is StateChange.FeedRemoved -> 1
                 is StateChange.FeedAdded -> 2
                 is StateChange.FeedRoleChanged -> 3
@@ -174,7 +198,7 @@ class NewReyesController @AssistedInject constructor(
         }
         val diff = diff(oldFeeds, newFeeds)
         diff.forEach {
-            when(it) {
+            when (it) {
                 is StateChange.FeedRemoved -> Timber.d("DIFF: feed removed ${it.feedId}")
                 is StateChange.FeedAdded -> Timber.d("DIFF: feed added ${it.feed.id}")
                 is StateChange.FeedRoleChanged -> Timber.d("DIFF: feed role changed ${it.newFeed.id}, old ${it.oldRole} - new ${it.newFeed.role}")
@@ -199,7 +223,7 @@ class NewReyesController @AssistedInject constructor(
         feeds = newFeeds
         diff
                 .mapNotNull { stateChange ->
-                    when(stateChange) {
+                    when (stateChange) {
                         is StateChange.FeedAdded -> stateChange.feed
                         is StateChange.FeedStreamChanged -> stateChange.feed
                         else -> null
@@ -269,7 +293,7 @@ class NewReyesController @AssistedInject constructor(
         val localSessionDescription = peerConnection.createAnswer(mediaConstraints) ?: return peerConnection.disposeAndReturnNull()
         val answer = NewReyes.ConnectToStream(answer = localSessionDescription.description)
         val result = realtime.connectToStream(stream.url, answer).awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> {
                 Timber.d("Success: ${result.value}")
                 val heartbeatUrl = result.value.urls.heartbeat
@@ -361,5 +385,4 @@ class NewReyesController @AssistedInject constructor(
         val stats = CumulativeCounters(statsToSend)
         return stats
     }
-
 }

@@ -16,11 +16,11 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class NotificationsViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val gson: Gson,
-        private val usersService: UsersService,
-        private val followManager: FollowManager,
-        private val tokenStore: TokenStore
+    dispatchConfig: DispatchConfig,
+    private val gson: Gson,
+    private val usersService: UsersService,
+    private val followManager: FollowManager,
+    private val tokenStore: TokenStore
 ) : CaffeineViewModel(dispatchConfig) {
     val notifications: MutableLiveData<List<CaffeineNotification>> = MutableLiveData()
 
@@ -34,7 +34,7 @@ class NotificationsViewModel @Inject constructor(
             val currentUser = followManager.loadUserDetails(caid) ?: return@launch
             val referenceTimestamp = currentUser.notificationsLastViewedAt
             val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineResult.Success -> notifications.value = result.value.map { FollowNotification(it, isNewer(it.followedAt, referenceTimestamp)) }
                 is CaffeineResult.Error -> Timber.e("Error loading followers ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
@@ -50,7 +50,7 @@ class NotificationsViewModel @Inject constructor(
     fun markNotificationsViewed() = launch {
         val caid = tokenStore.caid ?: return@launch
         val result = usersService.notificationsViewed(caid).awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> Timber.d("Successfully marked notifications viewed")
             is CaffeineResult.Error -> Timber.d("Error marking notifications viewed ${result.error}")
             is CaffeineResult.Failure -> Timber.e(result.throwable)

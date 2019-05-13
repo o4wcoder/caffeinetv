@@ -1,6 +1,5 @@
 package tv.caffeine.app.stage
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,16 +35,15 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class FriendsWatchingFragment @Inject constructor(
-        private val usersAdapter: FriendsWatchingAdapter
-): CaffeineBottomSheetDialogFragment() {
+    private val usersAdapter: FriendsWatchingAdapter
+) : CaffeineBottomSheetDialogFragment() {
 
     private val args by navArgs<FriendsWatchingFragmentArgs>()
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentFriendsWatchingBinding.inflate(inflater, container, false)
         binding.usersRecyclerView.adapter = usersAdapter
         return binding.root
@@ -64,14 +62,13 @@ class FriendsWatchingFragment @Inject constructor(
             usersAdapter.submitList(it)
         })
     }
-
 }
 
 class FriendsWatchingAdapter @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+    private val dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    @ThemeFollowedExplore private val followedTheme: UserTheme,
+    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
 ) : ListAdapter<User, FriendWatchingViewHolder>(
         object : DiffUtil.ItemCallback<User?>() {
             override fun areItemsTheSame(oldItem: User, newItem: User) = oldItem === newItem
@@ -107,11 +104,11 @@ class FriendsWatchingAdapter @Inject constructor(
 }
 
 class FriendWatchingViewHolder(
-        itemView: View,
-        private val followManager: FollowManager,
-        private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme,
-        private val callback: (String) -> Unit
+    itemView: View,
+    private val followManager: FollowManager,
+    private val followedTheme: UserTheme,
+    private val notFollowedTheme: UserTheme,
+    private val callback: (String) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
@@ -124,5 +121,4 @@ class FriendWatchingViewHolder(
                 followedTheme, notFollowedTheme)
         itemView.setOnClickListener { callback(user.caid) }
     }
-
 }

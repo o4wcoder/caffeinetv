@@ -11,4 +11,3 @@ interface FeatureConfigService {
     @GET("v1/feature-configuration/{feature}")
     fun check(@Path("feature") feature: Feature): Deferred<Response<Map<String, FeatureNode>>>
 }
-

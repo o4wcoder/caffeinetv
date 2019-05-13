@@ -1,6 +1,5 @@
 package tv.caffeine.app.explore
 
-
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -16,9 +15,9 @@ import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
 class ExploreFragment @Inject constructor(
-        private val exploreAdapter: ExploreAdapter,
-        private val searchUsersAdapter: SearchUsersAdapter
-): CaffeineFragment(R.layout.fragment_explore) {
+    private val exploreAdapter: ExploreAdapter,
+    private val searchUsersAdapter: SearchUsersAdapter
+) : CaffeineFragment(R.layout.fragment_explore) {
 
     private val viewModel: ExploreViewModel by viewModels { viewModelFactory }
     private lateinit var binding: FragmentExploreBinding

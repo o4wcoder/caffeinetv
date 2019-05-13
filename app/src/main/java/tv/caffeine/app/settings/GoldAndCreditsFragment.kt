@@ -18,13 +18,13 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 @Parcelize
-enum class BuyGoldOption: Parcelable {
+enum class BuyGoldOption : Parcelable {
     UsingPlayStore, UsingCredits
 }
 
 class GoldAndCreditsFragment @Inject constructor(
-        private val picasso: Picasso
-): CaffeineFragment(R.layout.fragment_gold_and_credits) {
+    private val picasso: Picasso
+) : CaffeineFragment(R.layout.fragment_gold_and_credits) {
 
     private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
 
@@ -33,7 +33,7 @@ class GoldAndCreditsFragment @Inject constructor(
         binding.lifecycleOwner = viewLifecycleOwner
         binding.walletViewModel = walletViewModel
         val numberFormat = NumberFormat.getIntegerInstance()
-        walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
+        walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             binding.goldBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.gold_formatted, numberFormat.format(wallet.gold)))
             binding.creditBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.credits_formatted, numberFormat.format(wallet.credits)))
             binding.cumulativeCreditBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.credits_formatted, numberFormat.format(wallet.cumulativeCredits)))

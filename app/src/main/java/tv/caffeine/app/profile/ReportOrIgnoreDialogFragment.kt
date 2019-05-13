@@ -59,7 +59,7 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
                 .setItems(text, null)
                 .create()
         alert.listView.setOnItemClickListener { _, _, position, _ ->
-            when(position) {
+            when (position) {
                 0 -> reportUser(caid, username)
                 1 -> viewModel.ignoreUser(caid)
                 2 -> dismiss()
@@ -81,16 +81,16 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
 }
 
 class IgnoreUserViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val tokenStore: TokenStore,
-        private val usersService: UsersService,
-        private val gson: Gson
-): CaffeineViewModel(dispatchConfig) {
+    dispatchConfig: DispatchConfig,
+    private val tokenStore: TokenStore,
+    private val usersService: UsersService,
+    private val gson: Gson
+) : CaffeineViewModel(dispatchConfig) {
     private val _ignoreUserResult = MutableLiveData<Boolean>()
     val ignoreUserResult: LiveData<Boolean> = Transformations.map(_ignoreUserResult) { it }
 
     fun ignoreUser(ignoree: String) {
-        val ignorer= tokenStore.caid ?: return
+        val ignorer = tokenStore.caid ?: return
         launch {
             val result = usersService.ignore(ignorer, ignoree).awaitEmptyAndParseErrors(gson)
             when (result) {

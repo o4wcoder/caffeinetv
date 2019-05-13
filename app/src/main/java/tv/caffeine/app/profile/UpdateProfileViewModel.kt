@@ -10,9 +10,9 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class UpdateProfileViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val updateEmailUseCase: UpdateEmailUseCase,
-        private val updatePasswordUseCase: UpdatePasswordUseCase
+    dispatchConfig: DispatchConfig,
+    private val updateEmailUseCase: UpdateEmailUseCase,
+    private val updatePasswordUseCase: UpdatePasswordUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val update = MutableLiveData<CaffeineResult<AccountUpdateResult>>()

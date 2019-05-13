@@ -12,7 +12,6 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import tv.caffeine.app.R
 import tv.caffeine.app.util.getPicasso
 
-
 @BindingAdapter("imageUrl", "placeholder", "cornerRadius", requireAll = false)
 fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, cornerRadius: Float? = null) {
     if (imageUrl == null) return setImageDrawable(null)
@@ -59,7 +58,7 @@ fun ImageView.loadAvatar(avatarImageUrl: String, isFollowing: Boolean, @DimenRes
     val resources = context.resources
     val isAvatarLarge = resources.getDimension(avatarImageSizeRes) >
             resources.getDimension(R.dimen.avatar_rim_size_threshold_on_avatar_size)
-    val rimSize= resources.getDimensionPixelSize(
+    val rimSize = resources.getDimensionPixelSize(
             if (isFollowing) {
                 if (isAvatarLarge) R.dimen.avatar_rim_size_large else R.dimen.avatar_rim_size_regular
             } else {

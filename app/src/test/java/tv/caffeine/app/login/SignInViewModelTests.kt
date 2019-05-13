@@ -52,5 +52,4 @@ class SignInViewModelTests {
             assertEquals(SignInOutcome.MustAcceptTerms, it)
         }
     }
-
 }

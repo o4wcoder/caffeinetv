@@ -32,4 +32,3 @@ fun View.animateSlideUpAndHide() {
         start()
     }
 }
-

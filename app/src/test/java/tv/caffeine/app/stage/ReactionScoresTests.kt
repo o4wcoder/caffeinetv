@@ -39,7 +39,6 @@ class ReactionScoresTests {
         }
     }
 
-
     class CalculateReactionComparisonScore {
         private val subject = ReactionScores()
 
@@ -106,7 +105,5 @@ class ReactionScoresTests {
 
             assertThat(a, greaterThan(b))
         }
-
     }
-
 }

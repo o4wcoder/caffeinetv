@@ -51,7 +51,6 @@ class DeepLinkUnitTests(private val url: String, @IdRes private val destination:
                 arrayOf("https://www.caffeine.tv/privacy.html", R.id.caffeineLinksFragment),
                 arrayOf("https://www.caffeine.tv/tos.html", R.id.caffeineLinksFragment)
         )
-
     }
 
     @Before
@@ -82,5 +81,4 @@ class DeepLinkUnitTests(private val url: String, @IdRes private val destination:
         val actualResource = resources.getResourceEntryName(actualDestination.id)
         assertEquals("Deep link: $url; Destinations: Expected: $expectedLabel, actual: $actualLabel", expectedResource, actualResource)
     }
-
 }

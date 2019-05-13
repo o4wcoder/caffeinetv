@@ -140,5 +140,4 @@ class FriendsWatchingViewModelTests {
             override suspend fun hasNext(): Boolean = iterator.hasNext()
         }
     }
-
 }

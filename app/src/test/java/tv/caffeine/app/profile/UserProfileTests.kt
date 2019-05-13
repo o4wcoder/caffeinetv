@@ -76,5 +76,4 @@ class UserProfileTests {
         subject = UserProfile(user, broadcastDetails, numberFormat, followManager)
         assertNull(subject.stageImageUrl)
     }
-
 }

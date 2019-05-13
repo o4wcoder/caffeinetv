@@ -10,7 +10,6 @@ import tv.caffeine.app.settings.InMemorySettingsStorage
 import tv.caffeine.app.settings.SettingsStorage
 import javax.inject.Singleton
 
-
 @Module(includes = [
     KeyStoreModule::class,
     SharedPreferencesModule::class,
@@ -46,4 +45,3 @@ class FakeFirebaseModule {
     @Singleton
     fun providesFirebaseInstanceId(): FirebaseInstanceId = mockk(relaxed = true)
 }
-

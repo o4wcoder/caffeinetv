@@ -18,9 +18,9 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class DigitalItemRepository @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val gson: Gson,
-        private val paymentsClientService: PaymentsClientService
+    private val dispatchConfig: DispatchConfig,
+    private val gson: Gson,
+    private val paymentsClientService: PaymentsClientService
 ) : CoroutineScope {
 
     private val job = SupervisorJob()
@@ -36,7 +36,7 @@ class DigitalItemRepository @Inject constructor(
     private suspend fun loadDigitalItems() {
         val deferred = paymentsClientService.getDigitalItems(GetDigitalItemsBody())
         val result = deferred.awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> onSuccess(result.value)
             is CaffeineResult.Error -> Timber.e(result.error.toString())
             is CaffeineResult.Failure -> Timber.e(result.throwable)
@@ -44,12 +44,11 @@ class DigitalItemRepository @Inject constructor(
     }
 
     private fun onSuccess(paymentsEnvelope: PaymentsEnvelope<DigitalItemsPayload>) {
-        //TODO: handle cursor and retryIn
+        // TODO: handle cursor and retryIn
         _items.value = paymentsEnvelope.payload
     }
 
     fun stop() {
         job.cancel()
     }
-
 }

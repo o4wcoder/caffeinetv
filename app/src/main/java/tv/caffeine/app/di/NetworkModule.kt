@@ -77,7 +77,6 @@ class GsonModule {
         override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): ZonedDateTime {
             return formatter.parse(json?.asString, ZonedDateTime.FROM)
         }
-
     }
 
     @Provides
@@ -101,10 +100,10 @@ class OkHttpModule {
     @Provides
     @ClientType(AuthorizationType.NoAuthorization)
     fun providesOkHttpClientWithoutAuthorization(
-            longPollInterceptor: LongPollInterceptor,
-            appMetaDataInterceptor: AppMetaDataInterceptor,
-            profilingInterceptor: ProfilingInterceptor,
-            loggingInterceptor: HttpLoggingInterceptor
+        longPollInterceptor: LongPollInterceptor,
+        appMetaDataInterceptor: AppMetaDataInterceptor,
+        profilingInterceptor: ProfilingInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor
     ) = OkHttpClient.Builder()
             .addInterceptor(longPollInterceptor)
             .addInterceptor(appMetaDataInterceptor)
@@ -115,12 +114,12 @@ class OkHttpModule {
     @Provides
     @ClientType(AuthorizationType.Required)
     fun providesOkHttpClientAuthorizationRequired(
-            tokenAuthenticator: TokenAuthenticator,
-            longPollInterceptor: LongPollInterceptor,
-            appMetaDataInterceptor: AppMetaDataInterceptor,
-            authorizationInterceptor: AuthorizationInterceptor,
-            profilingInterceptor: ProfilingInterceptor,
-            loggingInterceptor: HttpLoggingInterceptor
+        tokenAuthenticator: TokenAuthenticator,
+        longPollInterceptor: LongPollInterceptor,
+        appMetaDataInterceptor: AppMetaDataInterceptor,
+        authorizationInterceptor: AuthorizationInterceptor,
+        profilingInterceptor: ProfilingInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor
     ) = OkHttpClient.Builder()
             .authenticator(tokenAuthenticator)
             .addInterceptor(longPollInterceptor)
@@ -129,7 +128,6 @@ class OkHttpModule {
             .addInterceptor(profilingInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
             .build()
-
 }
 
 @Module
@@ -218,9 +216,9 @@ class WebRtcModule {
     @Provides
     @Singleton
     fun providesPeerConnectionFactoryInitializationOptions(
-            context: Context,
-            webRtcLoggable: Loggable?,
-            webRtcLogLevel: Logging.Severity
+        context: Context,
+        webRtcLoggable: Loggable?,
+        webRtcLogLevel: Logging.Severity
     ) = PeerConnectionFactory.InitializationOptions
             .builder(context)
             .setInjectableLogger(webRtcLoggable, webRtcLogLevel)
@@ -243,10 +241,10 @@ class WebRtcModule {
     @Provides
     @Singleton
     fun providesPeerConnectionFactory(
-            initializationOptions: PeerConnectionFactory.InitializationOptions,
-            options: PeerConnectionFactory.Options,
-            videoEncoderFactory: DefaultVideoEncoderFactory,
-            videoDecoderFactory: DefaultVideoDecoderFactory
+        initializationOptions: PeerConnectionFactory.InitializationOptions,
+        options: PeerConnectionFactory.Options,
+        videoEncoderFactory: DefaultVideoEncoderFactory,
+        videoDecoderFactory: DefaultVideoDecoderFactory
     ): PeerConnectionFactory {
         PeerConnectionFactory.initialize(initializationOptions)
         return PeerConnectionFactory.builder()

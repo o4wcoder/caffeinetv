@@ -29,15 +29,20 @@ import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.compactNumberFormat
+import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.maybeShow
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 abstract class UsersAdapter(
-        private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme
+    private val dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    private val followedTheme: UserTheme,
+    private val notFollowedTheme: UserTheme
 ) : ListAdapter<SearchUserItem, UserViewHolder>(
         object : DiffUtil.ItemCallback<SearchUserItem?>() {
             override fun areItemsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem === newItem
@@ -54,7 +59,7 @@ abstract class UsersAdapter(
         get() = dispatchConfig.main + job + exceptionHandler
 
     var fragmentManager: FragmentManager? = null
-    val callback = object: FollowManager.Callback() {
+    val callback = object : FollowManager.Callback() {
         override fun follow(caid: CAID) {
             launch {
                 val result = followManager.followUser(caid)
@@ -101,26 +106,28 @@ abstract class UsersAdapter(
 }
 
 class SearchUsersAdapter @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        followManager: FollowManager,
-        @ThemeFollowedExplore followedTheme: UserTheme,
-        @ThemeNotFollowedExplore notFollowedTheme: UserTheme)
-    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
+    dispatchConfig: DispatchConfig,
+    followManager: FollowManager,
+    @ThemeFollowedExplore followedTheme: UserTheme,
+    @ThemeNotFollowedExplore notFollowedTheme: UserTheme
+) :
+    UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
     override val userItemLayout = R.layout.user_item_search
 }
 
 class ExploreAdapter @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        followManager: FollowManager,
-        @ThemeFollowedExplore followedTheme: UserTheme,
-        @ThemeNotFollowedExplore notFollowedTheme: UserTheme)
-    : UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
+    dispatchConfig: DispatchConfig,
+    followManager: FollowManager,
+    @ThemeFollowedExplore followedTheme: UserTheme,
+    @ThemeNotFollowedExplore notFollowedTheme: UserTheme
+) :
+    UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme) {
     override val userItemLayout = R.layout.user_item_explore
 }
 
 class UserViewHolder(
-        itemView: View,
-        private val followHandler: FollowManager.FollowHandler
+    itemView: View,
+    private val followHandler: FollowManager.FollowHandler
 ) : RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)

@@ -23,5 +23,4 @@ class CrashlyticsTree : Timber.Tree() {
         val exception = t ?: Exception(message)
         Crashlytics.logException(exception)
     }
-
 }

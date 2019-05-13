@@ -144,20 +144,19 @@ class StageFragmentVisibilityTests {
         verify(exactly = 0) { subject.binding.liveIndicatorAndAvatarContainer.visibility = any() }
         verify(exactly = 0) { subject.binding.gameLogoImageView.visibility = any() }
     }
-
 }
 
 private class StageFragmentVisibilityTestBindings(
-        avatarImageView: ImageView,
-        backToLobbyButton: Button,
-        followButton: Button,
-        gameLogoImageView: ImageView,
-        largeAvatarImageView: ImageView,
-        liveIndicatorAndAvatarContainer: FrameLayout,
-        liveIndicatorTextView: TextView,
-        saySomethingTextView: TextView,
-        showIsOverTextView: TextView,
-        stageAppBar: AppBarLayout
+    avatarImageView: ImageView,
+    backToLobbyButton: Button,
+    followButton: Button,
+    gameLogoImageView: ImageView,
+    largeAvatarImageView: ImageView,
+    liveIndicatorAndAvatarContainer: FrameLayout,
+    liveIndicatorTextView: TextView,
+    saySomethingTextView: TextView,
+    showIsOverTextView: TextView,
+    stageAppBar: AppBarLayout
 ) : FragmentStageBinding(
         mockk<DataBindingComponent>(),
         mockk(),
@@ -185,27 +184,26 @@ private class StageFragmentVisibilityTestBindings(
         mockk()
 ) {
     override fun setVariable(variableId: Int, value: Any?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun executeBindings() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onFieldChange(localFieldId: Int, `object`: Any?, fieldId: Int): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun setUserProfile(userProfile: UserProfile?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun invalidateAll() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun hasPendingBindings(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
-
 }

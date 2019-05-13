@@ -2,7 +2,7 @@ package tv.caffeine.app.util
 
 import android.icu.text.CompactDecimalFormat
 import android.os.Build
-import java.util.*
+import java.util.Locale
 import kotlin.math.log10
 
 fun compactNumberFormat(number: Int) = englishCompactNumberFormat(number)
@@ -17,11 +17,11 @@ fun compactNumberFormatWithDecimal(number: Int): String {
 }
 
 private fun englishCompactNumberFormat(number: Int): String {
-    return when(log10(number.toDouble()).toInt()) {
+    return when (log10(number.toDouble()).toInt()) {
         in 0..2 -> "$number"
-        in 3..5 -> "${number/1000}k"
-        in 6..8 -> "${number/1000000}M"
-        in 9..11 -> "${number/1000000000}B"
-        else -> "${number/1000000000000}T"
+        in 3..5 -> "${number / 1000}k"
+        in 6..8 -> "${number / 1000000}M"
+        in 9..11 -> "${number / 1000000000}B"
+        else -> "${number / 1000000000000}T"
     }
 }

@@ -11,7 +11,7 @@ interface Profiling {
 }
 
 @Singleton
-class LogProfiling @Inject constructor(): Profiling {
+class LogProfiling @Inject constructor() : Profiling {
     override fun initialize() {
         Timber.d("initialize")
     }
@@ -20,6 +20,6 @@ class LogProfiling @Inject constructor(): Profiling {
 abstract class ProfilingInterceptor : Interceptor
 
 @Singleton
-class PassThruProfilingInterceptor @Inject constructor(): ProfilingInterceptor() {
+class PassThruProfilingInterceptor @Inject constructor() : ProfilingInterceptor() {
     override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(chain.request())
 }

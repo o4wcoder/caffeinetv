@@ -7,8 +7,8 @@ import dagger.android.AndroidInjector
 import tv.caffeine.app.CaffeineApplication
 
 class InjectionActivityTestRule<T : Activity>(
-        activityClass: Class<T>,
-        private val componentBuilder: AndroidInjector.Builder<CaffeineApplication>
+    activityClass: Class<T>,
+    private val componentBuilder: AndroidInjector.Builder<CaffeineApplication>
 ) : ActivityTestRule<T>(activityClass, true, false) {
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()

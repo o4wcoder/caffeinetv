@@ -2,7 +2,8 @@ package tv.caffeine.app.lobby
 
 import tv.caffeine.app.api.FeaturedGuideListing
 import tv.caffeine.app.lobby.FeaturedGuideItem.ListingItem
-import java.util.*
+import java.util.Calendar
+import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 
 class FeaturedProgramGuideListingBuilder(private val rawListings: List<FeaturedGuideListing>) {
@@ -36,7 +37,7 @@ class FeaturedProgramGuideListingBuilder(private val rawListings: List<FeaturedG
         val calendar2 = Calendar.getInstance().apply {
             timeInMillis = TimeUnit.SECONDS.toMillis(listing2.startTimestamp)
         }
-        return calendar1.get(Calendar.DAY_OF_YEAR) != calendar2.get(Calendar.DAY_OF_YEAR)
-                || calendar1.get(Calendar.YEAR) != calendar2.get(Calendar.YEAR)
+        return calendar1.get(Calendar.DAY_OF_YEAR) != calendar2.get(Calendar.DAY_OF_YEAR) ||
+                calendar1.get(Calendar.YEAR) != calendar2.get(Calendar.YEAR)
     }
 }

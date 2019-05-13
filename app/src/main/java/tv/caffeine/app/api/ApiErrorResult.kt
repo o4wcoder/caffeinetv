@@ -13,20 +13,20 @@ fun ApiErrorResult.isOutOfCapacityError() = type == "OutOfCapacity"
 fun RefreshTokenMissingError() = ApiErrorResult(ApiError(_token = listOf("Refresh token missing")))
 
 data class ApiError(
-        val _error: List<String>? = null,
-        val _denied: List<String>? = null,
-        val username: List<String>? = null,
-        val password: List<String>? = null,
-        val dob: List<String>? = null,
-        val currentPassword: List<String>? = null,
-        val email: List<String>? = null,
-        val otp: List<String>? = null,
-        val code: List<String>? = null,
-        val _token: List<String>? = null,
-        val _record: List<String>? = null,
-        val _expired: List<String>? = null,
-        val _identity: List<String>? = null,
-        val _unverifiedEmail: List<String>? = null
+    val _error: List<String>? = null,
+    val _denied: List<String>? = null,
+    val username: List<String>? = null,
+    val password: List<String>? = null,
+    val dob: List<String>? = null,
+    val currentPassword: List<String>? = null,
+    val email: List<String>? = null,
+    val otp: List<String>? = null,
+    val code: List<String>? = null,
+    val _token: List<String>? = null,
+    val _record: List<String>? = null,
+    val _expired: List<String>? = null,
+    val _identity: List<String>? = null,
+    val _unverifiedEmail: List<String>? = null
 )
 
 val ApiErrorResult.generalErrorsString get() = errors?._error?.joinToString("\n")

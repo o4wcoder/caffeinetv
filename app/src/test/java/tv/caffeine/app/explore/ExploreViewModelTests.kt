@@ -37,5 +37,4 @@ class ExploreViewModelTests {
         subject.queryString = ""
         countDownLatch.await(1, TimeUnit.SECONDS)
     }
-
 }

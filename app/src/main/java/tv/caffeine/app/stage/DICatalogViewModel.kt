@@ -9,9 +9,9 @@ import tv.caffeine.app.wallet.DigitalItemRepository
 import javax.inject.Inject
 
 class DICatalogViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        digitalItemRepository: DigitalItemRepository
-): CaffeineViewModel(dispatchConfig) {
+    dispatchConfig: DispatchConfig,
+    digitalItemRepository: DigitalItemRepository
+) : CaffeineViewModel(dispatchConfig) {
     init {
         digitalItemRepository.refresh()
     }

@@ -3,9 +3,17 @@ package tv.caffeine.app.realtime
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
-import okhttp3.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import timber.log.Timber
 import tv.caffeine.app.util.DispatchConfig
 import java.util.concurrent.TimeUnit
@@ -17,11 +25,11 @@ private const val HEALZ = "\"HEALZ\""
 private const val THANKS = "\"THANKS\""
 
 class WebSocketController(
-        private val dispatchConfig: DispatchConfig,
-        private val tag: String,
-        private val url: String,
-        private val headers: String
-): WebSocketListener(), CoroutineScope {
+    private val dispatchConfig: DispatchConfig,
+    private val tag: String,
+    private val url: String,
+    private val headers: String
+) : WebSocketListener(), CoroutineScope {
 
     private var webSocket: WebSocket? = null
 
@@ -55,7 +63,7 @@ class WebSocketController(
         log("Opened, response = $response")
         webSocket?.send(headers)
         launch {
-            while(isActive) {
+            while (isActive) {
                 delay(TimeUnit.SECONDS.toMillis(15))
                 log("About to send a heartbeat")
                 webSocket?.send(HEALZ)

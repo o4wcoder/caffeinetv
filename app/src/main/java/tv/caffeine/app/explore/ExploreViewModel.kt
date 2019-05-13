@@ -11,8 +11,8 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val findBroadcastersUseCase: FindBroadcastersUseCase
+    dispatchConfig: DispatchConfig,
+    private val findBroadcastersUseCase: FindBroadcastersUseCase
 ) : CaffeineViewModel(dispatchConfig) {
     private val _data = MutableLiveData<CaffeineResult<Findings>>()
     val data: LiveData<CaffeineResult<Findings>> = Transformations.map(_data) { it }

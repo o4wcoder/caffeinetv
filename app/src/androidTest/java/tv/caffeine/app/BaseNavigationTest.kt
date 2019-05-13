@@ -30,5 +30,4 @@ abstract class BaseNavigationTest {
 
     @Test
     abstract fun testDestination()
-
 }

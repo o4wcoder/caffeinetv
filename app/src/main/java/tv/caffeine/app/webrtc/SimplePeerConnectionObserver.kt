@@ -1,6 +1,10 @@
 package tv.caffeine.app.webrtc
 
-import org.webrtc.*
+import org.webrtc.DataChannel
+import org.webrtc.IceCandidate
+import org.webrtc.MediaStream
+import org.webrtc.PeerConnection
+import org.webrtc.RtpReceiver
 import timber.log.Timber
 
 open class SimplePeerConnectionObserver : PeerConnection.Observer {
@@ -47,5 +51,4 @@ open class SimplePeerConnectionObserver : PeerConnection.Observer {
     override fun onAddTrack(receiver: RtpReceiver?, mediaStreams: Array<out MediaStream>?) {
         Timber.d("onAddTrack: $receiver, $mediaStreams")
     }
-
 }

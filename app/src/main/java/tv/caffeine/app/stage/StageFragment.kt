@@ -55,12 +55,12 @@ private const val PICK_DIGITAL_ITEM = 0
 private const val SEND_MESSAGE = 1
 
 class StageFragment @Inject constructor(
-        private val factory: NewReyesController.Factory,
-        private val eglBase: EglBase,
-        private val followManager: FollowManager,
-        private val picasso: Picasso,
-        private val clock: Clock
-): CaffeineFragment(R.layout.fragment_stage), DICatalogFragment.Callback, SendMessageFragment.Callback {
+    private val factory: NewReyesController.Factory,
+    private val eglBase: EglBase,
+    private val followManager: FollowManager,
+    private val picasso: Picasso,
+    private val clock: Clock
+) : CaffeineFragment(R.layout.fragment_stage), DICatalogFragment.Callback, SendMessageFragment.Callback {
 
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
     @Inject lateinit var friendsWatchingAdapter: FriendsWatchingAdapter
@@ -141,7 +141,7 @@ class StageFragment @Inject constructor(
             }
             binding.followButton.setOnClickListener {
                 profileViewModel.follow(userProfile.caid).observe(viewLifecycleOwner, Observer { result ->
-                    when(result) {
+                    when (result) {
                         is CaffeineEmptyResult.Error -> {
                             if (result.error.isMustVerifyEmailError()) {
                                 val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
@@ -177,7 +177,7 @@ class StageFragment @Inject constructor(
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
-        chatMessageAdapter.callback = object: ChatMessageAdapter.Callback {
+        chatMessageAdapter.callback = object : ChatMessageAdapter.Callback {
             override fun replyClicked(message: Message) {
                 val string = getString(R.string.username_prepopulated_reply, message.publisher.username)
                 openSendMessage(string)
@@ -390,7 +390,7 @@ class StageFragment @Inject constructor(
 
     private fun manageErrors(controller: NewReyesController) = launch {
         controller.errorChannel.consumeEach { error ->
-            when(error) {
+            when (error) {
                 is NewReyesController.Error.PeerConnectionError -> activity?.showSnackbar(R.string.peer_connection_error_message)
                 is NewReyesController.Error.OutOfCapacity -> findNavController().safeNavigate(MainNavDirections.actionGlobalOutOfCapacityFragment())
             }
@@ -483,6 +483,4 @@ class StageFragment @Inject constructor(
         }
         renderers.clear()
     }
-
 }
-

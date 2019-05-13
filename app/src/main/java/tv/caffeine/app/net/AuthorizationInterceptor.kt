@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthorizationInterceptor @Inject constructor(
-        private val tokenStore: TokenStore
+    private val tokenStore: TokenStore
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()

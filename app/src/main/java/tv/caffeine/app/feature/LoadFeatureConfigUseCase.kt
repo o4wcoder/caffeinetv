@@ -8,9 +8,9 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import javax.inject.Inject
 
 class LoadFeatureConfigUseCase @Inject constructor(
-        private val featureConfigService: FeatureConfigService,
-        private val featureConfig: FeatureConfig,
-        private val gson: Gson
+    private val featureConfigService: FeatureConfigService,
+    private val featureConfig: FeatureConfig,
+    private val gson: Gson
 ) {
     suspend operator fun invoke(feature: Feature) {
         val result = featureConfigService.check(feature).awaitAndParseErrors(gson)

@@ -13,9 +13,9 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class FriendsWatchingViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        private val friendsWatchingControllerFactory: FriendsWatchingController.Factory
+    dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    private val friendsWatchingControllerFactory: FriendsWatchingController.Factory
 ) : CaffeineViewModel(dispatchConfig) {
     private var friendsWatchingController: FriendsWatchingController? = null
     private val friendsWatchingSet: MutableSet<CAID> = mutableSetOf()

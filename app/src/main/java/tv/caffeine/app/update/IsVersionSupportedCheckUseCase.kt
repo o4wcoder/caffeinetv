@@ -13,15 +13,15 @@ import javax.inject.Inject
 private const val MAXIMUM_VERSION_CHECK_VALIDITY = 10 * 60 * 1000L // 10 minutes
 
 class IsVersionSupportedCheckUseCase @Inject constructor(
-        private val gson: Gson,
-        private val versionCheckService: VersionCheckService
+    private val gson: Gson,
+    private val versionCheckService: VersionCheckService
 ) {
     private val successResult = CaffeineEmptyResult.Success
     private val versionCheckErrorResult = CaffeineEmptyResult.Error(VersionCheckError())
 
     suspend operator fun invoke(): CaffeineEmptyResult {
         val result = versionCheckService.versionCheck().awaitAndParseErrors(gson)
-        return when(result) {
+        return when (result) {
             is CaffeineResult.Success -> convertError(result.value)
             is CaffeineResult.Error -> convertError(result.error)
             is CaffeineResult.Failure -> CaffeineEmptyResult.Failure(result.throwable)

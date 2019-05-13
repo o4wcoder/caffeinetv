@@ -9,9 +9,9 @@ import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
 class LoadFeaturedProgramGuideUseCase @Inject constructor(
-        private val broadcastsService: BroadcastsService,
-        private val followManager: FollowManager,
-        private val gson: Gson
+    private val broadcastsService: BroadcastsService,
+    private val followManager: FollowManager,
+    private val gson: Gson
 ) {
     suspend operator fun invoke(): List<FeaturedGuideItem> {
         val result = broadcastsService.featuredGuide().awaitAndParseErrors(gson)
@@ -32,4 +32,3 @@ class LoadFeaturedProgramGuideUseCase @Inject constructor(
         }
     }
 }
-

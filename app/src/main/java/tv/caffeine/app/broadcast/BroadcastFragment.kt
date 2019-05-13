@@ -36,12 +36,12 @@ private const val VIDEO_HEIGHT = 1080
 private const val VIDEO_FPS = 30
 
 class BroadcastFragment @Inject constructor(
-        private val eglBase: EglBase,
-        private val peerConnectionFactory: PeerConnectionFactory,
-        private val application: Application,
-        private val liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter,
-        private val guideAdapter: GuideAdapter
-): CaffeineFragment(R.layout.fragment_broadcast), EasyPermissions.PermissionCallbacks {
+    private val eglBase: EglBase,
+    private val peerConnectionFactory: PeerConnectionFactory,
+    private val application: Application,
+    private val liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter,
+    private val guideAdapter: GuideAdapter
+) : CaffeineFragment(R.layout.fragment_broadcast), EasyPermissions.PermissionCallbacks {
 
     private val eglBaseContext by lazy { eglBase.eglBaseContext }
     private val surfaceTextureHelper by lazy { SurfaceTextureHelper.create("captureHelper", eglBaseContext) }

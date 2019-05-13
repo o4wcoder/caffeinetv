@@ -60,7 +60,6 @@ class FakeWebRtcModule {
     @Singleton
     fun providesVideoEncoderFactory(): DefaultVideoEncoderFactory = mockk(relaxed = true)
 
-
     @Provides
     @Singleton
     fun providesVideoDecoderFactory(): DefaultVideoDecoderFactory = mockk(relaxed = true)
@@ -76,4 +75,3 @@ class FakeImageLoadingModule {
     @Singleton
     fun providesPicasso(): Picasso = mockk(relaxed = true)
 }
-

@@ -54,18 +54,17 @@ import tv.caffeine.app.util.convertLinks
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
-
 class SignUpFragment @Inject constructor(
-        private val accountsService: AccountsService,
-        private val tokenStore: TokenStore,
-        private val gson: Gson,
-        private val analytics: Analytics,
-        private val firebaseAnalytics: FirebaseAnalytics
-): CaffeineFragment(R.layout.fragment_sign_up), DatePickerDialog.OnDateSetListener {
-
+    private val accountsService: AccountsService,
+    private val tokenStore: TokenStore,
+    private val gson: Gson,
+    private val analytics: Analytics,
+    private val firebaseAnalytics: FirebaseAnalytics
+) : CaffeineFragment(R.layout.fragment_sign_up), DatePickerDialog.OnDateSetListener {
 
     private lateinit var binding: FragmentSignUpBinding
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -159,7 +158,7 @@ class SignUpFragment @Inject constructor(
         // TODO: better error handling before calling the API
         launch {
             val result = accountsService.signUp(signUpBody).awaitAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineResult.Success -> onSuccess(result.value.credentials)
                 is CaffeineResult.Error -> onError(result.error)
                 is CaffeineResult.Failure -> onFailure(result.throwable)
@@ -184,7 +183,7 @@ class SignUpFragment @Inject constructor(
     @UiThread
     private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
-        val errorMessages= listOfNotNull(
+        val errorMessages = listOfNotNull(
                 listOfNotNull(error.generalErrorsString, error.deniedErrorsString).joinToString("\n"),
                 error.emailErrorsString,
                 error.usernameErrorsString,

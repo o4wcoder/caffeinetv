@@ -15,7 +15,11 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Message
-import tv.caffeine.app.chat.*
+import tv.caffeine.app.chat.chatBubbleBackground
+import tv.caffeine.app.chat.endorsementCountBackgroundResId
+import tv.caffeine.app.chat.endorsementTextColorResId
+import tv.caffeine.app.chat.highlightUsernames
+import tv.caffeine.app.chat.userReferenceStyle
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
 import tv.caffeine.app.databinding.ChatMessageDigitalItemBinding
 import tv.caffeine.app.databinding.ChatMessageDummyBinding
@@ -29,11 +33,11 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class ChatMessageAdapter @Inject constructor(
-        private val followManager: FollowManager,
-        @ThemeFollowedChat private val followedTheme: UserTheme,
-        @ThemeNotFollowedChat private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
-): ListAdapter<Message, ChatMessageViewHolder>(
+    private val followManager: FollowManager,
+    @ThemeFollowedChat private val followedTheme: UserTheme,
+    @ThemeNotFollowedChat private val notFollowedTheme: UserTheme,
+    private val picasso: Picasso
+) : ListAdapter<Message, ChatMessageViewHolder>(
         object : DiffUtil.ItemCallback<Message>() {
             override fun areItemsTheSame(oldItem: Message, newItem: Message) = oldItem.type == newItem.type && oldItem.id == newItem.id
 
@@ -55,7 +59,7 @@ class ChatMessageAdapter @Inject constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatMessageViewHolder {
         val type = Message.Type.values()[viewType]
         val layoutInflater = LayoutInflater.from(parent.context)
-        return when(type) {
+        return when (type) {
             Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(layoutInflater, parent, false))
             Message.Type.digital_item -> ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false), picasso, callback)
             else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false), picasso, callback)
@@ -65,7 +69,6 @@ class ChatMessageAdapter @Inject constructor(
     override fun onBindViewHolder(holder: ChatMessageViewHolder, position: Int) {
         holder.bind(getItem(position), followManager, followedTheme, notFollowedTheme)
     }
-
 }
 
 sealed class ChatMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -131,7 +134,6 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Pica
         val action = MainNavDirections.actionGlobalProfileFragment(caid)
         itemView.findNavController().safeNavigate(action)
     }
-
 }
 
 class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val picasso: Picasso, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
@@ -171,7 +173,7 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         val endorsementTextColor = ContextCompat.getColor(itemView.context, message.endorsementTextColorResId)
         binding.endorsementCountTextView.setTextColor(endorsementTextColor)
         binding.endorsementCountTextView.setBackgroundResource(message.endorsementCountBackgroundResId)
-        when(val digitalItem = message.body.digitalItem) {
+        when (val digitalItem = message.body.digitalItem) {
             null -> {
                 binding.digitalItemImageView.setImageDrawable(null)
                 binding.quantityTextView.text = null
@@ -202,7 +204,6 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         val action = MainNavDirections.actionGlobalProfileFragment(caid)
         itemView.findNavController().safeNavigate(action)
     }
-
 }
 
 class DummyMessageViewHolder(binding: ChatMessageDummyBinding) : ChatMessageViewHolder(binding.root) {

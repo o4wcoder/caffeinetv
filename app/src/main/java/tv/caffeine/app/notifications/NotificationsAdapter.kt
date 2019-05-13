@@ -13,7 +13,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -27,16 +32,20 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.maybeShow
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class NotificationsAdapter @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
+    private val dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    @ThemeFollowedExplore private val followedTheme: UserTheme,
+    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+    private val picasso: Picasso
 ) : ListAdapter<CaffeineNotification, NotificationViewHolder>(
         object : DiffUtil.ItemCallback<CaffeineNotification?>() {
             override fun areItemsTheSame(oldItem: CaffeineNotification, newItem: CaffeineNotification) = oldItem === newItem
@@ -55,22 +64,22 @@ class NotificationsAdapter @Inject constructor(
         get() = dispatchConfig.main + job + exceptionHandler
 
     var fragmentManager: FragmentManager? = null
-    val callback = object: FollowManager.Callback() {
+    val callback = object : FollowManager.Callback() {
         override fun follow(caid: CAID) {
-             launch {
-                 val result = followManager.followUser(caid)
-                 when (result) {
-                     is CaffeineEmptyResult.Success -> updateItem(caid)
-                     is CaffeineEmptyResult.Error -> {
-                         if (result.error.isMustVerifyEmailError()) {
-                             val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                             fragment.maybeShow(fragmentManager, "verifyEmail")
-                         } else {
-                             Timber.e("Couldn't follow user ${result.error}")
-                         }
-                     }
-                     is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                 }
+            launch {
+                val result = followManager.followUser(caid)
+                when (result) {
+                    is CaffeineEmptyResult.Success -> updateItem(caid)
+                    is CaffeineEmptyResult.Error -> {
+                        if (result.error.isMustVerifyEmailError()) {
+                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                            fragment.maybeShow(fragmentManager, "verifyEmail")
+                        } else {
+                            Timber.e("Couldn't follow user ${result.error}")
+                        }
+                    }
+                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+                }
             }
         }
         override fun unfollow(caid: CAID) {
@@ -114,10 +123,10 @@ class NotificationsAdapter @Inject constructor(
 sealed class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 class FollowNotificationViewHolder(
-        itemView: View,
-        private val followHandler: FollowManager.FollowHandler,
-        private val scope: CoroutineScope,
-        private val picasso: Picasso
+    itemView: View,
+    private val followHandler: FollowManager.FollowHandler,
+    private val scope: CoroutineScope,
+    private val picasso: Picasso
 ) : NotificationViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)

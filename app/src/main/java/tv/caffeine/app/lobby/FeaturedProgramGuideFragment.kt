@@ -18,8 +18,8 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class FeaturedProgramGuideFragment @Inject constructor(
-        private val guideAdapter: FeaturedProgramGuideAdapter
-): CaffeineFragment(R.layout.fragment_featured_program_guide) {
+    private val guideAdapter: FeaturedProgramGuideAdapter
+) : CaffeineFragment(R.layout.fragment_featured_program_guide) {
 
     private var binding: FragmentFeaturedProgramGuideBinding? = null
     private val viewModel: FeaturedProgramGuideViewModel by viewModels { viewModelFactory }
@@ -49,8 +49,8 @@ class FeaturedProgramGuideFragment @Inject constructor(
 }
 
 class FeaturedProgramGuideViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val loadFeaturedProgramGuideUseCase: LoadFeaturedProgramGuideUseCase
+    dispatchConfig: DispatchConfig,
+    private val loadFeaturedProgramGuideUseCase: LoadFeaturedProgramGuideUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val _listings = MutableLiveData<List<FeaturedGuideItem>>()
@@ -69,4 +69,3 @@ class FeaturedProgramGuideViewModel @Inject constructor(
         }
     }
 }
-

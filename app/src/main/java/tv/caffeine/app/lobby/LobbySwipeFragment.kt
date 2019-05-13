@@ -32,10 +32,10 @@ import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 class LobbySwipeFragment @Inject constructor(
-        private val featureConfig: FeatureConfig,
-        private val picasso: Picasso,
-        private val firebaseAnalytics: FirebaseAnalytics,
-        private val adapterFactory: LobbyPagerAdapter.Factory
+    private val featureConfig: FeatureConfig,
+    private val picasso: Picasso,
+    private val firebaseAnalytics: FirebaseAnalytics,
+    private val adapterFactory: LobbyPagerAdapter.Factory
 ) : CaffeineFragment(R.layout.fragment_lobby_swipe) {
 
     private lateinit var binding: FragmentLobbySwipeBinding
@@ -101,10 +101,10 @@ class LobbySwipeFragment @Inject constructor(
 }
 
 class LobbyPagerAdapter @AssistedInject constructor(
-        @Assisted fm: FragmentManager,
-        private val resources: Resources,
-        private val lobbyAdapter: LobbyAdapter,
-        private val guideAdapter: FeaturedProgramGuideAdapter
+    @Assisted fm: FragmentManager,
+    private val resources: Resources,
+    private val lobbyAdapter: LobbyAdapter,
+    private val guideAdapter: FeaturedProgramGuideAdapter
 ) : FragmentStatePagerAdapter(fm) {
 
     @AssistedInject.Factory

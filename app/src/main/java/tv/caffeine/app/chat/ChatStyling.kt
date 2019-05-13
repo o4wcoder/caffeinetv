@@ -20,13 +20,13 @@ import tv.caffeine.app.session.FollowManager
  * ```
  */
 fun highlightUsernames(
-        text: String,
-        spanFactory: () -> CharacterStyle
+    text: String,
+    spanFactory: () -> CharacterStyle
 ): Spannable {
     val spannable = SpannableString(text)
 
     val regex = Regex("(?<=\\s|^)(@([\\w_-]{3,40}))")
-    for(match in regex.findAll(text)) {
+    for (match in regex.findAll(text)) {
         val color = spanFactory()
         spannable.setSpan(color, match.range.start, match.range.endInclusive + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
@@ -53,7 +53,7 @@ fun userReferenceStyle(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Bool
     else -> R.style.ChatMessageText_DefaultUserReference
 }
 
-val Message.endorsementTextColorResId get() = when(endorsementCount) {
+val Message.endorsementTextColorResId get() = when (endorsementCount) {
     in 0..4 -> R.color.endorsement_4_text
     in 5..9 -> R.color.endorsement_5_text
     in 10..14 -> R.color.endorsement_6_text
@@ -62,7 +62,7 @@ val Message.endorsementTextColorResId get() = when(endorsementCount) {
     else -> R.color.endorsement_9_text
 }
 
-val Message.endorsementCountBackgroundResId get() = when(endorsementCount) {
+val Message.endorsementCountBackgroundResId get() = when (endorsementCount) {
     in 0..4 -> R.drawable.polygon_4_sides
     in 5..9 -> R.drawable.polygon_5_sides
     in 10..14 -> R.drawable.polygon_6_sides
@@ -92,4 +92,3 @@ fun Message.userReferenceStyle(followManager: FollowManager): Int {
     val (isSelf, mentionsSelf, isFollowing) = classify(followManager)
     return userReferenceStyle(isSelf, mentionsSelf, isFollowing)
 }
-

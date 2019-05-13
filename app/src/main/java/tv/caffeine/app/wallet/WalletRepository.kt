@@ -17,9 +17,9 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class WalletRepository @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val gson: Gson,
-        private val paymentsClientService: PaymentsClientService
+    private val dispatchConfig: DispatchConfig,
+    private val gson: Gson,
+    private val paymentsClientService: PaymentsClientService
 ) : CoroutineScope {
 
     private val job = SupervisorJob()
@@ -30,11 +30,10 @@ class WalletRepository @Inject constructor(
 
     fun refresh() = launch {
         val result = paymentsClientService.getWallet(GetWalletBody()).awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> _wallet.value = result.value.payload
             is CaffeineResult.Error -> Timber.e("Error loading wallet ${result.error}")
             is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
     }
-
 }

@@ -20,4 +20,3 @@ class InjectingNavHostFragment : NavHostFragment() {
         super.onCreate(savedInstanceState)
     }
 }
-

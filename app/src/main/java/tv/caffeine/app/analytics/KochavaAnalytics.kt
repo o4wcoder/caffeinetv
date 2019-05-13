@@ -4,7 +4,7 @@ import com.kochava.base.Tracker
 import tv.caffeine.app.api.model.IdentityProvider
 import javax.inject.Inject
 
-private fun IdentityProvider.toEventName() = when(this) {
+private fun IdentityProvider.toEventName() = when (this) {
     IdentityProvider.facebook -> "signin_fb_clicked"
     IdentityProvider.twitter -> "signin_twitter_clicked"
 }
@@ -14,18 +14,18 @@ private const val NOTIFICATION_TAG = "notification_tag"
 private const val NOTIFICATION_IS_DISPLAYED = "notification_is_displayed"
 
 class KochavaAnalytics @Inject constructor(
-        private val configuration: Tracker.Configuration
+    private val configuration: Tracker.Configuration
 ) : Analytics {
     override fun initialize() {
         Tracker.configure(configuration)
     }
 
     override fun trackEvent(event: AnalyticsEvent) {
-        val trackerEvent = when(event) {
+        val trackerEvent = when (event) {
             is AnalyticsEvent.NewRegistration -> Tracker.Event(Tracker.EVENT_TYPE_REGISTRATION_COMPLETE).setUserId(event.userId)
             is AnalyticsEvent.SocialSignInClicked -> Tracker.Event(event.identityProvider.toEventName())
             is AnalyticsEvent.Notification -> Tracker.Event(
-                    when(event.notification.type) {
+                    when (event.notification.type) {
                         NotificationEvent.Type.Received -> Tracker.EVENT_TYPE_PUSH_RECEIVED
                         NotificationEvent.Type.Opened -> Tracker.EVENT_TYPE_PUSH_OPENED
                     })

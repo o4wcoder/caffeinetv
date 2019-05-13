@@ -1,6 +1,5 @@
 package tv.caffeine.app.login
 
-
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
@@ -37,12 +36,12 @@ import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 class MfaCodeFragment @Inject constructor(
-        private val accountsService: AccountsService,
-        private val gson: Gson,
-        private val tokenStore: TokenStore,
-        private val authWatcher: AuthWatcher,
-        private val firebaseAnalytics: FirebaseAnalytics
-): CaffeineFragment(R.layout.fragment_mfa_code) {
+    private val accountsService: AccountsService,
+    private val gson: Gson,
+    private val tokenStore: TokenStore,
+    private val authWatcher: AuthWatcher,
+    private val firebaseAnalytics: FirebaseAnalytics
+) : CaffeineFragment(R.layout.fragment_mfa_code) {
 
     private lateinit var binding: FragmentMfaCodeBinding
     private val args by navArgs<MfaCodeFragmentArgs>()
@@ -81,7 +80,7 @@ class MfaCodeFragment @Inject constructor(
             val mfaCode = if (skipMfaCode) null else MfaCode(binding.mfaCodeEditText.text.toString())
             val signInBody = SignInBody(Account(username, password, caid, loginToken), mfaCode)
             val result = accountsService.signIn(signInBody).awaitAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineResult.Success -> onSuccess(result.value)
                 is CaffeineResult.Error -> onError(result.error)
                 is CaffeineResult.Failure -> onFailure(result.throwable)

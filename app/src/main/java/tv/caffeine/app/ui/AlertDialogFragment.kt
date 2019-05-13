@@ -36,4 +36,3 @@ class AlertDialogFragment : DialogFragment() {
                 .create()
     }
 }
-

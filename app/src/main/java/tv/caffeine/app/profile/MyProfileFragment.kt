@@ -1,6 +1,5 @@
 package tv.caffeine.app.profile
 
-
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -42,19 +41,19 @@ import tv.caffeine.app.wallet.WalletViewModel
 import java.io.File
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 private const val REQUEST_GET_PHOTO = 1
 private const val CAMERA_IMAGE_PATH = "CAMERA_IMAGE_PATH"
 
 class MyProfileFragment @Inject constructor(
-        private val accountsService: AccountsService,
-        private val tokenStore: TokenStore,
-        private val authWatcher: AuthWatcher,
-        private val picasso: Picasso,
-        private val facebookLoginManager: LoginManager
-): CaffeineFragment(R.layout.fragment_my_profile) {
+    private val accountsService: AccountsService,
+    private val tokenStore: TokenStore,
+    private val authWatcher: AuthWatcher,
+    private val picasso: Picasso,
+    private val facebookLoginManager: LoginManager
+) : CaffeineFragment(R.layout.fragment_my_profile) {
 
     private lateinit var binding: FragmentMyProfileBinding
 
@@ -190,7 +189,7 @@ class MyProfileFragment @Inject constructor(
         val storageDir: File = context?.cacheDir?.let { File(it, "camera") } ?: return null
         storageDir.mkdirs()
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        return File.createTempFile("JPEG_${timeStamp}_",  ".jpg", storageDir)
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
     }
 
     private fun showFollowingList() {
@@ -207,7 +206,7 @@ class MyProfileFragment @Inject constructor(
 
     private fun confirmSignOut() {
         SignOutDialogFragment().let {
-            it.positiveClickListener =  DialogInterface.OnClickListener { _, _ -> signOut() }
+            it.positiveClickListener = DialogInterface.OnClickListener { _, _ -> signOut() }
             it.maybeShow(fragmentManager, "signOut")
         }
     }
@@ -227,5 +226,4 @@ class MyProfileFragment @Inject constructor(
             }
         })
     }
-
 }

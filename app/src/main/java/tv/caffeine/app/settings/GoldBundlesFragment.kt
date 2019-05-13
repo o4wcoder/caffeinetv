@@ -23,8 +23,8 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class GoldBundlesFragment @Inject constructor(
-        private val picasso: Picasso
-): CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
+    private val picasso: Picasso
+) : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
 
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel: GoldBundlesViewModel by activityViewModels { viewModelFactory }
@@ -42,8 +42,7 @@ class GoldBundlesFragment @Inject constructor(
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentGoldBundlesBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             goldBundlesRecyclerView.adapter = goldBundlesAdapter
@@ -56,21 +55,21 @@ class GoldBundlesFragment @Inject constructor(
             availableCredits = wallet.credits
             val goldCount = NumberFormat.getIntegerInstance().format(wallet.gold)
             val creditBalance = NumberFormat.getIntegerInstance().format(wallet.credits)
-            binding.currentBalanceTextView.formatUsernameAsHtml(picasso, when(buyGoldOption) {
+            binding.currentBalanceTextView.formatUsernameAsHtml(picasso, when (buyGoldOption) {
                 BuyGoldOption.UsingCredits -> getString(R.string.you_have_gold_and_credits_balance, goldCount, creditBalance)
                 BuyGoldOption.UsingPlayStore -> getString(R.string.you_have_gold_balance, goldCount)
             })
         })
         val handler = Handler()
         viewModel.getGoldBundles(buyGoldOption).observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
+            when (result) {
                 is CaffeineResult.Success -> handler.post { goldBundlesAdapter.submitList(result.value) }
                 else -> showSnackbar(R.string.error_loading_gold_bundles)
             }
         })
         viewModel.events.observe(viewLifecycleOwner, Observer { event ->
             val purchaseStatus = event.getContentIfNotHandled() ?: return@Observer
-            when(purchaseStatus) {
+            when (purchaseStatus) {
                 is PurchaseStatus.GooglePlaySuccess -> {
                     Timber.d("Successfully processed purchase")
                     showSnackbar(R.string.success_buying_gold_using_in_app_billing)
@@ -97,9 +96,9 @@ class GoldBundlesFragment @Inject constructor(
 
     private fun purchaseGoldBundle(goldBundle: GoldBundle) {
         // TODO wallet balance check
-        when(buyGoldOption) {
+        when (buyGoldOption) {
             BuyGoldOption.UsingCredits -> {
-                if (goldBundle.usingCredits?.canPurchase == true ) {
+                if (goldBundle.usingCredits?.canPurchase == true) {
                     if (availableCredits >= goldBundle.usingCredits.cost) {
                         promptPurchaseGoldBundleUsingCredits(goldBundle)
                     } else {
@@ -139,5 +138,4 @@ class GoldBundlesFragment @Inject constructor(
         val activity = activity ?: return
         viewModel.purchaseGoldBundleUsingPlayStore(activity, goldBundle)
     }
-
 }

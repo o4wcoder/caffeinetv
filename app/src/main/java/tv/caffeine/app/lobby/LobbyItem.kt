@@ -46,7 +46,6 @@ interface LobbyItem {
                     else -> LiveBroadcastWithFriends(broadcaster.id, broadcaster)
                 }
     }
-
 }
 
 data class WelcomeCard(override val id: String, val username: String) : LobbyItem {

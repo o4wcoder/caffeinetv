@@ -40,14 +40,15 @@ import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class UpcomingBroadcastFragment @Inject constructor(
-        private val guideAdapter: GuideAdapter
-): CaffeineBottomSheetDialogFragment() {
+    private val guideAdapter: GuideAdapter
+) : CaffeineBottomSheetDialogFragment() {
 
     private var binding: FragmentUpcomingBroadcastBinding? = null
     private val viewModel: GuideViewModel by viewModels { viewModelFactory }
@@ -91,9 +92,9 @@ class UpcomingBroadcastFragment @Inject constructor(
 }
 
 class GuideViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val broadcastsService: BroadcastsService,
-        private val gson: Gson
+    dispatchConfig: DispatchConfig,
+    private val broadcastsService: BroadcastsService,
+    private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val _guides = MutableLiveData<List<Guide>>()
@@ -129,18 +130,18 @@ class GuideViewModel @Inject constructor(
         val calendar2 = Calendar.getInstance().apply {
             timeInMillis = TimeUnit.SECONDS.toMillis(guide2.startTimestamp)
         }
-        return calendar1.get(Calendar.DAY_OF_YEAR) != calendar2.get(Calendar.DAY_OF_YEAR)
-                || calendar1.get(Calendar.YEAR) != calendar2.get(Calendar.YEAR)
+        return calendar1.get(Calendar.DAY_OF_YEAR) != calendar2.get(Calendar.DAY_OF_YEAR) ||
+                calendar1.get(Calendar.YEAR) != calendar2.get(Calendar.YEAR)
     }
 }
 
 class GuideAdapter @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExploreDark private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
-): ListAdapter<Guide, GuideViewHolder>(
+    private val dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    @ThemeFollowedExplore private val followedTheme: UserTheme,
+    @ThemeNotFollowedExploreDark private val notFollowedTheme: UserTheme,
+    private val picasso: Picasso
+) : ListAdapter<Guide, GuideViewHolder>(
         object : DiffUtil.ItemCallback<Guide>() {
             override fun areItemsTheSame(oldItem: Guide, newItem: Guide) = oldItem === newItem
             override fun areContentsTheSame(oldItem: Guide, newItem: Guide) = oldItem.id == newItem.id
@@ -170,12 +171,12 @@ class GuideAdapter @Inject constructor(
 }
 
 class GuideViewHolder(
-        itemView: View,
-        private val scope: CoroutineScope,
-        private val followManager: FollowManager,
-        private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
+    itemView: View,
+    private val scope: CoroutineScope,
+    private val followManager: FollowManager,
+    private val followedTheme: UserTheme,
+    private val notFollowedTheme: UserTheme,
+    private val picasso: Picasso
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
@@ -232,4 +233,3 @@ class GuideViewHolder(
         return "$startTime - $endTime"
     }
 }
-

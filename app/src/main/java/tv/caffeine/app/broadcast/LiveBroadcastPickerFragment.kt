@@ -45,9 +45,9 @@ import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 class LiveBroadcastPickerFragment @Inject constructor(
-        private val liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter,
-        private val guideAdapter: GuideAdapter
-): CaffeineBottomSheetDialogFragment() {
+    private val liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter,
+    private val guideAdapter: GuideAdapter
+) : CaffeineBottomSheetDialogFragment() {
 
     private var binding: FragmentLiveBroadcastPickerBinding? = null
     private val viewModel: LiveHostableBroadcastersViewModel by viewModels { viewModelFactory }
@@ -83,7 +83,7 @@ class LiveBroadcastPickerFragment @Inject constructor(
                         showSnackbar(R.string.broardcast_placeholder_dialog_title)
                     }
 
-                    override fun onMoreButtonClicked(caid: CAID, username:  String) {
+                    override fun onMoreButtonClicked(caid: CAID, username: String) {
                         findNavController().navigateToReportOrIgnoreDialog(caid, username, false)
                     }
                 }
@@ -110,9 +110,9 @@ class LiveBroadcastPickerFragment @Inject constructor(
 }
 
 class LiveHostableBroadcastersViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val broadcastsService: BroadcastsService,
-        private val gson: Gson
+    dispatchConfig: DispatchConfig,
+    private val broadcastsService: BroadcastsService,
+    private val gson: Gson
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val _broadcasters = MutableLiveData<List<LobbyItem>>()
@@ -139,13 +139,13 @@ class LiveHostableBroadcastersViewModel @Inject constructor(
 }
 
 class LiveBroadcastPickerAdapter @Inject constructor(
-        private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
-        @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-        @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
-        private val picasso: Picasso
-): ListAdapter<LobbyItem, LobbyViewHolder>(
+    private val followManager: FollowManager,
+    @ThemeFollowedExplore private val followedTheme: UserTheme,
+    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
+    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
+    private val picasso: Picasso
+) : ListAdapter<LobbyItem, LobbyViewHolder>(
         object : DiffUtil.ItemCallback<LobbyItem>() {
             override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem.equals(newItem)
             override fun areContentsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem.equals(newItem) // broadcasts are unique in the list

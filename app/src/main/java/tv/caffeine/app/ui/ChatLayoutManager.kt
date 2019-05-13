@@ -17,14 +17,14 @@ class ChatLayoutManager : GridLayoutManager {
 
     @Suppress("Unused")
     @JvmOverloads
-    constructor(context: Context?, spanCount: Int, orientation: Int = RecyclerView.VERTICAL, reverseLayout: Boolean = false)
-            : super(context, spanCount, orientation, reverseLayout) {
+    constructor(context: Context?, spanCount: Int, orientation: Int = RecyclerView.VERTICAL, reverseLayout: Boolean = false) :
+            super(context, spanCount, orientation, reverseLayout) {
         rowCount = context?.resources?.getInteger(R.integer.chat_row_count) ?: DEFAULT_ROW_COUNT
     }
 
     @Suppress("Unused")
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int)
-            : super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) :
+            super(context, attrs, defStyleAttr, defStyleRes) {
         rowCount = context.resources.getInteger(R.integer.chat_row_count)
     }
 
@@ -46,5 +46,4 @@ class ChatLayoutManager : GridLayoutManager {
     private val horizontalSpace get() = width - paddingStart - paddingEnd
 
     private val verticalSpace get() = height - paddingTop - paddingBottom
-
 }

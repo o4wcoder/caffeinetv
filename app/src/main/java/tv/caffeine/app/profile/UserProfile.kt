@@ -11,33 +11,33 @@ import tv.caffeine.app.session.FollowManager
 import java.text.NumberFormat
 
 data class UserProfile(
-        val caid: CAID,
-        val username: String,
-        val name: String?,
-        val email: String?,
-        val emailVerified: Boolean?,
-        val followersCount: String,
-        val followingCount: String,
-        val bio: String?,
-        val isFollowed: Boolean,
-        val isVerified: Boolean,
-        val isCaster: Boolean,
-        val avatarImageUrl: String,
-        val mfaMethod: MfaMethod?,
-        val stageImageUrl: String?,
-        val isLive: Boolean,
-        val isMe: Boolean,
-        val shouldShowFollow: Boolean = !isFollowed && !isMe,
-        val twitterUsername: String? = null,
-        val broadcastName: String? = null,
-        val gameIconImageUrl: String? = null
+    val caid: CAID,
+    val username: String,
+    val name: String?,
+    val email: String?,
+    val emailVerified: Boolean?,
+    val followersCount: String,
+    val followingCount: String,
+    val bio: String?,
+    val isFollowed: Boolean,
+    val isVerified: Boolean,
+    val isCaster: Boolean,
+    val avatarImageUrl: String,
+    val mfaMethod: MfaMethod?,
+    val stageImageUrl: String?,
+    val isLive: Boolean,
+    val isMe: Boolean,
+    val shouldShowFollow: Boolean = !isFollowed && !isMe,
+    val twitterUsername: String? = null,
+    val broadcastName: String? = null,
+    val gameIconImageUrl: String? = null
 ) {
 
     constructor(
-            user: User,
-            broadcastDetails: Broadcast?,
-            numberFormat: NumberFormat,
-            followManager: FollowManager
+        user: User,
+        broadcastDetails: Broadcast?,
+        numberFormat: NumberFormat,
+        followManager: FollowManager
     ) : this(
             user.caid,
             user.username,

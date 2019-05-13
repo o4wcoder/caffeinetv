@@ -4,14 +4,13 @@ import androidx.lifecycle.ViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import tv.caffeine.app.login.LegalAgreementViewModel
-import tv.caffeine.app.login.SignInViewModel
-import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.broadcast.GuideViewModel
 import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
+import tv.caffeine.app.login.LegalAgreementViewModel
+import tv.caffeine.app.login.SignInViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.DeleteAccountViewModel
 import tv.caffeine.app.profile.IgnoreUserViewModel
@@ -24,6 +23,7 @@ import tv.caffeine.app.settings.GoldBundlesViewModel
 import tv.caffeine.app.settings.NotificationSettingsViewModel
 import tv.caffeine.app.settings.SettingsViewModel
 import tv.caffeine.app.settings.TransactionHistoryViewModel
+import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.FriendsWatchingViewModel
@@ -174,5 +174,4 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(TwitterAuthViewModel::class)
     abstract fun bindTwitterAuthViewModel(viewModel: TwitterAuthViewModel): ViewModel
-
 }

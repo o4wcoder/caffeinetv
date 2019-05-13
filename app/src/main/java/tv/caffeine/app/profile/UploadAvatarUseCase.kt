@@ -10,8 +10,8 @@ import tv.caffeine.app.util.toJpegRequestBody
 import javax.inject.Inject
 
 class UploadAvatarUseCase @Inject constructor(
-        private val accountsService: AccountsService,
-        private val gson: Gson
+    private val accountsService: AccountsService,
+    private val gson: Gson
 ) {
 
     suspend operator fun invoke(bitmap: Bitmap): CaffeineResult<UploadAvatarResult> {

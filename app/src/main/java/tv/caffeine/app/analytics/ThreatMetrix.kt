@@ -7,15 +7,15 @@ import com.threatmetrix.TrustDefender.TrustDefender
 import okhttp3.Interceptor
 import okhttp3.Response
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ThreatMetrixInterceptor @Inject constructor(
-        private val profiling: ThreatMetrixProfiling
-): ProfilingInterceptor() {
+    private val profiling: ThreatMetrixProfiling
+) : ProfilingInterceptor() {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val sessionId = profiling.sessionId
@@ -26,8 +26,8 @@ class ThreatMetrixInterceptor @Inject constructor(
 
 @Singleton
 class ThreatMetrixProfiling @Inject constructor(
-        private val context: Context
-): Profiling {
+    private val context: Context
+) : Profiling {
     internal val sessionId: String = UUID.randomUUID().toString()
     private val options: ProfilingOptions = ProfilingOptions().setSessionID(sessionId)
 
@@ -46,5 +46,4 @@ class ThreatMetrixProfiling @Inject constructor(
             .setTimeout(10, TimeUnit.SECONDS) // optional
             .setRegisterForLocationServices(false) // optional
             .setRegisterForPush(false) // optional
-
 }

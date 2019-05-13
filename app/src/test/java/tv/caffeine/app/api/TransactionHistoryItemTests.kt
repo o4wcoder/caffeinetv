@@ -255,5 +255,4 @@ class TransactionHistoryItemTests {
         val string = transaction.costString(resources, numberFormat, username, fontColor)
         assertEquals("<b>Caffeine</b> debited you <img src=\"purplecoin\"> <b>12</b>", string)
     }
-
 }

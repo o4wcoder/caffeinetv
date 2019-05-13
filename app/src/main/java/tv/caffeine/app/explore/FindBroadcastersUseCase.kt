@@ -9,9 +9,9 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import javax.inject.Inject
 
 class FindBroadcastersUseCase @Inject constructor(
-        private val searchService: SearchService,
-        private val usersService: UsersService,
-        private val gson: Gson
+    private val searchService: SearchService,
+    private val usersService: UsersService,
+    private val gson: Gson
 ) {
 
     suspend operator fun invoke(searchString: String? = null): CaffeineResult<Findings> =
@@ -20,7 +20,7 @@ class FindBroadcastersUseCase @Inject constructor(
 
     private suspend fun suggestUsers(): CaffeineResult<Findings> {
         val result = usersService.listSuggestions().awaitAndParseErrors(gson)
-        return when(result) {
+        return when (result) {
             is CaffeineResult.Success -> CaffeineResult.Success(Findings.Explore(result.value.toTypedArray()))
             is CaffeineResult.Error -> CaffeineResult.Error(result.error)
             is CaffeineResult.Failure -> CaffeineResult.Failure(result.throwable)

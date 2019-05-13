@@ -16,11 +16,11 @@ class StageReducer {
      * Find a position for the reaction to be displayed in or another reaction's position to replace
      */
     fun determineReactionPosition(
-            reactions: List<MessageWrapper>,
-            incomingReaction: MessageWrapper,
-            preferredPositions: List<Int>,
-            maxVisibleReactions: Int,
-            currentTime: Long
+        reactions: List<MessageWrapper>,
+        incomingReaction: MessageWrapper,
+        preferredPositions: List<Int>,
+        maxVisibleReactions: Int,
+        currentTime: Long
     ): Int {
         val existingReactionPosition = reactions.find { it.message.id == incomingReaction.message.id }?.position
         val visibleReactions = reactions.take(maxVisibleReactions)
@@ -36,10 +36,10 @@ class StageReducer {
     }
 
     private fun determineReactionReplacementPosition(
-            visibleReactions: List<MessageWrapper>,
-            incomingReaction: MessageWrapper,
-            currentTime: Long,
-            replaceShare: Boolean
+        visibleReactions: List<MessageWrapper>,
+        incomingReaction: MessageWrapper,
+        currentTime: Long,
+        replaceShare: Boolean
     ): Int {
         val reactionsOldEnoughForReplacement = visibleReactions.filterNot { currentTime - it.creationTime < REACTION_REPLACEMENT_IMMUNITY_TIME }
         val replaceableReactions = if (replaceShare) reactionsOldEnoughForReplacement.filter { it.message.type == Message.Type.share } else reactionsOldEnoughForReplacement
@@ -59,8 +59,8 @@ class StageReducer {
     }
 
     fun handleProcessOldReactions(
-            reactions: List<MessageWrapper>,
-            currentTime: Long
+        reactions: List<MessageWrapper>,
+        currentTime: Long
     ): List<MessageWrapper> = reactions
             .map {
                 val reactionScore = reactionScores.calculateReactionScore(currentTime - it.creationTime, it.message.endorsementCount)
@@ -71,5 +71,4 @@ class StageReducer {
             .filter {
                 currentTime - it.lastUpdateTime <= MAXIMUM_NON_UPDATED_REACTION_AGE
             }
-
 }

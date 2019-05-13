@@ -3,16 +3,16 @@ package tv.caffeine.app.api.model
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
 class Broadcast(
-        val id: String,
-        val name: String,
-        val contentId: String,
-        val game: Game?,
-        val liveHostedBroadcaster: Lobby.Broadcaster?,
-        private val previewImagePath: String,
-        val state: State,
-        val dateText: String,
-        val externalStreamId: String?,
-        val twitterUsername: String?
+    val id: String,
+    val name: String,
+    val contentId: String,
+    val game: Game?,
+    val liveHostedBroadcaster: Lobby.Broadcaster?,
+    private val previewImagePath: String,
+    val state: State,
+    val dateText: String,
+    val externalStreamId: String?,
+    val twitterUsername: String?
 ) {
     val hasLiveHostedBroadcaster get() = liveHostedBroadcaster != null
     val previewImageUrl get() = "$IMAGES_BASE_URL$previewImagePath"

@@ -35,14 +35,13 @@ class LobbyLinearLayoutManager : LinearLayoutManager {
 
     private fun lobbyLayoutSize(layoutParams: RecyclerView.LayoutParams) =
             layoutParams.apply {
-                when(orientation) {
-                    HORIZONTAL -> width = horizontalSpace * 90/100 - margin*2
-                    VERTICAL -> height = verticalSpace * 90/100 - margin*2
+                when (orientation) {
+                    HORIZONTAL -> width = horizontalSpace * 90 / 100 - margin*2
+                    VERTICAL -> height = verticalSpace * 90 / 100 - margin*2
                 }
             }
 
     private val horizontalSpace get() = width - paddingStart - paddingEnd
 
     private val verticalSpace get() = width - paddingTop - paddingBottom
-
 }

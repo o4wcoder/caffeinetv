@@ -12,7 +12,7 @@ import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
 class NotificationsFragment @Inject constructor(
-        private val notificationsAdapter: NotificationsAdapter
+    private val notificationsAdapter: NotificationsAdapter
 ) : CaffeineFragment(R.layout.user_list_fragment) {
 
     private val viewModel: NotificationsViewModel by viewModels { viewModelFactory }
@@ -31,4 +31,3 @@ class NotificationsFragment @Inject constructor(
         })
     }
 }
-

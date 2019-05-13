@@ -43,17 +43,17 @@ class LobbyBroadcasterTests {
         assertEquals(usernames1.plus(usernames2), broadcasters)
     }
 
-    private fun getLobbyExample(sections: Array<Lobby.Section>)
-            = Lobby(mapOf(), mapOf(), Lobby.Header(null, null), sections)
+    private fun getLobbyExample(sections: Array<Lobby.Section>) =
+            Lobby(mapOf(), mapOf(), Lobby.Header(null, null), sections)
 
-    private fun getLobbySectionExample(usernames: List<String>)
-            = Lobby.Section("0", "0", "0", "0", getBroadcasterExamples(usernames), null)
+    private fun getLobbySectionExample(usernames: List<String>) =
+            Lobby.Section("0", "0", "0", "0", getBroadcasterExamples(usernames), null)
 
-    private fun getLobbyCategoryExample(usernames: List<String>)
-            = Lobby.Section("0", "0", "0", "0", null, arrayOf(getCategoryExample(usernames)))
+    private fun getLobbyCategoryExample(usernames: List<String>) =
+            Lobby.Section("0", "0", "0", "0", null, arrayOf(getCategoryExample(usernames)))
 
-    private fun getCategoryExample(usernames: List<String>)
-            = Lobby.Category("0", "0", getBroadcasterExamples(usernames))
+    private fun getCategoryExample(usernames: List<String>) =
+            Lobby.Category("0", "0", getBroadcasterExamples(usernames))
 
     private fun getBroadcasterExamples(usernames: List<String>): Array<Lobby.Broadcaster> {
         return usernames.map {

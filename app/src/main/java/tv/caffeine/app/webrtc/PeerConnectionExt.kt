@@ -1,7 +1,11 @@
 package tv.caffeine.app.webrtc
 
 import kotlinx.coroutines.suspendCancellableCoroutine
-import org.webrtc.*
+import org.webrtc.MediaConstraints
+import org.webrtc.PeerConnection
+import org.webrtc.RTCStatsReport
+import org.webrtc.SdpObserver
+import org.webrtc.SessionDescription
 import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -27,7 +31,7 @@ suspend fun PeerConnection.setRemoteDescription(sessionDescription: SessionDescr
     }, sessionDescription)
 }
 
-suspend fun PeerConnection.createAnswer(mediaConstraints: MediaConstraints) : SessionDescription? = suspendCancellableCoroutine { cont ->
+suspend fun PeerConnection.createAnswer(mediaConstraints: MediaConstraints): SessionDescription? = suspendCancellableCoroutine { cont ->
     createAnswer(object : SdpObserver {
         override fun onCreateSuccess(localSessionDescription: SessionDescription?) {
             cont.resume(localSessionDescription)
@@ -69,10 +73,9 @@ suspend fun PeerConnection.setLocalDescription(sessionDescription: SessionDescri
 
 suspend fun PeerConnection.getStats(): RTCStatsReport = suspendCancellableCoroutine { cont ->
     getStats { statsReport ->
-        when(statsReport) {
+        when (statsReport) {
             null -> cont.resumeWithException(Exception("Failed to get stats"))
             else -> cont.resume(statsReport)
         }
     }
 }
-

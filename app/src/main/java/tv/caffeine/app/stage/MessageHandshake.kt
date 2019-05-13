@@ -24,14 +24,14 @@ import tv.caffeine.app.util.DispatchConfig
 import kotlin.coroutines.CoroutineContext
 
 class MessageHandshake @AssistedInject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val tokenStore: TokenStore,
-        private val followManager: FollowManager,
-        private val usersService: UsersService,
-        private val gson: Gson,
-        private val serverConfig: ServerConfig,
-        @Assisted private val stageIdentifier: String
-): CoroutineScope {
+    private val dispatchConfig: DispatchConfig,
+    private val tokenStore: TokenStore,
+    private val followManager: FollowManager,
+    private val usersService: UsersService,
+    private val gson: Gson,
+    private val serverConfig: ServerConfig,
+    @Assisted private val stageIdentifier: String
+) : CoroutineScope {
 
     @AssistedInject.Factory
     interface Factory {
@@ -57,7 +57,7 @@ class MessageHandshake @AssistedInject constructor(
         webSocketController?.close()
         launch {
             val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
-            val payload = when(result) {
+            val payload = when (result) {
                 is CaffeineResult.Success -> result.value.token
                 is CaffeineResult.Error -> return@launch Timber.e("Failed to get signed user details")
                 is CaffeineResult.Failure -> return@launch Timber.e(result.throwable)
@@ -88,5 +88,4 @@ class MessageHandshake @AssistedInject constructor(
         channel.close()
         job.cancel()
     }
-
 }

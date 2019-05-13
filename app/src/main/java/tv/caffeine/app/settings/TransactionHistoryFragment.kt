@@ -1,6 +1,5 @@
 package tv.caffeine.app.settings
 
-
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -16,8 +15,8 @@ import tv.caffeine.app.ui.PaddingItemDecoration
 import javax.inject.Inject
 
 class TransactionHistoryFragment @Inject constructor(
-        private val adapter: TransactionHistoryAdapter
-): CaffeineFragment(R.layout.fragment_transaction_history) {
+    private val adapter: TransactionHistoryAdapter
+) : CaffeineFragment(R.layout.fragment_transaction_history) {
 
     private val viewModel: TransactionHistoryViewModel by viewModels { viewModelFactory }
 

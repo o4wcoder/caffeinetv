@@ -28,7 +28,7 @@ import tv.caffeine.app.R
 import java.io.File
 
 @Parcelize
-enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int): Parcelable {
+enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int) : Parcelable {
     TOS(R.string.terms_of_service, R.string.url_tos),
     PrivacyPolicy(R.string.privacy_policy, R.string.url_privacy),
     CommunityGuidelines(R.string.community_guidelines, R.string.url_guidelines)
@@ -63,7 +63,6 @@ class LegalDocsFragment : WebViewFragment() {
         webViewTitle = getString(legalDoc.title)
         webViewUrl = getString(legalDoc.url)
     }
-
 }
 
 class CaffeineLinksFragment : WebViewFragment() {
@@ -77,7 +76,6 @@ class CaffeineLinksFragment : WebViewFragment() {
         webViewTitle = getString(R.string.welcome_to_caffeine)
         webViewUrl = activity?.intent?.data?.toString() ?: "https://www.caffeine.tv/tos.html"
     }
-
 }
 
 sealed class WebViewFragment : Fragment() {
@@ -89,8 +87,7 @@ sealed class WebViewFragment : Fragment() {
     protected lateinit var webViewTitle: String
     protected lateinit var webViewUrl: String
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_legal_docs, container, false)
     }

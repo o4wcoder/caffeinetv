@@ -7,8 +7,8 @@ import timber.log.Timber
 import tv.caffeine.app.net.ServerConfig
 
 class ImageServerRequestTransformer(
-        private val serverConfig: ServerConfig,
-        private val alwaysTransform: Boolean = true
+    private val serverConfig: ServerConfig,
+    private val alwaysTransform: Boolean = true
 ) : Picasso.RequestTransformer {
 
     override fun transformRequest(request: Request): Request {
@@ -32,13 +32,12 @@ class ImageServerRequestTransformer(
 
         return newRequest.build()
     }
-
 }
 
 sealed class ImageServer(protected val baseUri: Uri) {
 
     object Factory {
-        fun makeRequestBuilder(uri: Uri, serverConfig: ServerConfig): ImageServer? = when(uri.host) {
+        fun makeRequestBuilder(uri: Uri, serverConfig: ServerConfig): ImageServer? = when (uri.host) {
             "assets.caffeine.tv" -> ImageServer.Fastly(serverConfig.normalizeImageUri(uri))
             "images.caffeine.tv" -> ImageServer.Imgix(serverConfig.normalizeImageUri(uri))
             else -> null
@@ -71,5 +70,4 @@ sealed class ImageServer(protected val baseUri: Uri) {
             height?.let { appendQueryParameter("h", it.toString()) }
         }.build()
     }
-
 }

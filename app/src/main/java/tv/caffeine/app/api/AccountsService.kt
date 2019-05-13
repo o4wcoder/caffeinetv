@@ -4,7 +4,17 @@ import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.HTTP
+import retrofit2.http.Headers
+import retrofit2.http.Multipart
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.Path
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
@@ -81,15 +91,15 @@ class DeleteAccountBody(val account: DeleteAccountBody.Account) {
 
 // omits iOS and web settings
 class NotificationSettings(
-        val newFollowerEmail: Boolean? = null,
-        val weeklySuggestionsEmail: Boolean? = null,
-        val broadcastLiveEmail: Boolean? = null,
-        val friendJoinsEmail: Boolean? = null,
-        val communityEmail: Boolean? = null,
-        val broadcastReportEmail: Boolean? = null,
-        val newFollowerAndroidPush: Boolean? = null,
-        val broadcastLiveAndroidPush: Boolean? = null,
-        val friendJoinsAndroidPush: Boolean? = null
+    val newFollowerEmail: Boolean? = null,
+    val weeklySuggestionsEmail: Boolean? = null,
+    val broadcastLiveEmail: Boolean? = null,
+    val friendJoinsEmail: Boolean? = null,
+    val communityEmail: Boolean? = null,
+    val broadcastReportEmail: Boolean? = null,
+    val newFollowerAndroidPush: Boolean? = null,
+    val broadcastLiveAndroidPush: Boolean? = null,
+    val friendJoinsAndroidPush: Boolean? = null
 ) {
     enum class SettingKey {
         new_follower_email,

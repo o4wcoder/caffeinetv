@@ -40,17 +40,17 @@ sealed class PurchaseStatus {
 }
 
 class GoldBundlesViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        context: Context,
-        private val tokenStore: TokenStore,
-        private val walletRepository: WalletRepository,
-        private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
-        private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
-        private val processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase
+    dispatchConfig: DispatchConfig,
+    context: Context,
+    private val tokenStore: TokenStore,
+    private val walletRepository: WalletRepository,
+    private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
+    private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
+    private val processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase
 ) : CaffeineViewModel(dispatchConfig), BillingClientStateListener {
 
     private val _events = MutableLiveData<Event<PurchaseStatus>>()
-    val events : LiveData<Event<PurchaseStatus>> = Transformations.map(_events) { it }
+    val events: LiveData<Event<PurchaseStatus>> = Transformations.map(_events) { it }
 
     private val _goldBundlesUsingCredits = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
     private val _goldBundlesUsingPlayStore = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
@@ -63,8 +63,8 @@ class GoldBundlesViewModel @Inject constructor(
     private val billingClient: BillingClient = BillingClientFactory.createBillingClient(context,
             PurchasesUpdatedListener { responseCode, purchases ->
                 Timber.d("Connected")
-                when(responseCode) {
-                    BillingClient.BillingResponse.OK -> when(purchases) {
+                when (responseCode) {
+                    BillingClient.BillingResponse.OK -> when (purchases) {
                         null -> Timber.e(Exception("Billing response OK, but purchase list is null"))
                         else -> consumeInAppPurchases(purchases)
                     }
@@ -126,7 +126,7 @@ class GoldBundlesViewModel @Inject constructor(
     }
 
     fun getGoldBundles(buyGoldOption: BuyGoldOption): LiveData<CaffeineResult<List<GoldBundle>>> {
-        return when(buyGoldOption) {
+        return when (buyGoldOption) {
             BuyGoldOption.UsingCredits -> _goldBundlesUsingCredits
             BuyGoldOption.UsingPlayStore -> _goldBundlesUsingPlayStore
         }
@@ -147,10 +147,10 @@ class GoldBundlesViewModel @Inject constructor(
     }
 
     private suspend fun BillingClient.querySkuDetails(
-            params: SkuDetailsParams
+        params: SkuDetailsParams
     ): List<SkuDetails> = suspendCancellableCoroutine { continuation ->
         querySkuDetailsAsync(params) { responseCode, skuDetailsList ->
-            when(responseCode) {
+            when (responseCode) {
                 BillingClient.BillingResponse.OK -> continuation.resume(skuDetailsList)
                 else -> {
                     Timber.e(Exception("Error loading SKU details $responseCode"))
@@ -219,7 +219,7 @@ class GoldBundlesViewModel @Inject constructor(
      */
     private fun processRecentlyCachedPurchases() {
         val purchaseResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-        when(purchaseResult.responseCode) {
+        when (purchaseResult.responseCode) {
             BillingClient.BillingResponse.OK -> consumeInAppPurchases(purchaseResult.purchasesList)
             else -> Timber.e(Exception("Error querying recent purchases ${purchaseResult.responseCode}"))
         }
@@ -229,7 +229,7 @@ class GoldBundlesViewModel @Inject constructor(
         Timber.d("Purchased: ${purchase.sku}, Order ID: ${purchase.orderId}, Purchase Token: $purchaseToken")
         val result = processPlayStorePurchaseUseCase(purchase.sku, purchaseToken)
         refreshWallet()
-        val purchaseStatus = when(result) {
+        val purchaseStatus = when (result) {
             is CaffeineResult.Success -> PurchaseStatus.GooglePlaySuccess(purchase.purchaseToken)
             is CaffeineResult.Error -> PurchaseStatus.Error(R.string.cannot_purchase_using_play_store)
             is CaffeineResult.Failure -> PurchaseStatus.Error(R.string.cannot_purchase_using_play_store)

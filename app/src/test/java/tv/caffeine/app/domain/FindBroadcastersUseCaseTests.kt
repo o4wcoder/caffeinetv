@@ -34,7 +34,7 @@ class FindBroadcastersUseCaseTests {
         MockKAnnotations.init(this)
         val searchResultList = SearchUsersResult(arrayOf(user1, user2, user3))
         coEvery { mockSearchUsersResponse.await() } returns Response.success(searchResultList)
-        coEvery { fakeSearchService.searchUsers(any()) } returns  mockSearchUsersResponse
+        coEvery { fakeSearchService.searchUsers(any()) } returns mockSearchUsersResponse
         val resultList = listOf(user1, user2)
         coEvery { mockListSuggestionsResponse.await() } returns Response.success(resultList)
         every { fakeUsersService.listSuggestions() } returns mockListSuggestionsResponse

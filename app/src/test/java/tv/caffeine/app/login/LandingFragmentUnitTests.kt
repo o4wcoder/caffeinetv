@@ -92,4 +92,3 @@ class LandingFragmentUnitTests {
         verify(exactly = 1) { analytics.trackEvent(AnalyticsEvent.NewAccountClicked) }
     }
 }
-

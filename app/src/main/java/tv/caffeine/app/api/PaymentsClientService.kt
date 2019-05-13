@@ -10,7 +10,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.di.ASSETS_BASE_URL
 import java.text.NumberFormat
-import java.util.*
+import java.util.Currency
 import kotlin.math.absoluteValue
 
 interface PaymentsClientService {
@@ -54,9 +54,17 @@ class DigitalItemsPayload(val digitalItemCategories: Any, val digitalItems: Paym
 
 class PaymentsCollection<T>(val state: List<T>)
 
-data class DigitalItem(val id: String, val name: String, val pluralName: String, val categoryId: String,
-                  val goldCost: Int, val score: Int, val staticImagePath: String,
-                  val sceneKitPath: String, val webAssetPath: String) {
+data class DigitalItem(
+    val id: String,
+    val name: String,
+    val pluralName: String,
+    val categoryId: String,
+    val goldCost: Int,
+    val score: Int,
+    val staticImagePath: String,
+    val sceneKitPath: String,
+    val webAssetPath: String
+) {
     val staticImageUrl get() = "$ASSETS_BASE_URL$staticImagePath"
 }
 
@@ -100,7 +108,7 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
 
     class SendDigitalItem(val quantity: Int, val recipient: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
         override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
-            return when(quantity) {
+            return when (quantity) {
                 1 -> resources.getString(R.string.transaction_item_sent, digitalItemStaticImageUrl, numberFormat.format(cost), username, fontColor)
                 else -> resources.getString(R.string.transaction_items_sent, digitalItemStaticImageUrl, numberFormat.format(cost), username, fontColor, numberFormat.format(quantity))
             }
@@ -109,9 +117,9 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
 
     class ReceiveDigitalItem(val quantity: Int, val sender: CAID, val pluralName: String, val name: String, val assets: DigitalItemAssets, id: String, createdAt: Int, cost: Int, value: Int) : TransactionHistoryItem(id, createdAt, cost, value) {
         override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
-            return when(quantity) {
+            return when (quantity) {
                 1 -> resources.getString(R.string.transaction_item_received, username, fontColor, digitalItemStaticImageUrl, numberFormat.format(value))
-                else -> resources.getString(R.string.transaction_items_received,  username, fontColor, digitalItemStaticImageUrl, numberFormat.format(value), numberFormat.format(quantity))
+                else -> resources.getString(R.string.transaction_items_received, username, fontColor, digitalItemStaticImageUrl, numberFormat.format(value), numberFormat.format(quantity))
             }
         }
     }
@@ -123,7 +131,7 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
 
         override fun costString(resources: Resources, numberFormat: NumberFormat, username: String, fontColor: String): String? {
             val currencyFormatter = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance("USD") }
-            val stringRes = when(state) {
+            val stringRes = when (state) {
                 TransactionHistoryItem.CashOut.State.pending -> R.string.transaction_item_cashout_pending
                 TransactionHistoryItem.CashOut.State.deposited -> R.string.transaction_item_cashout_success
                 TransactionHistoryItem.CashOut.State.failed -> R.string.transaction_item_cashout_failed
@@ -145,11 +153,10 @@ sealed class TransactionHistoryItem(val id: String, val createdAt: Int, val cost
 
 class DigitalItemAssets(val iosSceneKitPath: String, val webAssetPath: String, val staticImagePath: String)
 
-val TransactionHistoryItem.digitalItemStaticImageUrl get() = when(this) {
+val TransactionHistoryItem.digitalItemStaticImageUrl get() = when (this) {
     is TransactionHistoryItem.SendDigitalItem -> "$ASSETS_BASE_URL${assets.staticImagePath}"
     is TransactionHistoryItem.ReceiveDigitalItem -> "$ASSETS_BASE_URL${assets.staticImagePath}"
     else -> null
-
 }
 
 class GoldBundlesPayload(val maintenance: MaintenanceInfo, val goldBundles: PaymentsCollection<GoldBundle>, val limits: PurchaseLimitsEnvelope)
@@ -157,14 +164,14 @@ class GoldBundlesPayload(val maintenance: MaintenanceInfo, val goldBundles: Paym
 class MaintenanceInfo
 
 data class GoldBundle(
-        val id: String,
-        val amount: Int,
-        val score: Int,
-        val usingCredits: PurchaseOption.PurchaseWithCredits?,
-        val usingStoreKit: PurchaseOption.PurchaseUsingStoreKit?,
-        val usingInAppBilling: PurchaseOption.PurchaseUsingInAppBilling?,
-        val usingStripe: PurchaseOption.PurchaseUsingStripe?,
-        var skuDetails: SkuDetails?
+    val id: String,
+    val amount: Int,
+    val score: Int,
+    val usingCredits: PurchaseOption.PurchaseWithCredits?,
+    val usingStoreKit: PurchaseOption.PurchaseUsingStoreKit?,
+    val usingInAppBilling: PurchaseOption.PurchaseUsingInAppBilling?,
+    val usingStripe: PurchaseOption.PurchaseUsingStripe?,
+    var skuDetails: SkuDetails?
 )
 
 sealed class PurchaseOption {

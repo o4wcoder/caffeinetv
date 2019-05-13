@@ -11,9 +11,9 @@ import tv.caffeine.app.auth.TokenStore
 import javax.inject.Inject
 
 class UpdateEmailUseCase @Inject constructor(
-        private val accountsService: AccountsService,
-        private val tokenStore: TokenStore,
-        private val gson: Gson
+    private val accountsService: AccountsService,
+    private val tokenStore: TokenStore,
+    private val gson: Gson
 ) {
     suspend operator fun invoke(currentPassword: String, email: String): CaffeineResult<AccountUpdateResult> {
         val update = UpdateAccountBody(AccountUpdateRequest(currentPassword, email = email))

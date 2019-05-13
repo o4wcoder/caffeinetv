@@ -31,10 +31,10 @@ interface SettingsStorage {
 }
 
 class InMemorySettingsStorage(
-        override var refreshToken: String? = null,
-        override var caid: CAID? = null,
-        override var clientId: String? = null,
-        override var environment: String? = null
+    override var refreshToken: String? = null,
+    override var caid: CAID? = null,
+    override var clientId: String? = null,
+    override var environment: String? = null
 ) : SettingsStorage
 
 private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
@@ -43,7 +43,7 @@ private const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
 private const val ENVIRONMENT = "ENVIRONMENT"
 
 class SharedPrefsStorage @Inject constructor(
-        sharedPreferences: SharedPreferences
+    sharedPreferences: SharedPreferences
 ) : SettingsStorage {
     override var refreshToken by SharedPrefsDelegate(sharedPreferences, REFRESH_TOKEN_KEY)
 
@@ -65,10 +65,9 @@ class SharedPrefsDelegate(private val sharedPreferences: SharedPreferences, priv
     }
 }
 
-
 class EncryptedSettingsStorage @Inject constructor(
-        private val keyStoreHelper: KeyStoreHelper,
-        private val settingsStorage: SettingsStorage
+    private val keyStoreHelper: KeyStoreHelper,
+    private val settingsStorage: SettingsStorage
 ) : SettingsStorage {
     override var refreshToken: String?
         get() = settingsStorage.refreshToken?.let { decryptValue(it) }
@@ -119,20 +118,19 @@ class EncryptedSettingsStorage @Inject constructor(
         val encryptedBytes = ByteString.decodeBase64(encryptedStrings[1])?.toByteArray() ?: return null
         return try {
             keyStoreHelper.decrypt(EncryptedContent(iv, encryptedBytes)).toString(Charsets.UTF_8)
-        } catch(t: Throwable) {
-            when(t) {
+        } catch (t: Throwable) {
+            when (t) {
                 is BadPaddingException, is UnrecoverableKeyException, is InvalidKeyException -> reset()
             }
             null
         }
     }
-
 }
 
 class EncryptedContent(val iv: ByteArray, val content: ByteArray)
 
 class KeyStoreHelper @Inject constructor(
-        private val keyStore: KeyStore
+    private val keyStore: KeyStore
 ) {
 
     init {
@@ -199,5 +197,4 @@ class KeyStoreHelper @Inject constructor(
         cipher.init(Cipher.DECRYPT_MODE, key, params)
         return cipher.doFinal(encrypted.content)
     }
-
 }

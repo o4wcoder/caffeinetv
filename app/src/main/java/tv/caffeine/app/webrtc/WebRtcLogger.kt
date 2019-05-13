@@ -7,8 +7,7 @@ import timber.log.Timber
 class WebRtcLogger : Loggable {
     override fun onLogMessage(message: String?, severity: Logging.Severity?, tag: String?) {
         val logString = "$tag: $message"
-        when(severity)
-        {
+        when (severity) {
             Logging.Severity.LS_VERBOSE -> Timber.v(logString)
             Logging.Severity.LS_INFO -> Timber.i(logString)
             Logging.Severity.LS_WARNING -> Timber.w(logString)

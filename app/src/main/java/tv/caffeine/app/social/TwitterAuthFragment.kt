@@ -22,23 +22,23 @@ import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
 class TwitterAuthForLogin @Inject constructor(
-        oauthService: OAuthService,
-        gson: Gson
+    oauthService: OAuthService,
+    gson: Gson
 ) : TwitterAuthFragment(oauthService, gson) {
     override val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.login) { viewModelFactory }
 }
 
 class TwitterAuthForSettings @Inject constructor(
-        oauthService: OAuthService,
-        gson: Gson
+    oauthService: OAuthService,
+    gson: Gson
 ) : TwitterAuthFragment(oauthService, gson) {
     override val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.settings) { viewModelFactory }
 }
 
 abstract class TwitterAuthFragment(
-        private val oauthService: OAuthService,
-        private val gson: Gson
-): CaffeineFragment(R.layout.fragment_twitter_auth) {
+    private val oauthService: OAuthService,
+    private val gson: Gson
+) : CaffeineFragment(R.layout.fragment_twitter_auth) {
 
     private lateinit var webView: WebView
     abstract val twitterAuth: TwitterAuthViewModel
@@ -70,7 +70,7 @@ abstract class TwitterAuthFragment(
 
     private suspend fun twitterLogin() {
         val result = oauthService.authenticateWith(IdentityProvider.twitter).awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> {
                 val oauthResponse = result.value
                 webView.loadUrl(oauthResponse.authUrl)
@@ -92,7 +92,7 @@ abstract class TwitterAuthFragment(
         do {
             if (!isActive) return
             longPollResult = oauthService.longPoll(longPollUrl).awaitAndParseErrors(gson)
-        } while(shouldRetry(longPollResult))
+        } while (shouldRetry(longPollResult))
         if (!isActive) return
         longPollResult?.let { twitterAuth.processTwitterOAuthResult(it) }
         findNavController().popBackStack()
@@ -101,5 +101,4 @@ abstract class TwitterAuthFragment(
     private fun shouldRetry(result: CaffeineResult<OAuthCallbackResult>?): Boolean {
         return result is CaffeineResult.Failure && result.throwable is StreamResetException
     }
-
 }

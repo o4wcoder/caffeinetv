@@ -44,8 +44,8 @@ class LegalAgreementFragment : CaffeineFragment(R.layout.fragment_legal_agreemen
             movementMethod = LinkMovementMethod.getInstance()
         }
         binding.agreeButton.setOnClickListener {
-            legalAgreementViewModel.agree().observe(viewLifecycleOwner, Observer {  outcome ->
-                when(outcome) {
+            legalAgreementViewModel.agree().observe(viewLifecycleOwner, Observer { outcome ->
+                when (outcome) {
                     is LegalAgreementOutcome.Success -> onSuccess()
                     is LegalAgreementOutcome.Error -> Timber.e("Error accepting agreement")
                     is LegalAgreementOutcome.Failure -> Timber.e(outcome.exception)
@@ -82,15 +82,15 @@ sealed class LegalAgreementOutcome {
 }
 
 class LegalAgreementViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val acceptLegalUseCase: AcceptLegalUseCase
+    dispatchConfig: DispatchConfig,
+    private val acceptLegalUseCase: AcceptLegalUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
     fun agree(): LiveData<LegalAgreementOutcome> {
         val liveData = MutableLiveData<LegalAgreementOutcome>()
         launch {
             val result = acceptLegalUseCase()
-            liveData.value = when(result) {
+            liveData.value = when (result) {
                 is CaffeineResult.Success -> LegalAgreementOutcome.Success
                 is CaffeineResult.Error -> LegalAgreementOutcome.Error
                 is CaffeineResult.Failure -> LegalAgreementOutcome.Failure(result.throwable)
@@ -98,16 +98,14 @@ class LegalAgreementViewModel @Inject constructor(
         }
         return Transformations.map(liveData) { it }
     }
-
 }
 
 class AcceptLegalUseCase @Inject constructor(
-        private val gson: Gson,
-        private val accountsService: AccountsService
+    private val gson: Gson,
+    private val accountsService: AccountsService
 ) {
 
     suspend operator fun invoke(): CaffeineResult<LegalAcceptanceResult> {
         return accountsService.acceptLegalAgreement().awaitAndParseErrors(gson)
     }
-
 }

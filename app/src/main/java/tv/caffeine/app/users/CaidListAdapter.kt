@@ -38,11 +38,11 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class CaidListAdapter @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
+    private val dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    @ThemeFollowedExplore private val followedTheme: UserTheme,
+    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+    private val picasso: Picasso
 ) : ListAdapter<CaidRecord, CaidViewHolder>(
         object : DiffUtil.ItemCallback<CaidRecord?>() {
             override fun areItemsTheSame(oldItem: CaidRecord, newItem: CaidRecord) = oldItem === newItem
@@ -58,7 +58,7 @@ class CaidListAdapter @Inject constructor(
         get() = dispatchConfig.main + job + exceptionHandler
 
     var fragmentManager: FragmentManager? = null
-    val callback = object: FollowManager.Callback() {
+    val callback = object : FollowManager.Callback() {
         override fun follow(caid: CAID) {
             launch {
                 val result = followManager.followUser(caid)
@@ -109,8 +109,8 @@ class CaidListAdapter @Inject constructor(
     }
 }
 
-class CaidViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope, val picasso: Picasso)
-    : RecyclerView.ViewHolder(itemView) {
+class CaidViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope, val picasso: Picasso) :
+    RecyclerView.ViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     private val followButton: Button = itemView.findViewById(R.id.follow_button)

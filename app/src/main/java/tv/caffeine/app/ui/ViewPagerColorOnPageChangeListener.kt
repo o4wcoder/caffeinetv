@@ -8,8 +8,8 @@ import com.google.android.material.animation.ArgbEvaluatorCompat
 /**
  * Change the background color of the view when the page is scrolled.
  */
-class ViewPagerColorOnPageChangeListener(private val view: View, private val colors: List<Int>)
-    : ViewPager.OnPageChangeListener {
+class ViewPagerColorOnPageChangeListener(private val view: View, private val colors: List<Int>) :
+    ViewPager.OnPageChangeListener {
 
     override fun onPageScrollStateChanged(state: Int) {
     }

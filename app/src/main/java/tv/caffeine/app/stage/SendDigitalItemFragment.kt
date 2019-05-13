@@ -34,8 +34,8 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class SendDigitalItemFragment @Inject constructor(
-        private val picasso: Picasso
-): CaffeineBottomSheetDialogFragment() {
+    private val picasso: Picasso
+) : CaffeineBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentSendDigitalItemBinding
     private lateinit var digitalItemId: String
@@ -105,14 +105,13 @@ class SendDigitalItemFragment @Inject constructor(
         sendDigitalItemViewModel.send(digitalItem, quantity, recipientCaid, message)
         dismiss()
     }
-
 }
 
 class SendDigitalItemViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val gson: Gson,
-        private val digitalItemRepository: DigitalItemRepository,
-        private val paymentsClientService: PaymentsClientService
+    dispatchConfig: DispatchConfig,
+    private val gson: Gson,
+    private val digitalItemRepository: DigitalItemRepository,
+    private val paymentsClientService: PaymentsClientService
 ) : CaffeineViewModel(dispatchConfig) {
 
     init {
@@ -130,12 +129,11 @@ class SendDigitalItemViewModel @Inject constructor(
     fun send(digitalItem: DigitalItem, quantity: Int, recipientCaid: CAID, message: String) = launch {
         val body = BuyDigitalItemBody(digitalItem.id, quantity, recipientCaid, message)
         val result = paymentsClientService.buyDigitalItem(body).awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> Timber.d("Successfully sent a digital item")
             is CaffeineResult.Error -> Timber.e(result.error.toString())
             is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
         // TODO show errors
     }
-
 }

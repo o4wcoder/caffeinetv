@@ -1,6 +1,10 @@
 package tv.caffeine.app.lobby
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -56,7 +60,7 @@ class LobbyItemTests {
         val header = Lobby.Header(followPeople = Lobby.FollowPeoplePrompt(displayMessage))
         val lobby = Lobby(mapOf(), mapOf(), header, arrayOf())
         val lobbyItems = LobbyItem.parse(lobby)
-        val followPeopleCard= lobbyItems.find { it is FollowPeople} as? FollowPeople
+        val followPeopleCard = lobbyItems.find { it is FollowPeople } as? FollowPeople
         assertNotNull("The follow people card should be shown", followPeopleCard)
         assertEquals(followPeopleCard?.displayMessage, displayMessage)
     }
@@ -71,7 +75,7 @@ class LobbyItemTests {
         val lobbyItems = LobbyItem.parse(lobby)
 
         val welcomeCard = lobbyItems.find { it is WelcomeCard } as? WelcomeCard
-        val followPeopleCard= lobbyItems.find { it is FollowPeople} as? FollowPeople
+        val followPeopleCard = lobbyItems.find { it is FollowPeople } as? FollowPeople
         val welcomeCardIndex = welcomeCard?.let { lobbyItems.indexOf(it) } ?: errorIndex
         val followPeopleCardIndex = followPeopleCard?.let { lobbyItems.indexOf(it) } ?: errorIndex
         assertTrue("Both the welcome avatar card and the follow people card should show up",
@@ -80,4 +84,3 @@ class LobbyItemTests {
                 welcomeCardIndex < followPeopleCardIndex)
     }
 }
-

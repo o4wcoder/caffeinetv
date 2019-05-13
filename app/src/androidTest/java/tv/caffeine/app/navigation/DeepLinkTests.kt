@@ -107,5 +107,4 @@ class DeepLinkTests {
         val intent = Intent(Intent.ACTION_VIEW, uri)
         return navController.handleDeepLink(intent)
     }
-
 }

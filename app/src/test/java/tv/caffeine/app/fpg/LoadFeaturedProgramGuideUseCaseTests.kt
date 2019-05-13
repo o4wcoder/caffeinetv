@@ -1,7 +1,10 @@
 package tv.caffeine.app.fpg
 
 import com.google.gson.Gson
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
@@ -84,4 +87,3 @@ class LoadFeaturedProgramGuideUseCaseTests {
         return FeaturedGuideListing("$id", "$id", "category $id", "title $id", startTimestamp, endTimestamp, "description $id", null, false)
     }
 }
-

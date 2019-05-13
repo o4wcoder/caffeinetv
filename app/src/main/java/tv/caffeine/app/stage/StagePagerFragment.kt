@@ -48,9 +48,9 @@ import javax.inject.Inject
 private const val BUNDLE_KEY_BROADCASTERS = "broadcasters"
 
 class StagePagerFragment @Inject constructor(
-        private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
-        private val adapterFactory: StagePagerAdapter.Factory
-): CaffeineFragment(R.layout.fragment_stage_pager) {
+    private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
+    private val adapterFactory: StagePagerAdapter.Factory
+) : CaffeineFragment(R.layout.fragment_stage_pager) {
 
     private var binding: FragmentStagePagerBinding? = null
     private val args by navArgs<StagePagerFragmentArgs>()
@@ -119,7 +119,7 @@ class StagePagerFragment @Inject constructor(
      *
      * @return the configured broadcasters list and the index in a pair.
      */
-    @VisibleForTesting fun configureBroadcasters(initialBroadcaster: String, lobbyBroadcasters: List<String>): Pair<List<String>, Int>{
+    @VisibleForTesting fun configureBroadcasters(initialBroadcaster: String, lobbyBroadcasters: List<String>): Pair<List<String>, Int> {
         val initialBroadcasterIndex = lobbyBroadcasters.indexOf(initialBroadcaster)
         val broadcasters = if (initialBroadcasterIndex == -1) {
             listOf(initialBroadcaster).plus(lobbyBroadcasters)
@@ -196,13 +196,13 @@ class StagePagerFragment @Inject constructor(
 }
 
 class StagePagerAdapter @AssistedInject constructor(
-        @Assisted fragmentManager: FragmentManager,
-        @Assisted private val broadcasters: List<String>,
-        private val factory: NewReyesController.Factory,
-        private val eglBase: EglBase,
-        private val followManager: FollowManager,
-        private val picasso: Picasso,
-        private val clock: Clock
+    @Assisted fragmentManager: FragmentManager,
+    @Assisted private val broadcasters: List<String>,
+    private val factory: NewReyesController.Factory,
+    private val eglBase: EglBase,
+    private val followManager: FollowManager,
+    private val picasso: Picasso,
+    private val clock: Clock
 ) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     @AssistedInject.Factory
@@ -222,4 +222,3 @@ class StagePagerAdapter @AssistedInject constructor(
 
     override fun getCount() = broadcasters.size
 }
-

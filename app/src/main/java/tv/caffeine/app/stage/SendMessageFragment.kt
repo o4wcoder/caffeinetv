@@ -62,5 +62,4 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
         callback?.sendDigitalItemWithMessage(message)
         dismiss()
     }
-
 }

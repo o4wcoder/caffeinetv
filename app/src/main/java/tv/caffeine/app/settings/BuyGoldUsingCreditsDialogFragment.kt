@@ -38,5 +38,4 @@ class BuyGoldUsingCreditsDialogFragment : CaffeineDialogFragment() {
                 .create()
         return alert
     }
-
 }

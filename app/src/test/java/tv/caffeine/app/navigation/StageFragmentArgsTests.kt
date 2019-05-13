@@ -30,5 +30,4 @@ class StageFragmentArgsTests {
         val subject = StagePagerFragmentArgs.fromBundle(bundleOf("broadcastLink" to "username?bst=blah"))
         Assert.assertEquals("username", subject.broadcasterUsername())
     }
-
 }

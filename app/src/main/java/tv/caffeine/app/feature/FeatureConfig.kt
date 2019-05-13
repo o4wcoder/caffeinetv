@@ -36,4 +36,3 @@ enum class Group {
 }
 
 class FeatureNode(@SerializedName("node") val group: String, val attributes: HashMap<String, String>?)
-

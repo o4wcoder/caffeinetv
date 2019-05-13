@@ -19,7 +19,6 @@ class UIModule {
 
     @Provides
     fun providesRecycledViewPool() = RecyclerView.RecycledViewPool()
-
 }
 
 @Module

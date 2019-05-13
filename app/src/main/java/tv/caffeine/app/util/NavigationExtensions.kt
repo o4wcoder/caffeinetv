@@ -18,7 +18,7 @@ import tv.caffeine.app.session.FollowManager
 fun NavController.safeNavigate(directions: NavDirections) {
     try {
         navigate(directions)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e, "More than one navigation are triggered at the same time")
     }
 }
@@ -26,7 +26,7 @@ fun NavController.safeNavigate(directions: NavDirections) {
 fun NavController.safeNavigate(directions: NavDirections, navOptions: NavOptions?) {
     try {
         navigate(directions, navOptions)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e, "More than one navigation are triggered at the same time")
     }
 }
@@ -34,7 +34,7 @@ fun NavController.safeNavigate(directions: NavDirections, navOptions: NavOptions
 fun NavController.safeNavigate(directions: NavDirections, navigatorExtras: Navigator.Extras) {
     try {
         navigate(directions, navigatorExtras)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e, "More than one navigation are triggered at the same time")
     }
 }
@@ -43,7 +43,7 @@ fun NavController.safeNavigate(directions: NavDirections, navigatorExtras: Navig
 fun NavController.safeNavigate(@IdRes resId: Int) {
     try {
         navigate(resId)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e, "More than one navigation are triggered at the same time")
     }
 }
@@ -51,7 +51,7 @@ fun NavController.safeNavigate(@IdRes resId: Int) {
 fun NavController.safeNavigate(@IdRes resId: Int, args: Bundle?) {
     try {
         navigate(resId, args)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e, "More than one navigation are triggered at the same time")
     }
 }
@@ -59,7 +59,7 @@ fun NavController.safeNavigate(@IdRes resId: Int, args: Bundle?) {
 fun NavController.safeNavigate(@IdRes resId: Int, args: Bundle?, navOptions: NavOptions?) {
     try {
         navigate(resId, args, navOptions)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e, "More than one navigation are triggered at the same time")
     }
 }
@@ -67,7 +67,7 @@ fun NavController.safeNavigate(@IdRes resId: Int, args: Bundle?, navOptions: Nav
 fun NavController.safeNavigate(@IdRes resId: Int, args: Bundle?, navOptions: NavOptions?, navigatorExtras: Navigator.Extras?) {
     try {
         navigate(resId, args, navOptions, navigatorExtras)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e, "More than one navigation are triggered at the same time")
     }
 }

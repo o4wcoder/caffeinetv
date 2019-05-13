@@ -9,4 +9,3 @@ abstract class NavHostModule {
     @ContributesAndroidInjector(modules = [FragmentBindingModule::class])
     abstract fun navHostFragmentInjector(): InjectingNavHostFragment
 }
-

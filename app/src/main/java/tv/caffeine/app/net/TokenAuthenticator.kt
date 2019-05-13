@@ -21,5 +21,4 @@ class TokenAuthenticator(private val refreshTokenService: RefreshTokenService, p
                 .apply { tokenStore.addHttpHeaders(this) }
                 .build()
     }
-
 }

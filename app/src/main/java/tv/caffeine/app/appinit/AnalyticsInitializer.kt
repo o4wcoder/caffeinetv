@@ -5,7 +5,7 @@ import tv.caffeine.app.analytics.Analytics
 import javax.inject.Inject
 
 class AnalyticsInitializer @Inject constructor(
-        private val analytics: Analytics
+    private val analytics: Analytics
 ) : AppInitializer {
     override fun init(application: Application) {
         analytics.initialize()

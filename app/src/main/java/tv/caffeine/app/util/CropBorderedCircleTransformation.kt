@@ -1,6 +1,11 @@
 package tv.caffeine.app.util
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.Shader
 import androidx.annotation.ColorInt
 import com.squareup.picasso.Transformation
 
@@ -38,7 +43,7 @@ class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float)
         canvas.drawCircle(r, r, r, paint)
 
         // draw border
-        canvas.drawCircle(r, r, r-borderPaint.strokeWidth/2, borderPaint)
+        canvas.drawCircle(r, r, r - borderPaint.strokeWidth / 2, borderPaint)
 
         source.recycle()
 

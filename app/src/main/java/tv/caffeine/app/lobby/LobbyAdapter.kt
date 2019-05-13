@@ -7,7 +7,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import tv.caffeine.app.api.model.Lobby
-import tv.caffeine.app.databinding.*
+import tv.caffeine.app.databinding.CardListBinding
+import tv.caffeine.app.databinding.LiveBroadcastCardBinding
+import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding
+import tv.caffeine.app.databinding.LobbyAvatarCardBinding
+import tv.caffeine.app.databinding.LobbyFollowPeopleCardBinding
+import tv.caffeine.app.databinding.LobbyHeaderBinding
+import tv.caffeine.app.databinding.LobbySubtitleBinding
+import tv.caffeine.app.databinding.PreviousBroadcastCardBinding
+import tv.caffeine.app.databinding.UpcomingButtonCardBinding
 import tv.caffeine.app.di.ThemeFollowedLobby
 import tv.caffeine.app.di.ThemeFollowedLobbyLight
 import tv.caffeine.app.di.ThemeNotFollowedLobby
@@ -17,17 +25,17 @@ import tv.caffeine.app.util.UserTheme
 import javax.inject.Inject
 
 class LobbyAdapter @Inject constructor(
-        private val followManager: FollowManager,
-        internal val recycledViewPool: RecyclerView.RecycledViewPool,
-        @ThemeFollowedLobby private val followedTheme: UserTheme,
-        @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
-        @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-        @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
-        private val picasso: Picasso
+    private val followManager: FollowManager,
+    internal val recycledViewPool: RecyclerView.RecycledViewPool,
+    @ThemeFollowedLobby private val followedTheme: UserTheme,
+    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
+    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
+    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
+    private val picasso: Picasso
 ) : ListAdapter<LobbyItem, LobbyViewHolder>(
         object : DiffUtil.ItemCallback<LobbyItem>() {
-            override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem)
-                    = oldItem.itemType == newItem.itemType && oldItem.id == newItem.id
+            override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) =
+                    oldItem.itemType == newItem.itemType && oldItem.id == newItem.id
             override fun areContentsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem == newItem
 
             override fun getChangePayload(oldItem: LobbyItem, newItem: LobbyItem): Any? {
@@ -49,7 +57,7 @@ class LobbyAdapter @Inject constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LobbyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val itemType = LobbyItem.Type.values()[viewType]
-        return when(itemType) {
+        return when (itemType) {
             LobbyItem.Type.AVATAR_CARD -> avatarCard(inflater, parent)
             LobbyItem.Type.FOLLOW_PEOPLE_CARD -> followPeopleCard(inflater, parent)
             LobbyItem.Type.HEADER -> headerCard(inflater, parent)
@@ -93,5 +101,4 @@ class LobbyAdapter @Inject constructor(
         val item = getItem(position)
         holder.bind(item)
     }
-
 }

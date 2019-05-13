@@ -1,6 +1,5 @@
 package tv.caffeine.app.profile
 
-
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -34,10 +33,10 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
     private lateinit var caid: CAID
     @VisibleForTesting lateinit var binding: FragmentProfileBinding
     private var isFollowed: Boolean = false
-    private val callback = object: FollowManager.Callback() {
+    private val callback = object : FollowManager.Callback() {
         override fun follow(caid: CAID) {
             viewModel.follow(caid).observe(viewLifecycleOwner, Observer { result ->
-                when(result) {
+                when (result) {
                     is CaffeineEmptyResult.Error -> {
                         if (result.error.isMustVerifyEmailError()) {
                             val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)

@@ -15,8 +15,8 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        val followManager: FollowManager
+    dispatchConfig: DispatchConfig,
+    val followManager: FollowManager
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val numberFormat = NumberFormat.getInstance()

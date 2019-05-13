@@ -54,5 +54,4 @@ class MyProfileViewModelTests {
             assertEquals(FOLLOWING_COUNT.toString(), userProfile.followingCount)
         }
     }
-
 }

@@ -27,12 +27,12 @@ class BroadcastEnvelope(val broadcast: Broadcast)
 
 class GuideList(val listings: List<Guide>)
 
-class Guide(val caid: CAID, val id: String, val title:String, val startTimestamp: Long, val endTimestamp: Long, var shouldShowTimestamp: Boolean)
+class Guide(val caid: CAID, val id: String, val title: String, val startTimestamp: Long, val endTimestamp: Long, var shouldShowTimestamp: Boolean)
 
 class BroadcasterList(val broadcasters: List<Lobby.Broadcaster>)
 
 class FeaturedGuideList(val listings: List<FeaturedGuideListing>)
 
 class FeaturedGuideListing(val caid: CAID, val id: String, val category: String, val title: String, val startTimestamp: Long, val endTimestamp: Long, val description: String, private val detailImage: String?, val isUsOnly: Boolean) {
-    val detailImageUrl get() = detailImage?.let {"$ASSETS_BASE_URL$it"}
+    val detailImageUrl get() = detailImage?.let { "$ASSETS_BASE_URL$it" }
 }

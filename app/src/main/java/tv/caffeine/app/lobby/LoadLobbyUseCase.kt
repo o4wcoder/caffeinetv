@@ -12,9 +12,9 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import javax.inject.Inject
 
 class LoadLobbyUseCase @Inject constructor(
-        private val lobbyService: LobbyService,
-        private val eventsService: EventsService,
-        private val gson: Gson
+    private val lobbyService: LobbyService,
+    private val eventsService: EventsService,
+    private val gson: Gson
 ) {
     suspend operator fun invoke(): CaffeineResult<Lobby> {
         val result = lobbyService.loadLobby().awaitAndParseErrors(gson)

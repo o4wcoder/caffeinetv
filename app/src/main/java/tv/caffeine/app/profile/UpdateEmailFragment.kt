@@ -44,5 +44,4 @@ class UpdateEmailFragment : CaffeineFragment(R.layout.fragment_update_email) {
         binding.currentPasswordTextInputLayout.error = error.currentPasswordErrorsString
         super.handleError(result)
     }
-
 }

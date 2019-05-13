@@ -1,6 +1,5 @@
 package tv.caffeine.app.login
 
-
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
@@ -22,8 +21,8 @@ import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 class SignInFragment @Inject constructor(
-        private val firebaseAnalytics: FirebaseAnalytics
-): CaffeineFragment(R.layout.fragment_sign_in) {
+    private val firebaseAnalytics: FirebaseAnalytics
+) : CaffeineFragment(R.layout.fragment_sign_in) {
 
     private lateinit var binding: FragmentSignInBinding
 
@@ -42,7 +41,7 @@ class SignInFragment @Inject constructor(
         binding.signInButton.setOnClickListener { login() }
         binding.passwordEditText.setOnActionGo { login() }
         signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { outcome ->
-            when(outcome) {
+            when (outcome) {
                 is SignInOutcome.Success -> onSuccess()
                 is SignInOutcome.MFARequired -> onMfaRequired()
                 is SignInOutcome.MustAcceptTerms -> onMustAcceptTerms()

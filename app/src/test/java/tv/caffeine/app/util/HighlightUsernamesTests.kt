@@ -81,5 +81,4 @@ class HighlightUsernamesTests {
         val style = userReferenceStyle(false, false, false)
         assertThat(style, equalTo(R.style.ChatMessageText_DefaultUserReference))
     }
-
 }

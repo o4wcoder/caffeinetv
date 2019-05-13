@@ -77,11 +77,11 @@ class DeleteAccountDialogFragment : CaffeineDialogFragment() {
 }
 
 class DeleteAccountViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val accountsService: AccountsService,
-        private val tokenStore: TokenStore,
-        private val gson: Gson
-): CaffeineViewModel(dispatchConfig) {
+    dispatchConfig: DispatchConfig,
+    private val accountsService: AccountsService,
+    private val tokenStore: TokenStore,
+    private val gson: Gson
+) : CaffeineViewModel(dispatchConfig) {
 
     private val _deleteAccountResult = MutableLiveData<DeleteAccountResult>()
     val deleteAccountResult: LiveData<DeleteAccountResult> = Transformations.map(_deleteAccountResult) { it }
@@ -92,7 +92,7 @@ class DeleteAccountViewModel @Inject constructor(
             val result = accountsService.deleteAccount(caid, DeleteAccountBody(DeleteAccountBody.Account(password)))
                     .awaitEmptyAndParseErrors(gson)
             when (result) {
-                is CaffeineEmptyResult.Success-> {
+                is CaffeineEmptyResult.Success -> {
                     _deleteAccountResult.value = DeleteAccountResult(true)
                     tokenStore.clear()
                 }

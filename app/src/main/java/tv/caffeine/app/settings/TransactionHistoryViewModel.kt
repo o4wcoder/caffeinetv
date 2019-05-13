@@ -12,9 +12,9 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class TransactionHistoryViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val transactionHistoryUseCase: TransactionHistoryUseCase
-): CaffeineViewModel(dispatchConfig) {
+    dispatchConfig: DispatchConfig,
+    private val transactionHistoryUseCase: TransactionHistoryUseCase
+) : CaffeineViewModel(dispatchConfig) {
     private val _transactionHistory = MutableLiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>>()
     val transactionHistory: LiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>> = Transformations.map(_transactionHistory) { it }
 

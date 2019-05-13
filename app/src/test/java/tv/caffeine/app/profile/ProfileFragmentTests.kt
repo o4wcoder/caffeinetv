@@ -53,5 +53,4 @@ class ProfileFragmentTests {
         subject.onOptionsItemSelected(menuItem)
         verify { navController.navigateToReportOrIgnoreDialog("caid", "username", true) }
     }
-
 }

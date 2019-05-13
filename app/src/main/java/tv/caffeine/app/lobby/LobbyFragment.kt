@@ -1,6 +1,5 @@
 package tv.caffeine.app.lobby
 
-
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LobbyFragment @Inject constructor(
-        private val lobbyAdapter: LobbyAdapter
+    private val lobbyAdapter: LobbyAdapter
 ) : CaffeineFragment(R.layout.fragment_lobby) {
 
     private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
@@ -58,7 +57,7 @@ class LobbyFragment @Inject constructor(
     private fun refreshLobby() {
         refreshJob?.cancel()
         refreshJob = launch {
-            while(isActive) {
+            while (isActive) {
                 viewModel.refresh()
                 delay(TimeUnit.SECONDS.toMillis(30))
             }
@@ -90,7 +89,7 @@ class LobbyFragment @Inject constructor(
             val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
             val extraTopOffset = if (itemPosition == 0) listTopBottomOffset else 0
             val extraBottomOffset = if (itemPosition == lobbyAdapter.itemCount - 1) listTopBottomOffset else 0
-            when(itemType) {
+            when (itemType) {
                 LobbyItem.Type.AVATAR_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset + cardSpacing)
                 // FOLLOW_PEOPLE_CARD is the last special card. Do not include cardSpacing as the bottom margin.
                 LobbyItem.Type.FOLLOW_PEOPLE_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset)

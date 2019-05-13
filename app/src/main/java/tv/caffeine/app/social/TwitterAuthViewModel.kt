@@ -11,7 +11,7 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class TwitterAuthViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig
+    dispatchConfig: DispatchConfig
 ) : CaffeineViewModel(dispatchConfig) {
     private val _oauthResult = MutableLiveData<Event<CaffeineResult<OAuthCallbackResult>>>()
     val oauthResult: LiveData<Event<CaffeineResult<OAuthCallbackResult>>> = Transformations.map(_oauthResult) { it }

@@ -1,6 +1,5 @@
 package tv.caffeine.app.login
 
-
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -25,8 +24,8 @@ import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
 class ForgotFragment @Inject constructor(
-        private val accountsService: AccountsService,
-        private val gson: Gson
+    private val accountsService: AccountsService,
+    private val gson: Gson
 ) : CaffeineFragment(R.layout.fragment_forgot) {
 
     private lateinit var binding: FragmentForgotBinding

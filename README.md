@@ -8,22 +8,43 @@ The Android app for Caffeine.
 
 ### First-Time Setup
 
-1. Checkout the repo `git clone git@github.com:caffeinetv/android.git && cd android`
-2. Install Git LFS: `brew install git-lfs && git lfs install && git lfs pull`
-3. Run unit tests: `./gradlew testProdDebugUnitTest`
-4. Open the project in Android Studio
+1. Checkout the repo:
+  ```
+  git clone git@github.com:caffeinetv/android.git
+  ```
+2. Go to the project directory:
+  ```
+  cd android
+  ```
+3. Install Git LFS:
+  ```
+  brew install git-lfs
+  git lfs install
+  git lfs pull
+  ```
+4. Install ktlint, pre-commit hook, and apply to IDE:
+  ```
+  brew install ktlint
+  ktlint --install-git-pre-commit-hook
+  ktlint --apply-to-idea-project --android
+  ```
+5. Run unit tests:
+  ```
+  ./gradlew testProdDebugUnitTest
+  ```
+6. Open the project in Android Studio
 
 ### About
 
-* Development is done in Kotlin and Android Studio
-  * Current version of Kotlin is 1.3.21
-  * Current version of Android Studio is 3.4
+* Development is done in  Kotlin and Android Studio
+  * Use latest released version of Kotlin (currently 1.3.31)
+  * Use latest production or beta version of Android Studio (currently 3.5)
 * CI is performed on CircleCI
   * Unit tests - also runs Detekt
-  * Danger
-  * Test coverage
-* The app uses the following libraries:
-  * AndroidX, JetPack, Support Libraries
+  * Danger - checks PR size, presence of tests
+  * Test coverage - uses JaCoCo
+* The app uses modern Android libraries, such as:
+  * AndroidX, JetPack
     * AppCompat
     * Material design
     * Navigation
@@ -37,7 +58,9 @@ The Android app for Caffeine.
 ### Releasing
 
 * The app signing is managed by Google Play Store ([managed app sigining](https://support.google.com/googleplay/android-developer/answer/7384423))
-* Creating a build:
+* The app is released to the internal track automatically when a PR is approved and merged to master.
+  * CircleCI runs the `publish-to-play` job, which uses [gradle play publisher](https://www.github.com/Triple-T/gradle-play-publisher)
+* Manual steps:
   * From 1Password, download the Mitsurugi key store
   * In Android Studio select the Build - Generate Signed Bundle/APK menu
   * Choose "Android App Bundle" and click Next

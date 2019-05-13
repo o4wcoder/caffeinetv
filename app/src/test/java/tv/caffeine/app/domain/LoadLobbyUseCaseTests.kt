@@ -1,8 +1,13 @@
 package tv.caffeine.app.domain
 
 import com.google.gson.Gson
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
@@ -70,5 +75,4 @@ class LoadLobbyUseCaseTests {
         runBlocking { subject() }
         verify(exactly = 0) { mockEventsService.sendCounters(any()) }
     }
-
 }

@@ -93,9 +93,7 @@ class ImageServerTests {
         val imageServer = ImageServer.Factory.makeRequestBuilder(uri, serverConfig)
         assertNull(imageServer)
     }
-
 }
-
 
 @RunWith(RobolectricTestRunner::class)
 class FastlyTests {
@@ -132,7 +130,6 @@ class FastlyTests {
         val uri = subject.buildUri()
         assertEquals("https://assets.caffeine.tv/random.png?optimize=true&width=1&height=1", uri.toString())
     }
-
 }
 
 @RunWith(RobolectricTestRunner::class)
@@ -171,5 +168,4 @@ class ImgixTests {
         val uri = subject.buildUri()
         assertEquals("https://assets.caffeine.tv/random.png?auto=compress&fit=clip&w=1&h=1", uri.toString())
     }
-
 }

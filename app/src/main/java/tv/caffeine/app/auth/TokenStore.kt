@@ -2,7 +2,11 @@ package tv.caffeine.app.auth
 
 import com.crashlytics.android.Crashlytics
 import okhttp3.Request
-import tv.caffeine.app.api.*
+import tv.caffeine.app.api.CaffeineCredentials
+import tv.caffeine.app.api.NextAccountAction
+import tv.caffeine.app.api.RefreshTokenBody
+import tv.caffeine.app.api.RefreshTokenResult
+import tv.caffeine.app.api.SignInResult
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.settings.SettingsStorage
 import javax.inject.Inject
@@ -10,7 +14,7 @@ import javax.inject.Singleton
 
 @Singleton
 class TokenStore @Inject constructor(
-        private val settingsStorage: SettingsStorage
+    private val settingsStorage: SettingsStorage
 ) {
     private var accessToken: String? = null
     private var credential: String? = null
@@ -81,5 +85,4 @@ class TokenStore @Inject constructor(
             credential?.let { header("X-Credential", it) }
         }
     }
-
 }

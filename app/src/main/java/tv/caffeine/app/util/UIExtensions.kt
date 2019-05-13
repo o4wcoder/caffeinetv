@@ -52,7 +52,7 @@ fun Context.getPicasso(): Picasso {
 fun ConnectivityManager.safeUnregisterNetworkCallback(callback: ConnectivityManager.NetworkCallback) {
     try {
         unregisterNetworkCallback(callback)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.d(e)
     }
 }
@@ -138,9 +138,9 @@ fun DialogFragment.maybeShow(fragmentManager: FragmentManager?, tag: String) {
 }
 
 fun convertLinks(
-        @StringRes stringResId: Int,
-        resources: Resources,
-        spanFactory: (url: String?) -> URLSpan
+    @StringRes stringResId: Int,
+    resources: Resources,
+    spanFactory: (url: String?) -> URLSpan
 ): Spannable {
     val spannable = SpannableString(HtmlCompat.fromHtml(
             resources.getString(stringResId), HtmlCompat.FROM_HTML_MODE_LEGACY))

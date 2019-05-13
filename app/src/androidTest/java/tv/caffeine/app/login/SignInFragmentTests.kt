@@ -68,5 +68,4 @@ class SignInFragmentTests : BaseNavigationTest() {
         // TODO - wait for login to complete
         onView(withId(R.id.form_error_text_view)).check(matches(withText(containsString(invalidUsernameOrPasswordErrorMessage))))
     }
-
 }

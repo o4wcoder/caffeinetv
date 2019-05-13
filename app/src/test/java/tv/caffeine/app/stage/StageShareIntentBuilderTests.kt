@@ -118,4 +118,3 @@ class StageShareIntentBuilderTests {
         return intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT).getStringExtra(Intent.EXTRA_TEXT)
     }
 }
-

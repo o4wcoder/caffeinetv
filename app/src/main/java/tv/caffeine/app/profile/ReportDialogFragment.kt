@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -71,7 +70,7 @@ class ReportDialogFragment : CaffeineDialogFragment() {
     }
 
     private fun getReason(radioGroup: RadioGroup): ReasonKey {
-        return when(radioGroup.checkedRadioButtonId) {
+        return when (radioGroup.checkedRadioButtonId) {
             R.id.harass_radio_button -> ReasonKey.HARASSMENT_OR_TROLLING
             R.id.inappropriate_radio_button -> ReasonKey.INAPPROPRIATE_CONTENT
             R.id.violence_radio_button -> ReasonKey.VIOLENCE_OR_SELF_HARM
@@ -83,10 +82,10 @@ class ReportDialogFragment : CaffeineDialogFragment() {
 }
 
 class ReportUserViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val usersService: UsersService,
-        private val gson: Gson
-): CaffeineViewModel(dispatchConfig) {
+    dispatchConfig: DispatchConfig,
+    private val usersService: UsersService,
+    private val gson: Gson
+) : CaffeineViewModel(dispatchConfig) {
     private val _reportUserResult = MutableLiveData<Boolean>()
     val reportUserResult: LiveData<Boolean> = Transformations.map(_reportUserResult) { it }
 
@@ -94,7 +93,7 @@ class ReportUserViewModel @Inject constructor(
         launch {
             val result = usersService.report(caid, ReportUserBody(reason.name, description))
                     .awaitEmptyAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineEmptyResult.Success -> _reportUserResult.value = true
                 is CaffeineEmptyResult.Error -> _reportUserResult.value = false
                 is CaffeineEmptyResult.Failure -> {

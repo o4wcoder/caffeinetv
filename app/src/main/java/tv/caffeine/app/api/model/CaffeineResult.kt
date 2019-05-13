@@ -12,7 +12,7 @@ sealed class CaffeineResult<T> {
     class Failure<T>(val throwable: Throwable) : CaffeineResult<T>()
 }
 
-suspend fun <T, U> CaffeineResult<T>.map(transform: suspend (from: T) -> U): CaffeineResult<U> = when(this) {
+suspend fun <T, U> CaffeineResult<T>.map(transform: suspend (from: T) -> U): CaffeineResult<U> = when (this) {
     is CaffeineResult.Success -> CaffeineResult.Success(transform(value))
     is CaffeineResult.Error -> CaffeineResult.Error(error)
     is CaffeineResult.Failure -> CaffeineResult.Failure(throwable)
@@ -27,7 +27,7 @@ sealed class CaffeineEmptyResult {
 suspend fun <T> Deferred<Response<T>>.awaitAndParseErrors(gson: Gson): CaffeineResult<T> {
     val response = try {
         coroutineScope { await() }
-    } catch(t: Throwable) {
+    } catch (t: Throwable) {
         return CaffeineResult.Failure(t)
     }
     val body = response.body()
@@ -42,7 +42,7 @@ suspend fun <T> Deferred<Response<T>>.awaitAndParseErrors(gson: Gson): CaffeineR
 suspend fun <T> Deferred<Response<T>>.awaitEmptyAndParseErrors(gson: Gson): CaffeineEmptyResult {
     val response = try {
         coroutineScope { await() }
-    } catch(t: Throwable) {
+    } catch (t: Throwable) {
         return CaffeineEmptyResult.Failure(t)
     }
     val errorBody = response.errorBody()

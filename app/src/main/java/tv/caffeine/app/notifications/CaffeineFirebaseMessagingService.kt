@@ -12,7 +12,11 @@ import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
 import tv.caffeine.app.analytics.NotificationEvent
 import tv.caffeine.app.auth.TokenStore
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.buildNotification
+import tv.caffeine.app.util.id
+import tv.caffeine.app.util.imageUrl
+import tv.caffeine.app.util.numericId
+import tv.caffeine.app.util.tag
 import java.io.IOException
 import javax.inject.Inject
 

@@ -14,13 +14,13 @@ interface Analytics {
 }
 
 @Singleton
-class LogAnalytics @Inject constructor(): Analytics {
+class LogAnalytics @Inject constructor() : Analytics {
     override fun initialize() {
         Timber.d("LogAnalytics initialization")
     }
 
     override fun trackEvent(event: AnalyticsEvent) {
-        val logMessage = when(event) {
+        val logMessage = when (event) {
             is AnalyticsEvent.NewRegistration -> "New Registration, user ID = ${event.userId}"
             is AnalyticsEvent.SocialSignInClicked -> "Social sign in with ${event.identityProvider}"
             is AnalyticsEvent.Notification -> "Notification, user ID = ${event.userId}, notification = ${event.notification}"

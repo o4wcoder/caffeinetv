@@ -65,5 +65,4 @@ class FriendsWatchingFormatterTests {
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/> is watching", string)
     }
-
 }

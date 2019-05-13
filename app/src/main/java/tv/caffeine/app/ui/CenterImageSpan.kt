@@ -29,5 +29,4 @@ class CenterImageSpan(drawable: Drawable) : DynamicDrawableSpan(ALIGN_BASELINE) 
         _drawable.draw(canvas)
         canvas.restore()
     }
-
 }

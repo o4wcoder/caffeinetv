@@ -7,10 +7,9 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import javax.inject.Inject
 
 class PurchaseGoldBundleUseCase @Inject constructor(
-        private val paymentsClientService: PaymentsClientService,
-        private val gson: Gson
+    private val paymentsClientService: PaymentsClientService,
+    private val gson: Gson
 ) {
     suspend operator fun invoke(goldBundleId: String) =
             paymentsClientService.buyGoldUsingCredits(BuyGoldUsingCreditsBody(goldBundleId)).awaitAndParseErrors(gson)
-
 }

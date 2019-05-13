@@ -5,14 +5,6 @@ import androidx.fragment.app.FragmentFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import tv.caffeine.app.login.ConfirmEmailFragment
-import tv.caffeine.app.login.ForgotFragment
-import tv.caffeine.app.login.LandingFragment
-import tv.caffeine.app.login.MfaCodeFragment
-import tv.caffeine.app.login.SignInFragment
-import tv.caffeine.app.login.SignUpFragment
-import tv.caffeine.app.social.TwitterAuthForLogin
-import tv.caffeine.app.social.TwitterAuthForSettings
 import tv.caffeine.app.broadcast.BroadcastFragment
 import tv.caffeine.app.broadcast.LiveBroadcastPickerFragment
 import tv.caffeine.app.broadcast.UpcomingBroadcastFragment
@@ -20,12 +12,20 @@ import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.FeaturedProgramGuideFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
+import tv.caffeine.app.login.ConfirmEmailFragment
+import tv.caffeine.app.login.ForgotFragment
+import tv.caffeine.app.login.LandingFragment
+import tv.caffeine.app.login.MfaCodeFragment
+import tv.caffeine.app.login.SignInFragment
+import tv.caffeine.app.login.SignUpFragment
 import tv.caffeine.app.notifications.NotificationsFragment
 import tv.caffeine.app.profile.MyProfileFragment
 import tv.caffeine.app.settings.GoldAndCreditsFragment
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.settings.SettingsFragment
 import tv.caffeine.app.settings.TransactionHistoryFragment
+import tv.caffeine.app.social.TwitterAuthForLogin
+import tv.caffeine.app.social.TwitterAuthForSettings
 import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.SendDigitalItemFragment
@@ -186,4 +186,3 @@ abstract class FragmentBindingModule {
     @FragmentKey(ConfirmEmailFragment::class)
     abstract fun bindConfirmEmailFragment(fragment: ConfirmEmailFragment): Fragment
 }
-

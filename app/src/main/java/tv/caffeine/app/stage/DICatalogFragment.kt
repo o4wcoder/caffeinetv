@@ -25,8 +25,8 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class DICatalogFragment @Inject constructor(
-        private val picasso: Picasso
-): CaffeineBottomSheetDialogFragment() {
+    private val picasso: Picasso
+) : CaffeineBottomSheetDialogFragment() {
 
     interface Callback {
         fun digitalItemSelected(digitalItem: DigitalItem, message: String? = null)
@@ -50,14 +50,13 @@ class DICatalogFragment @Inject constructor(
 
     override fun getTheme() = R.style.DarkBottomSheetDialog
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDiCatalogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        walletViewModel.wallet.observe(viewLifecycleOwner, Observer {  wallet ->
+        walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             val numberFormat = NumberFormat.getIntegerInstance()
             binding.walletBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.wallet_balance, numberFormat.format(wallet.gold)))
         })
@@ -74,13 +73,12 @@ class DICatalogFragment @Inject constructor(
             fragment.maybeShow(fragmentManager, "buyGold")
         }
     }
-
 }
 
 private class DigitalItemViewHolder(
-        val binding: DiCatalogItemBinding,
-        val picasso: Picasso,
-        val callback: Callback
+    val binding: DiCatalogItemBinding,
+    val picasso: Picasso,
+    val callback: Callback
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private val numberFormat = NumberFormat.getInstance()
@@ -102,10 +100,9 @@ private class DigitalItemViewHolder(
     }
 }
 
-
 private class DigitalItemAdapter(
-        private val picasso: Picasso,
-        private val callback: DigitalItemViewHolder.Callback
+    private val picasso: Picasso,
+    private val callback: DigitalItemViewHolder.Callback
 ) : ListAdapter<DigitalItem, DigitalItemViewHolder>(
         object : DiffUtil.ItemCallback<DigitalItem>() {
             override fun areItemsTheSame(oldItem: DigitalItem, newItem: DigitalItem) = oldItem.id == newItem.id

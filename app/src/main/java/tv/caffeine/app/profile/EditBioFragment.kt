@@ -1,6 +1,5 @@
 package tv.caffeine.app.profile
 
-
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels

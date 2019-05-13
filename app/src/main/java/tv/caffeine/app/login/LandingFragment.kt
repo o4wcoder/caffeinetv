@@ -50,17 +50,16 @@ import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
-
 class LandingFragment @Inject constructor(
-        private val accountsService: AccountsService,
-        private val tokenStore: TokenStore,
-        private val oauthService: OAuthService,
-        private val gson: Gson,
-        private val authWatcher: AuthWatcher,
-        @VisibleForTesting var analytics: Analytics,
-        private val firebaseAnalytics: FirebaseAnalytics,
-        private val facebookLoginManager: LoginManager
-): CaffeineFragment(R.layout.fragment_landing) {
+    private val accountsService: AccountsService,
+    private val tokenStore: TokenStore,
+    private val oauthService: OAuthService,
+    private val gson: Gson,
+    private val authWatcher: AuthWatcher,
+    @VisibleForTesting var analytics: Analytics,
+    private val firebaseAnalytics: FirebaseAnalytics,
+    private val facebookLoginManager: LoginManager
+) : CaffeineFragment(R.layout.fragment_landing) {
 
     private lateinit var binding: FragmentLandingBinding
     private lateinit var callbackManager: CallbackManager
@@ -121,7 +120,7 @@ class LandingFragment @Inject constructor(
     }
 
     private fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> {
                 Timber.d("Twitter OAuth login success, ${result.value}")
                 processOAuthResult(result.value, IdentityProvider.twitter)
@@ -151,23 +150,23 @@ class LandingFragment @Inject constructor(
     private fun processOAuthResult(oauthCallbackResult: OAuthCallbackResult, identityProvider: IdentityProvider) {
         when {
             oauthCallbackResult.credentials != null -> {
-                when(identityProvider) {
+                when (identityProvider) {
                     IdentityProvider.facebook -> firebaseAnalytics.logEvent(FirebaseEvent.FacebookSignInSuccess)
-                    IdentityProvider.twitter-> firebaseAnalytics.logEvent(FirebaseEvent.TwitterSignInSuccess)
+                    IdentityProvider.twitter -> firebaseAnalytics.logEvent(FirebaseEvent.TwitterSignInSuccess)
                 }
                 onSuccess(oauthCallbackResult.credentials)
             }
             oauthCallbackResult.next == NextAccountAction.mfa_otp_required -> {
-                when(identityProvider) {
+                when (identityProvider) {
                     IdentityProvider.facebook -> firebaseAnalytics.logEvent(FirebaseEvent.FacebookContinueToMFA)
-                    IdentityProvider.twitter-> firebaseAnalytics.logEvent(FirebaseEvent.TwitterContinueToMFA)
+                    IdentityProvider.twitter -> firebaseAnalytics.logEvent(FirebaseEvent.TwitterContinueToMFA)
                 }
                 continueToMfaCode(oauthCallbackResult)
             }
             oauthCallbackResult.oauth != null -> {
-                when(identityProvider) {
+                when (identityProvider) {
                     IdentityProvider.facebook -> firebaseAnalytics.logEvent(FirebaseEvent.FacebookContinueToSignUp)
-                    IdentityProvider.twitter-> firebaseAnalytics.logEvent(FirebaseEvent.TwitterContinueToSignUp)
+                    IdentityProvider.twitter -> firebaseAnalytics.logEvent(FirebaseEvent.TwitterContinueToSignUp)
                 }
                 continueToSignUp(oauthCallbackResult)
             }
@@ -183,7 +182,7 @@ class LandingFragment @Inject constructor(
         val loginToken = oauthCallbackResult.loginToken
         val signInBody = SignInBody(Account(null, null, caid, loginToken))
         val result = accountsService.signIn(signInBody).awaitAndParseErrors(gson)
-        when(result) {
+        when (result) {
             is CaffeineResult.Success -> onSuccess(result.value)
             is CaffeineResult.Error -> onError(result.error)
             is CaffeineResult.Failure -> handleFailure(result)

@@ -5,7 +5,12 @@ import com.kochava.base.Tracker
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import tv.caffeine.app.analytics.*
+import tv.caffeine.app.analytics.Analytics
+import tv.caffeine.app.analytics.KochavaAnalytics
+import tv.caffeine.app.analytics.Profiling
+import tv.caffeine.app.analytics.ProfilingInterceptor
+import tv.caffeine.app.analytics.ThreatMetrixInterceptor
+import tv.caffeine.app.analytics.ThreatMetrixProfiling
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -17,13 +22,12 @@ class AnalyticsModule {
 
     @Provides
     fun providesKochavaConfiguration(
-            context: Context,
-            @Named(KOCHAVA_APP_GUID) kochavaAppGuid: String,
-            @Named(KOCHAVA_LOG_LEVEL) kochavaLogLevel: Int
+        context: Context,
+        @Named(KOCHAVA_APP_GUID) kochavaAppGuid: String,
+        @Named(KOCHAVA_LOG_LEVEL) kochavaLogLevel: Int
     ) = Tracker.Configuration(context)
             .setAppGuid(kochavaAppGuid)
             .setLogLevel(kochavaLogLevel)
-
 }
 
 @Module
@@ -40,6 +44,4 @@ abstract class AnalyticsModuleBinds {
     @Binds
     @Singleton
     abstract fun bindsProfilingInterceptor(bind: ThreatMetrixInterceptor): ProfilingInterceptor
-
 }
-

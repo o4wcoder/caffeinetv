@@ -23,5 +23,4 @@ class LoggingModule {
 
     @Provides
     fun providesWebRtcLogLevel(): Logging.Severity = Logging.Severity.LS_VERBOSE
-
 }

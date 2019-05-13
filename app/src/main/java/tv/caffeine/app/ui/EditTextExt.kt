@@ -14,7 +14,7 @@ import tv.caffeine.app.R
 
 inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
-        return@setOnEditorActionListener when(actionId) {
+        return@setOnEditorActionListener when (actionId) {
             EditorInfo.IME_ACTION_GO -> {
                 block()
                 context.getSystemService<InputMethodManager>()
@@ -28,7 +28,7 @@ inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
 
 inline fun EditText.setOnAction(action: Int, crossinline block: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
-        return@setOnEditorActionListener when(actionId) {
+        return@setOnEditorActionListener when (actionId) {
             action -> {
                 block()
                 context.getSystemService<InputMethodManager>()
@@ -49,10 +49,10 @@ fun EditText.prepopulateText(text: String?) {
 }
 
 fun TextView.formatUsernameAsHtml(
-        picasso: Picasso,
-        string: String?,
-        isFollowed: Boolean = false,
-        @DimenRes avatarSizeDimen: Int = R.dimen.chat_avatar_size
+    picasso: Picasso,
+    string: String?,
+    isFollowed: Boolean = false,
+    @DimenRes avatarSizeDimen: Int = R.dimen.chat_avatar_size
 ) {
     if (string == null) {
         text = null

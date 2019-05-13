@@ -30,11 +30,11 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class TransactionHistoryAdapter @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        private val picasso: Picasso
-): ListAdapter<TransactionHistoryItem, TransactionHistoryViewHolder>(
-        object: DiffUtil.ItemCallback<TransactionHistoryItem?>() {
+    private val dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    private val picasso: Picasso
+) : ListAdapter<TransactionHistoryItem, TransactionHistoryViewHolder>(
+        object : DiffUtil.ItemCallback<TransactionHistoryItem?>() {
             override fun areItemsTheSame(oldItem: TransactionHistoryItem, newItem: TransactionHistoryItem) =
                     oldItem.id == newItem.id
 
@@ -62,10 +62,10 @@ class TransactionHistoryAdapter @Inject constructor(
 }
 
 class TransactionHistoryViewHolder(
-        private val binding: TransactionHistoryItemBinding,
-        private val followManager: FollowManager,
-        private val scope: CoroutineScope,
-        private val picasso: Picasso
+    private val binding: TransactionHistoryItemBinding,
+    private val followManager: FollowManager,
+    private val scope: CoroutineScope,
+    private val picasso: Picasso
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var job: Job? = null
@@ -79,7 +79,7 @@ class TransactionHistoryViewHolder(
         val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(item.createdAt.toLong()), zoneId)
         binding.timestampTextView.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(dateTime)
         binding.goldCostTextView.formatUsernameAsHtml(picasso, item.costString(itemView.resources, numberFormat, usernamePlaceholder, defaultColor), avatarSizeDimen = R.dimen.tx_history_digital_item_size)
-        val userCaid = when(item) {
+        val userCaid = when (item) {
             is TransactionHistoryItem.SendDigitalItem -> item.recipient
             is TransactionHistoryItem.ReceiveDigitalItem -> item.sender
             else -> null

@@ -26,8 +26,8 @@ import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
 class FollowersFragment @Inject constructor(
-        private val caidListAdapter: CaidListAdapter
-): CaffeineFragment(R.layout.user_list_fragment) {
+    private val caidListAdapter: CaidListAdapter
+) : CaffeineFragment(R.layout.user_list_fragment) {
 
     private val viewModel: FollowersViewModel by viewModels { viewModelFactory }
     private val args by navArgs<FollowersFragmentArgs>()
@@ -48,9 +48,9 @@ class FollowersFragment @Inject constructor(
 }
 
 class FollowersViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val gson: Gson,
-        private val usersService: UsersService
+    dispatchConfig: DispatchConfig,
+    private val gson: Gson,
+    private val usersService: UsersService
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val _followers = MutableLiveData<List<CaidRecord.FollowRecord>>()
@@ -65,12 +65,11 @@ class FollowersViewModel @Inject constructor(
     private fun load() {
         launch {
             val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineResult.Success -> _followers.value = result.value
                 is CaffeineResult.Error -> Timber.e("Error loading followers list ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
     }
-
 }

@@ -19,11 +19,11 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class LobbyViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        private val loadLobbyUseCase: LoadLobbyUseCase,
-        private val loadFeatureConfigUseCase: LoadFeatureConfigUseCase,
-        private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
+    dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    private val loadLobbyUseCase: LoadLobbyUseCase,
+    private val loadFeatureConfigUseCase: LoadFeatureConfigUseCase,
+    private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
 ) : CaffeineViewModel(dispatchConfig) {
     private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
 

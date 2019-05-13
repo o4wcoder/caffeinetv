@@ -18,10 +18,10 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class MyProfileViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val tokenStore: TokenStore,
-        private val followManager: FollowManager,
-        private val uploadAvatarUseCase: UploadAvatarUseCase
+    dispatchConfig: DispatchConfig,
+    private val tokenStore: TokenStore,
+    private val followManager: FollowManager,
+    private val uploadAvatarUseCase: UploadAvatarUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val numberFormat = NumberFormat.getInstance()
@@ -41,7 +41,7 @@ class MyProfileViewModel @Inject constructor(
     }
 
     private fun load() {
-        val caid = tokenStore.caid?: return
+        val caid = tokenStore.caid ?: return
         loadJob = launch {
             getUserProfile(caid)?.let { updateViewModel(it) }
             loadUserProfile(caid)?.let { updateViewModel(it) }
@@ -74,7 +74,7 @@ class MyProfileViewModel @Inject constructor(
     }
 
     private fun updateUser(name: String? = null, bio: String? = null) {
-        val caid = tokenStore.caid?: return
+        val caid = tokenStore.caid ?: return
         launch {
             val result = followManager.updateUser(caid, name, bio)
             when (result) {

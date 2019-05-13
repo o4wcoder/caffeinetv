@@ -11,8 +11,8 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class SessionCheckViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val tokenStore: TokenStore
+    dispatchConfig: DispatchConfig,
+    private val tokenStore: TokenStore
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val _sessionCheck = MutableLiveData<CaffeineResult<Boolean>>()
@@ -23,7 +23,7 @@ class SessionCheckViewModel @Inject constructor(
     }
 
     private fun load() {
-        _sessionCheck.value = when(tokenStore.hasRefreshToken) {
+        _sessionCheck.value = when (tokenStore.hasRefreshToken) {
             true -> CaffeineResult.Success(true)
             false -> CaffeineResult.Error(RefreshTokenMissingError())
         }

@@ -21,15 +21,15 @@ class RegisterDeviceBody(val device: DeviceRegistration)
 
 // TODO https://github.com/jaredrummler/AndroidDeviceNames
 class DeviceRegistration(
-        val id: String? = null,
-        val notificationToken: String,
-        val os: String = "ANDROID",
-        val systemVersion: String = "${Build.VERSION.RELEASE} (${Build.VERSION.SDK_INT})",
+    val id: String? = null,
+    val notificationToken: String,
+    val os: String = "ANDROID",
+    val systemVersion: String = "${Build.VERSION.RELEASE} (${Build.VERSION.SDK_INT})",
 //        val name: String = BluetoothAdapter.getDefaultAdapter().name ?: "Unknown",
-        val name: String = "TODO",
-        val model: String = "${Build.MANUFACTURER}, ${Build.MODEL}, ${Build.BRAND}, ${Build.PRODUCT}",
-        val platform: String = "${Build.HARDWARE} (${Build.BOARD})",
-        val appVersionRelease: String = BuildConfig.VERSION_NAME,
-        val appVersionBuild: String = BuildConfig.VERSION_CODE.toString(),
-        val certificate: String = if(BuildConfig.DEBUG) "Development" else "Production"
+    val name: String = "TODO",
+    val model: String = "${Build.MANUFACTURER}, ${Build.MODEL}, ${Build.BRAND}, ${Build.PRODUCT}",
+    val platform: String = "${Build.HARDWARE} (${Build.BOARD})",
+    val appVersionRelease: String = BuildConfig.VERSION_NAME,
+    val appVersionBuild: String = BuildConfig.VERSION_CODE.toString(),
+    val certificate: String = if (BuildConfig.DEBUG) "Development" else "Production"
 )

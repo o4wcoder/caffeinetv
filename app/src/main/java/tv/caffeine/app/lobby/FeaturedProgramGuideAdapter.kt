@@ -11,7 +11,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -25,13 +30,17 @@ import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.lobby.FeaturedGuideItem.DateHeader
 import tv.caffeine.app.lobby.FeaturedGuideItem.ListingItem
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.util.*
+import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.animateSlideUpAndHide
+import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.safeNavigate
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-
 
 sealed class FeaturedGuideItem {
 
@@ -47,8 +56,9 @@ sealed class FeaturedGuideItem {
     fun getViewType() = getItemType().ordinal
 
     data class ListingItem(
-            var listing: FeaturedGuideListing,
-            var isExpanded: Boolean = false) : FeaturedGuideItem() {
+        var listing: FeaturedGuideListing,
+        var isExpanded: Boolean = false
+    ) : FeaturedGuideItem() {
         override fun getItemType() = FeaturedGuideItem.Type.LISTING_ITEM
     }
 
@@ -58,12 +68,12 @@ sealed class FeaturedGuideItem {
 }
 
 class FeaturedProgramGuideAdapter @Inject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val followManager: FollowManager,
-        @ThemeFollowedExplore private val followedTheme: UserTheme,
-        @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
-): ListAdapter<FeaturedGuideItem, GuideViewHolder>(
+    private val dispatchConfig: DispatchConfig,
+    private val followManager: FollowManager,
+    @ThemeFollowedExplore private val followedTheme: UserTheme,
+    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
+    private val picasso: Picasso
+) : ListAdapter<FeaturedGuideItem, GuideViewHolder>(
         object : DiffUtil.ItemCallback<FeaturedGuideItem>() {
             override fun areItemsTheSame(oldItem: FeaturedGuideItem, newItem: FeaturedGuideItem) = oldItem === newItem
             override fun areContentsTheSame(oldItem: FeaturedGuideItem, newItem: FeaturedGuideItem): Boolean {
@@ -86,7 +96,7 @@ class FeaturedProgramGuideAdapter @Inject constructor(
     override fun getItemViewType(position: Int) = getItem(position).getViewType()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
-        return when(FeaturedGuideItem.Type.ofViewType(viewType)) {
+        return when (FeaturedGuideItem.Type.ofViewType(viewType)) {
             FeaturedGuideItem.Type.LISTING_ITEM -> {
                 val binding = FeaturedGuideListingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 ListingItemViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
@@ -99,7 +109,7 @@ class FeaturedProgramGuideAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
-        return when(getItem(position).getItemType()) {
+        return when (getItem(position).getItemType()) {
             FeaturedGuideItem.Type.LISTING_ITEM -> {
                 (holder as ListingItemViewHolder).bind(getItem(position) as ListingItem)
             }
@@ -147,12 +157,12 @@ class DateHeaderViewHolder(private val binding: FeaturedGuideDateHeaderBinding) 
 }
 
 class ListingItemViewHolder(
-        private val binding: FeaturedGuideListingItemBinding,
-        private val scope: CoroutineScope,
-        private val followManager: FollowManager,
-        private val followedTheme: UserTheme,
-        private val notFollowedTheme: UserTheme,
-        private val picasso: Picasso
+    private val binding: FeaturedGuideListingItemBinding,
+    private val scope: CoroutineScope,
+    private val followManager: FollowManager,
+    private val followedTheme: UserTheme,
+    private val notFollowedTheme: UserTheme,
+    private val picasso: Picasso
 ) : GuideViewHolder(binding.root) {
 
     var job: Job? = null
@@ -192,10 +202,10 @@ class ListingItemViewHolder(
     }
 
     private fun createFollowHandler(user: User): FollowManager.FollowHandler {
-        return FollowManager.FollowHandler(null, object: FollowManager.Callback() {
+        return FollowManager.FollowHandler(null, object : FollowManager.Callback() {
             override fun follow(caid: CAID) {
                 scope.launch {
-                    followManager.followUser(caid, object: FollowManager.FollowCompletedCallback {
+                    followManager.followUser(caid, object : FollowManager.FollowCompletedCallback {
                         override fun onUserFollowed() {
                             configureUser(user, null)
                         }
@@ -250,4 +260,3 @@ class ListingItemViewHolder(
         }
     }
 }
-

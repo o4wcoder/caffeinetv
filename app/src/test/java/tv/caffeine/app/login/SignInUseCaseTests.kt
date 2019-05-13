@@ -1,8 +1,13 @@
 package tv.caffeine.app.login
 
 import com.google.gson.Gson
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.verify
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -60,5 +65,4 @@ class SignInUseCaseTests {
         verify(exactly = 0) { authWatcher.onSignIn() }
         verify(exactly = 0) { tokenStore.storeSignInResult(any()) }
     }
-
 }

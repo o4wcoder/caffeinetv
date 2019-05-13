@@ -26,10 +26,10 @@ class ReactionScores {
      * or the user themself made it.
      */
     fun calculateReactionComparisonScore(
-            age: Long = 0,
-            endorsementCount: Int = 0,
-            fromFollowedUser: Boolean = false,
-            fromSelf: Boolean = false
+        age: Long = 0,
+        endorsementCount: Int = 0,
+        fromFollowedUser: Boolean = false,
+        fromSelf: Boolean = false
     ): Double {
         val reactionScore = calculateReactionScore(age, endorsementCount)
         val isStale = reactionScore < 0
@@ -43,5 +43,4 @@ class ReactionScores {
         }
         return reactionScore + followedUserAdjustment + selfAdjustment
     }
-
 }

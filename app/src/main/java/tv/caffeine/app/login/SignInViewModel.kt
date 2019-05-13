@@ -24,8 +24,8 @@ sealed class SignInOutcome {
 }
 
 class SignInViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val signInUseCase: SignInUseCase
+    dispatchConfig: DispatchConfig,
+    private val signInUseCase: SignInUseCase
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val _signInOutcome = MutableLiveData<SignInOutcome>()
@@ -34,7 +34,7 @@ class SignInViewModel @Inject constructor(
     fun login(username: String, password: String) {
         launch {
             val result = signInUseCase(username, password)
-            _signInOutcome.value = when(result) {
+            _signInOutcome.value = when (result) {
                 is CaffeineResult.Success -> processSuccess(result.value)
                 is CaffeineResult.Error -> processError(result.error)
                 is CaffeineResult.Failure -> processFailure(result.throwable)
@@ -43,7 +43,7 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun processSuccess(signInResult: SignInResult) =
-            when(signInResult.next) {
+            when (signInResult.next) {
                 NextAccountAction.mfa_otp_required -> SignInOutcome.MFARequired
                 NextAccountAction.legal_acceptance_required -> SignInOutcome.MustAcceptTerms
                 else -> SignInOutcome.Success

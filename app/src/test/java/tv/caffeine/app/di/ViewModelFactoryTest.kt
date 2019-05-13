@@ -14,13 +14,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
 import tv.caffeine.app.CaffeineApplication
-import tv.caffeine.app.login.LegalAgreementViewModel
-import tv.caffeine.app.login.SignInViewModel
 import tv.caffeine.app.broadcast.GuideViewModel
 import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
+import tv.caffeine.app.login.LegalAgreementViewModel
+import tv.caffeine.app.login.SignInViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.DeleteAccountViewModel
 import tv.caffeine.app.profile.IgnoreUserViewModel
@@ -99,5 +99,4 @@ class ViewModelFactoryTest(private val modelClass: Class<out ViewModel>) {
     fun `can create a view model`() {
         assertNotNull(subject.create(modelClass))
     }
-
 }

@@ -11,7 +11,7 @@ import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.databinding.GoldBundleItemBinding
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import java.text.NumberFormat
-import java.util.*
+import java.util.Currency
 import javax.inject.Inject
 
 interface GoldBundleClickListener {
@@ -19,10 +19,10 @@ interface GoldBundleClickListener {
 }
 
 class GoldBundlesAdapter @Inject constructor(
-        private val buyGoldOption: BuyGoldOption,
-        private val picasso: Picasso,
-        private val itemClickListener: GoldBundleClickListener
-) : ListAdapter<GoldBundle, GoldBundleViewHolder>(object: DiffUtil.ItemCallback<GoldBundle?>() {
+    private val buyGoldOption: BuyGoldOption,
+    private val picasso: Picasso,
+    private val itemClickListener: GoldBundleClickListener
+) : ListAdapter<GoldBundle, GoldBundleViewHolder>(object : DiffUtil.ItemCallback<GoldBundle?>() {
     override fun areItemsTheSame(oldItem: GoldBundle, newItem: GoldBundle) = oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: GoldBundle, newItem: GoldBundle) = oldItem == newItem
@@ -38,10 +38,10 @@ class GoldBundlesAdapter @Inject constructor(
 }
 
 class GoldBundleViewHolder(
-        private val binding: GoldBundleItemBinding,
-        private val buyGoldOption: BuyGoldOption,
-        private val itemClickListener: GoldBundleClickListener,
-        private val picasso: Picasso
+    private val binding: GoldBundleItemBinding,
+    private val buyGoldOption: BuyGoldOption,
+    private val itemClickListener: GoldBundleClickListener,
+    private val picasso: Picasso
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(goldBundle: GoldBundle) {
@@ -51,7 +51,7 @@ class GoldBundleViewHolder(
         when {
             buyGoldOption == BuyGoldOption.UsingPlayStore && goldBundle.usingInAppBilling != null && skuDetails != null -> {
                 val currencyFormat = NumberFormat.getCurrencyInstance().apply { currency = Currency.getInstance(skuDetails.priceCurrencyCode) }
-                binding.dollarCostTextView.text = currencyFormat.format(skuDetails.priceAmountMicros/1000000f)
+                binding.dollarCostTextView.text = currencyFormat.format(skuDetails.priceAmountMicros / 1000000f)
                 binding.dollarCostTextView.alpha = if (goldBundle.usingInAppBilling.canPurchase) 1.0f else 0.5f
             }
             buyGoldOption == BuyGoldOption.UsingCredits && goldBundle.usingCredits != null -> {

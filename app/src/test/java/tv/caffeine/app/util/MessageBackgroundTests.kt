@@ -9,7 +9,6 @@ import tv.caffeine.app.R
 import tv.caffeine.app.chat.mentionsUsername
 import tv.caffeine.app.chat.messageBackground
 
-
 @RunWith(RobolectricTestRunner::class)
 class MessageBackgroundTests {
 
@@ -54,5 +53,4 @@ class MessageBackgroundTests {
         val mentions = "caffeine you're cool".mentionsUsername("caffeine")
         assertThat(mentions, equalTo(false))
     }
-
 }

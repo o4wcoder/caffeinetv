@@ -23,8 +23,8 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class IgnoredUsersFragment @Inject constructor(
-        private val caidListAdapter: CaidListAdapter
-): CaffeineFragment(R.layout.user_list_fragment) {
+    private val caidListAdapter: CaidListAdapter
+) : CaffeineFragment(R.layout.user_list_fragment) {
 
     private val viewModel: IgnoredUsersViewModel by viewModels { viewModelFactory }
     private lateinit var binding: UserListFragmentBinding
@@ -39,10 +39,10 @@ class IgnoredUsersFragment @Inject constructor(
 }
 
 class IgnoredUsersViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        private val gson: Gson,
-        private val tokenStore: TokenStore,
-        private val usersService: UsersService
+    dispatchConfig: DispatchConfig,
+    private val gson: Gson,
+    private val tokenStore: TokenStore,
+    private val usersService: UsersService
 ) : CaffeineViewModel(dispatchConfig) {
 
     private val _ignoredUsers = MutableLiveData<List<CaidRecord.IgnoreRecord>>()
@@ -57,12 +57,11 @@ class IgnoredUsersViewModel @Inject constructor(
         val caid = tokenStore.caid ?: return
         launch {
             val result = usersService.listIgnoredUsers(caid).awaitAndParseErrors(gson)
-            when(result) {
+            when (result) {
                 is CaffeineResult.Success -> _ignoredUsers.value = result.value
                 is CaffeineResult.Error -> Timber.e("Failed to load ignored users ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
     }
-
 }

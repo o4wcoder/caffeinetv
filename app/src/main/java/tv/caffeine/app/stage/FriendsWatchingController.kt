@@ -23,13 +23,13 @@ import kotlin.coroutines.CoroutineContext
 class FriendWatchingEvent(val isViewing: Boolean, val caid: CAID)
 
 class FriendsWatchingController @AssistedInject constructor(
-        private val dispatchConfig: DispatchConfig,
-        private val tokenStore: TokenStore,
-        private val usersService: UsersService,
-        private val gson: Gson,
-        private val serverConfig: ServerConfig,
-        @Assisted private val stageIdentifier: String
-): CoroutineScope {
+    private val dispatchConfig: DispatchConfig,
+    private val tokenStore: TokenStore,
+    private val usersService: UsersService,
+    private val gson: Gson,
+    private val serverConfig: ServerConfig,
+    @Assisted private val stageIdentifier: String
+) : CoroutineScope {
 
     @AssistedInject.Factory
     interface Factory {
@@ -55,7 +55,7 @@ class FriendsWatchingController @AssistedInject constructor(
         webSocketController?.close()
         launch {
             val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
-            val payload = when(result) {
+            val payload = when (result) {
                 is CaffeineResult.Success -> result.value.token
                 is CaffeineResult.Error -> return@launch Timber.e("Failed to get signed user details")
                 is CaffeineResult.Failure -> return@launch Timber.e(result.throwable)
@@ -63,7 +63,7 @@ class FriendsWatchingController @AssistedInject constructor(
             val headers = tokenStore.webSocketHeaderAndSignedPayload(payload)
             val webSocketController = WebSocketController(dispatchConfig, "viewers/followed", url, headers)
             this@FriendsWatchingController.webSocketController = webSocketController
-            for(item in webSocketController.channel) {
+            for (item in webSocketController.channel) {
                 Timber.d("Received message $item")
                 val friendWatching = try {
                     webSocketGson.fromJson(item, FriendWatchingEvent::class.java)
@@ -83,5 +83,4 @@ class FriendsWatchingController @AssistedInject constructor(
         channel.close()
         job.cancel()
     }
-
 }

@@ -8,7 +8,6 @@ import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.api.model.User
 
-
 private val dummyMessageBody = Message.Body("")
 private val dummyPublisher = User("0", "", null, null, "", 0, 0, false, false, null, "", mapOf(), null, null, "", null, null, null, false, false, null, null, false)
 private val preferredPositions = listOf(0, 1, 2, 3, 4, 5, 6)
@@ -18,7 +17,7 @@ private const val EXPIRED_TIME = CURRENT_BASELINE_TIME - MAXIMUM_NON_UPDATED_REA
 private const val STALE_TIME = CURRENT_BASELINE_TIME - MAXIMUM_NON_UPDATED_REACTION_AGE
 
 private const val currentTime = CURRENT_BASELINE_TIME
-//LocalDateTime.of(2018, Month.APRIL, 16, 9, 49, 18).toInstant(ZoneOffset.ofHours(-7)).toEpochMilli()
+// LocalDateTime.of(2018, Month.APRIL, 16, 9, 49, 18).toInstant(ZoneOffset.ofHours(-7)).toEpochMilli()
 
 private val OLD_STATE_WITH_REACTIONS_ON_THE_STAGE = listOf(
         MessageWrapper(Message(dummyPublisher, "0", Message.Type.share, dummyMessageBody), creationTime = EXPIRED_TIME, lastUpdateTime = STALE_TIME, position = 0, isStale = false),
@@ -92,7 +91,6 @@ class StageReducerTests {
             val position = subject.determineReactionPosition(fourMockVariedReactions, mockShareReaction, preferredPositions, SMALL_STAGE_CUTOFF_SIZE - 1, currentTime)
             assertThat(position, equalTo(1))
         }
-
     }
 
     class HandleProcessOldReactionsTests {
@@ -103,7 +101,5 @@ class StageReducerTests {
             val expectedState = EXPECTED_STATE_WITH_REACTIONS_MARKED_AS_STALE_AND_OLD
             assertThat(subject.handleProcessOldReactions(initialState, currentTime), equalTo(expectedState))
         }
-
     }
-
 }

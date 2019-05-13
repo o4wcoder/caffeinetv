@@ -14,9 +14,9 @@ import tv.caffeine.app.auth.AuthWatcher
 import javax.inject.Inject
 
 class NotificationAuthWatcher @Inject constructor(
-        private val devicesService: DevicesService,
-        private val firebaseInstanceId: FirebaseInstanceId,
-        private val gson: Gson
+    private val devicesService: DevicesService,
+    private val firebaseInstanceId: FirebaseInstanceId,
+    private val gson: Gson
 ) : AuthWatcher {
     private val coroutineScope: CoroutineScope = GlobalScope
 

@@ -60,4 +60,3 @@ class FeaturedProgramGuideListingBuilderTests {
         return FeaturedGuideListing("$id", "$id", "category $id", "title $id", startTimestamp, endTimestamp, "description $id", null, false)
     }
 }
-

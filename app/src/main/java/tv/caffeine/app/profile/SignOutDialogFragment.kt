@@ -21,7 +21,7 @@ class SignOutDialogFragment : DialogFragment() {
         return AlertDialog.Builder(activity)
                 .setTitle(R.string.sign_out_question)
                 .setPositiveButton(R.string.sign_out_button, positiveClickListener)
-                .setNegativeButton(R.string.cancel ) { _, _ -> dismiss() }
+                .setNegativeButton(R.string.cancel) { _, _ -> dismiss() }
                 .create()
     }
 }

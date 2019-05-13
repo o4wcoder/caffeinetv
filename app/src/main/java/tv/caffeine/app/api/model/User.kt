@@ -10,29 +10,29 @@ typealias CAID = String
 fun String.isCAID() = length == 36 && startsWith("CAID")
 
 data class User(
-        val caid: CAID,
-        val username: String,
-        val name: String?,
-        val email: String?,
-        val avatarImagePath: String,
-        val followingCount: Int,
-        val followersCount: Int,
-        val isVerified: Boolean,
-        val isCaster: Boolean = true,
-        val broadcastId: String?,
-        val stageId: String,
-        val abilities: Map<String, Boolean>,
-        val connectedAccounts: Map<String, ConnectedAccount>?,
-        val age: Any?,
-        val bio: String?,
-        val countryCode: Any?,
-        val countryName: Any?,
-        val gender: Any?,
-        val isFeatured: Boolean,
-        val isOnline: Boolean,
-        val notificationsLastViewedAt: ZonedDateTime?,
-        val mfaMethod: MfaMethod?,
-        val emailVerified: Boolean?
+    val caid: CAID,
+    val username: String,
+    val name: String?,
+    val email: String?,
+    val avatarImagePath: String,
+    val followingCount: Int,
+    val followersCount: Int,
+    val isVerified: Boolean,
+    val isCaster: Boolean = true,
+    val broadcastId: String?,
+    val stageId: String,
+    val abilities: Map<String, Boolean>,
+    val connectedAccounts: Map<String, ConnectedAccount>?,
+    val age: Any?,
+    val bio: String?,
+    val countryCode: Any?,
+    val countryName: Any?,
+    val gender: Any?,
+    val isFeatured: Boolean,
+    val isOnline: Boolean,
+    val notificationsLastViewedAt: ZonedDateTime?,
+    val mfaMethod: MfaMethod?,
+    val emailVerified: Boolean?
 ) {
     val avatarImageUrl get() = "$IMAGES_BASE_URL$avatarImagePath"
 }
@@ -43,7 +43,7 @@ class UserUpdateBody(val user: UserUpdateDetails)
 class UserUpdateDetails(val name: String?, val bio: String?, val twitterAutoPostOnline: Boolean?)
 
 @Parcelize
-enum class IdentityProvider: Parcelable {
+enum class IdentityProvider : Parcelable {
     facebook, twitter
 }
 

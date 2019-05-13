@@ -3,7 +3,12 @@ package tv.caffeine.app.api
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Url
 import tv.caffeine.app.api.model.Message
 
 interface Realtime {
@@ -51,5 +56,4 @@ class NewReyes {
     class ConnectToStreamResponse(val iceCandidates: Any?, val id: String, val stageId: String, val urls: ConnectToStreamUrls)
 
     class ConnectToStreamUrls(val heartbeat: String, val updates: String)
-
 }

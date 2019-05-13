@@ -8,7 +8,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
-
 @RunWith(RobolectricTestRunner::class)
 class StagePagerFragmentTests {
 
@@ -38,4 +37,3 @@ class StagePagerFragmentTests {
         assertEquals(0, index)
     }
 }
-

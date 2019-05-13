@@ -27,10 +27,10 @@ private val inlineImages: Map<String, ImageSpec> = mapOf(
 )
 
 class UserAvatarImageGetter(
-        private val textView: TextView,
-        isFollowed: Boolean,
-        @DimenRes private val avatarSizeDimen: Int,
-        private val picasso: Picasso
+    private val textView: TextView,
+    isFollowed: Boolean,
+    @DimenRes private val avatarSizeDimen: Int,
+    private val picasso: Picasso
 ) : Html.ImageGetter {
     private val transform = if (isFollowed) {
         CropBorderedCircleTransformation(textView.resources.getColor(R.color.caffeine_blue, null),
@@ -78,7 +78,5 @@ class UserAvatarImageGetter(
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
             drawable = BitmapDrawable(textView.resources, bitmap)
         }
-
     }
-
 }

@@ -8,9 +8,9 @@ import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class WalletViewModel @Inject constructor(
-        dispatchConfig: DispatchConfig,
-        walletRepository: WalletRepository
-): CaffeineViewModel(dispatchConfig) {
+    dispatchConfig: DispatchConfig,
+    walletRepository: WalletRepository
+) : CaffeineViewModel(dispatchConfig) {
 
     val wallet: LiveData<Wallet> = Transformations.map(walletRepository.wallet) { it }
 

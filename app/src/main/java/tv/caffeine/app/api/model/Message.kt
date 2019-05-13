@@ -22,13 +22,13 @@ data class Message(val publisher: User, val id: String, val type: Type, val body
 }
 
 data class MessageWrapper(
-        val message: Message,
-        val creationTime: Long,
-        val position: Int,
-        val lastUpdateTime: Long = 0,
-        val isFromFollowedUser: Boolean = false,
-        val isFromSelf: Boolean = false,
-        val isStale: Boolean = false,
-        val digitalItemInteractionCount: Int = 0,
-        val hasBeenEndorsed: Boolean = false
+    val message: Message,
+    val creationTime: Long,
+    val position: Int,
+    val lastUpdateTime: Long = 0,
+    val isFromFollowedUser: Boolean = false,
+    val isFromSelf: Boolean = false,
+    val isStale: Boolean = false,
+    val digitalItemInteractionCount: Int = 0,
+    val hasBeenEndorsed: Boolean = false
 )

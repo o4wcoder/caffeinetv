@@ -5,7 +5,8 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +44,7 @@ class FeaturedProgramGuideDateHeaderTests {
     @Test
     fun `the date header is tomorrow for tomorrow's broadcast`() {
         val nowInMs = SystemClock.currentThreadTimeMillis()
-        val tomorrowInSeconds= TimeUnit.MILLISECONDS.toSeconds(nowInMs + DateUtils.DAY_IN_MILLIS)
+        val tomorrowInSeconds = TimeUnit.MILLISECONDS.toSeconds(nowInMs + DateUtils.DAY_IN_MILLIS)
         assertEquals(viewHolder.getDateText(FeaturedGuideItem.DateHeader(tomorrowInSeconds)), tomorrow)
     }
 
@@ -57,7 +58,7 @@ class FeaturedProgramGuideDateHeaderTests {
     @Test
     fun `the date header is not tomorrow for the day after tomorrow's broadcast`() {
         val nowInMs = SystemClock.currentThreadTimeMillis()
-        val theDayAfterTomorrowInSeconds= TimeUnit.MILLISECONDS.toSeconds(nowInMs + DateUtils.DAY_IN_MILLIS * 2)
+        val theDayAfterTomorrowInSeconds = TimeUnit.MILLISECONDS.toSeconds(nowInMs + DateUtils.DAY_IN_MILLIS * 2)
         assertNotEquals(viewHolder.getDateText(FeaturedGuideItem.DateHeader(theDayAfterTomorrowInSeconds)), tomorrow)
     }
 }

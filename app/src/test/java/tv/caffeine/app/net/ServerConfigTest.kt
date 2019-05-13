@@ -51,5 +51,4 @@ class ServerConfigTest {
         val result = subject.normalizeImageUri(uri)
         assertEquals("https://api.random-environment.caffeine.tv/random.png", result.toString())
     }
-
 }

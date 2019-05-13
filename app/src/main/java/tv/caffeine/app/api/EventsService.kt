@@ -19,9 +19,9 @@ sealed class StatsBody
 class CumulativeCounters(val cumulativeCounters: List<StatsSnippet>) : StatsBody()
 class StatsSnippet(val dimensions: StatsDimensions, val metricName: String, val value: Int)
 class StatsDimensions(
-        @SerializedName("mediaType") val mediaType: String,
-        @SerializedName("sourceName") val sourceName: String,
-        @SerializedName("stageId") val stageId: String
+    @SerializedName("mediaType") val mediaType: String,
+    @SerializedName("sourceName") val sourceName: String,
+    @SerializedName("stageId") val stageId: String
 )
 
 class Counters(val counters: List<StatsCounter>) : StatsBody()
