@@ -56,7 +56,9 @@ class GoldBundlesViewModel @Inject constructor(
     private val _goldBundlesUsingPlayStore = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
 
     private fun postPurchaseStatus(purchaseStatus: PurchaseStatus) {
-        _events.value = Event(purchaseStatus)
+        viewModelScope.launch(Dispatchers.Main.immediate) {
+            _events.value = Event(purchaseStatus)
+        }
     }
 
     val wallet: LiveData<Wallet> = walletRepository.wallet.map { it }
