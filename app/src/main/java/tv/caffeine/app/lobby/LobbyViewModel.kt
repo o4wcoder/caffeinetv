@@ -3,6 +3,8 @@ package tv.caffeine.app.lobby
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -13,18 +15,15 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class LobbyViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
     private val loadLobbyUseCase: LoadLobbyUseCase,
     private val loadFeatureConfigUseCase: LoadFeatureConfigUseCase,
     private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
 
     val lobby: LiveData<CaffeineResult<Lobby>> = Transformations.map(_lobby) { it }
@@ -34,7 +33,7 @@ class LobbyViewModel @Inject constructor(
 
     fun refresh() {
         refreshJob?.cancel()
-        refreshJob = launch {
+        refreshJob = viewModelScope.launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
             if (isVersionSupported is CaffeineEmptyResult.Error) {
                 _lobby.value = CaffeineResult.Error(VersionCheckError())

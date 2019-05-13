@@ -13,6 +13,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
@@ -35,7 +37,6 @@ import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExploreDark
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
@@ -92,10 +93,9 @@ class UpcomingBroadcastFragment @Inject constructor(
 }
 
 class GuideViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val broadcastsService: BroadcastsService,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _guides = MutableLiveData<List<Guide>>()
     val guides: LiveData<List<Guide>> = Transformations.map(_guides) { it }
@@ -105,7 +105,7 @@ class GuideViewModel @Inject constructor(
     }
 
     private fun load() {
-        launch {
+        viewModelScope.launch {
             val result = broadcastsService.guide().awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> _guides.value = prepareGuideTimestamp(result.value.listings)

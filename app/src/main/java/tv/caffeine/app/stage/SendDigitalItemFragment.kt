@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
@@ -23,11 +25,9 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSendDigitalItemBinding
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.ui.prepopulateText
 import tv.caffeine.app.ui.setOnAction
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.DigitalItemRepository
 import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
@@ -108,11 +108,10 @@ class SendDigitalItemFragment @Inject constructor(
 }
 
 class SendDigitalItemViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val gson: Gson,
     private val digitalItemRepository: DigitalItemRepository,
     private val paymentsClientService: PaymentsClientService
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     init {
         digitalItemRepository.refresh()
@@ -126,7 +125,7 @@ class SendDigitalItemViewModel @Inject constructor(
         }
     }
 
-    fun send(digitalItem: DigitalItem, quantity: Int, recipientCaid: CAID, message: String) = launch {
+    fun send(digitalItem: DigitalItem, quantity: Int, recipientCaid: CAID, message: String) = viewModelScope.launch {
         val body = BuyDigitalItemBody(digitalItem.id, quantity, recipientCaid, message)
         val result = paymentsClientService.buyDigitalItem(body).awaitAndParseErrors(gson)
         when (result) {

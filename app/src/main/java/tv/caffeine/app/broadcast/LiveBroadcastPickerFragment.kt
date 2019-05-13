@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -36,9 +38,7 @@ import tv.caffeine.app.lobby.UpcomingButtonCard
 import tv.caffeine.app.lobby.UpcomingButtonItem
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.ui.PaddingItemDecoration
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.showSnackbar
@@ -110,10 +110,9 @@ class LiveBroadcastPickerFragment @Inject constructor(
 }
 
 class LiveHostableBroadcastersViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val broadcastsService: BroadcastsService,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _broadcasters = MutableLiveData<List<LobbyItem>>()
     val broadcasters: LiveData<List<LobbyItem>> = Transformations.map(_broadcasters) { it }
@@ -123,7 +122,7 @@ class LiveHostableBroadcastersViewModel @Inject constructor(
     }
 
     private fun load() {
-        launch {
+        viewModelScope.launch {
             val result = broadcastsService.liveHostableBroadcasters().awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> {

@@ -12,6 +12,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.preference.CheckBoxPreference
@@ -51,8 +53,6 @@ import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.ui.AlertDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
@@ -301,14 +301,13 @@ class SettingsFragment @Inject constructor(
 }
 
 class SettingsViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val tokenStore: TokenStore,
     private val followManager: FollowManager,
     private val usersService: UsersService,
     private val oauthService: OAuthService,
     private val facebookLoginManager: LoginManager,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private val _userDetails = MutableLiveData<User>()
     val userDetails: LiveData<User?> = Transformations.map(_userDetails) { it }
 
@@ -318,13 +317,13 @@ class SettingsViewModel @Inject constructor(
 
     private fun load() {
         val caid = tokenStore.caid ?: return
-        launch {
+        viewModelScope.launch {
             val userDetails = followManager.loadUserDetails(caid)
             _userDetails.value = userDetails
         }
     }
 
-    fun processFacebookLogin(loginResult: LoginResult?) = launch {
+    fun processFacebookLogin(loginResult: LoginResult?) = viewModelScope.launch {
         val token = loginResult?.accessToken?.token ?: return@launch
         val deferred = oauthService.submitFacebookToken(FacebookTokenBody(token))
         val result = deferred.awaitAndParseErrors(gson)
@@ -343,7 +342,7 @@ class SettingsViewModel @Inject constructor(
 
     fun disconnectIdentity(identityProvider: IdentityProvider, socialUid: String): LiveData<CaffeineEmptyResult> {
         val liveData = MutableLiveData<CaffeineEmptyResult>()
-        launch {
+        viewModelScope.launch {
             val caid = tokenStore.caid ?: return@launch
             val result = usersService.disconnectIdentity(caid, socialUid, identityProvider).awaitEmptyAndParseErrors(gson)
             when (result) {
@@ -369,10 +368,9 @@ class SettingsViewModel @Inject constructor(
 }
 
 class NotificationSettingsViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val accountsService: AccountsService,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _notificationSettings = MutableLiveData<NotificationSettings>()
     val notificationSettings: LiveData<NotificationSettings> = Transformations.map(_notificationSettings) { it }
@@ -380,7 +378,7 @@ class NotificationSettingsViewModel @Inject constructor(
     val emailCount: LiveData<Int> = Transformations.map(_notificationSettings) { getEmailCount(it) }
 
     fun load() {
-        launch {
+        viewModelScope.launch {
             val result = accountsService.getNotificationSettings().awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> _notificationSettings.value = result.value
@@ -405,7 +403,7 @@ class NotificationSettingsViewModel @Inject constructor(
         }
 
         if (changed) {
-            launch {
+            viewModelScope.launch {
                 val result = accountsService.updateNotificationSettings(NotificationSettings.fromMap(oldSettings))
                         .awaitAndParseErrors(gson)
                 when (result) {

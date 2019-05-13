@@ -3,28 +3,28 @@ package tv.caffeine.app.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kochava.base.Tracker.configure
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import java.text.NumberFormat
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     val followManager: FollowManager
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val numberFormat = NumberFormat.getInstance()
 
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile> = Transformations.map(_userProfile) { it }
 
-    fun load(userHandle: String) = launch {
+    fun load(userHandle: String) = viewModelScope.launch {
         val userDetails = followManager.userDetails(userHandle) ?: return@launch
         val broadcastDetails = followManager.broadcastDetails(userDetails)
         configure(userDetails, broadcastDetails)
@@ -33,7 +33,7 @@ class ProfileViewModel @Inject constructor(
     /**
      * Force load when the UI relies on whether the broadcaster is live.
      */
-    fun forceLoad(caid: CAID) = launch {
+    fun forceLoad(caid: CAID) = viewModelScope.launch {
         val userDetails = followManager.loadUserDetails(caid) ?: return@launch
         val broadcastDetails = followManager.broadcastDetails(userDetails)
         configure(userDetails, broadcastDetails)
@@ -45,7 +45,7 @@ class ProfileViewModel @Inject constructor(
 
     fun follow(caid: CAID): LiveData<CaffeineEmptyResult> {
         val liveData = MutableLiveData<CaffeineEmptyResult>()
-        launch {
+        viewModelScope.launch {
             val result = followManager.followUser(caid)
             forceLoad(caid)
             liveData.value = result
@@ -53,7 +53,7 @@ class ProfileViewModel @Inject constructor(
         return Transformations.map(liveData) { it }
     }
 
-    fun unfollow(caid: CAID) = launch {
+    fun unfollow(caid: CAID) = viewModelScope.launch {
         followManager.unfollowUser(caid)
         forceLoad(caid)
     }

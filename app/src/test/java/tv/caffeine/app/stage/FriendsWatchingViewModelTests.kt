@@ -15,7 +15,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.util.TestDispatchConfig
 
 @RunWith(AndroidJUnit4::class)
 class FriendsWatchingViewModelTests {
@@ -47,7 +46,7 @@ class FriendsWatchingViewModelTests {
         every { user1.caid } returns CAID_1
         every { user2.caid } returns CAID_2
         every { user3.caid } returns CAID_3
-        subject = FriendsWatchingViewModel(TestDispatchConfig, mockFollowManager, mockFriendsWatchingControllerFactory)
+        subject = FriendsWatchingViewModel(mockFollowManager, mockFriendsWatchingControllerFactory)
     }
 
     @Test

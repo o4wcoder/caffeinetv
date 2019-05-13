@@ -8,13 +8,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class FeaturedProgramGuideFragment @Inject constructor(
@@ -49,9 +49,8 @@ class FeaturedProgramGuideFragment @Inject constructor(
 }
 
 class FeaturedProgramGuideViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val loadFeaturedProgramGuideUseCase: LoadFeaturedProgramGuideUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _listings = MutableLiveData<List<FeaturedGuideItem>>()
     val listings: LiveData<List<FeaturedGuideItem>> = Transformations.map(_listings) { it }
@@ -64,7 +63,7 @@ class FeaturedProgramGuideViewModel @Inject constructor(
 
     fun load() {
         refreshJob?.cancel()
-        refreshJob = launch {
+        refreshJob = viewModelScope.launch {
             _listings.value = loadFeaturedProgramGuideUseCase()
         }
     }

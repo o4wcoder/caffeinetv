@@ -6,6 +6,8 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -13,6 +15,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -25,8 +28,6 @@ import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.map
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.BillingClientFactory
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.wallet.WalletRepository
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -40,14 +41,13 @@ sealed class PurchaseStatus {
 }
 
 class GoldBundlesViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     context: Context,
     private val tokenStore: TokenStore,
     private val walletRepository: WalletRepository,
     private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
     private val purchaseGoldBundleUseCase: PurchaseGoldBundleUseCase,
     private val processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase
-) : CaffeineViewModel(dispatchConfig), BillingClientStateListener {
+) : ViewModel(), BillingClientStateListener {
 
     private val _events = MutableLiveData<Event<PurchaseStatus>>()
     val events: LiveData<Event<PurchaseStatus>> = Transformations.map(_events) { it }
@@ -111,14 +111,14 @@ class GoldBundlesViewModel @Inject constructor(
     }
 
     private fun loadGoldBundles() {
-        launch {
+        viewModelScope.launch {
             val allGoldBundles = loadGoldBundlesUseCase()
                     .map { it.payload.goldBundles.state }
             val listUsingCredits = allGoldBundles
                     .map { it.filter { gb -> gb.usingCredits != null } }
             val listUsingPlayStore = allGoldBundles
                     .map { lookupSkuDetails(it.filter { gb -> gb.usingInAppBilling != null }) }
-            withContext(dispatchConfig.main) {
+            withContext(Dispatchers.Main) {
                 _goldBundlesUsingCredits.value = listUsingCredits
                 _goldBundlesUsingPlayStore.value = listUsingPlayStore
             }
@@ -202,7 +202,7 @@ class GoldBundlesViewModel @Inject constructor(
     }
 
     fun purchaseGoldBundleUsingCredits(goldBundleId: String) {
-        launch {
+        viewModelScope.launch {
             val result = purchaseGoldBundleUseCase(goldBundleId)
             when (result) {
                 is CaffeineResult.Success -> {
@@ -225,7 +225,7 @@ class GoldBundlesViewModel @Inject constructor(
         }
     }
 
-    private fun processInAppPurchase(purchase: Purchase, purchaseToken: String = purchase.purchaseToken) = launch {
+    private fun processInAppPurchase(purchase: Purchase, purchaseToken: String = purchase.purchaseToken) = viewModelScope.launch {
         Timber.d("Purchased: ${purchase.sku}, Order ID: ${purchase.orderId}, Purchase Token: $purchaseToken")
         val result = processPlayStorePurchaseUseCase(purchase.sku, purchaseToken)
         refreshWallet()

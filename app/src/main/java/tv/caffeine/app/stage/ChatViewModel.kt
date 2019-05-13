@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
@@ -23,14 +25,11 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
 
 class ChatViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     context: Context,
     private val realtime: Realtime,
     private val tokenStore: TokenStore,
@@ -38,7 +37,7 @@ class ChatViewModel @Inject constructor(
     private val followManager: FollowManager,
     private val messageHandshakeFactory: MessageHandshake.Factory,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private var messageHandshake: MessageHandshake? = null
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
 
@@ -53,19 +52,19 @@ class ChatViewModel @Inject constructor(
 
     fun load(stageIdentifier: String) {
         messageHandshake = messageHandshakeFactory.create(stageIdentifier)
-        launch {
+        viewModelScope.launch {
             while (isActive) {
                 displayMessages()
                 delay(MESSAGE_EXPIRATION_CHECK_PERIOD)
             }
         }
-        launch {
+        viewModelScope.launch {
             messageHandshake?.channel?.consumeEach { processMessage(it) }
         }
     }
 
     fun sendMessage(text: String, broadcaster: String) {
-        launch {
+        viewModelScope.launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val caid = tokenStore.caid ?: return@launch Timber.e("Not logged in")
             val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
@@ -86,7 +85,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun endorseMessage(message: Message) {
-        launch {
+        viewModelScope.launch {
             val result = realtime.endorseMessage(message.id).awaitEmptyAndParseErrors(gson)
             when (result) {
                 is CaffeineEmptyResult.Success -> Timber.d("Successfully endorsed a message")

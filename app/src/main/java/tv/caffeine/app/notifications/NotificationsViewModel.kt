@@ -1,6 +1,8 @@
 package tv.caffeine.app.notifications
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
@@ -11,17 +13,14 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class NotificationsViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val gson: Gson,
     private val usersService: UsersService,
     private val followManager: FollowManager,
     private val tokenStore: TokenStore
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     val notifications: MutableLiveData<List<CaffeineNotification>> = MutableLiveData()
 
     init {
@@ -30,7 +29,7 @@ class NotificationsViewModel @Inject constructor(
 
     private fun load() {
         val caid = tokenStore.caid ?: return
-        launch {
+        viewModelScope.launch {
             val currentUser = followManager.loadUserDetails(caid) ?: return@launch
             val referenceTimestamp = currentUser.notificationsLastViewedAt
             val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
@@ -47,7 +46,7 @@ class NotificationsViewModel @Inject constructor(
         return timestamp.isAfter(referenceTimestamp)
     }
 
-    fun markNotificationsViewed() = launch {
+    fun markNotificationsViewed() = viewModelScope.launch {
         val caid = tokenStore.caid ?: return@launch
         val result = usersService.notificationsViewed(caid).awaitAndParseErrors(gson)
         when (result) {

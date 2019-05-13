@@ -7,11 +7,13 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.util.TestDispatchConfig
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+@RunWith(RobolectricTestRunner::class)
 class ExploreViewModelTests {
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -22,7 +24,7 @@ class ExploreViewModelTests {
         val result: CaffeineResult<Findings> = CaffeineResult.Success(Findings.Explore(arrayOf()))
         val findBroadcastersUseCase = mockk<FindBroadcastersUseCase>()
         coEvery { findBroadcastersUseCase.invoke(any()) } returns result
-        subject = ExploreViewModel(TestDispatchConfig, findBroadcastersUseCase)
+        subject = ExploreViewModel(findBroadcastersUseCase)
     }
 
     @Test

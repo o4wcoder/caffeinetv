@@ -4,6 +4,9 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -12,17 +15,14 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import java.text.NumberFormat
 import javax.inject.Inject
 
 class MyProfileViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val tokenStore: TokenStore,
     private val followManager: FollowManager,
     private val uploadAvatarUseCase: UploadAvatarUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val numberFormat = NumberFormat.getInstance()
 
@@ -42,7 +42,7 @@ class MyProfileViewModel @Inject constructor(
 
     private fun load() {
         val caid = tokenStore.caid ?: return
-        loadJob = launch {
+        loadJob = viewModelScope.launch {
             getUserProfile(caid)?.let { updateViewModel(it) }
             loadUserProfile(caid)?.let { updateViewModel(it) }
         }
@@ -52,7 +52,7 @@ class MyProfileViewModel @Inject constructor(
 
     private suspend fun loadUserProfile(caid: CAID) = followManager.loadUserDetails(caid)
 
-    private suspend fun updateViewModel(user: User) = withContext(dispatchConfig.main) {
+    private suspend fun updateViewModel(user: User) = withContext(Dispatchers.Main) {
         _userProfile.value = UserProfile(user, null, numberFormat, followManager)
     }
 
@@ -65,7 +65,7 @@ class MyProfileViewModel @Inject constructor(
     }
 
     fun uploadAvatar(bitmap: Bitmap) {
-        launch {
+        viewModelScope.launch {
             val result = uploadAvatarUseCase(bitmap)
             if (result is CaffeineResult.Success) {
                 load()
@@ -75,7 +75,7 @@ class MyProfileViewModel @Inject constructor(
 
     private fun updateUser(name: String? = null, bio: String? = null) {
         val caid = tokenStore.caid ?: return
-        launch {
+        viewModelScope.launch {
             val result = followManager.updateUser(caid, name, bio)
             when (result) {
                 is CaffeineResult.Success -> updateViewModel(result.value.user)

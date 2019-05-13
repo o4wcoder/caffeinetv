@@ -3,6 +3,8 @@ package tv.caffeine.app.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.ApiErrorResult
 import tv.caffeine.app.api.NextAccountAction
@@ -11,8 +13,6 @@ import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.api.usernameErrorsString
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 sealed class SignInOutcome {
@@ -24,15 +24,14 @@ sealed class SignInOutcome {
 }
 
 class SignInViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val signInUseCase: SignInUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _signInOutcome = MutableLiveData<SignInOutcome>()
     val signInOutcome: LiveData<SignInOutcome> = Transformations.map(_signInOutcome) { it }
 
     fun login(username: String, password: String) {
-        launch {
+        viewModelScope.launch {
             val result = signInUseCase(username, password)
             _signInOutcome.value = when (result) {
                 is CaffeineResult.Success -> processSuccess(result.value)

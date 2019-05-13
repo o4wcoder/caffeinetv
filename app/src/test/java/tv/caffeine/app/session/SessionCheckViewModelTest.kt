@@ -8,7 +8,6 @@ import tv.caffeine.app.api.isTokenExpirationError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.settings.InMemorySettingsStorage
-import tv.caffeine.app.util.TestDispatchConfig
 
 class SessionCheckViewModelTest {
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
@@ -16,7 +15,7 @@ class SessionCheckViewModelTest {
     @Test fun `missing refresh token fails session check`() {
         val settingsStorage = InMemorySettingsStorage(refreshToken = null)
         val tokenStore = TokenStore(settingsStorage)
-        val subject = SessionCheckViewModel(TestDispatchConfig, tokenStore)
+        val subject = SessionCheckViewModel(tokenStore)
         subject.sessionCheck.observeForever { result ->
             assertTrue(result is CaffeineResult.Error)
             assertTrue((result as CaffeineResult.Error).error.isTokenExpirationError())
@@ -26,7 +25,7 @@ class SessionCheckViewModelTest {
     @Test fun `when refresh token is present session check succeeds`() {
         val settingsStorage = InMemorySettingsStorage(refreshToken = "abc")
         val tokenStore = TokenStore(settingsStorage)
-        val subject = SessionCheckViewModel(TestDispatchConfig, tokenStore)
+        val subject = SessionCheckViewModel(tokenStore)
         subject.sessionCheck.observeForever { result ->
             assertTrue(result is CaffeineResult.Success)
             assertTrue((result as CaffeineResult.Success).value)

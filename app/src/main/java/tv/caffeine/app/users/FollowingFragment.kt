@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.gson.Gson
@@ -20,8 +22,6 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
@@ -47,10 +47,9 @@ class FollowingFragment @Inject constructor(
 }
 
 class FollowingViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val gson: Gson,
     private val usersService: UsersService
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _following = MutableLiveData<List<CaidRecord.FollowRecord>>()
 
@@ -63,7 +62,7 @@ class FollowingViewModel @Inject constructor(
         }
 
     private fun load() {
-        launch {
+        viewModelScope.launch {
             val result = usersService.listFollowing(caid).awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> _following.value = result.value

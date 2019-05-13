@@ -57,7 +57,7 @@ class GoldBundlesViewModelTests {
             val loadGoldBundlesUseCase = LoadGoldBundlesUseCase(paymentsClientService, gson)
             val purchaseGoldBundleUseCase = PurchaseGoldBundleUseCase(paymentsClientService, gson)
             coEvery { processPlayStorePurchaseUseCase.invoke(any(), any()) } returns CaffeineResult.Success("random")
-            subject = GoldBundlesViewModel(TestDispatchConfig, mainActivity.applicationContext, TokenStore(settingsStorage), walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
+            subject = GoldBundlesViewModel(mainActivity.applicationContext, TokenStore(settingsStorage), walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
         }
 
         @After

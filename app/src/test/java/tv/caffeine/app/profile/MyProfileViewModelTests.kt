@@ -8,11 +8,13 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.util.TestDispatchConfig
 
+@RunWith(RobolectricTestRunner::class)
 class MyProfileViewModelTests {
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -37,7 +39,7 @@ class MyProfileViewModelTests {
         coEvery { fakeFollowManager.isSelf(any()) } returns false
         coEvery { fakeFollowManager.isFollowing(any()) } returns false
         val fakeUploadAvatarUseCase = mockk<UploadAvatarUseCase>()
-        subject = MyProfileViewModel(TestDispatchConfig, fakeTokenStore, fakeFollowManager, fakeUploadAvatarUseCase)
+        subject = MyProfileViewModel(fakeTokenStore, fakeFollowManager, fakeUploadAvatarUseCase)
     }
 
     @Test

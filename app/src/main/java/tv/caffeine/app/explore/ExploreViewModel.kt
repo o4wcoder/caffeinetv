@@ -3,17 +3,16 @@ package tv.caffeine.app.explore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val findBroadcastersUseCase: FindBroadcastersUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private val _data = MutableLiveData<CaffeineResult<Findings>>()
     val data: LiveData<CaffeineResult<Findings>> = Transformations.map(_data) { it }
 
@@ -31,7 +30,7 @@ class ExploreViewModel @Inject constructor(
 
     private fun usersMatching(query: String?) {
         exploreJob?.cancel()
-        exploreJob = launch {
+        exploreJob = viewModelScope.launch {
             val result = findBroadcastersUseCase(query)
             _data.value = result
         }

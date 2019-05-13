@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -18,8 +20,6 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class IgnoredUsersFragment @Inject constructor(
@@ -39,11 +39,10 @@ class IgnoredUsersFragment @Inject constructor(
 }
 
 class IgnoredUsersViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val gson: Gson,
     private val tokenStore: TokenStore,
     private val usersService: UsersService
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _ignoredUsers = MutableLiveData<List<CaidRecord.IgnoreRecord>>()
 
@@ -55,7 +54,7 @@ class IgnoredUsersViewModel @Inject constructor(
 
     private fun load() {
         val caid = tokenStore.caid ?: return
-        launch {
+        viewModelScope.launch {
             val result = usersService.listIgnoredUsers(caid).awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> _ignoredUsers.value = result.value

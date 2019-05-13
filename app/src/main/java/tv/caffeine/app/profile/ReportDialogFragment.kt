@@ -12,6 +12,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
@@ -25,9 +27,7 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.ui.CaffeineDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.ui.DialogActionBar
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
@@ -82,15 +82,14 @@ class ReportDialogFragment : CaffeineDialogFragment() {
 }
 
 class ReportUserViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val usersService: UsersService,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private val _reportUserResult = MutableLiveData<Boolean>()
     val reportUserResult: LiveData<Boolean> = Transformations.map(_reportUserResult) { it }
 
     fun reportUser(caid: CAID, reason: ReasonKey, description: String?) {
-        launch {
+        viewModelScope.launch {
             val result = usersService.report(caid, ReportUserBody(reason.name, description))
                     .awaitEmptyAndParseErrors(gson)
             when (result) {

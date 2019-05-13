@@ -8,12 +8,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.CaffeineCredentials
 import tv.caffeine.app.api.NextAccountAction
 import tv.caffeine.app.api.SignInResult
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.util.TestDispatchConfig
 
+@RunWith(RobolectricTestRunner::class)
 class SignInViewModelTests {
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -32,7 +34,7 @@ class SignInViewModelTests {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        subject = SignInViewModel(TestDispatchConfig, signInUseCase)
+        subject = SignInViewModel(signInUseCase)
     }
 
     @Test

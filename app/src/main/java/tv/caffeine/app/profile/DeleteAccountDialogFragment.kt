@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
@@ -22,8 +24,6 @@ import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.ui.CaffeineDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.navigateToLanding
 import javax.inject.Inject
 
@@ -77,18 +77,17 @@ class DeleteAccountDialogFragment : CaffeineDialogFragment() {
 }
 
 class DeleteAccountViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val accountsService: AccountsService,
     private val tokenStore: TokenStore,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val _deleteAccountResult = MutableLiveData<DeleteAccountResult>()
     val deleteAccountResult: LiveData<DeleteAccountResult> = Transformations.map(_deleteAccountResult) { it }
 
     fun deleteAccount(password: String) {
         val caid = tokenStore.caid ?: return
-        launch {
+        viewModelScope.launch {
             val result = accountsService.deleteAccount(caid, DeleteAccountBody(DeleteAccountBody.Account(password)))
                     .awaitEmptyAndParseErrors(gson)
             when (result) {

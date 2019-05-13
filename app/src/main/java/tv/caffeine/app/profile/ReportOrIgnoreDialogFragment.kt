@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
@@ -21,8 +23,6 @@ import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.ui.CaffeineDialogFragment
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
@@ -81,17 +81,16 @@ class ReportOrIgnoreDialogFragment : CaffeineDialogFragment() {
 }
 
 class IgnoreUserViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val tokenStore: TokenStore,
     private val usersService: UsersService,
     private val gson: Gson
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private val _ignoreUserResult = MutableLiveData<Boolean>()
     val ignoreUserResult: LiveData<Boolean> = Transformations.map(_ignoreUserResult) { it }
 
     fun ignoreUser(ignoree: String) {
         val ignorer = tokenStore.caid ?: return
-        launch {
+        viewModelScope.launch {
             val result = usersService.ignore(ignorer, ignoree).awaitEmptyAndParseErrors(gson)
             when (result) {
                 is CaffeineEmptyResult.Success -> _ignoreUserResult.value = true

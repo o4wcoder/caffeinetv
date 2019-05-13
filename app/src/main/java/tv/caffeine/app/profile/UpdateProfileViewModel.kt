@@ -2,23 +2,22 @@ package tv.caffeine.app.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.AccountUpdateResult
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class UpdateProfileViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val updateEmailUseCase: UpdateEmailUseCase,
     private val updatePasswordUseCase: UpdatePasswordUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
 
     private val update = MutableLiveData<CaffeineResult<AccountUpdateResult>>()
 
     fun updateEmail(currentPassword: String, email: String): LiveData<CaffeineResult<AccountUpdateResult>> {
-        launch {
+        viewModelScope.launch {
             val result = updateEmailUseCase(currentPassword, email)
             update.value = result
         }
@@ -26,7 +25,7 @@ class UpdateProfileViewModel @Inject constructor(
     }
 
     fun updatePassword(currentPassword: String, password1: String, password2: String): LiveData<CaffeineResult<AccountUpdateResult>> {
-        launch {
+        viewModelScope.launch {
             val result = updatePasswordUseCase(currentPassword, password1, password2)
             update.value = result
         }

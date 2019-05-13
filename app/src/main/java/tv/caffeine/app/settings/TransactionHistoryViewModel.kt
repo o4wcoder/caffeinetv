@@ -3,18 +3,17 @@ package tv.caffeine.app.settings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.PaymentsEnvelope
 import tv.caffeine.app.api.TransactionHistoryPayload
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class TransactionHistoryViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val transactionHistoryUseCase: TransactionHistoryUseCase
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private val _transactionHistory = MutableLiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>>()
     val transactionHistory: LiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>> = Transformations.map(_transactionHistory) { it }
 
@@ -23,7 +22,7 @@ class TransactionHistoryViewModel @Inject constructor(
     }
 
     private fun load() {
-        launch {
+        viewModelScope.launch {
             _transactionHistory.value = transactionHistoryUseCase()
         }
     }

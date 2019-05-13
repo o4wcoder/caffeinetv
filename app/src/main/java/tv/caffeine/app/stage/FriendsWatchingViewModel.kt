@@ -3,20 +3,19 @@ package tv.caffeine.app.stage
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.CaffeineViewModel
-import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 
 class FriendsWatchingViewModel @Inject constructor(
-    dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
     private val friendsWatchingControllerFactory: FriendsWatchingController.Factory
-) : CaffeineViewModel(dispatchConfig) {
+) : ViewModel() {
     private var friendsWatchingController: FriendsWatchingController? = null
     private val friendsWatchingSet: MutableSet<CAID> = mutableSetOf()
 
@@ -25,7 +24,7 @@ class FriendsWatchingViewModel @Inject constructor(
 
     fun load(stageIdentifier: String) {
         friendsWatchingController = friendsWatchingControllerFactory.create(stageIdentifier)
-        launch {
+        viewModelScope.launch {
             friendsWatchingController?.channel?.consumeEach { event ->
                 if (event.isViewing) {
                     friendsWatchingSet.add(event.caid)
