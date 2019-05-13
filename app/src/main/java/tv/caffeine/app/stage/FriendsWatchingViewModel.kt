@@ -2,8 +2,8 @@ package tv.caffeine.app.stage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ class FriendsWatchingViewModel @Inject constructor(
     private val friendsWatchingSet: MutableSet<CAID> = mutableSetOf()
 
     private val _friendsWatching = MutableLiveData<List<User>>()
-    val friendsWatching: LiveData<List<User>> = Transformations.map(_friendsWatching) { it }
+    val friendsWatching: LiveData<List<User>> = _friendsWatching.map { it }
 
     fun load(stageIdentifier: String) {
         friendsWatchingController = friendsWatchingControllerFactory.create(stageIdentifier)

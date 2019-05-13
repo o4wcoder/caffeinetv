@@ -8,8 +8,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -115,7 +115,7 @@ class LiveHostableBroadcastersViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _broadcasters = MutableLiveData<List<LobbyItem>>()
-    val broadcasters: LiveData<List<LobbyItem>> = Transformations.map(_broadcasters) { it }
+    val broadcasters: LiveData<List<LobbyItem>> = _broadcasters.map { it }
 
     init {
         load()

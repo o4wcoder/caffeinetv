@@ -2,8 +2,8 @@ package tv.caffeine.app.lobby
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -26,7 +26,7 @@ class LobbyViewModel @Inject constructor(
 ) : ViewModel() {
     private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
 
-    val lobby: LiveData<CaffeineResult<Lobby>> = Transformations.map(_lobby) { it }
+    val lobby: LiveData<CaffeineResult<Lobby>> = _lobby.map { it }
 
     private var refreshJob: Job? = null
     private var isFirstLoad = true

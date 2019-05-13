@@ -6,8 +6,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -53,7 +53,7 @@ class FollowersViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _followers = MutableLiveData<List<CaidRecord.FollowRecord>>()
-    val followers: LiveData<List<CaidRecord.FollowRecord>> = Transformations.map(_followers) { it }
+    val followers: LiveData<List<CaidRecord.FollowRecord>> = _followers.map { it }
 
     var caid: CAID = ""
         set(value) {

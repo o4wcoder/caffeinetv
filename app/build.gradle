@@ -93,7 +93,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0-beta01'
     implementation "androidx.fragment:fragment:${versions.fragments}"
     implementation "androidx.fragment:fragment-ktx:${versions.fragments}"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
     // Preferences
     implementation 'androidx.preference:preference:1.0.0'
@@ -116,8 +115,14 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:${versions.navigation}"
     implementation "androidx.navigation:navigation-ui-ktx:${versions.navigation}"
 
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-common-java8:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}"
+
     // Data binding
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01'
     kapt "androidx.databinding:databinding-compiler:${versions.android_plugin}"
 
     // Retrofit, okhttp

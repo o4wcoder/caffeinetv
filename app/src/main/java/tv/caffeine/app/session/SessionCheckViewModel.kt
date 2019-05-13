@@ -2,8 +2,8 @@ package tv.caffeine.app.session
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import tv.caffeine.app.api.RefreshTokenMissingError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.TokenStore
@@ -14,7 +14,7 @@ class SessionCheckViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _sessionCheck = MutableLiveData<CaffeineResult<Boolean>>()
-    val sessionCheck: LiveData<CaffeineResult<Boolean>> = Transformations.map(_sessionCheck) { it }
+    val sessionCheck: LiveData<CaffeineResult<Boolean>> = _sessionCheck.map { it }
 
     init {
         load()

@@ -6,8 +6,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -46,7 +46,7 @@ class IgnoredUsersViewModel @Inject constructor(
 
     private val _ignoredUsers = MutableLiveData<List<CaidRecord.IgnoreRecord>>()
 
-    val ignoredUsers: LiveData<List<CaidRecord.IgnoreRecord>> = Transformations.map(_ignoredUsers) { it }
+    val ignoredUsers: LiveData<List<CaidRecord.IgnoreRecord>> = _ignoredUsers.map { it }
 
     init {
         load()

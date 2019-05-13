@@ -3,8 +3,8 @@ package tv.caffeine.app.profile
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,7 +27,7 @@ class MyProfileViewModel @Inject constructor(
     private val numberFormat = NumberFormat.getInstance()
 
     private val _userProfile = MutableLiveData<UserProfile>()
-    val userProfile: LiveData<UserProfile> = Transformations.map(_userProfile) { it }
+    val userProfile: LiveData<UserProfile> = _userProfile.map { it }
 
     private var loadJob: Job? = null
         set(value) {

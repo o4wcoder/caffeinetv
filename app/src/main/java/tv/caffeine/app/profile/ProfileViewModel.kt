@@ -2,10 +2,9 @@ package tv.caffeine.app.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.kochava.base.Tracker.configure
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
@@ -22,7 +21,7 @@ class ProfileViewModel @Inject constructor(
     private val numberFormat = NumberFormat.getInstance()
 
     private val _userProfile = MutableLiveData<UserProfile>()
-    val userProfile: LiveData<UserProfile> = Transformations.map(_userProfile) { it }
+    val userProfile: LiveData<UserProfile> = _userProfile.map { it }
 
     fun load(userHandle: String) = viewModelScope.launch {
         val userDetails = followManager.userDetails(userHandle) ?: return@launch
@@ -50,7 +49,7 @@ class ProfileViewModel @Inject constructor(
             forceLoad(caid)
             liveData.value = result
         }
-        return Transformations.map(liveData) { it }
+        return liveData.map { it }
     }
 
     fun unfollow(caid: CAID) = viewModelScope.launch {

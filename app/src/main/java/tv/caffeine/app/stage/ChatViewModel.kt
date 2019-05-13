@@ -3,8 +3,8 @@ package tv.caffeine.app.stage
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.channels.consumeEach
@@ -48,7 +48,7 @@ class ChatViewModel @Inject constructor(
     private val preferredPositions = (0 until maxVisibleReactions).toList()
 
     private val _messages = MutableLiveData<List<Message>>()
-    val messages: LiveData<List<Message>> = Transformations.map(_messages) { it }
+    val messages: LiveData<List<Message>> = _messages.map { it }
 
     fun load(stageIdentifier: String) {
         messageHandshake = messageHandshakeFactory.create(stageIdentifier)

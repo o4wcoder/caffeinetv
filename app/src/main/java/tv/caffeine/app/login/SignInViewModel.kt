@@ -2,8 +2,8 @@ package tv.caffeine.app.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.ApiErrorResult
@@ -28,7 +28,7 @@ class SignInViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _signInOutcome = MutableLiveData<SignInOutcome>()
-    val signInOutcome: LiveData<SignInOutcome> = Transformations.map(_signInOutcome) { it }
+    val signInOutcome: LiveData<SignInOutcome> = _signInOutcome.map { it }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {

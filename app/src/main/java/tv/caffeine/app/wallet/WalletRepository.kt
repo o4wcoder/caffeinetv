@@ -2,7 +2,7 @@ package tv.caffeine.app.wallet
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -26,7 +26,7 @@ class WalletRepository @Inject constructor(
     override val coroutineContext get() = dispatchConfig.main + job
 
     private val _wallet = MutableLiveData<Wallet>()
-    val wallet: LiveData<Wallet> = Transformations.map(_wallet) { it }
+    val wallet: LiveData<Wallet> = _wallet.map { it }
 
     fun refresh() = launch {
         val result = paymentsClientService.getWallet(GetWalletBody()).awaitAndParseErrors(gson)

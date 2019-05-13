@@ -11,8 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
@@ -309,7 +309,7 @@ class SettingsViewModel @Inject constructor(
     private val gson: Gson
 ) : ViewModel() {
     private val _userDetails = MutableLiveData<User>()
-    val userDetails: LiveData<User?> = Transformations.map(_userDetails) { it }
+    val userDetails: LiveData<User?> = _userDetails.map { it }
 
     init {
         load()
@@ -363,7 +363,7 @@ class SettingsViewModel @Inject constructor(
             load()
             liveData.value = result
         }
-        return Transformations.map(liveData) { it }
+        return liveData.map { it }
     }
 }
 
@@ -373,9 +373,9 @@ class NotificationSettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _notificationSettings = MutableLiveData<NotificationSettings>()
-    val notificationSettings: LiveData<NotificationSettings> = Transformations.map(_notificationSettings) { it }
-    val pushCount: LiveData<Int> = Transformations.map(_notificationSettings) { getPushCount(it) }
-    val emailCount: LiveData<Int> = Transformations.map(_notificationSettings) { getEmailCount(it) }
+    val notificationSettings: LiveData<NotificationSettings> = _notificationSettings.map { it }
+    val pushCount: LiveData<Int> = _notificationSettings.map { getPushCount(it) }
+    val emailCount: LiveData<Int> = _notificationSettings.map { getEmailCount(it) }
 
     fun load() {
         viewModelScope.launch {

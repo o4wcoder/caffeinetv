@@ -5,8 +5,8 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -50,7 +50,7 @@ class GoldBundlesViewModel @Inject constructor(
 ) : ViewModel(), BillingClientStateListener {
 
     private val _events = MutableLiveData<Event<PurchaseStatus>>()
-    val events: LiveData<Event<PurchaseStatus>> = Transformations.map(_events) { it }
+    val events: LiveData<Event<PurchaseStatus>> = _events.map { it }
 
     private val _goldBundlesUsingCredits = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
     private val _goldBundlesUsingPlayStore = MutableLiveData<CaffeineResult<List<GoldBundle>>>()
@@ -59,7 +59,7 @@ class GoldBundlesViewModel @Inject constructor(
         _events.value = Event(purchaseStatus)
     }
 
-    val wallet: LiveData<Wallet> = Transformations.map(walletRepository.wallet) { it }
+    val wallet: LiveData<Wallet> = walletRepository.wallet.map { it }
     private val billingClient: BillingClient = BillingClientFactory.createBillingClient(context,
             PurchasesUpdatedListener { responseCode, purchases ->
                 Timber.d("Connected")

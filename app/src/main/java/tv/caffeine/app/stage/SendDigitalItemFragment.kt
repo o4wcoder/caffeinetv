@@ -8,8 +8,9 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
@@ -118,9 +119,11 @@ class SendDigitalItemViewModel @Inject constructor(
     }
 
     fun load(digitalItemId: String): LiveData<DigitalItem> {
-        return Transformations.map(digitalItemRepository.items) { payload ->
-            payload.digitalItems.state.find {
-                it.id == digitalItemId
+        return digitalItemRepository.items.switchMap { payload ->
+            liveData {
+                payload.digitalItems.state.find { digitalItem ->
+                    digitalItem.id == digitalItemId
+                }?.let { emit(it) }
             }
         }
     }

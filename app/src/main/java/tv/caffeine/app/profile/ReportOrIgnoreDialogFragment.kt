@@ -8,8 +8,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -86,7 +86,7 @@ class IgnoreUserViewModel @Inject constructor(
     private val gson: Gson
 ) : ViewModel() {
     private val _ignoreUserResult = MutableLiveData<Boolean>()
-    val ignoreUserResult: LiveData<Boolean> = Transformations.map(_ignoreUserResult) { it }
+    val ignoreUserResult: LiveData<Boolean> = _ignoreUserResult.map { it }
 
     fun ignoreUser(ignoree: String) {
         val ignorer = tokenStore.caid ?: return

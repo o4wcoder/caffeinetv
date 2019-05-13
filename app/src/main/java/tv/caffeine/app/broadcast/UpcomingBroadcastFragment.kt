@@ -12,8 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -98,7 +98,7 @@ class GuideViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _guides = MutableLiveData<List<Guide>>()
-    val guides: LiveData<List<Guide>> = Transformations.map(_guides) { it }
+    val guides: LiveData<List<Guide>> = _guides.map { it }
 
     init {
         load()

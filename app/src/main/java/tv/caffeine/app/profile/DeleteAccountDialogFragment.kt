@@ -9,8 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -83,7 +83,7 @@ class DeleteAccountViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _deleteAccountResult = MutableLiveData<DeleteAccountResult>()
-    val deleteAccountResult: LiveData<DeleteAccountResult> = Transformations.map(_deleteAccountResult) { it }
+    val deleteAccountResult: LiveData<DeleteAccountResult> = _deleteAccountResult.map { it }
 
     fun deleteAccount(password: String) {
         val caid = tokenStore.caid ?: return

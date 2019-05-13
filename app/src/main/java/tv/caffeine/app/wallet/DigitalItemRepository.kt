@@ -2,7 +2,7 @@ package tv.caffeine.app.wallet
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -27,7 +27,7 @@ class DigitalItemRepository @Inject constructor(
     override val coroutineContext get() = dispatchConfig.main + job
 
     private val _items = MutableLiveData<DigitalItemsPayload>()
-    val items: LiveData<DigitalItemsPayload> = Transformations.map(_items) { it }
+    val items: LiveData<DigitalItemsPayload> = _items.map { it }
 
     fun refresh() = launch {
         loadDigitalItems()

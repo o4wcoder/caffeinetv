@@ -7,8 +7,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ class FeaturedProgramGuideViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _listings = MutableLiveData<List<FeaturedGuideItem>>()
-    val listings: LiveData<List<FeaturedGuideItem>> = Transformations.map(_listings) { it }
+    val listings: LiveData<List<FeaturedGuideItem>> = _listings.map { it }
 
     private var refreshJob: Job? = null
 

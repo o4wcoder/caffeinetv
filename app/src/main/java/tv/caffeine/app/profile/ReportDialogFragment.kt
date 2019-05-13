@@ -11,8 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -86,7 +86,7 @@ class ReportUserViewModel @Inject constructor(
     private val gson: Gson
 ) : ViewModel() {
     private val _reportUserResult = MutableLiveData<Boolean>()
-    val reportUserResult: LiveData<Boolean> = Transformations.map(_reportUserResult) { it }
+    val reportUserResult: LiveData<Boolean> = _reportUserResult.map { it }
 
     fun reportUser(caid: CAID, reason: ReasonKey, description: String?) {
         viewModelScope.launch {

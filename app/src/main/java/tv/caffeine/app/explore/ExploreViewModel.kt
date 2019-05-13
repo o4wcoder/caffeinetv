@@ -2,8 +2,8 @@ package tv.caffeine.app.explore
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -14,7 +14,7 @@ class ExploreViewModel @Inject constructor(
     private val findBroadcastersUseCase: FindBroadcastersUseCase
 ) : ViewModel() {
     private val _data = MutableLiveData<CaffeineResult<Findings>>()
-    val data: LiveData<CaffeineResult<Findings>> = Transformations.map(_data) { it }
+    val data: LiveData<CaffeineResult<Findings>> = _data.map { it }
 
     var queryString: String? = null
         set(value) {
