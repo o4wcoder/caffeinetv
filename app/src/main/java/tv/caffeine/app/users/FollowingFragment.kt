@@ -65,7 +65,7 @@ class FollowingViewModel @Inject constructor(
         viewModelScope.launch {
             val result = usersService.listFollowing(caid).awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> _following.value = result.value
+                is CaffeineResult.Success -> _following.value = result.value.following
                 is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }

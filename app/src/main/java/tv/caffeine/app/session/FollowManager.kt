@@ -51,7 +51,7 @@ class FollowManager @Inject constructor(
         tokenStore.caid?.let { caid ->
             val result = usersService.listFollowing(caid).awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> followedUsers[caid] = result.value.map { it.caid }.toSet()
+                is CaffeineResult.Success -> followedUsers[caid] = result.value.following.map { it.caid }.toSet()
                 is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }

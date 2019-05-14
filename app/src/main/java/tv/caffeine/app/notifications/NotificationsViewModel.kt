@@ -34,7 +34,7 @@ class NotificationsViewModel @Inject constructor(
             val referenceTimestamp = currentUser.notificationsLastViewedAt
             val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> notifications.value = result.value.map { FollowNotification(it, isNewer(it.followedAt, referenceTimestamp)) }
+                is CaffeineResult.Success -> notifications.value = result.value.followers.map { FollowNotification(it, isNewer(it.followedAt, referenceTimestamp)) }
                 is CaffeineResult.Error -> Timber.e("Error loading followers ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }

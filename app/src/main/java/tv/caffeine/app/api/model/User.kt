@@ -47,6 +47,18 @@ enum class IdentityProvider : Parcelable {
     facebook, twitter
 }
 
+class PaginatedFollowers(
+    val limit: Int? = 100,
+    val offset: Int? = 0,
+    val followers: List<CaidRecord.FollowRecord>
+)
+
+class PaginatedFollowing(
+    val limit: Int? = 100,
+    val offset: Int? = 0,
+    val following: List<CaidRecord.FollowRecord>
+)
+
 sealed class CaidRecord(val caid: CAID) {
     class FriendWatching(caid: CAID) : CaidRecord(caid)
     class FollowRecord(caid: CAID, val followedAt: ZonedDateTime?) : CaidRecord(caid)

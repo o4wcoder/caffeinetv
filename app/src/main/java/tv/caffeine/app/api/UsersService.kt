@@ -11,16 +11,18 @@ import retrofit2.http.Path
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.IdentityProvider
+import tv.caffeine.app.api.model.PaginatedFollowers
+import tv.caffeine.app.api.model.PaginatedFollowing
 import tv.caffeine.app.api.model.SignedUserToken
 import tv.caffeine.app.api.model.UserContainer
 import tv.caffeine.app.api.model.UserUpdateBody
 
 interface UsersService {
-    @GET("v1/users/{caid}/followers")
-    fun listFollowers(@Path("caid") userId: CAID): Deferred<Response<List<CaidRecord.FollowRecord>>>
+    @GET("v2/users/{caid}/followers")
+    fun listFollowers(@Path("caid") userId: CAID): Deferred<Response<PaginatedFollowers>>
 
-    @GET("v1/users/{caid}/following")
-    fun listFollowing(@Path("caid") userId: CAID): Deferred<Response<List<CaidRecord.FollowRecord>>>
+    @GET("v2/users/{caid}/following")
+    fun listFollowing(@Path("caid") userId: CAID): Deferred<Response<PaginatedFollowing>>
 
     @POST("v1/users/{caid1}/follow/{caid2}")
     fun follow(@Path("caid1") follower: CAID, @Path("caid2") toFollow: CAID): Deferred<Response<Void>>

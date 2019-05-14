@@ -65,7 +65,7 @@ class FollowersViewModel @Inject constructor(
         viewModelScope.launch {
             val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> _followers.value = result.value
+                is CaffeineResult.Success -> _followers.value = result.value.followers
                 is CaffeineResult.Error -> Timber.e("Error loading followers list ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
