@@ -25,9 +25,9 @@ class Lobby(val tags: Map<String, Tag>, val content: Map<String, Content>, val h
 
     fun getAllBroadcasters(): List<String> {
         return sections.flatMap { section ->
-            (section.broadcasters?.map { it.user.username } ?: listOf()).plus(
+            (section.broadcasters?.filter { it.broadcast != null }?.map { it.user.username } ?: listOf()).plus(
                     section.categories?.flatMap { category ->
-                        category.broadcasters.map { it.user.username }
+                        category.broadcasters.filter { it.broadcast != null }.map { it.user.username }
                     } ?: listOf()
             )
         }

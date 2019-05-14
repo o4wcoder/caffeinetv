@@ -8,14 +8,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 
 @RunWith(RobolectricTestRunner::class)
 class LobbyBroadcasterTests {
 
-    private val usernames1 = listOf("a", "b", "c")
-    private val usernames2 = listOf("d", "e", "f")
+    private val usernames1 = listOf("a", "b", "c", "offline1")
+    private val usernames2 = listOf("d", "e", "f", "offline2")
+    private val offlineUsernames = listOf("offline1", "offline2")
 
     @Before
     fun setup() {
@@ -23,24 +25,24 @@ class LobbyBroadcasterTests {
     }
 
     @Test
-    fun `include all broadcasters at the top of the lobby`() {
+    fun `include all live broadcasters at the top of the lobby in the stage pager`() {
         val lobbySections = arrayOf(getLobbySectionExample(usernames1), getLobbySectionExample(usernames2))
         val broadcasters = getLobbyExample(lobbySections).getAllBroadcasters()
-        assertEquals(usernames1.plus(usernames2), broadcasters)
+        assertEquals(listOf("a", "b", "c", "d", "e", "f"), broadcasters)
     }
 
     @Test
-    fun `include all broadcasters from the categories of the lobby`() {
+    fun `include all live broadcasters from the categories of the lobby in the stage pager`() {
         val lobbySections = arrayOf(getLobbyCategoryExample(usernames1), getLobbyCategoryExample(usernames2))
         val broadcasters = getLobbyExample(lobbySections).getAllBroadcasters()
-        assertEquals(usernames1.plus(usernames2), broadcasters)
+        assertEquals(listOf("a", "b", "c", "d", "e", "f"), broadcasters)
     }
 
     @Test
-    fun `include all broadcasters from the top section and the categories of the lobby`() {
+    fun `include all live broadcasters from the top section and the categories of the lobby in the stage pager`() {
         val lobbySections = arrayOf(getLobbySectionExample(usernames1), getLobbyCategoryExample(usernames2))
         val broadcasters = getLobbyExample(lobbySections).getAllBroadcasters()
-        assertEquals(usernames1.plus(usernames2), broadcasters)
+        assertEquals(listOf("a", "b", "c", "d", "e", "f"), broadcasters)
     }
 
     private fun getLobbyExample(sections: Array<Lobby.Section>) =
@@ -57,7 +59,8 @@ class LobbyBroadcasterTests {
 
     private fun getBroadcasterExamples(usernames: List<String>): Array<Lobby.Broadcaster> {
         return usernames.map {
-            Lobby.Broadcaster("0", "0", getUserExample(it), "0", null, null, listOf(), 0)
+            Lobby.Broadcaster("0", "0", getUserExample(it), "0",
+                if (it in offlineUsernames) null else mockk<Broadcast>(), null, listOf(), 0)
         }.toTypedArray()
     }
 
