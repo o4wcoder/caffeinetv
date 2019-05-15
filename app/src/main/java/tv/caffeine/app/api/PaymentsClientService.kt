@@ -172,7 +172,10 @@ data class GoldBundle(
     val usingInAppBilling: PurchaseOption.PurchaseUsingInAppBilling?,
     val usingStripe: PurchaseOption.PurchaseUsingStripe?,
     var skuDetails: SkuDetails?
-)
+) {
+    fun availableUsingCredits() = usingCredits != null && usingInAppBilling != null
+    fun availableUsingInAppBilling() = usingInAppBilling != null
+}
 
 sealed class PurchaseOption {
     data class PurchaseWithCredits(val id: String, val cost: Int, val canPurchase: Boolean) : PurchaseOption()

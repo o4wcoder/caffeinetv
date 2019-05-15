@@ -3,6 +3,7 @@ package tv.caffeine.app.settings
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -116,15 +117,21 @@ class GoldBundlesViewModel @Inject constructor(
         viewModelScope.launch {
             val allGoldBundles = loadGoldBundlesUseCase()
                     .map { it.payload.goldBundles.state }
-            val listUsingCredits = allGoldBundles
-                    .map { it.filter { gb -> gb.usingCredits != null } }
-            val listUsingPlayStore = allGoldBundles
-                    .map { lookupSkuDetails(it.filter { gb -> gb.usingInAppBilling != null }) }
             withContext(Dispatchers.Main) {
-                _goldBundlesUsingCredits.value = listUsingCredits
-                _goldBundlesUsingPlayStore.value = listUsingPlayStore
+                _goldBundlesUsingCredits.value = allGoldBundles.map { getGoldBundlesUsingCredits(it) }
+                _goldBundlesUsingPlayStore.value = allGoldBundles.map {
+                    lookupSkuDetails(getGoldBundlesUsingPlayStore(it))
+                }
             }
         }
+    }
+
+    @VisibleForTesting fun getGoldBundlesUsingCredits(allGoldBundles: List<GoldBundle>): List<GoldBundle> {
+        return allGoldBundles.filter { it.availableUsingCredits() }
+    }
+
+    @VisibleForTesting fun getGoldBundlesUsingPlayStore(allGoldBundles: List<GoldBundle>): List<GoldBundle> {
+        return allGoldBundles.filter { it.availableUsingInAppBilling() }
     }
 
     fun getGoldBundles(buyGoldOption: BuyGoldOption): LiveData<CaffeineResult<List<GoldBundle>>> {

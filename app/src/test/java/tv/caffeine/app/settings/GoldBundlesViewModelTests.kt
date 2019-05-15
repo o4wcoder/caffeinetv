@@ -115,6 +115,27 @@ class GoldBundlesViewModelTests {
             }
             subject.events.observe(mainActivity, observer)
         }
+
+        @Test
+        fun `gold bundles buyable with credits must be buyable with in app billing`() {
+            val allGoldBundles = listOf(
+                GoldBundle("1", 1, 1, mockk(), null, mockk(), null, null),
+                GoldBundle("2", 2, 2, mockk(), null, null, null, null)
+            )
+            val filteredGoldBundles = subject.getGoldBundlesUsingCredits(allGoldBundles)
+            assertEquals(1, filteredGoldBundles.size)
+            assertEquals("1", filteredGoldBundles[0].id)
+        }
+
+        @Test
+        fun `gold bundles buyable with in app billing should have the in app billing purchase option`() {
+            val allGoldBundles = listOf(
+                GoldBundle("1", 1, 1, mockk(), null, mockk(), null, null),
+                GoldBundle("2", 2, 2, mockk(), null, null, null, null))
+            val filteredGoldBundles = subject.getGoldBundlesUsingPlayStore(allGoldBundles)
+            assertEquals(1, filteredGoldBundles.size)
+            assertEquals("1", filteredGoldBundles[0].id)
+        }
     }
 
     class BillingClientBroadcastHelper(private val context: Context) {
