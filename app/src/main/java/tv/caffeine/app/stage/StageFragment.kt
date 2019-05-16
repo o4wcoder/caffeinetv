@@ -293,7 +293,7 @@ class StageFragment @Inject constructor(
             binding.friendsWatchingButton?.isEnabled = true
             binding.friendsWatchingButton?.imageTintList = null
             picasso.load(friendAvatarImageUrl)
-                    .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
+                    .resizeDimen(R.dimen.avatar_friends_watching, R.dimen.avatar_friends_watching)
                     .placeholder(R.drawable.ic_profile)
                     .transform(profileAvatarTransform)
                     .into(binding.friendsWatchingButton)

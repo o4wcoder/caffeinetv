@@ -15,8 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.logScreen
 import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
@@ -27,13 +25,13 @@ import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.ViewPagerColorOnPageChangeListener
+import tv.caffeine.app.ui.loadRoundedImage
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 class LobbySwipeFragment @Inject constructor(
     private val featureConfig: FeatureConfig,
-    private val picasso: Picasso,
     private val firebaseAnalytics: FirebaseAnalytics,
     private val adapterFactory: LobbyPagerAdapter.Factory
 ) : CaffeineFragment(R.layout.fragment_lobby_swipe) {
@@ -90,11 +88,7 @@ class LobbySwipeFragment @Inject constructor(
         }
 
         myProfileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
-            picasso
-                    .load(userProfile.avatarImageUrl)
-                    .resizeDimen(R.dimen.toolbar_icon_size, R.dimen.toolbar_icon_size)
-                    .transform(CropCircleTransformation())
-                    .into(binding.profileButton)
+            binding.profileButton.loadRoundedImage(userProfile.avatarImageUrl, imageSizeRes = R.dimen.avatar_toolbar)
             binding.unverifiedMessageTextView.isVisible = userProfile.emailVerified == false
         })
     }

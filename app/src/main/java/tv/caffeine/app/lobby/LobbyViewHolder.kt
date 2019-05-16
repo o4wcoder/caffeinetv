@@ -254,7 +254,7 @@ class LiveBroadcastWithFriendsCard(
         val broadcaster = item.broadcaster
         val context = itemView.context
         val friendsWatchingString = formatFriendsWatchingString(context, broadcaster)
-        friendsWatchingString?.let { binding.friendsWatchingTextView.formatUsernameAsHtml(picasso, it, true, R.dimen.avatar_lobby_friend_watching) }
+        friendsWatchingString?.let { binding.friendsWatchingTextView.formatUsernameAsHtml(picasso, it, true, R.dimen.avatar_friends_watching) }
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
         if (game != null) {

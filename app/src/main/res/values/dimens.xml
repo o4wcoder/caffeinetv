@@ -13,7 +13,9 @@
     <dimen name="avatar_explore">85dp</dimen>
     <dimen name="avatar_stage">104dp</dimen>
     <dimen name="avatar_lobby_previous_broadcast">80dp</dimen>
-    <dimen name="avatar_lobby_friend_watching">24dp</dimen>
+    <dimen name="avatar_friends_watching">24dp</dimen>
+    <dimen name="avatar_toolbar">24dp</dimen>
+    <dimen name="avatar_toolbar_padding">12dp</dimen>
     <dimen name="avatar_rim_size_large">4dp</dimen>
     <dimen name="avatar_rim_size_regular">2dp</dimen>
     <dimen name="avatar_rim_size_not_following">1dp</dimen>
@@ -29,7 +31,6 @@
     <dimen name="very_big_button_width">280dp</dimen>
     <dimen name="very_big_button_height">80dp</dimen>
     <dimen name="info_screen_icon">96dp</dimen>
-    <dimen name="toolbar_icon_size">24dp</dimen>
     <dimen name="verified_icon_padding">4dp</dimen>
     <dimen name="list_item_spacing">8dp</dimen>
     <dimen name="list_item_spacing_half">4dp</dimen>
@@ -41,6 +42,7 @@
     <dimen name="tx_history_digital_item_size">16dp</dimen>
     <dimen name="digital_item_size">72dp</dimen>
     <dimen name="chat_bubble_triangle_size">8dp</dimen>
+    <dimen name="lobby_toolbar_icon">48dp</dimen>
     <dimen name="lobby_card_rounding_radius">15dp</dimen>
     <dimen name="lobby_card_pip_radius">4dp</dimen>
     <dimen name="lobby_card_side_margin">12dp</dimen>
