@@ -156,6 +156,9 @@ class StageFragment @Inject constructor(
             }
             binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
             binding.saySomethingTextView?.text = saySomethingToBroadcasterText(userProfile)
+            binding.avatarImageView.setOnClickListener {
+                findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
+            }
 
             binding.stageToolbar.apply {
                 if (menu.findItem(R.id.overflow_menu_item) != null) return@apply
@@ -431,9 +434,6 @@ class StageFragment @Inject constructor(
         binding.chatButton?.setOnClickListener { openSendMessage() }
         binding.giftButton?.setOnClickListener {
             sendDigitalItemWithMessage(null)
-        }
-        binding.avatarImageView.setOnClickListener {
-            findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(broadcasterUsername))
         }
         binding.backToLobbyButton.setOnClickListener {
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)
