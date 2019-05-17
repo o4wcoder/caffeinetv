@@ -115,19 +115,6 @@
                 tools:drawableEnd="@drawable/verified"
                 tools:text="@sample/usernames" />
 
-            <TextView
-                android:id="@+id/dot_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="\u00b7"
-                android:textSize="40dp"
-                android:textColor="@color/black"
-                android:layout_marginStart="6dp"
-                android:layout_marginBottom="2dp"
-                app:layout_constraintStart_toEndOf="@id/username_text_view"
-                app:layout_constraintTop_toTopOf="@id/username_text_view"
-                app:layout_constraintBottom_toBottomOf="@id/username_text_view" />
-
             <ImageView
                 android:id="@+id/game_logo_image_view"
                 android:layout_width="@dimen/game_logo_width"
@@ -180,8 +167,8 @@
                 app:layout_constraintTop_toTopOf="@+id/preview_image_view" />
 
             <Button
+                style="@style/FollowTextButton"
                 android:id="@+id/follow_button"
-                style="@style/LinkButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/follow_button"

@@ -155,7 +155,6 @@ abstract class BroadcasterCard(
     private val broadcastTitleTextView: TextView = view.findViewById(R.id.broadcast_title_text_view)
     private val tagTextView: TextView = view.findViewById(R.id.tag_text_view)
     private val followButton: Button = view.findViewById(R.id.follow_button)
-    private val dotTextView: TextView? = view.findViewById(R.id.dot_text_view)
     private val pipImageView: ImageView? = itemView.findViewById(R.id.pip_image_view)
 
     protected open val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.TOP
@@ -189,7 +188,6 @@ abstract class BroadcasterCard(
             }
         })
         configureUser(singleCard.broadcaster.user, followHandler)
-        dotTextView?.isVisible = !followManager.isFollowing(singleCard.broadcaster.user.caid)
         avatarImageView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         usernameTextView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         broadcastTitleTextView.text = broadcast.name
