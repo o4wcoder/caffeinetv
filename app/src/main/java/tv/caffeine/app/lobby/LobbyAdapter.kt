@@ -6,6 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import org.threeten.bp.Clock
+import timber.log.Timber
+import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
@@ -21,17 +27,22 @@ import tv.caffeine.app.di.ThemeFollowedLobbyLight
 import tv.caffeine.app.di.ThemeNotFollowedLobby
 import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class LobbyAdapter @Inject constructor(
+    private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
     internal val recycledViewPool: RecyclerView.RecycledViewPool,
     @ThemeFollowedLobby private val followedTheme: UserTheme,
     @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
     @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
     @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val clock: Clock,
+    private val eventsService: EventsService
 ) : ListAdapter<LobbyItem, LobbyViewHolder>(
         object : DiffUtil.ItemCallback<LobbyItem>() {
             override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) =
@@ -42,9 +53,18 @@ class LobbyAdapter @Inject constructor(
                 return if (oldItem is CardList) CardList::class else null
             }
         }
-) {
+), CoroutineScope {
+
+    private val job = SupervisorJob()
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e(throwable, "Coroutine throwable")
+    }
+    override val coroutineContext: CoroutineContext
+        get() = dispatchConfig.main + job + exceptionHandler
+
     private var tags: Map<String, Lobby.Tag> = mapOf()
     private var content: Map<String, Lobby.Content> = mapOf()
+    var lobbyId: String? = null
 
     fun submitList(list: List<LobbyItem>, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>) {
         this.tags = tags
@@ -83,16 +103,16 @@ class LobbyAdapter @Inject constructor(
             SubtitleCard(LobbySubtitleBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
 
     private fun liveBroadcastCard(inflater: LayoutInflater, parent: ViewGroup) =
-            LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
+            LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, this, clock, eventsService)
 
     private fun liveBroadcastWithFriendsCard(inflater: LayoutInflater, parent: ViewGroup) =
-            LiveBroadcastWithFriendsCard(LiveBroadcastWithFriendsCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
+            LiveBroadcastWithFriendsCard(LiveBroadcastWithFriendsCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, this, clock, eventsService)
 
     private fun previousBroadcastCard(inflater: LayoutInflater, parent: ViewGroup) =
             PreviousBroadcastCard(PreviousBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
 
     private fun listCard(inflater: LayoutInflater, parent: ViewGroup) =
-            ListCard(CardListBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, recycledViewPool)
+            ListCard(CardListBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, recycledViewPool, dispatchConfig, clock, eventsService)
 
     private fun upcomingButtonCard(inflater: LayoutInflater, parent: ViewGroup) =
             UpcomingButtonCard(UpcomingButtonCardBinding.inflate(inflater, parent, false), null, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)

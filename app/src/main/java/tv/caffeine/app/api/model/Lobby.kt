@@ -2,7 +2,7 @@ package tv.caffeine.app.api.model
 
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
-class Lobby(val tags: Map<String, Tag>, val content: Map<String, Content>, val header: Header, val sections: Array<Section>) {
+class Lobby(val id: String?, val tags: Map<String, Tag>, val content: Map<String, Content>, val header: Header, val sections: Array<Section>) {
     class Tag(val id: String, val name: String, val color: String)
     class Content(val id: String, val type: String, val name: String, val iconImagePath: String, val bannerImagePath: String) {
         val iconImageUrl get() = "$IMAGES_BASE_URL$iconImagePath"

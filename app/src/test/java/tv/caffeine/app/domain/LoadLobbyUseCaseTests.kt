@@ -39,7 +39,7 @@ class LoadLobbyUseCaseTests {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        coEvery { mockLobbyResponse.await() } returns Response.success(Lobby(tags, content, Lobby.Header(), arrayOf()))
+        coEvery { mockLobbyResponse.await() } returns Response.success(Lobby("0", tags, content, Lobby.Header(), arrayOf()))
         every { mockSuccessfulLobbyService.loadLobby() } returns mockLobbyResponse
         coEvery { mockFailedLobbyResponse.await() } returns Response.error(404, ResponseBody.create(MediaType.parse("text/json"), "{}"))
         every { mockFailingLobbyService.loadLobby() } returns mockFailedLobbyResponse

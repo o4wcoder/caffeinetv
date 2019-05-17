@@ -46,7 +46,7 @@ class LobbyBroadcasterTests {
     }
 
     private fun getLobbyExample(sections: Array<Lobby.Section>) =
-            Lobby(mapOf(), mapOf(), Lobby.Header(null, null), sections)
+            Lobby("0", mapOf(), mapOf(), Lobby.Header(null, null), sections)
 
     private fun getLobbySectionExample(usernames: List<String>) =
             Lobby.Section("0", "0", "0", "0", getBroadcasterExamples(usernames), null)

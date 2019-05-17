@@ -43,6 +43,7 @@ class LobbyFragment @Inject constructor(
             handle(result) { lobby ->
                 val items = LobbyItem.parse(lobby)
                 lobbyAdapter.submitList(items, lobby.tags, lobby.content)
+                lobbyAdapter.lobbyId = lobby.id
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })

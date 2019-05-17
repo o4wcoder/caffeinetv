@@ -61,7 +61,7 @@ fun User.configure(
         }
     }
     avatarImageView.loadAvatar(avatarImageUrl, isFollowing, avatarImageSize)
-    (usernameTextView as AppCompatTextView).apply {
+    (usernameTextView as? AppCompatTextView)?.apply {
         val usernameFormattingString = when {
             isVerified -> R.string.username_verified
             isCaster -> R.string.username_caster

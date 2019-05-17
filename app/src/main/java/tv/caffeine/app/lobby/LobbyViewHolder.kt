@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
@@ -17,10 +18,18 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.threeten.bp.Clock
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.api.EventsService
+import tv.caffeine.app.api.LobbyCardClickedEvent
+import tv.caffeine.app.api.LobbyClickedEventData
+import tv.caffeine.app.api.LobbyFollowClickedEvent
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding
@@ -32,10 +41,12 @@ import tv.caffeine.app.databinding.PreviousBroadcastCardBinding
 import tv.caffeine.app.databinding.UpcomingButtonCardBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.formatUsernameAsHtml
+import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
+import java.util.concurrent.TimeUnit
 
 sealed class LobbyViewHolder(
     itemView: View,
@@ -132,7 +143,11 @@ abstract class BroadcasterCard(
     notFollowedTheme: UserTheme,
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
-    picasso: Picasso
+    picasso: Picasso,
+    private val lobbyId: String? = null,
+    private val scope: CoroutineScope? = null,
+    private val clock: Clock? = null,
+    protected val eventsService: EventsService? = null
 ) : LobbyViewHolder(view, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
     protected val previewImageView: ImageView = view.findViewById(R.id.preview_image_view)
     private val avatarImageView: ImageView = view.findViewById(R.id.avatar_image_view)
@@ -158,17 +173,22 @@ abstract class BroadcasterCard(
                 .transform(roundedCornersTransformation)
                 .into(previewImageView)
         val isLive = singleCard.broadcaster.broadcast != null
-        singleCard.broadcaster.user.configure(
-                avatarImageView,
-                usernameTextView,
-                followButton,
-                followManager,
-                false,
-                null,
-                R.dimen.avatar_size,
-                if (isLight) followedThemeLight else followedTheme,
-                if (isLight) notFollowedThemeLight else notFollowedTheme
-        )
+        val followHandler = FollowManager.FollowHandler(null, object : FollowManager.Callback() {
+            override fun follow(caid: CAID) {
+                getLobbyClickedEventData(singleCard)?.let { eventsService?.sendEvent(LobbyFollowClickedEvent(it)) }
+                scope?.launch {
+                    followManager.followUser(caid, object : FollowManager.FollowCompletedCallback {
+                        override fun onUserFollowed() {
+                            configureUser(singleCard.broadcaster.user, null)
+                        }
+                    })
+                }
+            }
+
+            override fun unfollow(caid: CAID) {
+            }
+        })
+        configureUser(singleCard.broadcaster.user, followHandler)
         dotTextView?.isVisible = !followManager.isFollowing(singleCard.broadcaster.user.caid)
         avatarImageView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
         usernameTextView.setOnClickListener { viewProfile(item.broadcaster.user.caid) }
@@ -198,9 +218,30 @@ abstract class BroadcasterCard(
         }
     }
 
+    private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {
+        user.configure(
+            avatarImageView,
+            usernameTextView,
+            followButton,
+            followManager,
+            false,
+            followHandler,
+            R.dimen.avatar_size,
+            if (isLight) followedThemeLight else followedTheme,
+            if (isLight) notFollowedThemeLight else notFollowedTheme
+        )
+    }
+
     open fun viewProfile(caid: CAID) {
         val action = MainNavDirections.actionGlobalProfileFragment(caid)
         Navigation.findNavController(itemView).safeNavigate(action)
+    }
+
+    @VisibleForTesting fun getLobbyClickedEventData(singleCard: SingleCard): LobbyClickedEventData? {
+        if (clock == null || lobbyId == null) return null
+        val broadcast = singleCard.broadcaster.broadcast ?: return null
+        val timestamp = TimeUnit.MILLISECONDS.toSeconds(clock.millis())
+        return LobbyClickedEventData(lobbyId, singleCard.broadcaster.user.caid, broadcast.id, timestamp.toString())
     }
 }
 
@@ -213,8 +254,12 @@ open class LiveBroadcastCard(
     notFollowedTheme: UserTheme,
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    picasso: Picasso,
+    lobbyId: String? = null,
+    scope: CoroutineScope? = null,
+    clock: Clock? = null,
+    eventsService: EventsService? = null
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, scope, clock, eventsService) {
 
     override fun configure(item: LobbyItem) {
         super.configure(item)
@@ -230,6 +275,7 @@ open class LiveBroadcastCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
+            getLobbyClickedEventData(item)?.let { eventsService?.sendEvent(LobbyCardClickedEvent(it)) }
             val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
@@ -245,8 +291,12 @@ class LiveBroadcastWithFriendsCard(
     notFollowedTheme: UserTheme,
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    picasso: Picasso,
+    lobbyId: String?,
+    scope: CoroutineScope?,
+    clock: Clock?,
+    eventsService: EventsService?
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, scope, clock, eventsService) {
     override fun configure(item: LobbyItem) {
         super.configure(item)
         val liveBroadcastItem = item as LiveBroadcastWithFriends
@@ -266,6 +316,7 @@ class LiveBroadcastWithFriendsCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
+            getLobbyClickedEventData(item)?.let { eventsService?.sendEvent(LobbyCardClickedEvent(it)) }
             val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
@@ -314,12 +365,15 @@ class ListCard(
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    recycledViewPool: RecyclerView.RecycledViewPool
+    recycledViewPool: RecyclerView.RecycledViewPool,
+    dispatchConfig: DispatchConfig,
+    clock: Clock,
+    eventsService: EventsService
 ) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
     private val snapHelper = LinearSnapHelper()
     private val edgeOffset = binding.root.resources.getDimension(R.dimen.lobby_card_side_margin).toInt()
     private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
-    private val lobbyAdapter = LobbyAdapter(followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
+    private val lobbyAdapter = LobbyAdapter(dispatchConfig, followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, clock, eventsService)
     init {
         binding.cardListRecyclerView.adapter = lobbyAdapter
         binding.cardListRecyclerView.run {
