@@ -42,6 +42,7 @@
     <dimen name="tx_history_digital_item_size">16dp</dimen>
     <dimen name="digital_item_size">72dp</dimen>
     <dimen name="chat_bubble_triangle_size">8dp</dimen>
+    <dimen name="stage_bottom_icon">48dp</dimen>
     <dimen name="lobby_toolbar_icon">48dp</dimen>
     <dimen name="lobby_card_rounding_radius">15dp</dimen>
     <dimen name="lobby_card_pip_radius">4dp</dimen>
