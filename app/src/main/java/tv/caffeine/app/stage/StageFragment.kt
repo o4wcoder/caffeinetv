@@ -354,7 +354,7 @@ class StageFragment @Inject constructor(
     private fun manageFeeds(controller: NewReyesController) = launch {
         controller.feedChannel.consumeEach { mapOfFeeds ->
             feeds = mapOfFeeds
-            val activeRoles = feeds.values.map { it.role }.toList()
+            val activeRoles = feeds.values.filter { it.capabilities.video }.map { it.role }.toList()
             renderers[NewReyes.Feed.Role.primary]?.isVisible = NewReyes.Feed.Role.primary in activeRoles
             renderers[NewReyes.Feed.Role.secondary]?.isVisible = NewReyes.Feed.Role.secondary in activeRoles
         }
