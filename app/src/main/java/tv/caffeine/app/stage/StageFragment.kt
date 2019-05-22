@@ -1,13 +1,14 @@
 package tv.caffeine.app.stage
 
+import android.animation.LayoutTransition
 import android.os.Bundle
 import android.text.Spannable
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.text.HtmlCompat
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -132,9 +133,15 @@ class StageFragment @Inject constructor(
         // Inflate the layout for this fragment
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
-        view.setOnClickListener { toggleAppBarVisibility() }
+        view.setOnClickListener { toggleOverlayVisibility() }
+        (view as ViewGroup).apply {
+            layoutTransition = LayoutTransition()
+            layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
+        }
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
+            val isFirstLoad = binding.userProfile == null
             binding.userProfile = userProfile
+            binding.usernameTextView.formatUsernameAsHtml(userProfile.username, userProfile.isFollowed, userProfile.userIcon)
             binding.shareButton?.setOnClickListener {
                 val sharerId = followManager.currentUserDetails()?.caid
                 startActivity(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
@@ -176,6 +183,9 @@ class StageFragment @Inject constructor(
             isMe = userProfile.isMe
             updateViewsOnMyStageVisibility()
             updateBroadcastOnlineState(userProfile.isLive)
+            if (isFirstLoad) {
+                toggleOverlayVisibility(false)
+            }
         })
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
@@ -226,7 +236,8 @@ class StageFragment @Inject constructor(
         renderers[NewReyes.Feed.Role.secondary] = binding.secondaryViewRenderer
         binding.secondaryViewRenderer.setZOrderMediaOverlay(true)
         loadingIndicators[NewReyes.Feed.Role.primary] = binding.primaryLoadingIndicator
-        loadingIndicators[NewReyes.Feed.Role.secondary] = binding.secondaryLoadingIndicator
+        // TODO: clean up the secondary spinner if the design is approved.
+        // loadingIndicators[NewReyes.Feed.Role.secondary] = binding.secondaryLoadingIndicator
         renderers.forEach { entry ->
             val key = entry.key
             val renderer = entry.value
@@ -236,20 +247,22 @@ class StageFragment @Inject constructor(
             feeds.values.firstOrNull { it.role == key }?.let { feed ->
                 configureRenderer(renderer, feed, videoTracks[feed.stream.id])
             }
-            renderer.setOnClickListener { toggleAppBarVisibility() }
+            renderer.setOnClickListener { toggleOverlayVisibility() }
         }
     }
 
-    private var appBarVisibilityJob: Job? = null
+    private var overlayVisibilityJob: Job? = null
 
     @VisibleForTesting
-    fun toggleAppBarVisibility() {
-        appBarVisibilityJob?.cancel()
-        if (!binding.stageAppbar.isVisible) {
-            showOverlays()
-            appBarVisibilityJob = launch {
-                delay(3000)
-                hideOverlays()
+    fun toggleOverlayVisibility(isToggledByUser: Boolean = true) {
+        overlayVisibilityJob?.cancel()
+        if (!binding.stageAppbar.isVisible || !binding.liveIndicatorAndAvatarContainer.isVisible) {
+            showOverlays(isToggledByUser)
+            if (isToggledByUser) {
+                overlayVisibilityJob = launch {
+                    delay(3000)
+                    hideOverlays()
+                }
             }
         } else {
             hideOverlays()
@@ -257,14 +270,18 @@ class StageFragment @Inject constructor(
     }
 
     @VisibleForTesting
-    fun showOverlays() = setAppBarVisible(true)
+    fun showOverlays(shouldIncludeAppBar: Boolean = true) = setOverlayVisible(true, shouldIncludeAppBar)
 
     @VisibleForTesting
-    fun hideOverlays() = setAppBarVisible(false)
+    fun hideOverlays() = setOverlayVisible(false)
 
     @VisibleForTesting
-    fun setAppBarVisible(visible: Boolean) {
-        val viewsToToggle = listOf(binding.stageAppbar, binding.liveIndicatorAndAvatarContainer)
+    fun setOverlayVisible(visible: Boolean, shouldIncludeAppBar: Boolean = true) {
+        val viewsToToggle = if (shouldIncludeAppBar) {
+            listOf(binding.stageAppbar, binding.liveIndicatorAndAvatarContainer)
+        } else {
+            listOf(binding.liveIndicatorAndAvatarContainer)
+        }
         val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView)
         if (visible) {
             viewsToToggle.forEach {
@@ -275,7 +292,7 @@ class StageFragment @Inject constructor(
             }
         } else {
             viewsToToggle.plus(viewsForLiveOnly).forEach {
-                it.isInvisible = true
+                it.isVisible = false
             }
         }
     }
@@ -317,7 +334,7 @@ class StageFragment @Inject constructor(
 
     private fun configureRenderer(renderer: SurfaceViewRenderer, feed: NewReyes.Feed?, videoTrack: VideoTrack?) {
         val hasVideo = videoTrack != null && (feed?.capabilities?.video ?: false)
-        renderer.isInvisible = !hasVideo
+        renderer.isVisible = hasVideo
         if (hasVideo) {
             videoTrack?.addSink(renderer)
         } else {
@@ -338,8 +355,8 @@ class StageFragment @Inject constructor(
         controller.feedChannel.consumeEach { mapOfFeeds ->
             feeds = mapOfFeeds
             val activeRoles = feeds.values.map { it.role }.toList()
-            renderers[NewReyes.Feed.Role.primary]?.isInvisible = NewReyes.Feed.Role.primary !in activeRoles
-            renderers[NewReyes.Feed.Role.secondary]?.isInvisible = NewReyes.Feed.Role.secondary !in activeRoles
+            renderers[NewReyes.Feed.Role.primary]?.isVisible = NewReyes.Feed.Role.primary in activeRoles
+            renderers[NewReyes.Feed.Role.secondary]?.isVisible = NewReyes.Feed.Role.secondary in activeRoles
         }
     }
 
@@ -387,7 +404,11 @@ class StageFragment @Inject constructor(
             renderers[feedInfo.role]?.let {
                 configureRenderer(it, feedInfo.feed, videoTrack)
             }
-            loadingIndicators[feedInfo.role]?.isVisible = false
+            launch {
+                delay(1000)
+                loadingIndicators[feedInfo.role]?.isVisible = false
+                hideOverlays()
+            }
         }
     }
 
@@ -438,6 +459,7 @@ class StageFragment @Inject constructor(
         binding.backToLobbyButton.setOnClickListener {
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)
         }
+        binding.stageToolbar.title = null
     }
 
     override fun sendDigitalItemWithMessage(message: String?) {

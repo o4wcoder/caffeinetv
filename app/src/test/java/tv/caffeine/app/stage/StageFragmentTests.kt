@@ -1,11 +1,10 @@
 package tv.caffeine.app.stage
 
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.core.view.isInvisible
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingComponent
 import com.google.android.material.appbar.AppBarLayout
@@ -31,7 +30,7 @@ class StageFragmentVisibilityTests {
     @MockK(relaxed = true) lateinit var backToLobbyButton: Button
     @MockK(relaxed = true) lateinit var followButton: Button
     @MockK(relaxed = true) lateinit var largeAvatarImageView: ImageView
-    @MockK(relaxed = true) lateinit var liveIndicatorAndAvatarContainer: FrameLayout
+    @MockK(relaxed = true) lateinit var liveIndicatorAndAvatarContainer: ConstraintLayout
     @MockK(relaxed = true) lateinit var liveIndicatorTextView: TextView
     @MockK(relaxed = true) lateinit var saySomethingTextView: TextView
     @MockK(relaxed = true) lateinit var showIsOverTextView: TextView
@@ -57,14 +56,23 @@ class StageFragmentVisibilityTests {
 
     @Test
     fun `hiding overlays hides app bar`() {
+        subject.binding.stageAppbar.isVisible = true
         subject.hideOverlays()
-        verify { subject.binding.stageAppbar.isInvisible = true }
+        verify { subject.binding.stageAppbar.isVisible = false }
     }
 
     @Test
-    fun `showing overlays shows app bar`() {
-        subject.showOverlays()
+    fun `showing overlays shows app bar if it's included`() {
+        subject.binding.stageAppbar.isVisible = false
+        subject.showOverlays(true)
         verify { subject.binding.stageAppbar.isVisible = true }
+    }
+
+    @Test
+    fun `showing overlays does not show the app bar if it's not included`() {
+        subject.binding.stageAppbar.isVisible = false
+        subject.showOverlays(false)
+        verify { subject.binding.stageAppbar.isVisible = false }
     }
 
     @Test
@@ -99,7 +107,7 @@ class StageFragmentVisibilityTests {
     fun `hiding overlays on an offline stage hides game logo`() {
         subject.stageIsLive = true
         subject.hideOverlays()
-        verify { subject.binding.gameLogoImageView.isInvisible = true }
+        verify { subject.binding.gameLogoImageView.isVisible = false }
     }
 
     @Test
@@ -152,7 +160,7 @@ private class StageFragmentVisibilityTestBindings(
     followButton: Button,
     gameLogoImageView: ImageView,
     largeAvatarImageView: ImageView,
-    liveIndicatorAndAvatarContainer: FrameLayout,
+    liveIndicatorAndAvatarContainer: ConstraintLayout,
     liveIndicatorTextView: TextView,
     saySomethingTextView: TextView,
     showIsOverTextView: TextView,
@@ -162,7 +170,9 @@ private class StageFragmentVisibilityTestBindings(
         mockk(),
         0,
         avatarImageView,
+        mockk(),
         backToLobbyButton,
+        mockk(),
         mockk(),
         mockk(),
         followButton,
@@ -175,12 +185,15 @@ private class StageFragmentVisibilityTestBindings(
         mockk(),
         mockk(),
         mockk(),
+        mockk(),
+        mockk(),
         saySomethingTextView,
         mockk(),
         mockk(),
         mockk(),
         showIsOverTextView,
         stageAppBar,
+        mockk(),
         mockk()
 ) {
     override fun setVariable(variableId: Int, value: Any?): Boolean {

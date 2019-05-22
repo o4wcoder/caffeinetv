@@ -222,6 +222,24 @@
         <item name="android:textColor">@color/medium_gray</item>
     </style>
 
+    <style name="BroadcasterUsername">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/almost_black</item>
+    </style>
+    <style name="BroadcasterUsername.Night">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="BroadcastTitle" parent="CaffeineText">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/almost_black</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:maxLines">2</item>
+    </style>
+    <style name="BroadcastTitle.Night">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="FollowCount" parent="@style/TextAppearance.MaterialComponents.Headline5">
         <item name="android:textSize">27sp</item>
     </style>
@@ -279,6 +297,9 @@
         <item name="iconTint">@color/almost_black</item>
         <item name="iconPadding">8dp</item>
     </style>
+    <style name="FollowTextButton.Night">
+        <item name="iconTint">@color/white</item>
+    </style>
 
     <!-- Action bar -->
     <style name="AppTheme.NoActionBar">
@@ -328,16 +349,15 @@
         <item name="android:letterSpacing">-0.01</item>
     </style>
 
-    <style name="LiveIndicator">
+    <style name="LiveIndicator" parent="CaffeineText">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:background">@drawable/live_indicator</item>
         <item name="android:paddingStart">7dp</item>
         <item name="android:paddingEnd">7dp</item>
-        <item name="android:paddingTop">3dp</item>
-        <item name="android:paddingBottom">3dp</item>
-        <item name="android:letterSpacing">0.05</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
     </style>
 
     <style name="DigitalItemQuantity">
@@ -361,6 +381,10 @@
 
     <style name="BroadcastCardUsername.NotFollowing">
         <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BroadcastCardUsername.NotFollowing.Night">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="BroadcastCardUsername.Following">

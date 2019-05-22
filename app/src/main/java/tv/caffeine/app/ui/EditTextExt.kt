@@ -7,10 +7,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
 import com.squareup.picasso.Picasso
 import tv.caffeine.app.R
+import tv.caffeine.app.util.getPicasso
 
 inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -46,6 +48,16 @@ fun EditText.prepopulateText(text: String?) {
         setSelection(it)
         append(" ")
     }
+}
+
+fun TextView.formatUsernameAsHtml(username: String, isFollowed: Boolean, @DrawableRes drawableId: Int) {
+    val usernameFormattingString = when (drawableId) {
+        R.drawable.verified -> R.string.username_verified
+        R.drawable.caster -> R.string.username_caster
+        else -> R.string.username_plain
+    }
+    val text = context.getString(usernameFormattingString, username)
+    formatUsernameAsHtml(context.getPicasso(), text, isFollowed)
 }
 
 fun TextView.formatUsernameAsHtml(

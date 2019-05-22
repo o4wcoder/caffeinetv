@@ -35,9 +35,9 @@
     <dimen name="list_item_spacing">8dp</dimen>
     <dimen name="list_item_spacing_half">4dp</dimen>
     <dimen name="coin_size">10dp</dimen>
-    <dimen name="checkmark_size">16dp</dimen>
-    <dimen name="caster_width">18dp</dimen>
-    <dimen name="caster_height">14dp</dimen>
+    <dimen name="checkmark_size">12dp</dimen>
+    <dimen name="caster_width">15dp</dimen>
+    <dimen name="caster_height">12dp</dimen>
     <dimen name="chat_avatar_size">16dp</dimen>
     <dimen name="tx_history_digital_item_size">16dp</dimen>
     <dimen name="digital_item_size">72dp</dimen>
