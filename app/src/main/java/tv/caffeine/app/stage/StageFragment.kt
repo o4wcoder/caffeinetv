@@ -459,7 +459,7 @@ class StageFragment @Inject constructor(
         binding.backToLobbyButton.setOnClickListener {
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)
         }
-        binding.stageToolbar.title = null
+        binding.stageToolbar.apply { setTitleTextColor(context.getColor(R.color.transparent)) }
     }
 
     override fun sendDigitalItemWithMessage(message: String?) {
