@@ -22,63 +22,64 @@
             android:id="@+id/renderer_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="invisible"
-            app:layout_constraintDimensionRatio="H,16:18"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/messages_recycler_view">
 
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/secondary_view_renderer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:keepScreenOn="true"
-            android:visibility="gone"
-            app:layout_constraintDimensionRatio="H,16:9"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/renderer_container"
-            app:layout_constraintBottom_toTopOf="@+id/primary_view_renderer"
-            tools:visibility="visible"/>
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/secondary_view_renderer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:keepScreenOn="true"
+                android:visibility="gone"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                app:layout_constraintDimensionRatio="V,16:9"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/primary_view_renderer"
+                tools:visibility="visible"/>
 
-        <ProgressBar
-            android:id="@+id/secondary_loading_indicator"
-            android:layout_width="@dimen/stage_loading_indicator_size"
-            android:layout_height="@dimen/stage_loading_indicator_size"
-            android:visibility="gone"
-            android:indeterminate="true"
-            app:layout_constraintTop_toTopOf="@id/secondary_view_renderer"
-            app:layout_constraintBottom_toBottomOf="@id/secondary_view_renderer"
-            app:layout_constraintStart_toStartOf="@id/secondary_view_renderer"
-            app:layout_constraintEnd_toEndOf="@id/secondary_view_renderer"
-            tools:visibility="visible"/>
+            <ProgressBar
+                android:id="@+id/secondary_loading_indicator"
+                android:layout_width="@dimen/stage_loading_indicator_size"
+                android:layout_height="@dimen/stage_loading_indicator_size"
+                android:visibility="gone"
+                android:indeterminate="true"
+                app:layout_constraintTop_toTopOf="@id/secondary_view_renderer"
+                app:layout_constraintBottom_toBottomOf="@id/secondary_view_renderer"
+                app:layout_constraintStart_toStartOf="@id/secondary_view_renderer"
+                app:layout_constraintEnd_toEndOf="@id/secondary_view_renderer"
+                tools:visibility="visible"/>
 
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/primary_view_renderer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:keepScreenOn="true"
-            android:visibility="gone"
-            app:layout_constraintDimensionRatio="H,16:9"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/secondary_view_renderer"
-            app:layout_constraintBottom_toBottomOf="@+id/renderer_container"
-            tools:visibility="visible"/>
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/primary_view_renderer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:keepScreenOn="true"
+                android:visibility="gone"
+                app:layout_constraintVertical_chainStyle="spread"
+                app:layout_constraintVertical_weight="1"
+                app:layout_constraintDimensionRatio="H,16:9"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secondary_view_renderer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:visibility="visible"/>
 
-        <ProgressBar
-            android:id="@+id/primary_loading_indicator"
-            android:layout_width="@dimen/stage_loading_indicator_size"
-            android:layout_height="@dimen/stage_loading_indicator_size"
-            android:visibility="gone"
-            android:indeterminate="true"
-            app:layout_constraintTop_toTopOf="@id/renderer_container"
-            app:layout_constraintBottom_toBottomOf="@id/renderer_container"
-            app:layout_constraintStart_toStartOf="@id/renderer_container"
-            app:layout_constraintEnd_toEndOf="@id/renderer_container"
-            tools:visibility="visible"/>
+            <ProgressBar
+                android:id="@+id/primary_loading_indicator"
+                android:layout_width="@dimen/stage_loading_indicator_size"
+                android:layout_height="@dimen/stage_loading_indicator_size"
+                android:visibility="gone"
+                android:indeterminate="true"
+                app:layout_constraintTop_toTopOf="@id/renderer_container"
+                app:layout_constraintBottom_toBottomOf="@id/renderer_container"
+                app:layout_constraintStart_toStartOf="@id/renderer_container"
+                app:layout_constraintEnd_toEndOf="@id/renderer_container"
+                tools:visibility="visible"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/large_avatar_image_view"
@@ -89,9 +90,9 @@
             android:padding="2dp"
             android:visibility="gone"
             android:contentDescription="@string/user_avatar_content_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/show_is_over_text_view"
-            app:layout_constraintEnd_toEndOf="@id/primary_view_renderer"
-            app:layout_constraintStart_toStartOf="@id/primary_view_renderer"
             app:placeholder="@{@drawable/default_avatar_round}"
             app:roundedImageUrl="@{userProfile.avatarImageUrl}"
             tools:src="@drawable/default_avatar_round"
@@ -106,8 +107,8 @@
             android:textAlignment="center"
             android:visibility="gone"
             android:layout_marginBottom="24dp"
-            app:layout_constraintStart_toStartOf="@id/primary_view_renderer"
-            app:layout_constraintEnd_toEndOf="@id/primary_view_renderer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/back_to_lobby_button"
             tools:text="Caffeine is no longer live"
             tools:visibility="visible"/>
@@ -118,8 +119,8 @@
             android:text="@string/browse_more_broadcasts"
             android:visibility="gone"
             android:layout_marginBottom="24dp"
-            app:layout_constraintStart_toStartOf="@id/primary_view_renderer"
-            app:layout_constraintEnd_toEndOf="@id/primary_view_renderer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/renderer_container"
             tools:visibility="visible"/>
 
@@ -129,9 +130,8 @@
             android:layout_height="256dp"
             app:layoutManager="tv.caffeine.app.ui.ChatLayoutManager"
             tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/renderer_container"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/bottom_stage_toolbar"
             app:spanCount="@integer/chat_column_count"
             tools:listitem="@layout/chat_message_bubble"
@@ -156,8 +156,7 @@
             android:paddingEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/messages_recycler_view">
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
