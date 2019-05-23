@@ -138,8 +138,9 @@ class StageFragment @Inject constructor(
             layoutTransition = LayoutTransition()
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
+        val isStreamConnected = newReyesController != null // The stream keeps connected across screen rotations.
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
-            val isFirstLoad = binding.userProfile == null
+            val isFirstLoad = binding.userProfile == null && !isStreamConnected
             binding.userProfile = userProfile
             binding.shareButton?.setOnClickListener {
                 val sharerId = followManager.currentUserDetails()?.caid
