@@ -141,7 +141,6 @@ class StageFragment @Inject constructor(
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             val isFirstLoad = binding.userProfile == null
             binding.userProfile = userProfile
-            binding.usernameTextView.formatUsernameAsHtml(userProfile.username, userProfile.isFollowed, userProfile.userIcon)
             binding.shareButton?.setOnClickListener {
                 val sharerId = followManager.currentUserDetails()?.caid
                 startActivity(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())

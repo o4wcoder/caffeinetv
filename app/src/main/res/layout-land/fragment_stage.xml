@@ -229,14 +229,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:drawablePadding="@dimen/verified_icon_padding"
+                    android:text="@{userProfile.username}"
+                    android:textColor="@{userProfile.isFollowed ? @color/caffeine_blue : @color/white}"
+                    app:userIcon="@{userProfile.userIcon}"
                     app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:drawableEnd="@drawable/verified"
+                    tools:drawablePadding="4dp"
                     tools:text="@sample/usernames"/>
 
-                <Button
-                    style="@style/FollowTextButton.Night"
+                <TextView
+                    style="@style/FollowText.Night"
                     android:id="@+id/follow_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
