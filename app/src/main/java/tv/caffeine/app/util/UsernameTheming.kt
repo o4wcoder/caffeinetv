@@ -1,11 +1,9 @@
 package tv.caffeine.app.util
 
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.StyleRes
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.isVisible
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,7 +12,7 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
-import tv.caffeine.app.ui.formatUsernameAsHtml
+import tv.caffeine.app.ui.configureUserIcon
 import tv.caffeine.app.ui.loadAvatar
 
 class UserTheme(@StyleRes val usernameTextAppearance: Int)
@@ -22,7 +20,7 @@ class UserTheme(@StyleRes val usernameTextAppearance: Int)
 fun User.configure(
     avatarImageView: ImageView,
     usernameTextView: TextView,
-    followButton: Button?,
+    followButton: TextView?,
     followManager: FollowManager,
     allowUnfollowing: Boolean = false,
     followHandler: FollowManager.FollowHandler? = null,
@@ -61,13 +59,13 @@ fun User.configure(
         }
     }
     avatarImageView.loadAvatar(avatarImageUrl, isFollowing, avatarImageSize)
-    (usernameTextView as? AppCompatTextView)?.apply {
-        val usernameFormattingString = when {
-            isVerified -> R.string.username_verified
-            isCaster -> R.string.username_caster
-            else -> R.string.username_plain
-        }
-        formatUsernameAsHtml(context.getPicasso(), context.getString(usernameFormattingString, username))
+    usernameTextView.apply {
+        text = username
+        configureUserIcon(when {
+            isVerified -> R.drawable.verified
+            isCaster -> R.drawable.caster
+            else -> 0
+        })
         setTextAppearance(theme.usernameTextAppearance)
     }
 }

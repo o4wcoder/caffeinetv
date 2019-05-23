@@ -49,7 +49,7 @@
 
                     <!-- gravity for when the text is downsized -->
                     <TextView
-                        style="@style/BroadcastCardUsername"
+                        style="@style/BroadcasterUsername"
                         android:id="@+id/username_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -61,11 +61,13 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/follow_button"
                         app:layout_constraintTop_toTopOf="parent"
+                        tools:drawableEnd="@drawable/verified"
+                        tools:drawablePadding="@dimen/verified_icon_padding"
                         tools:text="@sample/guide.json/listings/username"
                         tools:textColor="@color/caffeine_blue"/>
 
-                    <Button
-                        style="@style/FollowTextButton"
+                    <TextView
+                        style="@style/FollowText"
                         android:id="@+id/follow_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -8,5 +8,5 @@ import tv.caffeine.app.R
 @BindingAdapter("userIcon")
 fun TextView.configureUserIcon(@DrawableRes userIcon: Int) {
     setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, userIcon, 0)
-    compoundDrawablePadding = if (userIcon != 0) resources.getDimensionPixelSize(R.dimen.margin_line_spacing_small) else 0
+    compoundDrawablePadding = if (userIcon != 0) resources.getDimensionPixelSize(R.dimen.verified_icon_padding) else 0
 }

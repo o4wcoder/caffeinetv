@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Rect
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.VisibleForTesting
@@ -154,7 +153,7 @@ abstract class BroadcasterCard(
     private val usernameTextView: TextView = view.findViewById(R.id.username_text_view)
     private val broadcastTitleTextView: TextView = view.findViewById(R.id.broadcast_title_text_view)
     private val tagTextView: TextView = view.findViewById(R.id.tag_text_view)
-    private val followButton: Button = view.findViewById(R.id.follow_button)
+    private val followButton: TextView = view.findViewById(R.id.follow_button)
     private val pipImageView: ImageView? = itemView.findViewById(R.id.pip_image_view)
 
     protected open val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.TOP

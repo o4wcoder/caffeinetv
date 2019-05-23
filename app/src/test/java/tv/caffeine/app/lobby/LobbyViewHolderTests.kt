@@ -26,6 +26,7 @@ import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.loadAvatar
+import tv.caffeine.app.util.UserTheme
 import java.lang.IllegalStateException
 
 @RunWith(RobolectricTestRunner::class)
@@ -186,10 +187,14 @@ class LobbyViewHolderTests {
     }
 
     private fun createLiveBroadcastCard(lobbyId: String?): LiveBroadcastCard {
-        return LiveBroadcastCard(liveBroadcastCardBinding, mapOf(), mapOf(), followManager, mockk(), mockk(), mockk(), mockk(), picasso, lobbyId, null, clock, eventService)
+        val theme = mockk<UserTheme>(relaxed = true)
+        return LiveBroadcastCard(liveBroadcastCardBinding, mapOf(), mapOf(), followManager,
+            theme, theme, theme, theme, picasso, lobbyId, null, clock, eventService)
     }
 
     private fun createLiveBroadcastWithFriendsCard(lobbyId: String?): LiveBroadcastWithFriendsCard {
-        return LiveBroadcastWithFriendsCard(liveBroadcastWithFriendsCardBinding, mapOf(), mapOf(), followManager, mockk(), mockk(), mockk(), mockk(), picasso, lobbyId, null, clock, eventService)
+        val theme = mockk<UserTheme>(relaxed = true)
+        return LiveBroadcastWithFriendsCard(liveBroadcastWithFriendsCardBinding, mapOf(), mapOf(), followManager,
+            theme, theme, theme, theme, picasso, lobbyId, null, clock, eventService)
     }
 }

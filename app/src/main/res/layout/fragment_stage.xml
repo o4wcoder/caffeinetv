@@ -348,7 +348,7 @@
                     app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:drawableEnd="@drawable/verified"
-                    tools:drawablePadding="4dp"
+                    tools:drawablePadding="@dimen/verified_icon_padding"
                     tools:text="@sample/usernames"/>
 
                 <TextView

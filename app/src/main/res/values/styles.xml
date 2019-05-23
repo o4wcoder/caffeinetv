@@ -240,6 +240,19 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="FollowText" parent="CaffeineText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:drawableStart">@drawable/ic_black_dot</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawableTint">@color/almost_black</item>
+        <item name="android:textColor">@color/caffeine_blue</item>
+    </style>
+    <style name="FollowText.Night">
+        <item name="android:drawableTint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="FollowCount" parent="@style/TextAppearance.MaterialComponents.Headline5">
         <item name="android:textSize">27sp</item>
     </style>
@@ -282,35 +295,6 @@
 
     <style name="LinkButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeWidth">0dp</item>
-    </style>
-
-    <style name="FollowTextButton" parent="LinkButton">
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">0dp</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textAlignment">textStart</item>
-        <item name="icon">@drawable/ic_black_dot</item>
-        <item name="iconTint">@color/almost_black</item>
-        <item name="iconPadding">8dp</item>
-    </style>
-    <style name="FollowTextButton.Night">
-        <item name="iconTint">@color/white</item>
-    </style>
-    <style name="FollowText" parent="CaffeineText">
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:drawableStart">@drawable/ic_black_dot</item>
-        <item name="android:drawablePadding">8dp</item>
-        <item name="android:drawableTint">@color/almost_black</item>
-        <item name="android:textColor">@color/almost_black</item>
-    </style>
-    <style name="FollowText.Night">
-        <item name="android:drawableTint">@color/white</item>
-        <item name="android:textColor">@color/white</item>
     </style>
 
     <!-- Action bar -->
@@ -384,29 +368,16 @@
         <item name="android:letterSpacing">0.05</item>
     </style>
 
-    <style name="BroadcastCardUsername" parent="@style/TextAppearance.MaterialComponents.Body1">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:drawablePadding">4dp</item>
-        <item name="android:letterSpacing">-0.01</item>
-    </style>
+    <style name="BroadcastCardUsername" parent="BroadcasterUsername"/>
 
-    <style name="BroadcastCardUsername.NotFollowing">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="BroadcastCardUsername.NotFollowing.Night">
+    <style name="BroadcastCardUsername.NotFollowing"/>
+    <style name="BroadcastCardUsername.NotFollowing.Previous">
         <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="BroadcastCardUsername.Following">
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
-
-    <style name="BroadcastCardUsername.NotFollowing.Previous">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
     <style name="BroadcastCardUsername.Following.Previous">
     </style>
 
