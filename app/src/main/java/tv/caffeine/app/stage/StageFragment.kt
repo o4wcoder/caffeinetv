@@ -85,6 +85,7 @@ class StageFragment @Inject constructor(
     private val args by navArgs<StagePagerFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting var stageIsLive = false
+    var swipeButtonOnClickListener: View.OnClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -465,6 +466,7 @@ class StageFragment @Inject constructor(
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)
         }
         binding.stageToolbar.apply { setTitleTextColor(context.getColor(R.color.transparent)) }
+        binding.swipeButton.setOnClickListener(swipeButtonOnClickListener)
     }
 
     override fun sendDigitalItemWithMessage(message: String?) {

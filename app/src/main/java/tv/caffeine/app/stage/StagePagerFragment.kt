@@ -96,6 +96,13 @@ class StagePagerFragment @Inject constructor(
         }
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStagePagerBinding.bind(view)
+        val swipeButtonOnClickListener = View.OnClickListener {
+            binding?.stageViewPager?.apply {
+                if (currentItem + 1 < adapter?.count ?: 0) {
+                    setCurrentItem(currentItem + 1, true)
+                }
+            }
+        }
         savedInstanceState?.getStringArrayList(BUNDLE_KEY_BROADCASTERS)?.let { broadcasters = it }
         if (broadcasters.isEmpty()) {
             lobbyViewModel.refresh()
@@ -104,13 +111,13 @@ class StagePagerFragment @Inject constructor(
                     val (configuredBroadcasters, index) = configureBroadcasters(
                             args.broadcasterUsername(), lobby.getAllBroadcasters())
                     broadcasters = configuredBroadcasters
-                    stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters)
+                    stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
                     binding?.stageViewPager?.currentItem = index
                 }
             })
         } else {
             // The view pager restores the index.
-            stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters)
+            stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
         }
     }
 
@@ -198,6 +205,7 @@ class StagePagerFragment @Inject constructor(
 class StagePagerAdapter @AssistedInject constructor(
     @Assisted fragmentManager: FragmentManager,
     @Assisted private val broadcasters: List<String>,
+    @Assisted private val swipeButtonOnClickListener: View.OnClickListener,
     private val factory: NewReyesController.Factory,
     private val eglBase: EglBase,
     private val followManager: FollowManager,
@@ -207,7 +215,11 @@ class StagePagerAdapter @AssistedInject constructor(
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(fragmentManager: FragmentManager, broadcasters: List<String>): StagePagerAdapter
+        fun create(
+            fragmentManager: FragmentManager,
+            broadcasters: List<String>,
+            swipeButtonOnClickListener: View.OnClickListener
+        ): StagePagerAdapter
     }
 
     var currentStage: StageFragment? = null
@@ -216,6 +228,7 @@ class StagePagerAdapter @AssistedInject constructor(
         val stageFragment = StageFragment(
                 factory, eglBase, followManager, picasso, clock)
         stageFragment.arguments = bundleOf("broadcastLink" to broadcasters[position])
+        stageFragment.swipeButtonOnClickListener = swipeButtonOnClickListener
         currentStage = stageFragment
         return stageFragment
     }
