@@ -83,6 +83,7 @@ class StageFragment @Inject constructor(
 
     private var isMe = false
     private val args by navArgs<StagePagerFragmentArgs>()
+    private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting var stageIsLive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,9 +142,7 @@ class StageFragment @Inject constructor(
             layoutTransition = LayoutTransition()
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
-        val isStreamConnected = newReyesController != null // The stream keeps connected across screen rotations.
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
-            val isFirstLoad = binding.userProfile == null && !isStreamConnected
             binding.userProfile = userProfile
             binding.shareButton?.setOnClickListener {
                 val sharerId = followManager.currentUserDetails()?.caid
@@ -186,7 +185,8 @@ class StageFragment @Inject constructor(
             isMe = userProfile.isMe
             updateViewsOnMyStageVisibility()
             updateBroadcastOnlineState(userProfile.isLive)
-            if (isFirstLoad && userProfile.isLive) {
+            if (shouldShowOverlayOnProfileLoaded && userProfile.isLive) {
+                shouldShowOverlayOnProfileLoaded = false
                 toggleOverlayVisibility(false)
             }
         })
@@ -224,6 +224,8 @@ class StageFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        val isStreamConnected = newReyesController != null // true after screen rotation
+        shouldShowOverlayOnProfileLoaded = !isStreamConnected
         connectStage()
     }
 
