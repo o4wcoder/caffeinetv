@@ -291,8 +291,8 @@
                     android:src="@drawable/ic_swipe_stage"
                     android:contentDescription="@string/stage_swipe_image_content_description"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/live_indicator_text_view"
-                    app:layout_constraintBottom_toBottomOf="@id/live_indicator_text_view"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView

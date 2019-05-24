@@ -35,6 +35,7 @@ class StageFragmentVisibilityTests {
     @MockK(relaxed = true) lateinit var saySomethingTextView: TextView
     @MockK(relaxed = true) lateinit var showIsOverTextView: TextView
     @MockK(relaxed = true) lateinit var stageAppBar: AppBarLayout
+    @MockK(relaxed = true) lateinit var avatarUsernameContainer: ConstraintLayout
 
     @Before
     fun setup() {
@@ -50,7 +51,8 @@ class StageFragmentVisibilityTests {
                 liveIndicatorTextView,
                 saySomethingTextView,
                 showIsOverTextView,
-                stageAppBar
+                stageAppBar,
+                avatarUsernameContainer
         )
     }
 
@@ -139,11 +141,12 @@ class StageFragmentVisibilityTests {
     }
 
     @Test
-    fun `stage going offline shows overlay but hides live indicator and game logo`() {
+    fun `stage going offline shows overlay but hides live indicator, game logo, and avatar+username container`() {
         subject.updateBroadcastOnlineState(false)
         verify { subject.binding.liveIndicatorAndAvatarContainer.isVisible = true }
         verify { subject.binding.gameLogoImageView.isVisible = false }
         verify { subject.binding.liveIndicatorTextView.isVisible = false }
+        verify { subject.binding.avatarUsernameContainer.isVisible = false }
     }
 
     @Test
@@ -164,13 +167,14 @@ private class StageFragmentVisibilityTestBindings(
     liveIndicatorTextView: TextView,
     saySomethingTextView: TextView,
     showIsOverTextView: TextView,
-    stageAppBar: AppBarLayout
+    stageAppBar: AppBarLayout,
+    avatarUsernameContainer: ConstraintLayout
 ) : FragmentStageBinding(
         mockk<DataBindingComponent>(),
         mockk(),
         0,
         avatarImageView,
-        mockk(),
+        avatarUsernameContainer,
         backToLobbyButton,
         mockk(),
         mockk(),

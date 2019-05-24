@@ -183,7 +183,7 @@ class StageFragment @Inject constructor(
             isMe = userProfile.isMe
             updateViewsOnMyStageVisibility()
             updateBroadcastOnlineState(userProfile.isLive)
-            if (isFirstLoad) {
+            if (isFirstLoad && userProfile.isLive) {
                 toggleOverlayVisibility(false)
             }
         })
@@ -282,7 +282,7 @@ class StageFragment @Inject constructor(
         } else {
             listOf(binding.liveIndicatorAndAvatarContainer)
         }
-        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView)
+        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView, binding.avatarUsernameContainer)
         if (visible) {
             viewsToToggle.forEach {
                 it.isVisible = true
