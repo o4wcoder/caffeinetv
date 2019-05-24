@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
@@ -23,6 +24,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
 import org.webrtc.EglBase
+import org.webrtc.EglRenderer
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
@@ -68,6 +70,7 @@ class StageFragment @Inject constructor(
 
     @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
+    private lateinit var frameListener: EglRenderer.FrameListener
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
     private var newReyesController: NewReyesController? = null
@@ -394,20 +397,20 @@ class StageFragment @Inject constructor(
 
     private fun manageConnections(controller: NewReyesController) = launch {
         controller.connectionChannel.consumeEach { feedInfo ->
-            val connectionInfo = feedInfo.connectionInfo
-            val videoTrack = connectionInfo.videoTrack
-            renderers[feedInfo.role]?.let {
-                configureRenderer(it, feedInfo.feed, videoTrack)
-            }
-            val streamId = feedInfo.streamId
-            videoTrack?.let { videoTracks[streamId] = it }
-            renderers[feedInfo.role]?.let {
-                configureRenderer(it, feedInfo.feed, videoTrack)
-            }
-            launch {
-                delay(1000)
-                loadingIndicators[feedInfo.role]?.isVisible = false
-                hideOverlays()
+            val videoTrack = feedInfo.connectionInfo.videoTrack
+            videoTrack?.let { videoTracks[feedInfo.streamId] = it }
+            renderers[feedInfo.role]?.let { renderer ->
+                configureRenderer(renderer, feedInfo.feed, videoTrack)
+                if (feedInfo.role == NewReyes.Feed.Role.primary) {
+                    frameListener = EglRenderer.FrameListener {
+                        launch(Dispatchers.Main) {
+                            renderer.removeFrameListener(frameListener)
+                            loadingIndicators[feedInfo.role]?.isVisible = false
+                            hideOverlays()
+                        }
+                    }
+                    renderer.addFrameListener(frameListener, 1.0f)
+                }
             }
         }
     }
