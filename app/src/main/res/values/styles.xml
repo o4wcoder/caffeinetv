@@ -335,12 +335,6 @@
         <item name="android:textSize">10sp</item>
     </style>
 
-    <style name="LobbyBroadcastTitle" parent="@style/TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">@color/very_dark_gray</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:letterSpacing">0.0</item>
-    </style>
-
     <style name="LobbyFriendsWatchingText" parent="@style/TextAppearance.MaterialComponents.Caption">
         <item name="android:letterSpacing">-0.01</item>
     </style>
