@@ -30,7 +30,7 @@ The Android app for Caffeine.
   ```
 5. Run unit tests:
   ```
-  ./gradlew testProdDebugUnitTest
+  ./gradlew testDebugUnitTest
   ```
 6. Open the project in Android Studio
 
