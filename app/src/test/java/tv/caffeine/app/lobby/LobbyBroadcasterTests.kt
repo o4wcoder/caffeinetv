@@ -3,7 +3,7 @@ package tv.caffeine.app.lobby
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

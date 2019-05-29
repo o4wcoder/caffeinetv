@@ -1,7 +1,6 @@
 package tv.caffeine.app.stage
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.runner.AndroidJUnit4
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -13,10 +12,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class FriendsWatchingViewModelTests {
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
