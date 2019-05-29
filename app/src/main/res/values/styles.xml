@@ -250,7 +250,6 @@
     </style>
     <style name="FollowText.Night">
         <item name="android:drawableTint">@color/white</item>
-        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="FollowCount" parent="@style/TextAppearance.MaterialComponents.Headline5">
