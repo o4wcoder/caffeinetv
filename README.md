@@ -1,6 +1,7 @@
 # Mitsurugi (Android)
 
 [![CircleCI](https://circleci.com/gh/caffeinetv/android.svg?style=svg&circle-token=55b5ed44af44b4352f6b3d466030f1f40fb00582)](https://circleci.com/gh/caffeinetv/android)
+[![codecov](https://codecov.io/gh/caffeinetv/android/branch/master/graph/badge.svg?token=VjIzrBmi8W)](https://codecov.io/gh/caffeinetv/android)
 
 The Android app for Caffeine.
 

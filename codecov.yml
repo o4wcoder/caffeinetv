@@ -1,0 +1,13 @@
+# This configuration sets our targets at 0% so codecov's reports are informational
+# but never actually block pull requests. In the future this can be increased
+# gradually to ensure we don't start dropping our test coverage with new work.
+coverage:
+  status:
+    patch:
+      default:
+        target: 0%
+        threshold: null
+    project:
+      default:
+        target: 0%
+        threshold: null
