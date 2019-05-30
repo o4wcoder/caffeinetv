@@ -370,7 +370,9 @@ class ListCard(
     private val snapHelper = LinearSnapHelper()
     private val edgeOffset = binding.root.resources.getDimension(R.dimen.lobby_card_side_margin).toInt()
     private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
-    private val lobbyAdapter = LobbyAdapter(dispatchConfig, followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, clock, eventsService)
+    private val lobbyAdapter = LobbyAdapter(dispatchConfig, followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, clock, eventsService).apply {
+        isBroadcastTitleSingleLine = true
+    }
     init {
         binding.cardListRecyclerView.adapter = lobbyAdapter
         binding.cardListRecyclerView.run {
