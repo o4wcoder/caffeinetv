@@ -65,7 +65,7 @@ class LobbyAdapter @Inject constructor(
     private var tags: Map<String, Lobby.Tag> = mapOf()
     private var content: Map<String, Lobby.Content> = mapOf()
     var lobbyId: String? = null
-    var isBroadcastTitleSingleLine: Boolean = false
+    var isMiniStyle: Boolean = false
 
     fun submitList(list: List<LobbyItem>, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>) {
         this.tags = tags
@@ -105,7 +105,7 @@ class LobbyAdapter @Inject constructor(
 
     private fun liveBroadcastCard(inflater: LayoutInflater, parent: ViewGroup) =
             LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, this, clock, eventsService).apply {
-                binding.broadcastTitleTextView.setSingleLine(isBroadcastTitleSingleLine)
+                binding.isMiniStyle = isMiniStyle
             }
 
     private fun liveBroadcastWithFriendsCard(inflater: LayoutInflater, parent: ViewGroup) =

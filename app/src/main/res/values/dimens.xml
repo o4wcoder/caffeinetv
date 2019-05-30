@@ -12,6 +12,7 @@
     <dimen name="avatar_size_large">175dp</dimen> <!-- profile -->
     <dimen name="avatar_explore">85dp</dimen>
     <dimen name="avatar_stage">104dp</dimen>
+    <dimen name="avatar_lobby_mini">32dp</dimen>
     <dimen name="avatar_lobby_previous_broadcast">80dp</dimen>
     <dimen name="avatar_friends_watching">24dp</dimen>
     <dimen name="avatar_toolbar">24dp</dimen>
@@ -56,4 +57,11 @@
     <dimen name="lobby_subtitle_bottom_margin">0dp</dimen>
     <dimen name="stage_loading_indicator_size">48dp</dimen>
     <dimen name="twitter_auth_web_view_height">0dp</dimen>
+
+    <dimen name="broadcast_username">14sp</dimen>
+    <dimen name="broadcast_username_mini">13sp</dimen>
+    <dimen name="broadcast_title">17sp</dimen>
+    <dimen name="broadcast_title_mini">14sp</dimen>
+    <dimen name="live_badge_text">12sp</dimen>
+    <dimen name="live_badge_text_mini">10sp</dimen>
 </resources>
