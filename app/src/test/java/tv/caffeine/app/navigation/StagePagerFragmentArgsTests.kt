@@ -10,7 +10,7 @@ import tv.caffeine.app.stage.StagePagerFragmentArgs
 import tv.caffeine.app.util.broadcasterUsername
 
 @RunWith(RobolectricTestRunner::class)
-class StageFragmentArgsTests {
+class StagePagerFragmentArgsTests {
 
     @Test
     fun broadcasterUsernameIsParsedCorrectly() {

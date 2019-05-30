@@ -45,7 +45,6 @@ import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.CropBorderedCircleTransformation
-import tv.caffeine.app.util.broadcasterUsername
 import tv.caffeine.app.util.getHexColor
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
@@ -71,6 +70,7 @@ class StageFragment @Inject constructor(
     @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
     private lateinit var frameListener: EglRenderer.FrameListener
+    private var canSwipe: Boolean = true
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
     private var newReyesController: NewReyesController? = null
@@ -82,14 +82,15 @@ class StageFragment @Inject constructor(
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
     private var isMe = false
-    private val args by navArgs<StagePagerFragmentArgs>()
+    private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting var stageIsLive = false
     var swipeButtonOnClickListener: View.OnClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        broadcasterUsername = args.broadcasterUsername()
+        broadcasterUsername = args.broadcastUsername
+        canSwipe = args.canSwipe
         retainInstance = true
     }
 
@@ -165,7 +166,11 @@ class StageFragment @Inject constructor(
                 })
             }
             binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
-            binding.saySomethingTextView?.text = saySomethingToBroadcasterText(userProfile)
+            binding.saySomethingTextView?.text = if (userProfile.isMe) {
+                getString(R.string.messages_will_appear_here)
+            } else {
+                saySomethingToBroadcasterText(userProfile)
+            }
             binding.avatarImageView.setOnClickListener {
                 findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
             }
@@ -304,7 +309,14 @@ class StageFragment @Inject constructor(
     }
 
     private fun updateViewsOnMyStageVisibility() {
-        listOf(binding.giftButton, binding.friendsWatchingButton, binding.followButton, binding.avatarImageView).forEach {
+        listOf(
+            binding.giftButton,
+            binding.friendsWatchingButton,
+            binding.avatarImageView,
+            binding.usernameTextView,
+            binding.followButton,
+            binding.broadcastTitleTextView
+        ).forEach {
             it?.isVisible = !isMe
         }
     }
@@ -457,7 +469,7 @@ class StageFragment @Inject constructor(
         videoTracks.clear()
     }
 
-    private fun configureButtons() {
+    @VisibleForTesting fun configureButtons() {
         binding.chatButton?.setOnClickListener { openSendMessage() }
         binding.giftButton?.setOnClickListener {
             sendDigitalItemWithMessage(null)
@@ -466,6 +478,7 @@ class StageFragment @Inject constructor(
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)
         }
         binding.stageToolbar.apply { setTitleTextColor(context.getColor(R.color.transparent)) }
+        binding.swipeButton.isVisible = canSwipe
         binding.swipeButton.setOnClickListener(swipeButtonOnClickListener)
     }
 

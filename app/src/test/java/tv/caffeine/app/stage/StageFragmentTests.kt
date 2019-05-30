@@ -36,23 +36,25 @@ class StageFragmentVisibilityTests {
     @MockK(relaxed = true) lateinit var showIsOverTextView: TextView
     @MockK(relaxed = true) lateinit var stageAppBar: AppBarLayout
     @MockK(relaxed = true) lateinit var avatarUsernameContainer: ConstraintLayout
+    @MockK(relaxed = true) lateinit var swipeButton: ImageView
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         subject = StageFragment(mockk(), mockk(), mockk(), mockk(), mockk())
         subject.binding = StageFragmentVisibilityTestBindings(
-                avatarImageView,
-                backToLobbyButton,
-                followButton,
-                gameLogoImageView,
-                largeAvatarImageView,
-                liveIndicatorAndAvatarContainer,
-                liveIndicatorTextView,
-                saySomethingTextView,
-                showIsOverTextView,
-                stageAppBar,
-                avatarUsernameContainer
+            avatarImageView,
+            backToLobbyButton,
+            followButton,
+            gameLogoImageView,
+            largeAvatarImageView,
+            liveIndicatorAndAvatarContainer,
+            liveIndicatorTextView,
+            saySomethingTextView,
+            showIsOverTextView,
+            stageAppBar,
+            avatarUsernameContainer,
+            swipeButton
         )
     }
 
@@ -155,6 +157,14 @@ class StageFragmentVisibilityTests {
         verify(exactly = 0) { subject.binding.liveIndicatorAndAvatarContainer.visibility = any() }
         verify(exactly = 0) { subject.binding.gameLogoImageView.visibility = any() }
     }
+
+    @Test
+    fun `the swipe button is invisible if the stage cannot swipe`() {
+        subject.arguments = StageFragmentArgs("me", false).toBundle()
+        subject.onCreate(null)
+        subject.configureButtons()
+        verify { subject.binding.swipeButton.isVisible = false }
+    }
 }
 
 private class StageFragmentVisibilityTestBindings(
@@ -168,7 +178,8 @@ private class StageFragmentVisibilityTestBindings(
     saySomethingTextView: TextView,
     showIsOverTextView: TextView,
     stageAppBar: AppBarLayout,
-    avatarUsernameContainer: ConstraintLayout
+    avatarUsernameContainer: ConstraintLayout,
+    swipeButton: ImageView
 ) : FragmentStageBinding(
     mockk<DataBindingComponent>(),
     mockk(),
@@ -176,30 +187,30 @@ private class StageFragmentVisibilityTestBindings(
     avatarImageView,
     avatarUsernameContainer,
     backToLobbyButton,
-    mockk(),
-    mockk(),
-    mockk(),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
     followButton,
-    mockk(),
+    mockk(relaxed = true),
     gameLogoImageView,
-    mockk(),
+    mockk(relaxed = true),
     largeAvatarImageView,
     liveIndicatorAndAvatarContainer,
     liveIndicatorTextView,
-    mockk(),
-    mockk(),
-    mockk(),
-    mockk(),
-    mockk(),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
     saySomethingTextView,
-    mockk(),
-    mockk(),
-    mockk(),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
+    mockk(relaxed = true),
     showIsOverTextView,
     stageAppBar,
-    mockk(),
-    mockk(),
-    mockk()
+    mockk(relaxed = true),
+    swipeButton,
+    mockk(relaxed = true)
 ) {
     override fun setVariable(variableId: Int, value: Any?): Boolean {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.

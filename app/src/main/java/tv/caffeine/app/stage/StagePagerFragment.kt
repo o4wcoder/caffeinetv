@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -49,7 +48,8 @@ private const val BUNDLE_KEY_BROADCASTERS = "broadcasters"
 
 class StagePagerFragment @Inject constructor(
     private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
-    private val adapterFactory: StagePagerAdapter.Factory
+    private val adapterFactory: StagePagerAdapter.Factory,
+    private val followManager: FollowManager
 ) : CaffeineFragment(R.layout.fragment_stage_pager) {
 
     private var binding: FragmentStagePagerBinding? = null
@@ -105,20 +105,34 @@ class StagePagerFragment @Inject constructor(
         }
         savedInstanceState?.getStringArrayList(BUNDLE_KEY_BROADCASTERS)?.let { broadcasters = it }
         if (broadcasters.isEmpty()) {
-            lobbyViewModel.refresh()
-            lobbyViewModel.lobby.observe(this, Observer {
-                handle(it) { lobby ->
-                    val (configuredBroadcasters, index) = configureBroadcasters(
-                            args.broadcasterUsername(), lobby.getAllBroadcasters())
-                    broadcasters = configuredBroadcasters
-                    stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
-                    binding?.stageViewPager?.currentItem = index
-                }
-            })
+            val currentUsername = followManager.currentUserDetails()?.username
+            if (currentUsername != null && currentUsername == args.broadcasterUsername()) {
+                setBroadcastersAndAdapter(listOf(currentUsername), swipeButtonOnClickListener)
+            } else {
+                lobbyViewModel.refresh()
+                lobbyViewModel.lobby.observe(this, Observer {
+                    handle(it) { lobby ->
+                        val (configuredBroadcasters, index) = configureBroadcasters(
+                            args.broadcasterUsername(), lobby.getAllBroadcasters()
+                        )
+                        setBroadcastersAndAdapter(configuredBroadcasters, swipeButtonOnClickListener, index)
+                    }
+                })
+            }
         } else {
             // The view pager restores the index.
             stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
         }
+    }
+
+    private fun setBroadcastersAndAdapter(
+        broadcasters: List<String>,
+        swipeButtonOnClickListener: View.OnClickListener,
+        index: Int = 0
+    ) {
+        this.broadcasters = broadcasters
+        stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
+        binding?.stageViewPager?.currentItem = index
     }
 
     /**
@@ -227,7 +241,8 @@ class StagePagerAdapter @AssistedInject constructor(
     override fun getItem(position: Int): Fragment {
         val stageFragment = StageFragment(
                 factory, eglBase, followManager, picasso, clock)
-        stageFragment.arguments = bundleOf("broadcastLink" to broadcasters[position])
+        val canSwipe = count > 1 && position < count - 1
+        stageFragment.arguments = StageFragmentArgs(broadcasters[position], canSwipe).toBundle()
         stageFragment.swipeButtonOnClickListener = swipeButtonOnClickListener
         currentStage = stageFragment
         return stageFragment

@@ -82,7 +82,15 @@
         android:id="@+id/stageFragment"
         android:name="tv.caffeine.app.stage.StageFragment"
         android:label="@string/stage"
-        tools:layout="@layout/fragment_stage" />
+        tools:layout="@layout/fragment_stage">
+        <argument
+            android:name="broadcastUsername"
+            app:argType="string"/>
+        <argument
+            android:name="canSwipe"
+            app:argType="boolean"
+            android:defaultValue="true"/>
+    </fragment>
     <fragment
         android:id="@+id/stagePagerFragment"
         android:name="tv.caffeine.app.stage.StagePagerFragment"
