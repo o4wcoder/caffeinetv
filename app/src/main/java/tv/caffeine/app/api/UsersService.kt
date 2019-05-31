@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.IdentityProvider
@@ -17,12 +18,15 @@ import tv.caffeine.app.api.model.SignedUserToken
 import tv.caffeine.app.api.model.UserContainer
 import tv.caffeine.app.api.model.UserUpdateBody
 
+const val DEFAULT_PAGE_LIMIT = 500
+const val MAX_PAGE_LIMIT = 500
+
 interface UsersService {
     @GET("v2/users/{caid}/followers")
     fun listFollowers(@Path("caid") userId: CAID): Deferred<Response<PaginatedFollowers>>
 
     @GET("v2/users/{caid}/following")
-    fun listFollowing(@Path("caid") userId: CAID): Deferred<Response<PaginatedFollowing>>
+    fun listFollowing(@Path("caid") userId: CAID, @Query("limit") limit: Int = DEFAULT_PAGE_LIMIT): Deferred<Response<PaginatedFollowing>>
 
     @POST("v1/users/{caid1}/follow/{caid2}")
     fun follow(@Path("caid1") follower: CAID, @Path("caid2") toFollow: CAID): Deferred<Response<Void>>
