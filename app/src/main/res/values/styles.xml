@@ -190,6 +190,7 @@
     </style>
 
     <style name="ScreenTitle.Stage">
+        <item name="android:textColor">@color/white</item>
         <item name="fontFamily">@font/poppins</item>
     </style>
 

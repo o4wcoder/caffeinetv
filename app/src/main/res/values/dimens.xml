@@ -11,7 +11,6 @@
     <dimen name="avatar_size">40dp</dimen> <!-- on a lobby card -->
     <dimen name="avatar_size_large">175dp</dimen> <!-- profile -->
     <dimen name="avatar_explore">85dp</dimen>
-    <dimen name="avatar_stage">104dp</dimen>
     <dimen name="avatar_lobby_mini">32dp</dimen>
     <dimen name="avatar_lobby_previous_broadcast">80dp</dimen>
     <dimen name="avatar_friends_watching">24dp</dimen>

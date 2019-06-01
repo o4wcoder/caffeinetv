@@ -81,35 +81,19 @@
                 tools:visibility="visible"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/large_avatar_image_view"
-            android:layout_width="@dimen/avatar_stage"
-            android:layout_height="@dimen/avatar_stage"
-            android:layout_marginBottom="24dp"
-            android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
-            android:padding="2dp"
-            android:visibility="gone"
-            android:contentDescription="@string/user_avatar_content_description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/show_is_over_text_view"
-            app:placeholder="@{@drawable/default_avatar_round}"
-            app:roundedImageUrl="@{userProfile.avatarImageUrl}"
-            tools:src="@drawable/default_avatar_round"
-            tools:visibility="visible" />
-
         <TextView
             style="@style/ScreenTitle.Stage"
             android:id="@+id/show_is_over_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:layout_marginBottom="24dp"
             android:textAlignment="center"
             android:visibility="gone"
-            android:layout_marginBottom="24dp"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/back_to_lobby_button"
+            app:layout_constraintTop_toTopOf="@+id/renderer_container"
+            app:layout_constraintBottom_toTopOf="@+id/back_to_lobby_button"
             tools:text="Caffeine is no longer live"
             tools:visibility="visible"/>
 
@@ -118,9 +102,10 @@
             android:id="@+id/back_to_lobby_button"
             android:text="@string/browse_more_broadcasts"
             android:visibility="gone"
-            android:layout_marginBottom="24dp"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/show_is_over_text_view"
             app:layout_constraintBottom_toBottomOf="@id/renderer_container"
             tools:visibility="visible"/>
 

@@ -191,9 +191,9 @@ class StageFragment @Inject constructor(
             isMe = userProfile.isMe
             updateViewsOnMyStageVisibility()
             updateBroadcastOnlineState(userProfile.isLive)
-            if (shouldShowOverlayOnProfileLoaded && userProfile.isLive) {
+            if (shouldShowOverlayOnProfileLoaded) {
                 shouldShowOverlayOnProfileLoaded = false
-                toggleOverlayVisibility(false)
+                toggleOverlayVisibility(!userProfile.isLive, false) // hide on the first frame instead of a timeout if live
             }
         })
         val navController = findNavController()
@@ -264,12 +264,11 @@ class StageFragment @Inject constructor(
 
     private var overlayVisibilityJob: Job? = null
 
-    @VisibleForTesting
-    fun toggleOverlayVisibility(isToggledByUser: Boolean = true) {
+    private fun toggleOverlayVisibility(shouldAutoHideAfterTimeout: Boolean = true, shouldIncludeAppBar: Boolean = true) {
         overlayVisibilityJob?.cancel()
         if (!binding.stageAppbar.isVisible || !binding.liveIndicatorAndAvatarContainer.isVisible) {
-            showOverlays(isToggledByUser)
-            if (isToggledByUser) {
+            showOverlays(shouldIncludeAppBar)
+            if (shouldAutoHideAfterTimeout) {
                 overlayVisibilityJob = launch {
                     delay(3000)
                     hideOverlays()
@@ -293,7 +292,7 @@ class StageFragment @Inject constructor(
         } else {
             listOf(binding.liveIndicatorAndAvatarContainer)
         }
-        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView, binding.avatarUsernameContainer)
+        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView)
         if (visible) {
             viewsToToggle.forEach {
                 it.isVisible = true
@@ -342,10 +341,8 @@ class StageFragment @Inject constructor(
     fun updateBroadcastOnlineState(broadcastIsOnline: Boolean) {
         stageIsLive = broadcastIsOnline
         if (!broadcastIsOnline) {
-            showOverlays()
             loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = false
         }
-        binding.largeAvatarImageView.isVisible = !broadcastIsOnline
         binding.showIsOverTextView.isVisible = !broadcastIsOnline
         binding.backToLobbyButton.isVisible = !broadcastIsOnline
     }
