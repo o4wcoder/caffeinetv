@@ -50,8 +50,8 @@
                 android:gravity="center_vertical"
                 android:paddingTop="3dp"
                 android:paddingBottom="10dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:paddingStart="@dimen/lobby_card_side_margin"
+                android:paddingEnd="@dimen/lobby_card_side_margin"
                 android:textColor="@color/white"
                 android:textAppearance="@style/LobbyFriendsWatchingText"
                 app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
@@ -95,9 +95,8 @@
                 android:id="@+id/avatar_image_view"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginStart="@dimen/lobby_card_side_margin"
+                android:layout_marginTop="@dimen/lobby_card_side_margin"
                 app:layout_constraintStart_toStartOf="@+id/preview_image_view"
                 app:layout_constraintTop_toBottomOf="@+id/preview_image_view"
                 tools:src="@drawable/default_avatar_round" />
@@ -107,7 +106,7 @@
                 android:id="@+id/username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="@dimen/lobby_card_side_margin"
                 app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
                 app:layout_constraintTop_toTopOf="@id/avatar_image_view"
                 tools:drawableEnd="@drawable/verified"
@@ -129,20 +128,32 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/more_button"
                 app:layout_constraintStart_toStartOf="@+id/username_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/username_text_view"
-                app:layout_constraintVertical_bias="0.0"
-                tools:text="What is happening at Caffeine" />
+                tools:text="What is happening at Caffeine"/>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/avatar_title_text_bottom_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="avatar_image_view,broadcast_title_text_view"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/lobby_card_side_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/avatar_title_text_bottom_barrier"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/tag_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:paddingStart="@dimen/lobby_card_side_margin"
+                android:paddingEnd="@dimen/lobby_card_side_margin"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:textAppearance="@style/LobbyCardTag"
@@ -154,12 +165,12 @@
                 tools:textColor="@color/white"/>
 
             <TextView
-                android:id="@+id/live_indicator_text_view"
                 style="@style/LiveIndicator"
+                android:id="@+id/live_indicator_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="@dimen/lobby_card_side_margin"
+                android:layout_marginTop="@dimen/lobby_card_side_margin"
                 android:text="@string/live_indicator"
                 app:layout_constraintStart_toStartOf="@+id/preview_image_view"
                 app:layout_constraintTop_toTopOf="@+id/preview_image_view" />
