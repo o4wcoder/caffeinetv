@@ -351,6 +351,14 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
+    <style name="NoNetworkData" >
+        <item name="android:tint">@color/white</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
     <style name="DigitalItemQuantity">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>

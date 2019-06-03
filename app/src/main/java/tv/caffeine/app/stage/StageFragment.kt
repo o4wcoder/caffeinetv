@@ -81,6 +81,9 @@ class StageFragment @Inject constructor(
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
+    @VisibleForTesting
+    var primaryFeedQuality: NewReyes.Quality = NewReyes.Quality.GOOD
+
     private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
@@ -139,6 +142,7 @@ class StageFragment @Inject constructor(
         // Inflate the layout for this fragment
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
+
         view.setOnClickListener { toggleOverlayVisibility() }
         (view as ViewGroup).apply {
             layoutTransition = LayoutTransition()
@@ -292,13 +296,24 @@ class StageFragment @Inject constructor(
         } else {
             listOf(binding.liveIndicatorAndAvatarContainer)
         }
-        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView)
+
+        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView, binding.noNetworkDataImageView)
+
         if (visible) {
             viewsToToggle.forEach {
                 it.isVisible = true
             }
-            viewsForLiveOnly.forEach {
-                it.isVisible = stageIsLive
+
+            // views for live only
+            // TODO: we should pass a new var to the layout to handle visibility
+            binding.gameLogoImageView.isVisible = stageIsLive
+            binding.avatarUsernameContainer.isVisible = stageIsLive
+            if (primaryFeedQuality == NewReyes.Quality.GOOD) {
+                binding.liveIndicatorTextView.isVisible = stageIsLive
+                binding.noNetworkDataImageView.isVisible = false
+            } else {
+                binding.liveIndicatorTextView.isVisible = false
+                binding.noNetworkDataImageView.isVisible = stageIsLive
             }
         } else {
             viewsToToggle.plus(viewsForLiveOnly).forEach {
@@ -361,6 +376,7 @@ class StageFragment @Inject constructor(
         val controller = factory.create(username)
         newReyesController = controller
         manageFeeds(controller)
+        manageFeedQuality(controller)
         manageStateChange(controller)
         manageConnections(controller)
         manageErrors(controller)
@@ -372,6 +388,12 @@ class StageFragment @Inject constructor(
             val activeRoles = feeds.values.filter { it.capabilities.video }.map { it.role }.toList()
             renderers[NewReyes.Feed.Role.primary]?.isVisible = NewReyes.Feed.Role.primary in activeRoles
             renderers[NewReyes.Feed.Role.secondary]?.isVisible = NewReyes.Feed.Role.secondary in activeRoles
+        }
+    }
+
+    private fun manageFeedQuality(controller: NewReyesController) = launch {
+        controller.feedQualityChannel.consumeEach {
+            primaryFeedQuality = it
         }
     }
 

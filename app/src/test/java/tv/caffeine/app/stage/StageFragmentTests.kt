@@ -17,6 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.UserProfile
 
@@ -36,6 +37,7 @@ class StageFragmentVisibilityTests {
     @MockK(relaxed = true) lateinit var stageAppBar: AppBarLayout
     @MockK(relaxed = true) lateinit var avatarUsernameContainer: ConstraintLayout
     @MockK(relaxed = true) lateinit var swipeButton: ImageView
+    @MockK(relaxed = true) lateinit var noNetworkDataImageview: ImageView
 
     @Before
     fun setup() {
@@ -52,7 +54,8 @@ class StageFragmentVisibilityTests {
             showIsOverTextView,
             stageAppBar,
             avatarUsernameContainer,
-            swipeButton
+            swipeButton,
+            noNetworkDataImageview
         )
     }
 
@@ -85,10 +88,35 @@ class StageFragmentVisibilityTests {
     }
 
     @Test
-    fun `showing overlays on a live stage shows live indicator`() {
+    fun `showing overlays on a live stage with good quality shows live indicator`() {
         subject.stageIsLive = true
+        subject.primaryFeedQuality = NewReyes.Quality.GOOD
         subject.showOverlays()
         verify { subject.binding.liveIndicatorTextView.isVisible = true }
+    }
+
+    @Test
+    fun `showing overlays on a live stage with poor quality shows live indicator`() {
+        subject.stageIsLive = true
+        subject.primaryFeedQuality = NewReyes.Quality.POOR
+        subject.showOverlays()
+        verify { subject.binding.liveIndicatorTextView.isVisible = false }
+    }
+
+    @Test
+    fun `showing overlays on a live stage with poor quality shows no network data indicator`() {
+        subject.stageIsLive = true
+        subject.primaryFeedQuality = NewReyes.Quality.POOR
+        subject.showOverlays()
+        verify { subject.binding.noNetworkDataImageView.isVisible = true }
+    }
+
+    @Test
+    fun `showing overlays on a live stage with good quality does not show no network data indicator`() {
+        subject.stageIsLive = true
+        subject.primaryFeedQuality = NewReyes.Quality.GOOD
+        subject.showOverlays()
+        verify { subject.binding.noNetworkDataImageView.isVisible = false }
     }
 
     @Test
@@ -172,7 +200,8 @@ private class StageFragmentVisibilityTestBindings(
     showIsOverTextView: TextView,
     stageAppBar: AppBarLayout,
     avatarUsernameContainer: ConstraintLayout,
-    swipeButton: ImageView
+    swipeButton: ImageView,
+    noNetworkDataImageView: ImageView
 ) : FragmentStageBinding(
     mockk<DataBindingComponent>(),
     mockk(),
@@ -191,6 +220,7 @@ private class StageFragmentVisibilityTestBindings(
     liveIndicatorTextView,
     mockk(relaxed = true),
     mockk(relaxed = true),
+    noNetworkDataImageView,
     mockk(relaxed = true),
     mockk(relaxed = true),
     mockk(relaxed = true),

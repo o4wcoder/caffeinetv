@@ -55,7 +55,7 @@ class NewReyesConnectionInfo(
     val audioTrack: AudioTrack?
 )
 
-private const val HEARTBEAT_PERIOD_SECONDS = 15L
+private const val HEARTBEAT_PERIOD_SECONDS = 15L // TODO: What's a good period?
 private const val STATS_REPORTING_PERIOD_SECONDS = 3L
 private const val DEFAULT_RETRY_DELAY_SECONDS = 10L
 
@@ -85,6 +85,7 @@ class NewReyesController @AssistedInject constructor(
 
     val feedChannel = Channel<Map<String, NewReyes.Feed>>()
     val connectionChannel = Channel<NewReyesFeedInfo>()
+    val feedQualityChannel = Channel<NewReyes.Quality>()
     val stateChangeChannel = Channel<List<StateChange>>()
     val errorChannel = Channel<Error>()
 
@@ -126,6 +127,14 @@ class NewReyesController @AssistedInject constructor(
         while (isActive) {
             heartbeatUrls.values.forEach { url ->
                 val result = realtime.heartbeat(url, Object()).awaitAndParseErrors(gson)
+                when (result) {
+                    is CaffeineResult.Success -> {
+                        val heartbeat = result.value
+                        heartbeat.connectionQuality?.let { feedQualityChannel.send(it) }
+                    }
+                    is CaffeineResult.Error -> onError(result.error)
+                    is CaffeineResult.Failure -> onFailure(result.throwable)
+                }
             }
             delay(TimeUnit.SECONDS.toMillis(HEARTBEAT_PERIOD_SECONDS))
         }
@@ -190,6 +199,7 @@ class NewReyesController @AssistedInject constructor(
         val oldFeeds = feeds
         val newFeeds = message.payload?.feeds ?: mapOf()
         feedChannel.send(newFeeds)
+
         newFeeds.values.forEach { feed ->
             audioTracks[feed.stream.id]?.let { audioTrack ->
                 Timber.d("DIFF: feed volume changed ${feed.id}, new ${feed.volume}")

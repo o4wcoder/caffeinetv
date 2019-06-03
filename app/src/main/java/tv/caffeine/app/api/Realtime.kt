@@ -27,7 +27,7 @@ interface Realtime {
     fun connectToStream(@Url url: String, @Body body: NewReyes.ConnectToStream): Deferred<Response<NewReyes.ConnectToStreamResponse>>
 
     @POST
-    fun heartbeat(@Url url: String, @Body body: Any): Deferred<Response<Any>>
+    fun heartbeat(@Url url: String, @Body body: Any): Deferred<Response<NewReyes.Heartbeat>>
 }
 
 class IndividualIceCandidate(val candidate: String, @SerializedName("sdpMid") val sdpMid: String, @SerializedName("sdpMLineIndex") val sdpMLineIndex: Int)
@@ -40,9 +40,24 @@ class NewReyes {
 
     data class Client(val id: String, val type: String = "android", val headless: Boolean = false, val constrainedBaseline: Boolean = true)
 
+    data class Heartbeat(val id: String, val connectionQuality: Quality?, val stageId: String)
+
     class Payload(val id: String, val username: String, val title: String, val live: Boolean, val broadcastId: String, val feeds: Map<String, Feed>)
 
-    class Feed(val id: String, val clientId: String, val role: Role, val description: String, val volume: Double, val isHostable: Boolean, val sourceConnectionQuality: String, val content: Content?, val capabilities: Capabilities, val hostableAddress: String, val externalAddress: String, val stream: Stream) {
+    class Feed(
+        val id: String,
+        val clientId: String,
+        val role: Role,
+        val description: String,
+        val volume: Double,
+        val isHostable: Boolean,
+        val sourceConnectionQuality: Quality?,
+        val content: Content?,
+        val capabilities: Capabilities,
+        val hostableAddress: String,
+        val externalAddress: String,
+        val stream: Stream
+    ) {
         enum class Role { primary, secondary }
         class Content(val id: String, val type: Type) {
             enum class Type { game, user }
@@ -56,4 +71,6 @@ class NewReyes {
     class ConnectToStreamResponse(val iceCandidates: Any?, val id: String, val stageId: String, val urls: ConnectToStreamUrls)
 
     class ConnectToStreamUrls(val heartbeat: String, val updates: String)
+
+    enum class Quality { GOOD, POOR }
 }
