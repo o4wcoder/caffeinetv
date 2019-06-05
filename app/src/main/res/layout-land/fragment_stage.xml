@@ -217,7 +217,6 @@
                     android:id="@+id/avatar_image_view"
                     android:layout_width="@dimen/avatar_size"
                     android:layout_height="@dimen/avatar_size"
-                    android:layout_marginTop="4dp"
                     android:src="@drawable/default_avatar_round"
                     android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                     android:padding="2dp"
