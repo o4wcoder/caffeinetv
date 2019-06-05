@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.threeten.bp.Clock
 import timber.log.Timber
-import tv.caffeine.app.api.EventsService
+import tv.caffeine.app.analytics.EventManager
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
@@ -42,7 +42,7 @@ class LobbyAdapter @Inject constructor(
     @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     private val picasso: Picasso,
     private val clock: Clock,
-    private val eventsService: EventsService
+    private val eventManager: EventManager
 ) : ListAdapter<LobbyItem, LobbyViewHolder>(
         object : DiffUtil.ItemCallback<LobbyItem>() {
             override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) =
@@ -64,12 +64,18 @@ class LobbyAdapter @Inject constructor(
 
     private var tags: Map<String, Lobby.Tag> = mapOf()
     private var content: Map<String, Lobby.Content> = mapOf()
-    var lobbyId: String? = null
+    private var payloadId: String? = null
     var isMiniStyle: Boolean = false
 
-    fun submitList(list: List<LobbyItem>, tags: Map<String, Lobby.Tag>, content: Map<String, Lobby.Content>) {
+    fun submitList(
+        list: List<LobbyItem>,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        payloadId: String
+    ) {
         this.tags = tags
         this.content = content
+        this.payloadId = payloadId
         super.submitList(list)
     }
 
@@ -104,18 +110,18 @@ class LobbyAdapter @Inject constructor(
             SubtitleCard(LobbySubtitleBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
 
     private fun liveBroadcastCard(inflater: LayoutInflater, parent: ViewGroup) =
-            LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, this, clock, eventsService).apply {
+            LiveBroadcastCard(LiveBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, this, clock, eventManager).apply {
                 binding.isMiniStyle = isMiniStyle
             }
 
     private fun liveBroadcastWithFriendsCard(inflater: LayoutInflater, parent: ViewGroup) =
-            LiveBroadcastWithFriendsCard(LiveBroadcastWithFriendsCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, this, clock, eventsService)
+            LiveBroadcastWithFriendsCard(LiveBroadcastWithFriendsCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, this, clock, eventManager)
 
     private fun previousBroadcastCard(inflater: LayoutInflater, parent: ViewGroup) =
-            PreviousBroadcastCard(PreviousBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
+            PreviousBroadcastCard(PreviousBroadcastCardBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, this, clock, eventManager)
 
     private fun listCard(inflater: LayoutInflater, parent: ViewGroup) =
-            ListCard(CardListBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, recycledViewPool, dispatchConfig, clock, eventsService)
+            ListCard(CardListBinding.inflate(inflater, parent, false), tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, recycledViewPool, dispatchConfig, clock, eventManager)
 
     private fun upcomingButtonCard(inflater: LayoutInflater, parent: ViewGroup) =
             UpcomingButtonCard(UpcomingButtonCardBinding.inflate(inflater, parent, false), null, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)

@@ -31,7 +31,9 @@ class StatsDimensions(
 class Counters(val counters: List<StatsCounter>) : StatsBody()
 class StatsCounter(val metricName: String, val value: Int)
 
-sealed class EventBody(eventSource: String = "android", environment: String = ApiConfig.EVENTS_ENVIRONMENT, eventType: String)
-class LobbyCardClickedEvent(val data: LobbyClickedEventData) : EventBody(eventType = "lobby_card_clicked")
-class LobbyFollowClickedEvent(val data: LobbyClickedEventData) : EventBody(eventType = "lobby_follow_clicked")
-class LobbyClickedEventData(val pageLoadId: String, val caid: CAID, val stageId: String, val clickedAt: String)
+sealed class EventBody(val eventType: String, val data: EventData, val eventSource: String = "android", val environment: String = ApiConfig.EVENTS_ENVIRONMENT)
+class LobbyCardClickedEvent(data: LobbyClickedEventData) : EventBody("lobby_card_clicked", data)
+class LobbyFollowClickedEvent(data: LobbyClickedEventData) : EventBody("lobby_follow_clicked", data)
+
+sealed class EventData
+class LobbyClickedEventData(val payloadId: String, val caid: CAID?, val stageId: String, val clickedAt: Long) : EventData()

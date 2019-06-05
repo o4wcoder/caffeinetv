@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.api.EventsService
+import tv.caffeine.app.analytics.EventManager
 import tv.caffeine.app.api.LobbyCardClickedEvent
 import tv.caffeine.app.api.LobbyClickedEventData
 import tv.caffeine.app.api.LobbyFollowClickedEvent
@@ -45,7 +45,6 @@ import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
-import java.util.concurrent.TimeUnit
 
 sealed class LobbyViewHolder(
     itemView: View,
@@ -143,10 +142,10 @@ abstract class BroadcasterCard(
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    private val lobbyId: String? = null,
+    private val payloadId: String?,
     private val scope: CoroutineScope? = null,
-    private val clock: Clock? = null,
-    protected val eventsService: EventsService? = null
+    private val clock: Clock,
+    protected val eventManager: EventManager
 ) : LobbyViewHolder(view, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
     protected val previewImageView: ImageView = view.findViewById(R.id.preview_image_view)
     private val avatarImageView: ImageView = view.findViewById(R.id.avatar_image_view)
@@ -173,13 +172,15 @@ abstract class BroadcasterCard(
         val isLive = singleCard.broadcaster.broadcast != null
         val followHandler = FollowManager.FollowHandler(null, object : FollowManager.Callback() {
             override fun follow(caid: CAID) {
-                getLobbyClickedEventData(singleCard)?.let { eventsService?.sendEvent(LobbyFollowClickedEvent(it)) }
                 scope?.launch {
                     followManager.followUser(caid, object : FollowManager.FollowCompletedCallback {
                         override fun onUserFollowed() {
                             configureUser(singleCard.broadcaster.user, null)
                         }
                     })
+                    getLobbyClickedEventData(singleCard)?.let { eventData ->
+                        eventManager.sendEvent(LobbyFollowClickedEvent(eventData))
+                    }
                 }
             }
 
@@ -235,10 +236,11 @@ abstract class BroadcasterCard(
     }
 
     @VisibleForTesting fun getLobbyClickedEventData(singleCard: SingleCard): LobbyClickedEventData? {
-        if (clock == null || lobbyId == null) return null
-        val broadcast = singleCard.broadcaster.broadcast ?: return null
-        val timestamp = TimeUnit.MILLISECONDS.toSeconds(clock.millis())
-        return LobbyClickedEventData(lobbyId, singleCard.broadcaster.user.caid, broadcast.id, timestamp.toString())
+        if (payloadId == null) return null
+        val caid = followManager.currentUserDetails()?.caid
+        val stageId = singleCard.broadcaster.user.stageId
+        val timestamp = clock.millis()
+        return LobbyClickedEventData(payloadId, caid, stageId, timestamp)
     }
 }
 
@@ -252,11 +254,11 @@ open class LiveBroadcastCard(
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    lobbyId: String? = null,
-    scope: CoroutineScope? = null,
-    clock: Clock? = null,
-    eventsService: EventsService? = null
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, scope, clock, eventsService) {
+    payloadId: String?,
+    private val scope: CoroutineScope? = null,
+    clock: Clock,
+    eventManager: EventManager
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
 
     override fun configure(item: LobbyItem) {
         super.configure(item)
@@ -272,7 +274,9 @@ open class LiveBroadcastCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            getLobbyClickedEventData(item)?.let { eventsService?.sendEvent(LobbyCardClickedEvent(it)) }
+            getLobbyClickedEventData(item)?.let { eventData ->
+                scope?.launch { eventManager.sendEvent(LobbyCardClickedEvent(eventData)) }
+            }
             val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
@@ -289,11 +293,11 @@ class LiveBroadcastWithFriendsCard(
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    lobbyId: String?,
-    scope: CoroutineScope?,
-    clock: Clock?,
-    eventsService: EventsService?
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, lobbyId, scope, clock, eventsService) {
+    payloadId: String?,
+    private val scope: CoroutineScope?,
+    clock: Clock,
+    eventManager: EventManager
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
     override fun configure(item: LobbyItem) {
         super.configure(item)
         val liveBroadcastItem = item as LiveBroadcastWithFriends
@@ -313,7 +317,9 @@ class LiveBroadcastWithFriendsCard(
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
         previewImageView.setOnClickListener {
-            getLobbyClickedEventData(item)?.let { eventsService?.sendEvent(LobbyCardClickedEvent(it)) }
+            getLobbyClickedEventData(item)?.let { eventData ->
+                scope?.launch { eventManager.sendEvent(LobbyCardClickedEvent(eventData)) }
+            }
             val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
@@ -335,8 +341,12 @@ class PreviousBroadcastCard(
     notFollowedTheme: UserTheme,
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    picasso: Picasso,
+    payloadId: String?,
+    scope: CoroutineScope,
+    clock: Clock,
+    eventManager: EventManager
+) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
     override val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.ALL
     override val isLight: Boolean = true
 
@@ -362,15 +372,16 @@ class ListCard(
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
     picasso: Picasso,
+    private val payloadId: String?,
     recycledViewPool: RecyclerView.RecycledViewPool,
     dispatchConfig: DispatchConfig,
     clock: Clock,
-    eventsService: EventsService
+    eventManager: EventManager
 ) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
     private val snapHelper = LinearSnapHelper()
     private val edgeOffset = binding.root.resources.getDimension(R.dimen.lobby_card_side_margin).toInt()
     private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
-    private val lobbyAdapter = LobbyAdapter(dispatchConfig, followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, clock, eventsService).apply {
+    private val lobbyAdapter = LobbyAdapter(dispatchConfig, followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, clock, eventManager).apply {
         isMiniStyle = true
     }
     init {
@@ -396,7 +407,9 @@ class ListCard(
     }
     override fun configure(item: LobbyItem) {
         val cardList = item as CardList
-        lobbyAdapter.submitList(cardList.cards, tags, content)
+        if (payloadId != null) {
+            lobbyAdapter.submitList(cardList.cards, tags, content, payloadId)
+        }
     }
 }
 
@@ -410,9 +423,13 @@ class LiveBroadcastPickerCard(
     notFollowedTheme: UserTheme,
     followedThemeLight: UserTheme,
     notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    picasso: Picasso,
+    scope: CoroutineScope,
+    clock: Clock,
+    eventManager: EventManager
+) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, null, scope, clock, eventManager) {
 
+    // The picker card for live hosting is not on the lobby, so the payload id is null and we don't track it.
     override fun configure(item: LobbyItem) {
         super.configure(item)
         val liveBroadcastItem = item as LiveBroadcast

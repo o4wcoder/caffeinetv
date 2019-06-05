@@ -42,8 +42,7 @@ class LobbyFragment @Inject constructor(
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { lobby ->
                 val items = LobbyItem.parse(lobby)
-                lobbyAdapter.submitList(items, lobby.tags, lobby.content)
-                lobbyAdapter.lobbyId = lobby.id
+                lobbyAdapter.submitList(items, lobby.tags, lobby.content, lobby.payloadId)
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })

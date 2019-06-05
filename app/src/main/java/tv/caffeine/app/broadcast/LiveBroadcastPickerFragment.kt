@@ -16,9 +16,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.threeten.bp.Clock
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.EventManager
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
@@ -39,10 +44,12 @@ import tv.caffeine.app.lobby.UpcomingButtonItem
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.PaddingItemDecoration
+import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class LiveBroadcastPickerFragment @Inject constructor(
     private val liveBroadcastPickerAdapter: LiveBroadcastPickerAdapter,
@@ -138,18 +145,28 @@ class LiveHostableBroadcastersViewModel @Inject constructor(
 }
 
 class LiveBroadcastPickerAdapter @Inject constructor(
+    private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
     @ThemeFollowedExplore private val followedTheme: UserTheme,
     @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
     @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
     @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val clock: Clock,
+    private val eventManager: EventManager
 ) : ListAdapter<LobbyItem, LobbyViewHolder>(
         object : DiffUtil.ItemCallback<LobbyItem>() {
             override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem.equals(newItem)
             override fun areContentsTheSame(oldItem: LobbyItem, newItem: LobbyItem) = oldItem.equals(newItem) // broadcasts are unique in the list
         }
-) {
+), CoroutineScope {
+
+    private val job = SupervisorJob()
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e(throwable, "Coroutine throwable")
+    }
+    override val coroutineContext: CoroutineContext
+        get() = dispatchConfig.main + job + exceptionHandler
 
     var broadcastCardCallback: LiveBroadcastPickerCard.Callback? = null
     var upcomingButtonCallback: UpcomingButtonCard.Callback? = null
@@ -172,7 +189,7 @@ class LiveBroadcastPickerAdapter @Inject constructor(
 
     private fun liveBroadcastPickerCard(inflater: LayoutInflater, parent: ViewGroup) =
             LiveBroadcastPickerCard(LiveBroadcastCardBinding.inflate(inflater, parent, false), broadcastCardCallback,
-                    mapOf(), mapOf(), followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso)
+                    mapOf(), mapOf(), followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, this, clock, eventManager)
 
     private fun upcomingButtonCard(inflater: LayoutInflater, parent: ViewGroup) =
             UpcomingButtonCard(UpcomingButtonCardBinding.inflate(inflater, parent, false), upcomingButtonCallback,
