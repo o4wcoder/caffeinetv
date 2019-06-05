@@ -359,6 +359,12 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
+    <style name="BlinkingNoNetworkData" >
+        <item name="android:tint">@color/white</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
     <style name="DigitalItemQuantity">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>

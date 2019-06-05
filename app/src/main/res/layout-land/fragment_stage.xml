@@ -29,6 +29,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible"/>
 
+        <ImageView
+            style="@style/BlinkingNoNetworkData"
+            android:id="@+id/no_network_data_blinking_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_network_data"
+            android:contentDescription="@string/poor_connection_icon_content_description"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/secondary_view_renderer"
+            tools:visibility="visible"/>
+
         <ProgressBar
             android:id="@+id/primary_loading_indicator"
             android:layout_width="@dimen/stage_loading_indicator_size"
@@ -153,14 +165,16 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:visibility="gone"/>
                 <ImageView
-                    android:id="@+id/no_network_data_image_view"
-                    android:layout_width="@dimen/no_network_data_image_width"
-                    android:layout_height="@dimen/no_network_data_image_height"
                     style="@style/NoNetworkData"
+                    android:id="@+id/no_network_data_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_no_network_data"
+                    android:contentDescription="@string/poor_connection_icon_content_description"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:src="@drawable/ic_no_network_data"
-                    android:visibility="gone"/>
+                    tools:visibility="visible"/>
                 <ImageView
                     android:id="@+id/swipe_button"
                     android:layout_width="wrap_content"

@@ -52,9 +52,13 @@ import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 import kotlin.collections.set
+import android.view.animation.LinearInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 
 private const val PICK_DIGITAL_ITEM = 0
 private const val SEND_MESSAGE = 1
+private const val DEFAULT_BLINK_ANIMATION_DURATION = 1000L
 
 class StageFragment @Inject constructor(
     private val factory: NewReyesController.Factory,
@@ -82,13 +86,20 @@ class StageFragment @Inject constructor(
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
     @VisibleForTesting
-    var primaryFeedQuality: NewReyes.Quality = NewReyes.Quality.GOOD
+    var feedQuality: NewReyes.Quality = NewReyes.Quality.GOOD
 
     private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting var stageIsLive = false
     var swipeButtonOnClickListener: View.OnClickListener? = null
+
+    private val blinkAnimation = AlphaAnimation(1f, 0f).apply {
+        duration = DEFAULT_BLINK_ANIMATION_DURATION
+        interpolator = LinearInterpolator()
+        repeatCount = Animation.INFINITE
+        repeatMode = Animation.REVERSE
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -304,11 +315,16 @@ class StageFragment @Inject constructor(
                 it.isVisible = true
             }
 
+            // hide blinker when showing overlay
+            if (feedQuality == NewReyes.Quality.POOR) {
+                showPoorConnectionAnimation(false)
+            }
+
             // views for live only
             // TODO: we should pass a new var to the layout to handle visibility
             binding.gameLogoImageView.isVisible = stageIsLive
             binding.avatarUsernameContainer.isVisible = stageIsLive
-            if (primaryFeedQuality == NewReyes.Quality.GOOD) {
+            if (feedQuality == NewReyes.Quality.GOOD) {
                 binding.liveIndicatorTextView.isVisible = stageIsLive
                 binding.noNetworkDataImageView.isVisible = false
             } else {
@@ -320,6 +336,17 @@ class StageFragment @Inject constructor(
                 it.isVisible = false
             }
         }
+    }
+
+    @VisibleForTesting
+    fun showPoorConnectionAnimation(isVisible: Boolean) {
+        if (isVisible) {
+            binding.noNetworkDataBlinkingImageView.startAnimation(blinkAnimation)
+        } else {
+            binding.noNetworkDataBlinkingImageView.clearAnimation()
+        }
+
+        binding.noNetworkDataBlinkingImageView.isVisible = isVisible
     }
 
     private fun updateViewsOnMyStageVisibility() {
@@ -393,7 +420,8 @@ class StageFragment @Inject constructor(
 
     private fun manageFeedQuality(controller: NewReyesController) = launch {
         controller.feedQualityChannel.consumeEach {
-            primaryFeedQuality = it
+            feedQuality = it
+            showPoorConnectionAnimation(it == NewReyes.Quality.POOR)
         }
     }
 

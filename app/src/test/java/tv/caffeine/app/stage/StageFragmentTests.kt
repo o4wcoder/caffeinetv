@@ -38,6 +38,7 @@ class StageFragmentVisibilityTests {
     @MockK(relaxed = true) lateinit var avatarUsernameContainer: ConstraintLayout
     @MockK(relaxed = true) lateinit var swipeButton: ImageView
     @MockK(relaxed = true) lateinit var noNetworkDataImageview: ImageView
+    @MockK(relaxed = true) lateinit var noNetworkDataBlinkingImageview: ImageView
 
     @Before
     fun setup() {
@@ -55,7 +56,8 @@ class StageFragmentVisibilityTests {
             stageAppBar,
             avatarUsernameContainer,
             swipeButton,
-            noNetworkDataImageview
+            noNetworkDataImageview,
+            noNetworkDataBlinkingImageview
         )
     }
 
@@ -90,7 +92,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with good quality shows live indicator`() {
         subject.stageIsLive = true
-        subject.primaryFeedQuality = NewReyes.Quality.GOOD
+        subject.feedQuality = NewReyes.Quality.GOOD
         subject.showOverlays()
         verify { subject.binding.liveIndicatorTextView.isVisible = true }
     }
@@ -98,7 +100,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with poor quality shows live indicator`() {
         subject.stageIsLive = true
-        subject.primaryFeedQuality = NewReyes.Quality.POOR
+        subject.feedQuality = NewReyes.Quality.POOR
         subject.showOverlays()
         verify { subject.binding.liveIndicatorTextView.isVisible = false }
     }
@@ -106,7 +108,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with poor quality shows no network data indicator`() {
         subject.stageIsLive = true
-        subject.primaryFeedQuality = NewReyes.Quality.POOR
+        subject.feedQuality = NewReyes.Quality.POOR
         subject.showOverlays()
         verify { subject.binding.noNetworkDataImageView.isVisible = true }
     }
@@ -114,9 +116,32 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with good quality does not show no network data indicator`() {
         subject.stageIsLive = true
-        subject.primaryFeedQuality = NewReyes.Quality.GOOD
+        subject.feedQuality = NewReyes.Quality.GOOD
         subject.showOverlays()
         verify { subject.binding.noNetworkDataImageView.isVisible = false }
+    }
+
+    @Test
+    fun `poor network quality shows blinking no network data indicator`() {
+        subject.stageIsLive = true
+        subject.showPoorConnectionAnimation(true)
+        verify { subject.binding.noNetworkDataBlinkingImageView.isVisible = true }
+    }
+
+    @Test
+    fun `good network quality does not show blinking no network data indicator`() {
+        subject.stageIsLive = true
+        subject.showPoorConnectionAnimation(false)
+        verify { subject.binding.noNetworkDataBlinkingImageView.isVisible = false }
+    }
+
+    @Test
+    fun `showing overlays on a live stage with poor quality hides blinking no network data indicator`() {
+        subject.stageIsLive = true
+        subject.feedQuality = NewReyes.Quality.POOR
+        subject.showPoorConnectionAnimation(true)
+        subject.showOverlays()
+        verify { subject.binding.noNetworkDataBlinkingImageView.isVisible = false }
     }
 
     @Test
@@ -201,7 +226,8 @@ private class StageFragmentVisibilityTestBindings(
     stageAppBar: AppBarLayout,
     avatarUsernameContainer: ConstraintLayout,
     swipeButton: ImageView,
-    noNetworkDataImageView: ImageView
+    noNetworkDataImageView: ImageView,
+    noNetworkDataBlinkingImageView: ImageView
 ) : FragmentStageBinding(
     mockk<DataBindingComponent>(),
     mockk(),
@@ -220,6 +246,7 @@ private class StageFragmentVisibilityTestBindings(
     liveIndicatorTextView,
     mockk(relaxed = true),
     mockk(relaxed = true),
+    noNetworkDataBlinkingImageView,
     noNetworkDataImageView,
     mockk(relaxed = true),
     mockk(relaxed = true),
