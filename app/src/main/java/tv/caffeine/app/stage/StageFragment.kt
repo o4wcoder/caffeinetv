@@ -384,6 +384,10 @@ class StageFragment @Inject constructor(
     private fun manageFeeds(controller: NewReyesController) = launch {
         controller.feedChannel.consumeEach { mapOfFeeds ->
             feeds = mapOfFeeds
+            if (feeds.isEmpty()) {
+                // Reyes should be the source of truth for stage liveness. Roadhog can be inaccurate.
+                updateBroadcastOnlineState(false)
+            }
             val activeRoles = feeds.values.filter { it.capabilities.video }.map { it.role }.toList()
             renderers[NewReyes.Feed.Role.primary]?.isVisible = NewReyes.Feed.Role.primary in activeRoles
             renderers[NewReyes.Feed.Role.secondary]?.isVisible = NewReyes.Feed.Role.secondary in activeRoles
