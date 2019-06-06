@@ -20,7 +20,6 @@ import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
-import org.webrtc.EglBase
 import org.webrtc.MediaCodecVideoDecoder
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
@@ -42,6 +41,7 @@ import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.unsetImmersiveSticky
+import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
 
 private const val BUNDLE_KEY_BROADCASTERS = "broadcasters"
@@ -221,7 +221,7 @@ class StagePagerAdapter @AssistedInject constructor(
     @Assisted private val broadcasters: List<String>,
     @Assisted private val swipeButtonOnClickListener: View.OnClickListener,
     private val factory: NewReyesController.Factory,
-    private val eglBase: EglBase,
+    private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val followManager: FollowManager,
     private val picasso: Picasso,
     private val clock: Clock
@@ -240,7 +240,7 @@ class StagePagerAdapter @AssistedInject constructor(
 
     override fun getItem(position: Int): Fragment {
         val stageFragment = StageFragment(
-                factory, eglBase, followManager, picasso, clock)
+                factory, surfaceViewRendererTuner, followManager, picasso, clock)
         val canSwipe = count > 1 && position < count - 1
         stageFragment.arguments = StageFragmentArgs(broadcasters[position], canSwipe).toBundle()
         stageFragment.swipeButtonOnClickListener = swipeButtonOnClickListener

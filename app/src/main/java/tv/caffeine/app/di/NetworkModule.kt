@@ -46,6 +46,8 @@ import tv.caffeine.app.net.LongPollInterceptor
 import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.net.TokenAuthenticator
 import tv.caffeine.app.ui.ImageServerRequestTransformer
+import tv.caffeine.app.webrtc.StageSurfaceViewRendererTuner
+import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -212,6 +214,10 @@ class WebRtcModule {
     @Provides
     @Singleton
     fun providesEglBase(): EglBase = EglBase.createEgl14(CONFIG_PLAIN)
+
+    @Provides
+    @Singleton
+    fun providesSurfaceViewRendererTuner(eglBase: EglBase): SurfaceViewRendererTuner = StageSurfaceViewRendererTuner(eglBase)
 
     @Provides
     @Singleton

@@ -23,9 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
-import org.webrtc.EglBase
 import org.webrtc.EglRenderer
-import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
 import timber.log.Timber
@@ -51,6 +49,7 @@ import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
+import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
 import kotlin.collections.set
 
@@ -59,7 +58,7 @@ private const val SEND_MESSAGE = 1
 
 class StageFragment @Inject constructor(
     private val factory: NewReyesController.Factory,
-    private val eglBase: EglBase,
+    private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val followManager: FollowManager,
     private val picasso: Picasso,
     private val clock: Clock
@@ -247,9 +246,7 @@ class StageFragment @Inject constructor(
         renderers.forEach { entry ->
             val key = entry.key
             val renderer = entry.value
-            renderer.init(eglBase.eglBaseContext, null)
-            renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
-            renderer.setEnableHardwareScaler(true)
+            surfaceViewRendererTuner.configure(renderer)
             feeds.values.firstOrNull { it.role == key }?.let { feed ->
                 configureRenderer(renderer, feed, videoTracks[feed.stream.id])
             }

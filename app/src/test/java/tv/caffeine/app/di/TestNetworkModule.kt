@@ -21,6 +21,7 @@ import tv.caffeine.app.api.RefreshTokenService
 import tv.caffeine.app.api.SearchService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.VersionCheckService
+import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Singleton
 
 @Module(includes = [
@@ -55,6 +56,10 @@ class FakeWebRtcModule {
     @Provides
     @Singleton
     fun providesEglBase(): EglBase = mockk(relaxed = true)
+
+    @Provides
+    @Singleton
+    fun providesSurfaceViewRendererTuner(eglBase: EglBase): SurfaceViewRendererTuner = mockk(relaxed = true)
 
     @Provides
     @Singleton
