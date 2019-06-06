@@ -3,11 +3,12 @@ package tv.caffeine.app.stage
 import com.google.gson.Gson
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.webrtc.AudioTrack
@@ -57,8 +58,8 @@ class NewReyesConnectionInfo(
 
 private const val HEARTBEAT_PERIOD_SECONDS = 15L // TODO: What's a good period?
 private const val STATS_REPORTING_PERIOD_SECONDS = 3L
-private const val DEFAULT_RETRY_DELAY_SECONDS = 10L
 
+@FlowPreview
 class NewReyesController @AssistedInject constructor(
     private val dispatchConfig: DispatchConfig,
     private val gson: Gson,
@@ -66,6 +67,7 @@ class NewReyesController @AssistedInject constructor(
     private val eventsService: EventsService,
     private val peerConnectionFactory: PeerConnectionFactory,
     private val settingsStorage: SettingsStorage,
+    private val classicStageStateLooper: ClassicStageDirector,
     @Assisted private val username: String
 ) : CoroutineScope {
 
@@ -105,22 +107,15 @@ class NewReyesController @AssistedInject constructor(
     }
 
     private fun connect() = launch {
+        val stageDirector: StageDirector = classicStageStateLooper
         val uuid = getClientId()
-        var message = NewReyes.Message(client = NewReyes.Client(id = uuid))
-        do {
-            var retryIn: Long? = null
-            val result = realtime.getStage(username, message).awaitAndParseErrors(gson)
+        stageDirector.stageConfiguration(username, uuid).collect { result ->
             when (result) {
-                is CaffeineResult.Success -> {
-                    onSuccess(result.value)
-                    message = result.value.copy()
-                    retryIn = message.retryIn?.toLong()
-                }
+                is CaffeineResult.Success -> onSuccess(result.value)
                 is CaffeineResult.Error -> onError(result.error)
                 is CaffeineResult.Failure -> onFailure(result.throwable)
             }
-            delay(TimeUnit.SECONDS.toMillis(retryIn ?: DEFAULT_RETRY_DELAY_SECONDS))
-        } while (shouldContinue(result))
+        }
     }
 
     private fun heartbeat() = launch {
@@ -195,9 +190,8 @@ class NewReyesController @AssistedInject constructor(
 
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
 
-    private suspend fun onSuccess(message: NewReyes.Message) {
+    private suspend fun onSuccess(newFeeds: Map<String, NewReyes.Feed>) {
         val oldFeeds = feeds
-        val newFeeds = message.payload?.feeds ?: mapOf()
         feedChannel.send(newFeeds)
 
         newFeeds.values.forEach { feed ->
@@ -264,10 +258,6 @@ class NewReyesController @AssistedInject constructor(
 
     private fun onFailure(throwable: Throwable) {
         Timber.e(throwable)
-    }
-
-    private fun shouldContinue(result: CaffeineResult<NewReyes.Message>): Boolean {
-        return isActive && (result !is CaffeineResult.Failure || result.throwable !is CancellationException)
     }
 
     private suspend fun connectStream(stream: NewReyes.Feed.Stream): NewReyesConnectionInfo? {
