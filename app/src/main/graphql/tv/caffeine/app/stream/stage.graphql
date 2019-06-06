@@ -1,0 +1,57 @@
+subscription Stage(
+  $clientId: ID!
+  $clientType: ClientType!
+  $constrainedBaseline: Boolean
+  $username: String!
+  $viewerStreams: [StageSubscriptionViewerStreamInput!]
+) {
+  stage(
+    clientId: $clientId
+    clientType: $clientType
+    constrainedBaseline: $constrainedBaseline
+    username: $username
+    viewerStreams: $viewerStreams
+  ) {
+    stage {
+      id
+      username
+      title
+      broadcastId
+      live
+      feeds {
+        id
+        clientId
+        clientType
+        gameId
+        liveHost {
+          __typename
+          ... on LiveHostable {
+            address
+          }
+          ... on LiveHosting {
+            address
+            volume
+            ownerId
+          }
+        }
+        sourceConnectionQuality
+        capabilities
+        role
+        restrictions
+        stream {
+          __typename
+          ... on BroadcasterStream {
+            id
+            sdpAnswer
+            url
+          }
+          ... on ViewerStream {
+            id
+            sdpOffer
+            url
+          }
+        }
+      }
+    }
+  }
+}

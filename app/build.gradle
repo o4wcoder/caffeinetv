@@ -9,6 +9,7 @@ plugins {
     id('com.google.android.gms.oss-licenses-plugin')
     id('com.getkeepsafe.dexcount')
     id('com.google.firebase.firebase-perf')
+    id('com.apollographql.android')
 }
 apply from: 'jacoco.gradle'
 apply from: 'version.gradle'
@@ -71,6 +72,10 @@ play {
 
 androidExtensions {
     experimental = true
+}
+
+apollo {
+    generateKotlinModels = true
 }
 
 task downloadDependencies() {
@@ -169,6 +174,12 @@ dependencies {
         exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
     }
     releaseImplementation 'com.android.billingclient:billing:1.2'
+
+    // GraphQL
+    implementation 'com.apollographql.apollo:apollo-runtime:1.0.0'
+    implementation 'com.apollographql.apollo:apollo-coroutines-support:1.0.0'
+    compileOnly 'org.jetbrains:annotations:16.0.1'
+    testCompileOnly 'org.jetbrains:annotations:16.0.1'
 
     // Legal, etc.
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.2'

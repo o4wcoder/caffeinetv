@@ -31,6 +31,8 @@ import tv.caffeine.app.api.StatsSnippet
 import tv.caffeine.app.api.isOutOfCapacityError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.feature.Feature
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.settings.SettingsStorage
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.webrtc.SimplePeerConnectionObserver
@@ -67,7 +69,9 @@ class NewReyesController @AssistedInject constructor(
     private val eventsService: EventsService,
     private val peerConnectionFactory: PeerConnectionFactory,
     private val settingsStorage: SettingsStorage,
+    private val featureConfig: FeatureConfig,
     private val classicStageStateLooper: ClassicStageDirector,
+    private val graphqlStageDirector: GraphqlStageDirector,
     @Assisted private val username: String
 ) : CoroutineScope {
 
@@ -107,7 +111,14 @@ class NewReyesController @AssistedInject constructor(
     }
 
     private fun connect() = launch {
-        val stageDirector: StageDirector = classicStageStateLooper
+        val stageDirector: StageDirector = if (featureConfig.isFeatureEnabled(Feature.REYES_V5)) {
+            Timber.d("Using the new stage director")
+            graphqlStageDirector
+        } else {
+            Timber.d("Using the classic stage director")
+            classicStageStateLooper
+        }
+
         val uuid = getClientId()
         stageDirector.stageConfiguration(username, uuid).collect { result ->
             when (result) {

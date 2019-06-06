@@ -63,6 +63,8 @@ class TokenStore @Inject constructor(
 
     fun createRefreshTokenBody() = settingsStorage.refreshToken?.let { RefreshTokenBody(it) }
 
+    fun credential() = credential ?: ""
+
     fun header() = """
                 "Headers": {
                     "x-credential" : "${credential ?: ""}",
