@@ -188,18 +188,8 @@ class StageFragment @Inject constructor(
             binding.avatarImageView.setOnClickListener {
                 findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
             }
-
-            binding.stageToolbar.apply {
-                if (menu.findItem(R.id.overflow_menu_item) != null) return@apply
-                inflateMenu(R.menu.overflow_menu)
-                menu.findItem(R.id.overflow_menu_item).setOnMenuItemClickListener {
-                    if (it.itemId == R.id.overflow_menu_item) {
-                        findNavController().navigateToReportOrIgnoreDialog(
-                                userProfile.caid, userProfile.username, true
-                        )
-                    }
-                    true
-                }
+            binding.moreButton.setOnClickListener {
+                findNavController().navigateToReportOrIgnoreDialog(userProfile.caid, userProfile.username, true)
             }
 
             isMe = userProfile.isMe

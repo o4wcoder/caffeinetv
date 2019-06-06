@@ -245,6 +245,7 @@ private class StageFragmentVisibilityTestBindings(
     liveIndicatorTextView,
     mockk(relaxed = true),
     mockk(relaxed = true),
+    mockk(relaxed = true),
     noNetworkDataBlinkingImageView,
     noNetworkDataImageView,
     mockk(relaxed = true),
