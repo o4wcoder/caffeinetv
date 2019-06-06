@@ -37,8 +37,9 @@ class StageFragmentVisibilityTests {
     @MockK(relaxed = true) lateinit var stageAppBar: AppBarLayout
     @MockK(relaxed = true) lateinit var avatarUsernameContainer: ConstraintLayout
     @MockK(relaxed = true) lateinit var swipeButton: ImageView
-    @MockK(relaxed = true) lateinit var noNetworkDataImageview: ImageView
     @MockK(relaxed = true) lateinit var noNetworkDataBlinkingImageview: ImageView
+    @MockK(relaxed = true) lateinit var weakConnectionContainer: ConstraintLayout
+    @MockK(relaxed = true) lateinit var liveSwipeContainer: ConstraintLayout
 
     @Before
     fun setup() {
@@ -56,8 +57,9 @@ class StageFragmentVisibilityTests {
             stageAppBar,
             avatarUsernameContainer,
             swipeButton,
-            noNetworkDataImageview,
-            noNetworkDataBlinkingImageview
+            noNetworkDataBlinkingImageview,
+            weakConnectionContainer,
+            liveSwipeContainer
         )
     }
 
@@ -102,23 +104,23 @@ class StageFragmentVisibilityTests {
         subject.stageIsLive = true
         subject.feedQuality = NewReyes.Quality.POOR
         subject.showOverlays()
-        verify { subject.binding.liveIndicatorTextView.isVisible = false }
+        verify { subject.binding.liveIndicatorTextView.isVisible = true }
     }
 
     @Test
-    fun `showing overlays on a live stage with poor quality shows no network data indicator`() {
+    fun `showing overlays on a live stage with poor quality shows weak connection container`() {
         subject.stageIsLive = true
         subject.feedQuality = NewReyes.Quality.POOR
         subject.showOverlays()
-        verify { subject.binding.noNetworkDataImageView.isVisible = true }
+        verify { subject.binding.weakConnectionContainer.isVisible = true }
     }
 
     @Test
-    fun `showing overlays on a live stage with good quality does not show no network data indicator`() {
+    fun `showing overlays on a live stage with good quality does not show weak connection overlay`() {
         subject.stageIsLive = true
         subject.feedQuality = NewReyes.Quality.GOOD
         subject.showOverlays()
-        verify { subject.binding.noNetworkDataImageView.isVisible = false }
+        verify { subject.binding.weakConnectionContainer.isVisible = false }
     }
 
     @Test
@@ -225,8 +227,9 @@ private class StageFragmentVisibilityTestBindings(
     stageAppBar: AppBarLayout,
     avatarUsernameContainer: ConstraintLayout,
     swipeButton: ImageView,
-    noNetworkDataImageView: ImageView,
-    noNetworkDataBlinkingImageView: ImageView
+    noNetworkDataBlinkingImageView: ImageView,
+    weakConnectionContainer: ConstraintLayout,
+    liveSwipeContainer: ConstraintLayout
 ) : FragmentStageBinding(
     mockk<DataBindingComponent>(),
     mockk(),
@@ -243,11 +246,11 @@ private class StageFragmentVisibilityTestBindings(
     mockk(relaxed = true),
     liveIndicatorAndAvatarContainer,
     liveIndicatorTextView,
+    liveSwipeContainer,
     mockk(relaxed = true),
     mockk(relaxed = true),
     mockk(relaxed = true),
     noNetworkDataBlinkingImageView,
-    noNetworkDataImageView,
     mockk(relaxed = true),
     mockk(relaxed = true),
     mockk(relaxed = true),
@@ -259,8 +262,10 @@ private class StageFragmentVisibilityTestBindings(
     stageAppBar,
     mockk(relaxed = true),
     swipeButton,
+    mockk(relaxed = true),
+    weakConnectionContainer,
     mockk(relaxed = true)
-) {
+    ) {
     override fun setVariable(variableId: Int, value: Any?): Boolean {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }

@@ -63,6 +63,8 @@
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
     <string name="poor_connection_icon_content_description">Poor network connection icon</string>
+    <string name="weak_connection">Weak Connection</string>
+    <string name="please_check_network_connection">Please check your network connection</string>
 
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>

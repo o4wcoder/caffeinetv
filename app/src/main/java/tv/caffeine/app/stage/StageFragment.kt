@@ -6,9 +6,6 @@ import android.text.Spannable
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.view.animation.LinearInterpolator
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.text.HtmlCompat
@@ -48,6 +45,7 @@ import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.CropBorderedCircleTransformation
+import tv.caffeine.app.util.blink
 import tv.caffeine.app.util.getHexColor
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
@@ -58,7 +56,6 @@ import kotlin.collections.set
 
 private const val PICK_DIGITAL_ITEM = 0
 private const val SEND_MESSAGE = 1
-private const val DEFAULT_BLINK_ANIMATION_DURATION = 1000L
 
 class StageFragment @Inject constructor(
     private val factory: NewReyesController.Factory,
@@ -93,13 +90,6 @@ class StageFragment @Inject constructor(
     private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting var stageIsLive = false
     var swipeButtonOnClickListener: View.OnClickListener? = null
-
-    private val blinkAnimation = AlphaAnimation(1f, 0f).apply {
-        duration = DEFAULT_BLINK_ANIMATION_DURATION
-        interpolator = LinearInterpolator()
-        repeatCount = Animation.INFINITE
-        repeatMode = Animation.REVERSE
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -213,6 +203,7 @@ class StageFragment @Inject constructor(
                 chatViewModel.endorseMessage(message)
             }
         }
+        binding.noNetworkDataBlinkingImageView.blink()
         initSurfaceViewRenderer()
         configureButtons()
     }
@@ -297,7 +288,7 @@ class StageFragment @Inject constructor(
             listOf(binding.liveIndicatorAndAvatarContainer)
         }
 
-        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView, binding.noNetworkDataImageView)
+        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView, binding.weakConnectionContainer)
 
         if (visible) {
             viewsToToggle.forEach {
@@ -310,31 +301,23 @@ class StageFragment @Inject constructor(
             }
 
             // views for live only
-            // TODO: we should pass a new var to the layout to handle visibility
             binding.gameLogoImageView.isVisible = stageIsLive
             binding.avatarUsernameContainer.isVisible = stageIsLive
-            if (feedQuality == NewReyes.Quality.GOOD) {
-                binding.liveIndicatorTextView.isVisible = stageIsLive
-                binding.noNetworkDataImageView.isVisible = false
-            } else {
-                binding.liveIndicatorTextView.isVisible = false
-                binding.noNetworkDataImageView.isVisible = stageIsLive
-            }
+            binding.liveIndicatorTextView.isVisible = stageIsLive
+            binding.weakConnectionContainer.isVisible = feedQuality != NewReyes.Quality.GOOD
         } else {
             viewsToToggle.plus(viewsForLiveOnly).forEach {
                 it.isVisible = false
+            }
+            // show blinker when hiding overlay
+            if (feedQuality == NewReyes.Quality.POOR) {
+                showPoorConnectionAnimation(true)
             }
         }
     }
 
     @VisibleForTesting
     fun showPoorConnectionAnimation(isVisible: Boolean) {
-        if (isVisible) {
-            binding.noNetworkDataBlinkingImageView.startAnimation(blinkAnimation)
-        } else {
-            binding.noNetworkDataBlinkingImageView.clearAnimation()
-        }
-
         binding.noNetworkDataBlinkingImageView.isVisible = isVisible
     }
 
