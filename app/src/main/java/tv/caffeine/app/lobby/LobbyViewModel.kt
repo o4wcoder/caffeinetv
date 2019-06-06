@@ -12,7 +12,6 @@ import tv.caffeine.app.api.VersionCheckError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Lobby
-import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
@@ -49,7 +48,7 @@ class LobbyViewModel @Inject constructor(
         if (isFirstLoad) {
             isFirstLoad = false
             // load the feature config after the lobby is loaded for better cold start perf
-            loadFeatureConfigUseCase(Feature.BROADCAST)
+            loadFeatureConfigUseCase()
         }
     }
 }

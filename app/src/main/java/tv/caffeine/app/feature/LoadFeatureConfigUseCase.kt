@@ -12,11 +12,11 @@ class LoadFeatureConfigUseCase @Inject constructor(
     private val featureConfig: FeatureConfig,
     private val gson: Gson
 ) {
-    suspend operator fun invoke(feature: Feature) {
-        val result = featureConfigService.check(feature).awaitAndParseErrors(gson)
+    suspend operator fun invoke() {
+        val result = featureConfigService.load().awaitAndParseErrors(gson)
         when (result) {
             is CaffeineResult.Success -> featureConfig.updateFeatures(result.value)
-            is CaffeineResult.Error -> Timber.e("Error loading feature config: $feature")
+            is CaffeineResult.Error -> Timber.e("Error loading feature config")
             is CaffeineResult.Failure -> Timber.e(result.throwable)
         }
     }
