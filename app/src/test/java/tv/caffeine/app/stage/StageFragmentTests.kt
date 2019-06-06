@@ -208,7 +208,6 @@ class StageFragmentVisibilityTests {
     @Test
     fun `the swipe button is invisible if the stage cannot swipe`() {
         subject.arguments = StageFragmentArgs("me", false).toBundle()
-        subject.onCreate(null)
         subject.configureButtons()
         verify { subject.binding.swipeButton.isVisible = false }
     }

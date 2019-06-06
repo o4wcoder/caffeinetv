@@ -6,6 +6,9 @@ import android.text.Spannable
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.text.HtmlCompat
@@ -52,9 +55,6 @@ import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 import kotlin.collections.set
-import android.view.animation.LinearInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 
 private const val PICK_DIGITAL_ITEM = 0
 private const val SEND_MESSAGE = 1
@@ -74,7 +74,7 @@ class StageFragment @Inject constructor(
     @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
     private lateinit var frameListener: EglRenderer.FrameListener
-    private var canSwipe: Boolean = true
+    private val canSwipe: Boolean by lazy { args.canSwipe }
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
     private var newReyesController: NewReyesController? = null
@@ -104,7 +104,6 @@ class StageFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         broadcasterUsername = args.broadcastUsername
-        canSwipe = args.canSwipe
         retainInstance = true
     }
 
