@@ -43,7 +43,7 @@ import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.CropBorderedCircleTransformation
-import tv.caffeine.app.util.blink
+import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.getHexColor
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
@@ -70,6 +70,7 @@ class StageFragment @Inject constructor(
     @VisibleForTesting lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
     private lateinit var frameListener: EglRenderer.FrameListener
+    private lateinit var poorConnectionPulseAnimator: PulseAnimator
     private val canSwipe: Boolean by lazy { args.canSwipe }
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
     private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
@@ -202,7 +203,7 @@ class StageFragment @Inject constructor(
                 chatViewModel.endorseMessage(message)
             }
         }
-        binding.noNetworkDataBlinkingImageView.blink()
+        poorConnectionPulseAnimator = PulseAnimator(binding.poorConnectionPulseImageView)
         initSurfaceViewRenderer()
         configureButtons()
     }
@@ -294,7 +295,7 @@ class StageFragment @Inject constructor(
 
             // hide blinker when showing overlay
             if (feedQuality == NewReyes.Quality.POOR) {
-                showPoorConnectionAnimation(false)
+                updatePoorConnectionAnimation(false)
             }
 
             // views for live only
@@ -308,14 +309,18 @@ class StageFragment @Inject constructor(
             }
             // show blinker when hiding overlay
             if (feedQuality == NewReyes.Quality.POOR) {
-                showPoorConnectionAnimation(true)
+                updatePoorConnectionAnimation(true)
             }
         }
     }
 
     @VisibleForTesting
-    fun showPoorConnectionAnimation(isVisible: Boolean) {
-        binding.noNetworkDataBlinkingImageView.isVisible = isVisible
+    fun updatePoorConnectionAnimation(shouldShow: Boolean) {
+        if (shouldShow) {
+            poorConnectionPulseAnimator.startPulse()
+        } else {
+            poorConnectionPulseAnimator.stopPulse()
+        }
     }
 
     private fun updateViewsOnMyStageVisibility() {
@@ -394,7 +399,7 @@ class StageFragment @Inject constructor(
     private fun manageFeedQuality(controller: NewReyesController) = launch {
         controller.feedQualityChannel.consumeEach {
             feedQuality = it
-            showPoorConnectionAnimation(it == NewReyes.Quality.POOR)
+            updatePoorConnectionAnimation(it == NewReyes.Quality.POOR)
         }
     }
 

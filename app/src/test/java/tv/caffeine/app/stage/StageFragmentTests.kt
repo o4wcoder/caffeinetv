@@ -125,24 +125,24 @@ class StageFragmentVisibilityTests {
     @Test
     fun `poor network quality shows blinking no network data indicator`() {
         subject.stageIsLive = true
-        subject.showPoorConnectionAnimation(true)
-        assertTrue(subject.binding.noNetworkDataBlinkingImageView.isVisible)
+        subject.updatePoorConnectionAnimation(true)
+        assertTrue(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test
     fun `good network quality does not show blinking no network data indicator`() {
         subject.stageIsLive = true
-        subject.showPoorConnectionAnimation(false)
-        assertFalse(subject.binding.noNetworkDataBlinkingImageView.isVisible)
+        subject.updatePoorConnectionAnimation(false)
+        assertFalse(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage with poor quality hides blinking no network data indicator`() {
         subject.stageIsLive = true
         subject.feedQuality = NewReyes.Quality.POOR
-        subject.showPoorConnectionAnimation(true)
+        subject.updatePoorConnectionAnimation(true)
         subject.showOverlays()
-        assertFalse(subject.binding.noNetworkDataBlinkingImageView.isVisible)
+        assertFalse(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test

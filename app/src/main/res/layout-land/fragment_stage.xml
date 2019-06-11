@@ -30,8 +30,8 @@
             tools:visibility="visible"/>
 
         <ImageView
-            style="@style/BlinkingNoNetworkData"
-            android:id="@+id/no_network_data_blinking_image_view"
+            style="@style/PoorConnectionPulse"
+            android:id="@+id/poor_connection_pulse_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_no_network_data"
