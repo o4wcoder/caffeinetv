@@ -136,7 +136,12 @@ class NewReyesController @AssistedInject constructor(
                 when (result) {
                     is CaffeineResult.Success -> {
                         val heartbeat = result.value
-                        heartbeat.connectionQuality?.let { feedQualityChannel.send(it) }
+
+                        // TODO: enable when ready
+                        val featureFlag = false
+                        if (featureFlag) {
+                            heartbeat.connectionQuality?.let { feedQualityChannel.send(it) }
+                        }
                     }
                     is CaffeineResult.Error -> onError(result.error)
                     is CaffeineResult.Failure -> onFailure(result.throwable)
