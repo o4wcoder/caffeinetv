@@ -60,7 +60,7 @@ class LobbyBroadcasterTests {
     private fun getBroadcasterExamples(usernames: List<String>): Array<Lobby.Broadcaster> {
         return usernames.map {
             Lobby.Broadcaster("0", "0", getUserExample(it), "0",
-                if (it in offlineUsernames) null else mockk<Broadcast>(), null, listOf(), 0)
+                if (it in offlineUsernames) null else mockk<Broadcast>(), null, listOf(), 0, 10)
         }.toTypedArray()
     }
 

@@ -16,7 +16,8 @@ class Lobby(val payloadId: String, val tags: Map<String, Tag>, val content: Map<
         val broadcast: Broadcast?,
         val lastBroadcast: Broadcast?,
         val followingViewers: List<User>,
-        val followingViewersCount: Int
+        val followingViewersCount: Int,
+        val displayOrder: Int
     )
     class Category(val id: String, val name: String, val broadcasters: Array<Broadcaster>)
     class Header(val avatarCard: MiniUser? = null, val followPeople: FollowPeoplePrompt? = null)

@@ -26,6 +26,8 @@ import tv.caffeine.app.analytics.EventManager
 import tv.caffeine.app.api.LobbyCardClickedEvent
 import tv.caffeine.app.api.LobbyClickedEventData
 import tv.caffeine.app.api.LobbyFollowClickedEvent
+import tv.caffeine.app.api.LobbyImpressionEvent
+import tv.caffeine.app.api.LobbyImpressionEventData
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
@@ -214,6 +216,8 @@ abstract class BroadcasterCard(
                         .into(this)
             }
         }
+
+        sendImpressionEventData(item)
     }
 
     private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {
@@ -241,6 +245,27 @@ abstract class BroadcasterCard(
         val stageId = singleCard.broadcaster.user.stageId
         val timestamp = clock.millis()
         return LobbyClickedEventData(payloadId, caid, stageId, timestamp)
+    }
+
+    @VisibleForTesting
+    fun getLobbyImpressionEventData(singleCard: SingleCard): LobbyImpressionEventData? {
+        if (payloadId == null) return null
+        val isLive = singleCard.broadcaster.broadcast != null
+        val caid = singleCard.broadcaster.user.caid
+        val stageId = singleCard.broadcaster.user.stageId
+        val isFeatured = singleCard.broadcaster.user.isFeatured
+        val friendsWatching = singleCard.broadcaster.followingViewers.map { it.caid }
+        val displayOrder = singleCard.broadcaster.displayOrder
+        return LobbyImpressionEventData(payloadId, caid, stageId, isFeatured, isLive, displayOrder, friendsWatching)
+    }
+
+    private fun sendImpressionEventData(lobbyItem: LobbyItem) {
+        scope?.launch {
+            val singleCard = lobbyItem as SingleCard
+            getLobbyImpressionEventData(singleCard)?.let {
+                eventManager.sendEvent(LobbyImpressionEvent(it))
+            }
+        }
     }
 }
 

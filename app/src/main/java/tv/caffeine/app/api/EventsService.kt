@@ -34,6 +34,18 @@ class StatsCounter(val metricName: String, val value: Int)
 sealed class EventBody(val eventType: String, val data: EventData, val eventSource: String = "android", val environment: String = ApiConfig.EVENTS_ENVIRONMENT)
 class LobbyCardClickedEvent(data: LobbyClickedEventData) : EventBody("lobby_card_clicked", data)
 class LobbyFollowClickedEvent(data: LobbyClickedEventData) : EventBody("lobby_follow_clicked", data)
+class LobbyImpressionEvent(data: LobbyImpressionEventData) : EventBody("lobby_impression", data)
 
 sealed class EventData
 class LobbyClickedEventData(val payloadId: String, val caid: CAID?, val stageId: String, val clickedAt: Long) : EventData()
+
+class LobbyImpressionEventData(
+    val payloadId: String?,
+    val caid: CAID?,
+    val stageId: String,
+    val featured: Boolean,
+    val isLive: Boolean,
+    val displayOrder: Int,
+    val friendsWatching: List<String>,
+    val category: String = "friends_activity" // TODO: Need to pull real category
+) : EventData()
