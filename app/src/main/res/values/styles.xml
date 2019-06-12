@@ -194,6 +194,16 @@
         <item name="fontFamily">@font/poppins</item>
     </style>
 
+    <style name="NoNetworkTitle" parent="LightText">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="NoNetworkBody" parent="LightText">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
     <!-- End of the new text design from Apr. 2019 (Landing page) -->
 
     <style name="SaySomethingText" parent="@style/CaffeineText">
