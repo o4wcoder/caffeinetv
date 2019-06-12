@@ -2,7 +2,7 @@ package tv.caffeine.app.stage
 
 import com.google.gson.Gson
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 interface StageDirector {
-    @FlowPreview
+    @ExperimentalCoroutinesApi
     suspend fun stageConfiguration(username: String, clientId: String): Flow<CaffeineResult<Map<String, NewReyes.Feed>>>
 }
 
@@ -25,7 +25,7 @@ class ClassicStageDirector @Inject constructor(
     private val getStageUseCase: ClassicGetStageUseCase
 ) : StageDirector {
 
-    @FlowPreview
+    @ExperimentalCoroutinesApi
     override suspend fun stageConfiguration(username: String, clientId: String) = flow {
         var message = NewReyes.Message(client = NewReyes.Client(id = clientId))
         do {

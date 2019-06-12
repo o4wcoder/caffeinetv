@@ -4,7 +4,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
@@ -27,7 +27,7 @@ class ClassicStageDirectorTests {
         subject = ClassicStageDirector(getStageUseCase)
     }
 
-    @FlowPreview
+    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Test
     fun `errors are propagated`() {

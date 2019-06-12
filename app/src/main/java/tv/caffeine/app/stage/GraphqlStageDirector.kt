@@ -4,7 +4,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okhttp3.OkHttpClient
@@ -30,7 +30,7 @@ class GraphqlStageDirector @Inject constructor(
     private val tokenStore: TokenStore
 ) : StageDirector {
 
-    @FlowPreview
+    @ExperimentalCoroutinesApi
     override suspend fun stageConfiguration(
         username: String,
         clientId: String

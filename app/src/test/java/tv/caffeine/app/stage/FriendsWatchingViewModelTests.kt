@@ -135,7 +135,7 @@ class FriendsWatchingViewModelTests {
     private fun <T> channelIteratorOf(vararg items: T): ChannelIterator<T> {
         return object : ChannelIterator<T> {
             val iterator = items.iterator()
-            override suspend fun next(): T = iterator.next()
+            override fun next(): T = iterator.next()
             override suspend fun hasNext(): Boolean = iterator.hasNext()
         }
     }

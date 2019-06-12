@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -61,7 +61,6 @@ class NewReyesConnectionInfo(
 private const val HEARTBEAT_PERIOD_SECONDS = 15L // TODO: What's a good period?
 private const val STATS_REPORTING_PERIOD_SECONDS = 3L
 
-@FlowPreview
 class NewReyesController @AssistedInject constructor(
     private val dispatchConfig: DispatchConfig,
     private val gson: Gson,
@@ -110,6 +109,7 @@ class NewReyesController @AssistedInject constructor(
         return settingsStorage.clientId ?: UUID.randomUUID().toString().also { settingsStorage.clientId = it }
     }
 
+    @ExperimentalCoroutinesApi
     private fun connect() = launch {
         val stageDirector: StageDirector = if (featureConfig.isFeatureEnabled(Feature.REYES_V5)) {
             Timber.d("Using the new stage director")
