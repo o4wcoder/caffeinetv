@@ -217,7 +217,10 @@ abstract class BroadcasterCard(
             }
         }
 
-        sendImpressionEventData(item)
+        val isLobbyImpressionFeatureCompleted = false
+        if (isLobbyImpressionFeatureCompleted) {
+            sendImpressionEventData(item)
+        }
     }
 
     private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {

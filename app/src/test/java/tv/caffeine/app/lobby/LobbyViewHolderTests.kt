@@ -26,7 +26,6 @@ import tv.caffeine.app.analytics.EventManager
 import tv.caffeine.app.api.EventBody
 import tv.caffeine.app.api.LobbyCardClickedEvent
 import tv.caffeine.app.api.LobbyFollowClickedEvent
-import tv.caffeine.app.api.LobbyImpressionEvent
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.Lobby
@@ -94,8 +93,9 @@ class LobbyViewHolderTests {
         card.bind(liveBroadcast)
         card.binding.followButton.performClick()
 
-        assertEquals(2, sentEvents.size)
-        assertTrue(sentEvents.first() is LobbyImpressionEvent)
+        // assertEquals(2, sentEvents.size)
+        assertEquals(1, sentEvents.size)
+        // assertTrue(sentEvents.first() is LobbyImpressionEvent) // temporarily disabled
         assertTrue(sentEvents.last() is LobbyFollowClickedEvent)
     }
 
@@ -107,8 +107,9 @@ class LobbyViewHolderTests {
         card.bind(liveBroadcastWithFriends)
         card.binding.followButton.performClick()
 
-        assertEquals(2, sentEvents.size)
-        assertTrue(sentEvents.first() is LobbyImpressionEvent)
+        // assertEquals(2, sentEvents.size)
+        assertEquals(1, sentEvents.size)
+        // assertTrue(sentEvents.first() is LobbyImpressionEvent) // temporarily disabled
         assertTrue(sentEvents.last() is LobbyFollowClickedEvent)
     }
 
@@ -125,8 +126,9 @@ class LobbyViewHolderTests {
             // NavController not set
         }
 
-        assertEquals(2, sentEvents.size)
-        assertTrue(sentEvents.first() is LobbyImpressionEvent)
+        // assertEquals(2, sentEvents.size)
+        assertEquals(1, sentEvents.size)
+        // assertTrue(sentEvents.first() is LobbyImpressionEvent) // temporarily disabled
         assertTrue(sentEvents.last() is LobbyCardClickedEvent)
     }
 
@@ -142,8 +144,9 @@ class LobbyViewHolderTests {
             // NavController not set
         }
 
-        assertEquals(2, sentEvents.size)
-        assertTrue(sentEvents.first() is LobbyImpressionEvent)
+        // assertEquals(2, sentEvents.size)
+        assertEquals(1, sentEvents.size)
+        // assertTrue(sentEvents.first() is LobbyImpressionEvent) // temporarily disabled
         assertTrue(sentEvents.last() is LobbyCardClickedEvent)
     }
 
