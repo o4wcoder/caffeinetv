@@ -255,8 +255,13 @@ class NewReyesController @AssistedInject constructor(
                         peerConnections[stream.id] = connectionInfo.peerConnection
                         peerConnectionStreamLabels[stream.id] = feed.streamLabel()
                         connectionInfo.audioTrack?.let {
-                            audioTracks[stream.id] = it
-                            it.setVolume(feed.volume)
+                            if (feed.capabilities.audio) {
+                                audioTracks[stream.id] = it
+                                it.setVolume(feed.volume)
+                                it.setEnabled(true)
+                            } else {
+                                it.setEnabled(false)
+                            }
                         }
                         connectionChannel.send(NewReyesFeedInfo(connectionInfo, feed, stream.id, feed.role))
                     }
