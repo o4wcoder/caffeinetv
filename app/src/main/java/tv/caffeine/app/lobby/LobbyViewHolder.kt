@@ -15,6 +15,8 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.CoroutineScope
@@ -40,24 +42,19 @@ import tv.caffeine.app.databinding.LobbyHeaderBinding
 import tv.caffeine.app.databinding.LobbySubtitleBinding
 import tv.caffeine.app.databinding.PreviousBroadcastCardBinding
 import tv.caffeine.app.databinding.UpcomingButtonCardBinding
+import tv.caffeine.app.di.ThemeFollowedLobby
+import tv.caffeine.app.di.ThemeFollowedLobbyLight
+import tv.caffeine.app.di.ThemeNotFollowedLobby
+import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.formatUsernameAsHtml
-import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
 
 sealed class LobbyViewHolder(
-    itemView: View,
-    val tags: Map<String, Lobby.Tag>,
-    val content: Map<String, Lobby.Content>,
-    val followManager: FollowManager,
-    val followedTheme: UserTheme,
-    val notFollowedTheme: UserTheme,
-    val followedThemeLight: UserTheme,
-    val notFollowedThemeLight: UserTheme,
-    val picasso: Picasso
+    itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
     fun bind(item: LobbyItem) {
         itemView.tag = item.itemType
@@ -67,16 +64,9 @@ sealed class LobbyViewHolder(
 }
 
 class AvatarCard(
-    val binding: LobbyAvatarCardBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
-    followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    val binding: LobbyAvatarCardBinding
+) : LobbyViewHolder(binding.root) {
+
     override fun configure(item: LobbyItem) {
         binding.username = (item as WelcomeCard).username
         itemView.setOnClickListener {
@@ -87,48 +77,27 @@ class AvatarCard(
 }
 
 class FollowPeopleCard(
-    val binding: LobbyFollowPeopleCardBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
-    followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    val binding: LobbyFollowPeopleCardBinding
+) : LobbyViewHolder(binding.root) {
+
     override fun configure(item: LobbyItem) {
         binding.displayMessage = (item as FollowPeople).displayMessage
     }
 }
 
 class HeaderCard(
-    val binding: LobbyHeaderBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
-    followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    val binding: LobbyHeaderBinding
+) : LobbyViewHolder(binding.root) {
+
     override fun configure(item: LobbyItem) {
         binding.viewModel = item as Header
     }
 }
 
 class SubtitleCard(
-    val binding: LobbySubtitleBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
-    followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    val binding: LobbySubtitleBinding
+) : LobbyViewHolder(binding.root) {
+
     override fun configure(item: LobbyItem) {
         binding.viewModel = item as Subtitle
     }
@@ -136,19 +105,19 @@ class SubtitleCard(
 
 abstract class BroadcasterCard(
     view: View,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
-    followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
-    picasso: Picasso,
+    protected val tags: Map<String, Lobby.Tag>,
+    protected val content: Map<String, Lobby.Content>,
+    val followManager: FollowManager,
+    @ThemeFollowedLobby private val followedTheme: UserTheme,
+    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
+    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
+    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
+    protected val picasso: Picasso,
     private val payloadId: String?,
     private val scope: CoroutineScope? = null,
     private val clock: Clock,
     protected val eventManager: EventManager
-) : LobbyViewHolder(view, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+) : LobbyViewHolder(view) {
     protected val previewImageView: ImageView = view.findViewById(R.id.preview_image_view)
     private val avatarImageView: ImageView = view.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = view.findViewById(R.id.username_text_view)
@@ -272,21 +241,32 @@ abstract class BroadcasterCard(
     }
 }
 
-open class LiveBroadcastCard(
-    val binding: LiveBroadcastCardBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
+open class LiveBroadcastCard @AssistedInject constructor(
+    @Assisted val binding: LiveBroadcastCardBinding,
+    @Assisted tags: Map<String, Lobby.Tag>,
+    @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
+    @ThemeFollowedLobby private val followedTheme: UserTheme,
+    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
+    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
+    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    payloadId: String?,
-    private val scope: CoroutineScope? = null,
+    @Assisted payloadId: String?,
+    @Assisted private val scope: CoroutineScope? = null,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(
+            binding: LiveBroadcastCardBinding,
+            tags: Map<String, Lobby.Tag>,
+            content: Map<String, Lobby.Content>,
+            payloadId: String?,
+            scope: CoroutineScope? = null
+        ): LiveBroadcastCard
+    }
 
     override fun configure(item: LobbyItem) {
         super.configure(item)
@@ -311,21 +291,33 @@ open class LiveBroadcastCard(
     }
 }
 
-class LiveBroadcastWithFriendsCard(
-    val binding: LiveBroadcastWithFriendsCardBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
+class LiveBroadcastWithFriendsCard @AssistedInject constructor(
+    @Assisted val binding: LiveBroadcastWithFriendsCardBinding,
+    @Assisted tags: Map<String, Lobby.Tag>,
+    @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
+    @ThemeFollowedLobby private val followedTheme: UserTheme,
+    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
+    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
+    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    payloadId: String?,
-    private val scope: CoroutineScope?,
+    @Assisted payloadId: String?,
+    @Assisted private val scope: CoroutineScope?,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(
+            binding: LiveBroadcastWithFriendsCardBinding,
+            tags: Map<String, Lobby.Tag>,
+            content: Map<String, Lobby.Content>,
+            payloadId: String?,
+            scope: CoroutineScope?
+        ): LiveBroadcastWithFriendsCard
+    }
+
     override fun configure(item: LobbyItem) {
         super.configure(item)
         val liveBroadcastItem = item as LiveBroadcastWithFriends
@@ -360,21 +352,33 @@ private class MoreButtonClickListener(val caid: CAID, val username: String) : Vi
     }
 }
 
-class PreviousBroadcastCard(
-    val binding: PreviousBroadcastCardBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
+class PreviousBroadcastCard @AssistedInject constructor(
+    @Assisted val binding: PreviousBroadcastCardBinding,
+    @Assisted tags: Map<String, Lobby.Tag>,
+    @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
+    @ThemeFollowedLobby private val followedTheme: UserTheme,
+    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
+    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
+    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    payloadId: String?,
-    scope: CoroutineScope,
+    @Assisted payloadId: String?,
+    @Assisted scope: CoroutineScope,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(
+            binding: PreviousBroadcastCardBinding,
+            tags: Map<String, Lobby.Tag>,
+            content: Map<String, Lobby.Content>,
+            payloadId: String?,
+            scope: CoroutineScope
+        ): PreviousBroadcastCard
+    }
+
     override val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.ALL
     override val isLight: Boolean = true
 
@@ -390,29 +394,31 @@ class PreviousBroadcastCard(
     }
 }
 
-class ListCard(
-    val binding: CardListBinding,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
-    followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
-    picasso: Picasso,
-    private val payloadId: String?,
+class ListCard @AssistedInject constructor(
+    @Assisted val binding: CardListBinding,
+    @Assisted private val tags: Map<String, Lobby.Tag>,
+    @Assisted private val content: Map<String, Lobby.Content>,
+    @Assisted private val payloadId: String?,
     recycledViewPool: RecyclerView.RecycledViewPool,
-    dispatchConfig: DispatchConfig,
-    clock: Clock,
-    eventManager: EventManager
-) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    private val lobbyAdapter: LobbyAdapter
+) : LobbyViewHolder(binding.root) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(
+            binding: CardListBinding,
+            tags: Map<String, Lobby.Tag>,
+            content: Map<String, Lobby.Content>,
+            payloadId: String?
+        ): ListCard
+    }
+
     private val snapHelper = LinearSnapHelper()
     private val edgeOffset = binding.root.resources.getDimension(R.dimen.lobby_card_side_margin).toInt()
     private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
-    private val lobbyAdapter = LobbyAdapter(dispatchConfig, followManager, recycledViewPool, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, clock, eventManager).apply {
-        isMiniStyle = true
-    }
+
     init {
+        lobbyAdapter.isMiniStyle = true
         binding.cardListRecyclerView.adapter = lobbyAdapter
         binding.cardListRecyclerView.run {
             addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -441,21 +447,32 @@ class ListCard(
     }
 }
 
-class LiveBroadcastPickerCard(
-    binding: LiveBroadcastCardBinding,
-    val callback: Callback?,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
+class LiveBroadcastPickerCard @AssistedInject constructor(
+    @Assisted binding: LiveBroadcastCardBinding,
+    @Assisted val callback: Callback?,
+    @Assisted tags: Map<String, Lobby.Tag>,
+    @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
+    @ThemeFollowedLobby private val followedTheme: UserTheme,
+    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
+    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
+    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
-    scope: CoroutineScope,
+    @Assisted scope: CoroutineScope,
     clock: Clock,
     eventManager: EventManager
 ) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, null, scope, clock, eventManager) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(
+            binding: LiveBroadcastCardBinding,
+            tags: Map<String, Lobby.Tag>,
+            content: Map<String, Lobby.Content>,
+            scope: CoroutineScope,
+            callback: Callback?
+        ): LiveBroadcastPickerCard
+    }
 
     // The picker card for live hosting is not on the lobby, so the payload id is null and we don't track it.
     override fun configure(item: LobbyItem) {
@@ -485,16 +502,9 @@ class LiveBroadcastPickerCard(
 
 class UpcomingButtonCard(
     val binding: UpcomingButtonCardBinding,
-    val callback: Callback?,
-    tags: Map<String, Lobby.Tag>,
-    content: Map<String, Lobby.Content>,
-    followManager: FollowManager,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    followedThemeLight: UserTheme,
-    notFollowedThemeLight: UserTheme,
-    picasso: Picasso
-) : LobbyViewHolder(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso) {
+    val callback: Callback?
+) : LobbyViewHolder(binding.root) {
+
     override fun configure(item: LobbyItem) {
         binding.viewUpcomingButton.setOnClickListener {
             callback?.onButtonClicked()
