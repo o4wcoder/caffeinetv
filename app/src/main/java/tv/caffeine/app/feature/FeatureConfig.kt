@@ -25,7 +25,7 @@ class FeatureConfig {
 enum class Feature(private val featureName: String) {
     BROADCAST("android_broadcast"),
     REYES_V5("reyes_v5"),
-    PAYMENT_FIX("android_payment_fix");
+    LIVE_IN_THE_LOBBY("f316");
 
     override fun toString(): String {
         return featureName

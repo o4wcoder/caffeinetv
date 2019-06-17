@@ -31,6 +31,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/primary_view_renderer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:keepScreenOn="true"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@id/preview_image_view"
+                app:layout_constraintEnd_toEndOf="@id/preview_image_view"
+                app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
+                app:layout_constraintTop_toTopOf="@id/preview_image_view"
+                tools:visibility="visible"/>
+
             <ImageView
                 android:id="@+id/preview_image_view"
                 android:layout_width="0dp"

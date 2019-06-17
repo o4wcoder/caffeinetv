@@ -38,6 +38,10 @@ class LobbyFragment @Inject constructor(
             addItemDecoration(itemDecorator)
         }
         binding.lobbySwipeRefreshLayout.setOnRefreshListener { refreshLobby() }
+        binding.lobbyRecyclerView.setRecyclerListener { viewHolder ->
+            val lobbyViewHolder = viewHolder as LobbyViewHolder
+            lobbyViewHolder.recycle()
+        }
         viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { lobby ->

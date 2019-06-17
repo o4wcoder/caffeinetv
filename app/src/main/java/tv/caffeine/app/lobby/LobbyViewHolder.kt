@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.Navigation
@@ -20,8 +21,13 @@ import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
+import org.webrtc.EglRenderer
+import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoTrack
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.EventManager
@@ -30,6 +36,7 @@ import tv.caffeine.app.api.LobbyClickedEventData
 import tv.caffeine.app.api.LobbyFollowClickedEvent
 import tv.caffeine.app.api.LobbyImpressionEvent
 import tv.caffeine.app.api.LobbyImpressionEventData
+import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
@@ -46,12 +53,16 @@ import tv.caffeine.app.di.ThemeFollowedLobby
 import tv.caffeine.app.di.ThemeFollowedLobbyLight
 import tv.caffeine.app.di.ThemeNotFollowedLobby
 import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
+import tv.caffeine.app.feature.Feature
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.stage.NewReyesController
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 
 sealed class LobbyViewHolder(
     itemView: View
@@ -61,6 +72,7 @@ sealed class LobbyViewHolder(
         configure(item)
     }
     protected abstract fun configure(item: LobbyItem)
+    open fun recycle() = Unit
 }
 
 class AvatarCard(
@@ -129,6 +141,12 @@ abstract class BroadcasterCard(
     protected open val cornerType: RoundedCornersTransformation.CornerType = RoundedCornersTransformation.CornerType.TOP
     protected open val isLight: Boolean = false
     private val roundedCornersTransformation by lazy { RoundedCornersTransformation(itemView.resources.getDimension(R.dimen.lobby_card_rounding_radius).toInt(), 0, cornerType) }
+
+    protected var stageController: NewReyesController? = null
+
+    override fun recycle() {
+        stageController?.close()
+    }
 
     override fun configure(item: LobbyItem) {
         val singleCard = item as SingleCard
@@ -239,6 +257,60 @@ abstract class BroadcasterCard(
             }
         }
     }
+
+    private var frameListener: EglRenderer.FrameListener? = null
+
+    protected fun startLiveVideo(
+        renderer: SurfaceViewRenderer,
+        controller: NewReyesController,
+        onConnectCallback: () -> Unit
+    ) {
+        scope?.launch {
+            launch {
+                controller.connectionChannel.consumeEach { feedInfo ->
+                    val audioTrack = feedInfo.connectionInfo.audioTrack
+                    audioTrack?.setEnabled(false)
+                    // audioTrack?.setVolume(0.0)
+                    if (feedInfo.role == NewReyes.Feed.Role.primary) {
+                        val videoTrack = feedInfo.connectionInfo.videoTrack
+                        configureRenderer(renderer, feedInfo.feed, videoTrack)
+                        frameListener = EglRenderer.FrameListener {
+                            launch(Dispatchers.Main) {
+                                renderer.removeFrameListener(frameListener)
+                                onConnectCallback()
+                            }
+                        }
+                        renderer.addFrameListener(frameListener, 1.0f)
+                    }
+                }
+            }
+            launch {
+                controller.stateChangeChannel.consumeEach { list ->
+                    list.forEach { stateChange ->
+                        when (stateChange) {
+                            is NewReyesController.StateChange.FeedRemoved -> {
+                                // TODO remove sink for primary video
+                                // TODO videoTrack.removeSink(binding.primaryViewRenderer)
+                            }
+                        }
+                    }
+                }
+            }
+            launch { controller.feedChannel.consumeEach { } }
+            launch { controller.errorChannel.consumeEach { } }
+            launch { controller.feedQualityChannel.consumeEach { } }
+        }
+    }
+
+    private fun configureRenderer(renderer: SurfaceViewRenderer, feed: NewReyes.Feed?, videoTrack: VideoTrack?) {
+        val hasVideo = videoTrack != null && (feed?.capabilities?.video ?: false)
+        renderer.isVisible = hasVideo
+        if (hasVideo) {
+            videoTrack?.addSink(renderer)
+        } else {
+            videoTrack?.removeSink(renderer)
+        }
+    }
 }
 
 open class LiveBroadcastCard @AssistedInject constructor(
@@ -253,9 +325,16 @@ open class LiveBroadcastCard @AssistedInject constructor(
     picasso: Picasso,
     @Assisted payloadId: String?,
     @Assisted private val scope: CoroutineScope? = null,
+    private val stageControllerFactory: NewReyesController.Factory,
+    surfaceViewRendererTuner: SurfaceViewRendererTuner,
+    private val featureConfig: FeatureConfig,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+
+    init {
+        surfaceViewRendererTuner.configure(binding.primaryViewRenderer)
+    }
 
     @AssistedInject.Factory
     interface Factory {
@@ -270,6 +349,8 @@ open class LiveBroadcastCard @AssistedInject constructor(
 
     override fun configure(item: LobbyItem) {
         super.configure(item)
+        stageController?.close()
+        binding.previewImageView.isInvisible = false
         val liveBroadcastItem = item as LiveBroadcast
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
@@ -281,12 +362,24 @@ open class LiveBroadcastCard @AssistedInject constructor(
         liveBroadcastItem.broadcaster.user.let {
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
-        previewImageView.setOnClickListener {
+        val cardClickListener: (View) -> Unit = {
             getLobbyClickedEventData(item)?.let { eventData ->
                 scope?.launch { eventManager.sendEvent(LobbyCardClickedEvent(eventData)) }
             }
-            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(item.broadcaster.user.username)
+            val action =
+                LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(item.broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
+        }
+        previewImageView.setOnClickListener(cardClickListener)
+        binding.primaryViewRenderer.setOnClickListener(cardClickListener)
+        if (featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
+            val renderer = binding.primaryViewRenderer
+            val username = liveBroadcastItem.broadcaster.user.username
+            val controller = stageControllerFactory.create(username)
+            stageController = controller
+            startLiveVideo(renderer, controller) {
+                binding.previewImageView.isInvisible = true
+            }
         }
     }
 }
@@ -303,9 +396,16 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
     picasso: Picasso,
     @Assisted payloadId: String?,
     @Assisted private val scope: CoroutineScope?,
+    private val stageControllerFactory: NewReyesController.Factory,
+    surfaceViewRendererTuner: SurfaceViewRendererTuner,
+    private val featureConfig: FeatureConfig,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+
+    init {
+        surfaceViewRendererTuner.configure(binding.primaryViewRenderer)
+    }
 
     @AssistedInject.Factory
     interface Factory {
@@ -320,6 +420,8 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
 
     override fun configure(item: LobbyItem) {
         super.configure(item)
+        stageController?.close()
+        binding.previewImageView.isInvisible = false
         val liveBroadcastItem = item as LiveBroadcastWithFriends
         binding.previewImageView.clipToOutline = true
         val broadcaster = item.broadcaster
@@ -336,12 +438,24 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
         liveBroadcastItem.broadcaster.user.let {
             binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
         }
-        previewImageView.setOnClickListener {
+        val cardClickListener: (View) -> Unit = {
             getLobbyClickedEventData(item)?.let { eventData ->
                 scope?.launch { eventManager.sendEvent(LobbyCardClickedEvent(eventData)) }
             }
-            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(broadcaster.user.username)
+            val action =
+                LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(broadcaster.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
+        }
+        previewImageView.setOnClickListener(cardClickListener)
+        binding.primaryViewRenderer.setOnClickListener(cardClickListener)
+        if (featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
+            val renderer = binding.primaryViewRenderer
+            val username = liveBroadcastItem.broadcaster.user.username
+            val controller = stageControllerFactory.create(username)
+            stageController = controller
+            startLiveVideo(renderer, controller) {
+                binding.previewImageView.isInvisible = true
+            }
         }
     }
 }
@@ -459,9 +573,12 @@ class LiveBroadcastPickerCard @AssistedInject constructor(
     @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
     @Assisted scope: CoroutineScope,
+    stageControllerFactory: NewReyesController.Factory,
+    surfaceViewRendererTuner: SurfaceViewRendererTuner,
+    featureConfig: FeatureConfig,
     clock: Clock,
     eventManager: EventManager
-) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, null, scope, clock, eventManager) {
+) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, null, scope, stageControllerFactory, surfaceViewRendererTuner, featureConfig, clock, eventManager) {
 
     @AssistedInject.Factory
     interface Factory {
