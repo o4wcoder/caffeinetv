@@ -6,7 +6,11 @@
         <PreferenceScreen
             android:key="manage_2fa"
             android:title="@string/two_step_authentication"
-            android:summary=" "/>
+            android:summary=" ">
+            <CheckBoxPreference
+                android:key="manage_2fa_update"
+                android:title="@string/two_step_auth_settings_message"/>
+        </PreferenceScreen>
 
         <PreferenceScreen
             android:key="change_email"

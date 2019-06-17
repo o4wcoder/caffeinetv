@@ -39,6 +39,10 @@ fun Context.dismissKeyboard(view: View) {
     getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
+fun Context.showKeyboard(view: View) {
+    getSystemService<InputMethodManager>()?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+}
+
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = getSystemService<ConnectivityManager>() ?: return false
     return connectivityManager.activeNetworkInfo?.isConnected == true

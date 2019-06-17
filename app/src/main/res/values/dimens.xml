@@ -69,4 +69,9 @@
     <dimen name="broadcast_title_mini">14sp</dimen>
     <dimen name="live_badge_text">12sp</dimen>
     <dimen name="live_badge_text_mini">10sp</dimen>
+
+    <dimen name="two_step_auth_padding">16dp</dimen>
+    <dimen name="two_step_auth_top_padding">32dp</dimen>
+    <dimen name="two_step_auth_message_bottom_margin">16dp</dimen>
+    <dimen name="two_step_auth_code_text_size">20sp</dimen>
 </resources>

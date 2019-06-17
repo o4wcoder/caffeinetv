@@ -289,4 +289,11 @@
     <string name="us_only_label">| US Only</string><!-- the vertical bar is to separate this label from the username before it -->
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+
+    <!-- Two-Step Authentication -->
+    <string name="two_step_auth_settings_title">Two-Step Authentication</string>
+    <string name="two_step_auth_settings_message">Use Two-Step Authentication</string>
+    <string name="two_step_auth_email_title">Code Emailed</string>
+    <string name="two_step_auth_email_message">A verification code was emailed to %1$s. Please enter the code below or resend email.</string>
+    <string name="two_step_auth_email_button">Next</string>
 </resources>

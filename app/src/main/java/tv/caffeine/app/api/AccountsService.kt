@@ -58,6 +58,9 @@ interface AccountsService {
 
     @POST("v1/account/email/confirm")
     fun confirmEmail(@Body confirmEmailBody: ConfirmEmailBody): Deferred<Response<ConfirmEmailResponse>>
+
+    @GET("v1/account/mfa/email")
+    fun sendMFAEmailCode(): Deferred<Response<Void>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)

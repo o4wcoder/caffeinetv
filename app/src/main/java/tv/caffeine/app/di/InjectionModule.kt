@@ -25,6 +25,7 @@ import tv.caffeine.app.profile.MyProfileFragment
 import tv.caffeine.app.profile.ProfileFragment
 import tv.caffeine.app.profile.ReportDialogFragment
 import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
+import tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragment
 import tv.caffeine.app.profile.UpdateEmailFragment
 import tv.caffeine.app.profile.UpdatePasswordFragment
 import tv.caffeine.app.settings.BuyGoldUsingCreditsDialogFragment
@@ -93,4 +94,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun needsUpdateFragment(): NeedsUpdateFragment
     @ContributesAndroidInjector abstract fun noNetworkFragment(): NoNetworkFragment
     @ContributesAndroidInjector abstract fun confirmEmailFragment(): ConfirmEmailFragment
+    @ContributesAndroidInjector abstract fun updateAuthenticationFragment(): TwoStepAuthEmailFragment
 }

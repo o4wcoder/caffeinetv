@@ -113,6 +113,9 @@ class SettingsFragment @Inject constructor(
             findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToUpdatePasswordFragment())
             true
         }
+
+        // TODO: Remove feature flag when feature is complete
+        val showTwoStepAuthSetting = false
         myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
             @StringRes val status = when (userProfile.mfaMethod) {
                 MfaMethod.EMAIL, MfaMethod.TOTP -> R.string.mfa_status_on
@@ -120,10 +123,29 @@ class SettingsFragment @Inject constructor(
             }
             findPreference("manage_2fa")?.apply {
                 setSummary(status)
-                setOnPreferenceClickListener {
-                    val fragment = AlertDialogFragment.withMessage(R.string.manage_mfa_coming_soon)
-                    fragment.maybeShow(fragmentManager, "mfaSoonDialog")
-                    true
+                if (!showTwoStepAuthSetting) {
+                    setOnPreferenceClickListener {
+                        val fragment = AlertDialogFragment.withMessage(R.string.manage_mfa_coming_soon)
+                        fragment.maybeShow(fragmentManager, "mfaSoonDialog")
+                        true
+                    }
+                }
+            }
+            findPreference("manage_2fa_update")?.apply {
+                if (!showTwoStepAuthSetting) {
+                    this.isVisible = false
+                } else {
+                    setOnPreferenceChangeListener { preference, newValue ->
+                        if (newValue as Boolean) {
+                            viewModel.sendMTAEmailCode()
+                            findNavController().safeNavigate(
+                                SettingsFragmentDirections.actionSettingsFragmentToTwoStepAuthFragment(
+                                    userProfile.email ?: getString(R.string.email)))
+                        } else {
+                            // TODO: Show confirmation dialog about turning off 2FA
+                        }
+                        true
+                    }
                 }
             }
             findPreference("change_email")?.summary = userProfile.email ?: getString(R.string.email)
@@ -306,6 +328,7 @@ class SettingsViewModel @Inject constructor(
     private val usersService: UsersService,
     private val oauthService: OAuthService,
     private val facebookLoginManager: LoginManager,
+    private val accountsService: AccountsService,
     private val gson: Gson
 ) : ViewModel() {
     private val _userDetails = MutableLiveData<User>()
@@ -364,6 +387,17 @@ class SettingsViewModel @Inject constructor(
             liveData.value = result
         }
         return liveData.map { it }
+    }
+
+    fun sendMTAEmailCode() {
+        viewModelScope.launch {
+            val result = accountsService.sendMFAEmailCode().awaitEmptyAndParseErrors(gson)
+            when (result) {
+                is CaffeineEmptyResult.Success -> Timber.d("Successful send MFA email code")
+                is CaffeineEmptyResult.Error -> Timber.d("Error attempting to send MFA email code ${result.error}")
+                is CaffeineEmptyResult.Failure -> Timber.d("Failure attempting to send MFA email code ${result.throwable}")
+            }
+        }
     }
 }
 

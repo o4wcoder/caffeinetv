@@ -543,8 +543,11 @@
                 android:id="@+id/action_settingsFragment_to_ignoredUsersFragment"
                 app:destination="@+id/ignoredUsersFragment" />
             <action
+                android:id="@+id/action_settingsFragment_to_twoStepAuthFragment"
+                app:destination="@+id/twoStepAuthFragment"/>
+            <action
                 android:id="@+id/action_settingsFragment_to_updateEmailFragment"
-                app:destination="@+id/updateEmailFragment" />
+                app:destination="@id/updateEmailFragment" />
             <action
                 android:id="@+id/action_settingsFragment_to_updatePasswordFragment"
                 app:destination="@+id/updatePasswordFragment" />
@@ -562,6 +565,14 @@
             android:id="@+id/ignoredUsersFragment"
             android:name="tv.caffeine.app.users.IgnoredUsersFragment"
             android:label="@string/ignored_users" />
+        <fragment
+            android:id="@+id/twoStepAuthFragment"
+            android:name="tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragment"
+            android:label="@string/two_step_auth_email_title">
+            <argument
+                android:name="email"
+                app:argType="string"/>
+        </fragment>
         <fragment
             android:id="@+id/updateEmailFragment"
             android:name="tv.caffeine.app.profile.UpdateEmailFragment"
