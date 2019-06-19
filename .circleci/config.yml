@@ -54,18 +54,22 @@ jobs:
           command: ./gradlew detekt || true
       - run:
           name: Run Unit Tests
-          command: ./gradlew testDebugUnitTest -PdisablePreDex --stacktrace
-      - persist_to_workspace:
-          root: *working_directory
-          paths:
-            - .
+          command: ./gradlew testDebugUnitTestCoverage -PdisablePreDex --stacktrace
+#      - persist_to_workspace:
+#          root: *working_directory
+#          paths:
+#            - .
       - run:
-          name: Save test and detekt results
+          name: Save test, coverage and detekt results
           command: |
-              mkdir -p ~/reports/{xml,tests,lint}
+              mkdir -p ~/reports/{xml,coverage,tests,lint}
               cp -r app/build/test-results/ ~/reports/xml
               cp -r app/build/reports/tests/testDebugUnitTest/ ~/reports/tests
+              cp app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml ~/reports/coverage/testDebugUnitTestCoverage.xml
               cp build/reports/detekt/detekt.html ~/reports/lint/detekt.html
+      - run:
+          name: Upload coverage to Codecov
+          command: bash <(curl -s https://codecov.io/bash) -f app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
       - store_test_results:
           path: ~/reports/xml
       - store_artifacts:
@@ -166,9 +170,6 @@ workflows:
     jobs:
       - danger
       - unit-tests
-      - test-coverage:
-          requires:
-            - unit-tests
       - publish-to-play:
           requires:
             - unit-tests
@@ -184,4 +185,9 @@ workflows:
 #          requires:
 #            - unit-tests
 #            - approve-debug-apk
+
+# The below jobs were used to separate test-coverage from unit tests
+#      - test-coverage:
+#          requires:
+#            - unit-tests
 
