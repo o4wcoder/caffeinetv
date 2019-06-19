@@ -12,6 +12,7 @@ import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.FeaturedProgramGuideFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
+import tv.caffeine.app.login.ArkoseFragment
 import tv.caffeine.app.login.ConfirmEmailFragment
 import tv.caffeine.app.login.ForgotFragment
 import tv.caffeine.app.login.LandingFragment
@@ -185,4 +186,9 @@ abstract class FragmentBindingModule {
     @IntoMap
     @FragmentKey(ConfirmEmailFragment::class)
     abstract fun bindConfirmEmailFragment(fragment: ConfirmEmailFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ArkoseFragment::class)
+    abstract fun bindArkoseFragment(fragment: ArkoseFragment): Fragment
 }

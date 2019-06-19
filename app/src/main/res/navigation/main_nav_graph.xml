@@ -486,6 +486,9 @@
             <action
                 android:id="@+id/action_signUpFragment_to_legalDocsFragment"
                 app:destination="@+id/legalDocsFragment" />
+            <action
+                android:id="@+id/action_signUpFragment_to_arkoseFragment"
+                app:destination="@+id/arkoseFragment" />
             <argument
                 android:name="possibleUsername"
                 android:defaultValue="@null"
@@ -501,6 +504,13 @@
                 android:defaultValue="@null"
                 app:argType="string"
                 app:nullable="true" />
+        </fragment>
+        <fragment
+            android:id="@+id/arkoseFragment"
+            android:name="tv.caffeine.app.login.ArkoseFragment"
+            android:label="Prove you're a human"
+            tools:layout="@layout/fragment_arkose">
+
         </fragment>
         <fragment
             android:id="@+id/legalAgreementFragment"

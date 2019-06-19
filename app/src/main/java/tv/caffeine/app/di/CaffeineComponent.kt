@@ -19,7 +19,8 @@ import javax.inject.Singleton
     CoroutinesModule::class,
     AnalyticsModule::class,
     CaffeineAssistedModule::class,
-    DataModule::class
+    DataModule::class,
+    ArkoseConfigModule::class
 ])
 interface CaffeineComponent : AndroidInjector<CaffeineApplication> {
     @Component.Builder

@@ -9,6 +9,7 @@ import tv.caffeine.app.broadcast.LiveHostableBroadcastersViewModel
 import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
+import tv.caffeine.app.login.ArkoseViewModel
 import tv.caffeine.app.login.LegalAgreementViewModel
 import tv.caffeine.app.login.SignInViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
@@ -174,4 +175,9 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(TwitterAuthViewModel::class)
     abstract fun bindTwitterAuthViewModel(viewModel: TwitterAuthViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ArkoseViewModel::class)
+    abstract fun bindArkoseViewModel(viewModel: ArkoseViewModel): ViewModel
 }

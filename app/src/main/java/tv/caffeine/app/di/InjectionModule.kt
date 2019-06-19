@@ -10,6 +10,7 @@ import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.FeaturedProgramGuideFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
+import tv.caffeine.app.login.ArkoseFragment
 import tv.caffeine.app.login.ConfirmEmailFragment
 import tv.caffeine.app.login.ForgotFragment
 import tv.caffeine.app.login.LandingFragment
@@ -95,4 +96,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun noNetworkFragment(): NoNetworkFragment
     @ContributesAndroidInjector abstract fun confirmEmailFragment(): ConfirmEmailFragment
     @ContributesAndroidInjector abstract fun updateAuthenticationFragment(): TwoStepAuthEmailFragment
+    @ContributesAndroidInjector abstract fun arkoseFragment(): ArkoseFragment
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title of the document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<script type="text/javascript">
+        var publicKey = ""
+
+        function setPublicKey(key) {
+            publicKey = key;
+            console.log("public key: " + publicKey);
+            var url = "https://client-api.arkoselabs.com/fc/api/?onload=loadChallenge"
+            var s = document.createElement('script');
+            s.setAttribute('src', url);
+            s.async = true;
+            document.body.appendChild(s);
+        }
+
+        function loadChallenge() {
+            new ArkoseEnforcement({
+                public_key: publicKey,
+                target_html: "CAPTCHA",
+                callback: function() {
+                    window.android.returnToken(document.getElementById("FunCaptcha-Token").value);
+                }
+            });
+        }
+     </script>
+<div id="CAPTCHA"></div>
+</body>
+</html>

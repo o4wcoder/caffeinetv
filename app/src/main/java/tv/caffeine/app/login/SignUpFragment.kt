@@ -14,10 +14,12 @@ import android.widget.TextView
 import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.safetynet.SafetyNet
@@ -70,6 +72,10 @@ class SignUpFragment @Inject constructor(
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val args by navArgs<SignUpFragmentArgs>()
 
+    private val doUseArkose = false
+
+    val arkoseViewModel: ArkoseViewModel by navGraphViewModels(R.id.login) { viewModelFactory }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSignUpBinding.bind(view)
         binding.signUpButton.setOnClickListener { signUpClicked() }
@@ -87,6 +93,9 @@ class SignUpFragment @Inject constructor(
             binding.usernameEditText.setText(args.possibleUsername)
             binding.emailEditText.setText(args.email)
         }
+        arkoseViewModel.arkoseToken.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let { token -> processArkoseTokenResult(token) }
+        })
     }
 
     private fun setDate() {
@@ -120,19 +129,23 @@ class SignUpFragment @Inject constructor(
         val displayText = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(LocalDate.of(year, month + 1, dayOfMonth))
         val apiText = apiDateFormat.format(calendar.time)
         binding.dobEditText.setText(displayText, TextView.BufferType.NORMAL)
-        binding.dobEditText.tag = apiText
+        arkoseViewModel.signUpBdayApiDate = apiText
     }
 
     private fun signUpClicked() {
         val iid: String? = args.iid
-        if (iid != null) return signUp(null, iid)
+        if (iid != null) return signUp(null, null, iid)
         val context = context ?: return
-        SafetyNet.getClient(context)
+
+        if (doUseArkose) {
+            findNavController().safeNavigate(SignUpFragmentDirections.actionSignUpFragmentToArkoseFragment())
+        } else {
+            SafetyNet.getClient(context)
                 .verifyWithRecaptcha(getString(R.string.safetynet_app_key))
                 .addOnSuccessListener { response ->
                     val token = response.tokenResult
                     if (token?.isNotEmpty() == true) {
-                        signUp(token, iid)
+                        signUp(token, null, iid)
                     }
                 }
                 .addOnFailureListener {
@@ -144,17 +157,23 @@ class SignUpFragment @Inject constructor(
                     }
                     showSnackbar(R.string.recaptcha_failed)
                 }
+        }
     }
 
-    private fun signUp(token: String?, iid: String?) {
+    private fun processArkoseTokenResult(token: String) {
+        signUp(null, token, null)
+    }
+
+    private fun signUp(recaptchaToken: String?, arkoseToken: String?, iid: String?) {
         clearErrors()
         val username = binding.usernameEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
         val email = binding.emailEditText.text.toString()
-        val dob = binding.dobEditText.tag as? String ?: ""
+        val dob = arkoseViewModel.signUpBdayApiDate ?: ""
+
         val countryCode = "US"
         val account = SignUpAccount(username, password, email, dob, countryCode)
-        val signUpBody = SignUpBody(account, iid, true, token)
+        val signUpBody = SignUpBody(account, iid, true, recaptchaToken, arkoseToken)
         // TODO: better error handling before calling the API
         launch {
             val result = accountsService.signUp(signUpBody).awaitAndParseErrors(gson)
