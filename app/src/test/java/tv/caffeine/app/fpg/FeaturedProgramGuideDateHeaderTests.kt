@@ -1,6 +1,5 @@
 package tv.caffeine.app.fpg
 
-import android.os.SystemClock
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -36,28 +35,28 @@ class FeaturedProgramGuideDateHeaderTests {
 
     @Test
     fun `the date header is today for today's broadcast`() {
-        val nowInMs = SystemClock.currentThreadTimeMillis()
+        val nowInMs = System.currentTimeMillis()
         val todayInSeconds = TimeUnit.MILLISECONDS.toSeconds(nowInMs)
         assertEquals(viewHolder.getDateText(FeaturedGuideItem.DateHeader(todayInSeconds)), today)
     }
 
     @Test
     fun `the date header is tomorrow for tomorrow's broadcast`() {
-        val nowInMs = SystemClock.currentThreadTimeMillis()
+        val nowInMs = System.currentTimeMillis()
         val tomorrowInSeconds = TimeUnit.MILLISECONDS.toSeconds(nowInMs + DateUtils.DAY_IN_MILLIS)
         assertEquals(viewHolder.getDateText(FeaturedGuideItem.DateHeader(tomorrowInSeconds)), tomorrow)
     }
 
     @Test
     fun `the date header is not today for yesterday's broadcast`() {
-        val nowInMs = SystemClock.currentThreadTimeMillis()
+        val nowInMs = System.currentTimeMillis()
         val yesterdayInSeconds = TimeUnit.MILLISECONDS.toSeconds(nowInMs - DateUtils.DAY_IN_MILLIS)
         assertNotEquals(viewHolder.getDateText(FeaturedGuideItem.DateHeader(yesterdayInSeconds)), today)
     }
 
     @Test
     fun `the date header is not tomorrow for the day after tomorrow's broadcast`() {
-        val nowInMs = SystemClock.currentThreadTimeMillis()
+        val nowInMs = System.currentTimeMillis()
         val theDayAfterTomorrowInSeconds = TimeUnit.MILLISECONDS.toSeconds(nowInMs + DateUtils.DAY_IN_MILLIS * 2)
         assertNotEquals(viewHolder.getDateText(FeaturedGuideItem.DateHeader(theDayAfterTomorrowInSeconds)), tomorrow)
     }

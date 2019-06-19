@@ -1,6 +1,5 @@
 package tv.caffeine.app.lobby
 
-import android.text.format.DateUtils
 import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +16,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
@@ -138,21 +141,19 @@ class DateHeaderViewHolder(private val binding: FeaturedGuideDateHeaderBinding) 
      */
     fun getDateText(dateHeader: DateHeader): String {
         return Calendar.getInstance().run {
-            timeInMillis = TimeUnit.SECONDS.toMillis(dateHeader.startTimestamp)
-            when {
-                isToday(timeInMillis) -> itemView.context.getString(R.string.today)
-                isTomorrow(timeInMillis) -> itemView.context.getString(R.string.tomorrow)
+            val seconds = dateHeader.startTimestamp
+            timeInMillis = TimeUnit.SECONDS.toMillis(seconds)
+            val instant = Instant.ofEpochSecond(seconds)
+            val dateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+            val localDate = dateTime.toLocalDate()
+            val today = LocalDate.now()
+            val tomorrow = today.plusDays(1)
+            when (localDate) {
+                today -> itemView.context.getString(R.string.today)
+                tomorrow -> itemView.context.getString(R.string.tomorrow)
                 else -> SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
             }
         }
-    }
-
-    private fun isToday(timeInMillis: Long): Boolean {
-        return DateUtils.isToday(timeInMillis)
-    }
-
-    private fun isTomorrow(timeInMillis: Long): Boolean {
-        return DateUtils.isToday(timeInMillis - DateUtils.DAY_IN_MILLIS)
     }
 }
 
