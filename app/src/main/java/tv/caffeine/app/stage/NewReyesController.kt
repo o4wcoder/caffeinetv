@@ -99,6 +99,8 @@ class NewReyesController @AssistedInject constructor(
     private val heartbeatUrls: MutableMap<String, String> = ConcurrentHashMap()
     private val audioTracks: MutableMap<String, AudioTrack> = ConcurrentHashMap()
 
+    private val videoStreamIds = mutableListOf<String>() // excludes audio-only feeds for connection_quality updates
+
     init {
         connect()
         heartbeat()
@@ -136,10 +138,7 @@ class NewReyesController @AssistedInject constructor(
                 when (result) {
                     is CaffeineResult.Success -> {
                         val heartbeat = result.value
-
-                        // TODO: enable when ready
-                        val featureFlag = false
-                        if (featureFlag) {
+                        if (heartbeat.id in videoStreamIds) {
                             heartbeat.connectionQuality?.let { feedQualityChannel.send(it) }
                         }
                     }
@@ -239,6 +238,7 @@ class NewReyesController @AssistedInject constructor(
                     peerConnectionStreamLabels.remove(streamId)
                     audioTracks.remove(streamId)
                     heartbeatUrls.remove(streamId)
+                    videoStreamIds.remove(streamId)
                 }
         feeds = newFeeds
         diff
@@ -251,6 +251,9 @@ class NewReyesController @AssistedInject constructor(
                 }
                 .forEach { feed ->
                     val stream = feed.stream
+                    if (feed.capabilities.video) {
+                        videoStreamIds.add(feed.stream.id)
+                    }
                     connectStream(stream)?.let { connectionInfo ->
                         peerConnections[stream.id] = connectionInfo.peerConnection
                         peerConnectionStreamLabels[stream.id] = feed.streamLabel()
