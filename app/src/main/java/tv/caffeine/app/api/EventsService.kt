@@ -47,5 +47,5 @@ class LobbyImpressionEventData(
     val isLive: Boolean,
     val displayOrder: Int,
     val friendsWatching: List<String>,
-    val category: String = "friends_activity" // TODO: Need to pull real category
+    val clusterId: String?
 ) : EventData()

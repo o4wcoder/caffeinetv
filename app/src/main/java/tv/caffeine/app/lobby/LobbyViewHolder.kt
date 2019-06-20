@@ -40,6 +40,7 @@ import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
+import tv.caffeine.app.api.model.makeLobbyImpressionEventData
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding
@@ -204,10 +205,7 @@ abstract class BroadcasterCard(
             }
         }
 
-        val isLobbyImpressionFeatureCompleted = false
-        if (isLobbyImpressionFeatureCompleted) {
-            sendImpressionEventData(item)
-        }
+        sendImpressionEventData(item)
     }
 
     private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {
@@ -238,16 +236,8 @@ abstract class BroadcasterCard(
     }
 
     @VisibleForTesting
-    fun getLobbyImpressionEventData(singleCard: SingleCard): LobbyImpressionEventData? {
-        if (payloadId == null) return null
-        val isLive = singleCard.broadcaster.broadcast != null
-        val caid = singleCard.broadcaster.user.caid
-        val stageId = singleCard.broadcaster.user.stageId
-        val isFeatured = singleCard.broadcaster.user.isFeatured
-        val friendsWatching = singleCard.broadcaster.followingViewers.map { it.caid }
-        val displayOrder = singleCard.broadcaster.displayOrder
-        return LobbyImpressionEventData(payloadId, caid, stageId, isFeatured, isLive, displayOrder, friendsWatching)
-    }
+    fun getLobbyImpressionEventData(singleCard: SingleCard): LobbyImpressionEventData? =
+        payloadId?.let { singleCard.broadcaster.makeLobbyImpressionEventData(it) }
 
     private fun sendImpressionEventData(lobbyItem: LobbyItem) {
         scope?.launch {
