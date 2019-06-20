@@ -168,7 +168,7 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    style="@style/WeakConnection"
+                    style="@style/WeakConnectionText"
                     android:id="@+id/weak_connection_header_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                     app:layout_constraintStart_toEndOf="@id/no_network_data_image_view"/>
 
                 <TextView
-                    style="@style/PleaseCheckConnection"
+                    style="@style/PleaseCheckConnectionText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/please_check_network_connection"
@@ -307,5 +307,56 @@
                     app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bad_connection_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/poor_connection_dim"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                style="@style/NoNetworkData"
+                android:id="@+id/bad_connection_icon"
+                android:layout_width="@dimen/bad_connection_icon_size"
+                android:layout_height="@dimen/bad_connection_icon_size"
+                android:src="@drawable/ic_no_network_data"
+                android:contentDescription="@string/poor_connection_icon_content_description"
+                app:layout_constraintBottom_toTopOf="@id/bad_connection_title"
+                app:layout_constraintStart_toStartOf="@+id/bad_connection_title"
+                app:layout_constraintEnd_toEndOf="@+id/bad_connection_title"/>
+
+            <TextView
+                style="@style/ReallyPoorConnectionTitleText"
+                android:id="@+id/bad_connection_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_line_spacing"
+                android:text="@string/poor_connection"
+                app:layout_constraintStart_toStartOf="@+id/bad_connection_body"
+                app:layout_constraintEnd_toEndOf="@+id/bad_connection_body"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <TextView
+                style="@style/ReallyPoorConnectionBodyText"
+                android:id="@+id/bad_connection_body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_line_spacing"
+                android:layout_marginStart="26dp"
+                android:layout_marginEnd="26dp"
+                android:gravity="center"
+                android:text="@string/the_broadcast_will_resume_when_your_connection_improves"
+                app:layout_constraintTop_toBottomOf="@id/bad_connection_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

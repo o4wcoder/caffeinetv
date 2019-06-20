@@ -361,12 +361,23 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
-    <style name="WeakConnection" parent="ListTitle">
+    <!-- Network Messaging -->
+
+    <style name="WeakConnectionText" parent="ListTitle">
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="PleaseCheckConnection" parent="CaffeineText">
+    <style name="PleaseCheckConnectionText" parent="CaffeineText">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="ReallyPoorConnectionTitleText" parent="WeakConnectionText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="ReallyPoorConnectionBodyText" parent="WeakConnectionText">
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="NoNetworkData" >

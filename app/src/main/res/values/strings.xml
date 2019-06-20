@@ -62,9 +62,6 @@
     <string name="delete_account_incorrect_password_error">Password is incorrect.</string>
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
-    <string name="poor_connection_icon_content_description">Poor network connection icon</string>
-    <string name="weak_connection">Weak Connection</string>
-    <string name="please_check_network_connection">Please check your network connection</string>
 
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
@@ -253,6 +250,11 @@
     <string name="no_network_data">No Network Data</string>
     <string name="check_your_wifi_or_cellular">Check your wi-fi or cellular settings.</string>
     <string name="peer_connection_error_message">Failed to connect to the stream. Please try again later.</string>
+    <string name="the_broadcast_will_resume_when_your_connection_improves">The broadcast will resume when your connection improves.</string>
+    <string name="poor_connection">Poor Connection</string>
+    <string name="poor_connection_icon_content_description">Poor network connection icon</string>
+    <string name="weak_connection">Weak Connection</string>
+    <string name="please_check_network_connection">Please check your network connection</string>
 
     <!-- Confirm email -->
     <string name="verifying_your_email">Verifying your email…</string>

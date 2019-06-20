@@ -17,7 +17,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.CaffeineApplication
 import tv.caffeine.app.R
-import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
 
@@ -93,7 +92,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with good quality shows live indicator`() {
         subject.stageIsLive = true
-        subject.feedQuality = NewReyes.Quality.GOOD
+        subject.feedQuality = FeedQuality.GOOD
         subject.showOverlays()
         assertTrue(subject.binding.liveIndicatorTextView.isVisible)
     }
@@ -101,7 +100,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with poor quality shows live indicator`() {
         subject.stageIsLive = true
-        subject.feedQuality = NewReyes.Quality.POOR
+        subject.feedQuality = FeedQuality.POOR
         subject.showOverlays()
         assertTrue(subject.binding.liveIndicatorTextView.isVisible)
     }
@@ -109,7 +108,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with poor quality shows weak connection container`() {
         subject.stageIsLive = true
-        subject.feedQuality = NewReyes.Quality.POOR
+        subject.feedQuality = FeedQuality.POOR
         subject.showOverlays()
         assertTrue(subject.binding.weakConnectionContainer.isVisible)
     }
@@ -117,7 +116,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `showing overlays on a live stage with good quality does not show weak connection overlay`() {
         subject.stageIsLive = true
-        subject.feedQuality = NewReyes.Quality.GOOD
+        subject.feedQuality = FeedQuality.GOOD
         subject.showOverlays()
         assertFalse(subject.binding.weakConnectionContainer.isVisible)
     }
@@ -125,22 +124,24 @@ class StageFragmentVisibilityTests {
     @Test
     fun `poor network quality shows blinking no network data indicator`() {
         subject.stageIsLive = true
-        subject.updatePoorConnectionAnimation(true)
+        subject.feedQuality = FeedQuality.POOR
+        subject.updatePoorConnectionAnimation()
         assertTrue(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test
     fun `good network quality does not show blinking no network data indicator`() {
         subject.stageIsLive = true
-        subject.updatePoorConnectionAnimation(false)
+        subject.feedQuality = FeedQuality.GOOD
+        subject.updatePoorConnectionAnimation()
         assertFalse(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage with poor quality hides blinking no network data indicator`() {
         subject.stageIsLive = true
-        subject.feedQuality = NewReyes.Quality.POOR
-        subject.updatePoorConnectionAnimation(true)
+        subject.feedQuality = FeedQuality.POOR
+        subject.updatePoorConnectionAnimation()
         subject.showOverlays()
         assertFalse(subject.binding.poorConnectionPulseImageView.isVisible)
     }
@@ -196,6 +197,27 @@ class StageFragmentVisibilityTests {
     fun `the swipe button is visible if the stage is allowed to swipe`() {
         subject.configureButtons()
         assertTrue(subject.binding.swipeButton.isVisible)
+    }
+
+    @Test
+    fun `the poor connection overlay should be visible when feedQuality is BAD`() {
+        subject.feedQuality = FeedQuality.BAD
+        subject.updateBadConnectionOverlay()
+        assertTrue(subject.binding.badConnectionContainer.isVisible)
+    }
+
+    @Test
+    fun `the poor connection overlay should be gone when feedQuality is POOR`() {
+        subject.feedQuality = FeedQuality.POOR
+        subject.updateBadConnectionOverlay()
+        assertTrue(!subject.binding.badConnectionContainer.isVisible)
+    }
+
+    @Test
+    fun `the poor connection overlay should be gone when feedQuality is GOOD`() {
+        subject.feedQuality = FeedQuality.GOOD
+        subject.updateBadConnectionOverlay()
+        assertTrue(!subject.binding.badConnectionContainer.isVisible)
     }
 }
 

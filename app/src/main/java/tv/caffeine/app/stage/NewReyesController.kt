@@ -58,7 +58,11 @@ class NewReyesConnectionInfo(
     val audioTrack: AudioTrack?
 )
 
-private const val HEARTBEAT_PERIOD_SECONDS = 15L // TODO: What's a good period?
+enum class FeedQuality {
+    GOOD, POOR, BAD
+}
+
+private const val HEARTBEAT_PERIOD_SECONDS = 3L
 private const val STATS_REPORTING_PERIOD_SECONDS = 3L
 
 class NewReyesController @AssistedInject constructor(
@@ -90,7 +94,7 @@ class NewReyesController @AssistedInject constructor(
 
     val feedChannel = Channel<Map<String, NewReyes.Feed>>()
     val connectionChannel = Channel<NewReyesFeedInfo>()
-    val feedQualityChannel = Channel<NewReyes.Quality>()
+    val feedQualityChannel = Channel<FeedQuality>()
     val stateChangeChannel = Channel<List<StateChange>>()
     val errorChannel = Channel<Error>()
 
@@ -98,6 +102,7 @@ class NewReyesController @AssistedInject constructor(
     private val peerConnectionStreamLabels: MutableMap<String, String> = ConcurrentHashMap()
     private val heartbeatUrls: MutableMap<String, String> = ConcurrentHashMap()
     private val audioTracks: MutableMap<String, AudioTrack> = ConcurrentHashMap()
+    private val feedQualityCounts: MutableMap<String, Int> = ConcurrentHashMap()
 
     private val videoStreamIds = mutableListOf<String>() // excludes audio-only feeds for connection_quality updates
 
@@ -139,7 +144,10 @@ class NewReyesController @AssistedInject constructor(
                     is CaffeineResult.Success -> {
                         val heartbeat = result.value
                         if (heartbeat.id in videoStreamIds) {
-                            heartbeat.connectionQuality?.let { feedQualityChannel.send(it) }
+                            heartbeat.connectionQuality?.let {
+                                processHeartbeatConnectionQuality(heartbeat)
+                                feedQualityChannel.send(getFeedQuality())
+                            }
                         }
                     }
                     is CaffeineResult.Error -> onError(result.error)
@@ -147,6 +155,23 @@ class NewReyesController @AssistedInject constructor(
                 }
             }
             delay(TimeUnit.SECONDS.toMillis(HEARTBEAT_PERIOD_SECONDS))
+        }
+    }
+
+    private fun processHeartbeatConnectionQuality(heartbeat: NewReyes.Heartbeat) {
+        val (id, quality) = heartbeat
+        if (quality == NewReyes.Quality.GOOD) {
+            feedQualityCounts[id] = 0
+        } else {
+            feedQualityCounts[id]?.let { feedQualityCounts[id] = it + 1 }
+        }
+    }
+
+    private fun getFeedQuality(): FeedQuality {
+        return when (feedQualityCounts.values.max()) {
+            0 -> FeedQuality.GOOD
+            in 1 until 5 -> FeedQuality.POOR
+            else -> FeedQuality.BAD
         }
     }
 
@@ -238,6 +263,7 @@ class NewReyesController @AssistedInject constructor(
                     peerConnectionStreamLabels.remove(streamId)
                     audioTracks.remove(streamId)
                     heartbeatUrls.remove(streamId)
+                    feedQualityCounts.remove(streamId)
                     videoStreamIds.remove(streamId)
                 }
         feeds = newFeeds
@@ -322,6 +348,7 @@ class NewReyesController @AssistedInject constructor(
                 Timber.d("Success: ${result.value}")
                 val heartbeatUrl = result.value.urls.heartbeat
                 heartbeatUrls[stream.id] = heartbeatUrl
+                feedQualityCounts[stream.id] = 0
             }
             is CaffeineResult.Error -> {
                 Timber.d("Error: ${result.error}")
@@ -339,6 +366,7 @@ class NewReyesController @AssistedInject constructor(
     fun close() {
         job.cancel()
         feedChannel.close()
+        feedQualityChannel.close()
         stateChangeChannel.close()
         connectionChannel.close()
         errorChannel.close()
@@ -353,6 +381,9 @@ class NewReyesController @AssistedInject constructor(
         }
         heartbeatUrls.keys.forEach {
             heartbeatUrls.remove(it)
+        }
+        feedQualityCounts.keys.forEach {
+            feedQualityCounts.remove(it)
         }
     }
 

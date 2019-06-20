@@ -83,7 +83,8 @@ class StageFragment @Inject constructor(
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
     @VisibleForTesting
-    var feedQuality: NewReyes.Quality = NewReyes.Quality.GOOD
+    var feedQuality: FeedQuality = FeedQuality.GOOD
+    private var overlayIsVisible = false
 
     private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
@@ -280,6 +281,9 @@ class StageFragment @Inject constructor(
 
     @VisibleForTesting
     fun setOverlayVisible(visible: Boolean, shouldIncludeAppBar: Boolean = true) {
+        overlayIsVisible = visible
+        updatePoorConnectionAnimation()
+
         val viewsToToggle = if (shouldIncludeAppBar) {
             listOf(binding.stageAppbar, binding.liveIndicatorAndAvatarContainer)
         } else {
@@ -293,34 +297,49 @@ class StageFragment @Inject constructor(
                 it.isVisible = true
             }
 
-            // hide blinker when showing overlay
-            if (feedQuality == NewReyes.Quality.POOR) {
-                updatePoorConnectionAnimation(false)
-            }
-
             // views for live only
-            binding.gameLogoImageView.isVisible = stageIsLive
-            binding.avatarUsernameContainer.isVisible = stageIsLive
-            binding.liveIndicatorTextView.isVisible = stageIsLive
-            binding.weakConnectionContainer.isVisible = feedQuality != NewReyes.Quality.GOOD
+            manageConnectionQualityDependentViews(stageIsLive)
         } else {
             viewsToToggle.plus(viewsForLiveOnly).forEach {
                 it.isVisible = false
             }
-            // show blinker when hiding overlay
-            if (feedQuality == NewReyes.Quality.POOR) {
-                updatePoorConnectionAnimation(true)
+        }
+    }
+
+    private fun manageConnectionQualityDependentViews(stageIsLive: Boolean) {
+        when (feedQuality) {
+            FeedQuality.GOOD -> {
+                binding.gameLogoImageView.isVisible = stageIsLive
+                binding.avatarUsernameContainer.isVisible = stageIsLive
+                binding.liveIndicatorTextView.isVisible = stageIsLive
+                binding.weakConnectionContainer.isVisible = false
+            }
+            FeedQuality.POOR -> {
+                binding.gameLogoImageView.isVisible = stageIsLive
+                binding.avatarUsernameContainer.isVisible = stageIsLive
+                binding.liveIndicatorTextView.isVisible = stageIsLive
+                binding.weakConnectionContainer.isVisible = true
+            }
+            else -> {
+                binding.gameLogoImageView.isVisible = false
+                binding.avatarUsernameContainer.isVisible = false
+                binding.liveIndicatorTextView.isVisible = false
+                binding.weakConnectionContainer.isVisible = false
             }
         }
     }
 
     @VisibleForTesting
-    fun updatePoorConnectionAnimation(shouldShow: Boolean) {
-        if (shouldShow) {
+    fun updatePoorConnectionAnimation() {
+        if (!overlayIsVisible && feedQuality == FeedQuality.POOR) {
             poorConnectionPulseAnimator.startPulse()
         } else {
             poorConnectionPulseAnimator.stopPulse()
         }
+    }
+
+    fun updateBadConnectionOverlay() {
+        binding.badConnectionContainer.isVisible = feedQuality == FeedQuality.BAD
     }
 
     private fun updateViewsOnMyStageVisibility() {
@@ -399,7 +418,8 @@ class StageFragment @Inject constructor(
     private fun manageFeedQuality(controller: NewReyesController) = launch {
         controller.feedQualityChannel.consumeEach {
             feedQuality = it
-            updatePoorConnectionAnimation(it == NewReyes.Quality.POOR)
+            updatePoorConnectionAnimation()
+            updateBadConnectionOverlay()
         }
     }
 

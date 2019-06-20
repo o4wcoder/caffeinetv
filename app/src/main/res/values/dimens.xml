@@ -74,4 +74,6 @@
     <dimen name="two_step_auth_top_padding">32dp</dimen>
     <dimen name="two_step_auth_message_bottom_margin">16dp</dimen>
     <dimen name="two_step_auth_code_text_size">20sp</dimen>
+
+    <dimen name="bad_connection_icon_size">40dp</dimen>
 </resources>
