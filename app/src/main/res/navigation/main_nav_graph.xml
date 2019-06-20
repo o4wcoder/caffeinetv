@@ -133,7 +133,7 @@
         android:name="tv.caffeine.app.stage.HardwareNotSupportedFragment"
         android:label="@string/hardware_not_supported_title"
         tools:layout="@layout/fragment_hardware_not_supported"/>
-    <fragment
+    <dialog
         android:id="@+id/friendsWatchingFragment"
         android:name="tv.caffeine.app.stage.FriendsWatchingFragment"
         android:label="@string/friends_watching_title"
@@ -141,7 +141,7 @@
         <argument
             android:name="stageIdentifier"
             app:argType="string"/>
-    </fragment>
+    </dialog>
     <fragment
         android:id="@+id/sendMessageFragment"
         android:name="tv.caffeine.app.stage.SendMessageFragment"
@@ -155,7 +155,7 @@
             android:defaultValue="true"
             app:argType="boolean"/>
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/sendDigitalItemFragment"
         android:name="tv.caffeine.app.stage.SendDigitalItemFragment"
         android:label="@string/send_digital_item" >
@@ -169,7 +169,7 @@
             android:name="message"
             app:argType="string"
             app:nullable="true" />
-    </fragment>
+    </dialog>
 
     <!-- Broadcast -->
     <fragment

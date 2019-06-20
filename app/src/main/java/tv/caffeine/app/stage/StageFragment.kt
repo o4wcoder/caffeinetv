@@ -480,11 +480,8 @@ class StageFragment @Inject constructor(
             updateFriendsWatching(friendsWatching, profileAvatarTransform)
         })
         binding.friendsWatchingButton?.setOnClickListener {
-            val fragmentManager = fragmentManager ?: return@setOnClickListener
-            val fragment = FriendsWatchingFragment(friendsWatchingAdapter)
             val action = StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(stageIdentifier)
-            fragment.arguments = action.arguments
-            fragment.show(fragmentManager, "FW")
+            findNavController().safeNavigate(action)
         }
     }
 
@@ -531,13 +528,10 @@ class StageFragment @Inject constructor(
     }
 
     override fun digitalItemSelected(digitalItem: DigitalItem, message: String?) {
-        val fm = fragmentManager ?: return
         launch {
             val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-            val fragment = SendDigitalItemFragment(picasso)
             val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendDigitalItemFragment(digitalItem.id, userDetails.caid, message)
-            fragment.arguments = action.arguments
-            fragment.show(fm, "sendDigitalItem")
+            findNavController().safeNavigate(action)
         }
     }
 

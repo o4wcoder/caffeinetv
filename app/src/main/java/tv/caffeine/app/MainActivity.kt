@@ -46,6 +46,8 @@ private val destinationsWithCustomToolbar = arrayOf(
         R.id.mfaCodeFragment,
         R.id.stagePagerFragment,
         R.id.needsUpdateFragment,
+        R.id.friendsWatchingFragment,
+        R.id.sendDigitalItemFragment,
         R.id.reportOrIgnoreDialogFragment
 )
 
