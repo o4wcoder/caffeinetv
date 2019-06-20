@@ -3,6 +3,7 @@ package tv.caffeine.app.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -87,6 +88,13 @@ class SettingsFragment @Inject constructor(
         configureIgnoredUsers()
         configureSocialAccounts()
         configureDeleteAccount()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        twitterAuth.oauthResult.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }
+        })
     }
 
     override fun onAttach(context: Context) {
@@ -213,9 +221,6 @@ class SettingsFragment @Inject constructor(
     }
 
     private fun configureSocialAccounts() {
-        twitterAuth.oauthResult.observe(this, Observer { event ->
-            event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }
-        })
         findPreference("manage_twitter_account")?.let { preference ->
             viewModel.userDetails.observe(this, Observer { user ->
                 val twitter = user?.connectedAccounts?.get("twitter")
