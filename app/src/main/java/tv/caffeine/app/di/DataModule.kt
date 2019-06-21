@@ -2,6 +2,7 @@ package tv.caffeine.app.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import com.facebook.login.LoginManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
@@ -16,9 +17,11 @@ import tv.caffeine.app.settings.KeyStoreHelper
 import tv.caffeine.app.settings.SettingsStorage
 import tv.caffeine.app.settings.SharedPrefsStorage
 import java.security.KeyStore
+import javax.inject.Named
 import javax.inject.Singleton
 
-private const val CAFFEINE_SHARED_PREFERENCES = "caffeine"
+const val CAFFEINE_SHARED_PREFERENCES = "caffeine"
+const val SETTINGS_SHARED_PREFERENCES = "SETTINGS_SHARED_PREFERENCES"
 
 @Module(includes = [
     KeyStoreModule::class,
@@ -42,7 +45,12 @@ class KeyStoreModule {
 @Module
 class SharedPreferencesModule {
     @Provides
+    @Named(CAFFEINE_SHARED_PREFERENCES)
     fun providesCaffeineSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(CAFFEINE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+
+    @Provides
+    @Named(SETTINGS_SHARED_PREFERENCES)
+    fun providesSettingsSharedPreferences(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 }
 
 @Module

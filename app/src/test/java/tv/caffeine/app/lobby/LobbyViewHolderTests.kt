@@ -33,8 +33,8 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding
-import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.AutoPlayConfig
 import tv.caffeine.app.stage.NewReyesController
 import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.UserTheme
@@ -199,10 +199,11 @@ class LobbyViewHolderTests {
         val theme = mockk<UserTheme>(relaxed = true)
         val stageControllerFactory = mockk<NewReyesController.Factory>(relaxed = true)
         val surfaceViewRendererTuner = mockk<SurfaceViewRendererTuner>(relaxed = true)
-        val featureConfig = FeatureConfig()
+        val autoPlayConfig = mockk<AutoPlayConfig>()
+        every { autoPlayConfig.isAutoPlayEnabled(any()) } returns false
         return LiveBroadcastCard(liveBroadcastCardBinding, mapOf(), mapOf(), followManager,
             theme, theme, theme, theme, picasso, payloadId, coroutineScope,
-            stageControllerFactory, surfaceViewRendererTuner, featureConfig, clock, eventManager
+            stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager
         )
     }
 
@@ -210,10 +211,11 @@ class LobbyViewHolderTests {
         val theme = mockk<UserTheme>(relaxed = true)
         val stageControllerFactory = mockk<NewReyesController.Factory>(relaxed = true)
         val surfaceViewRendererTuner = mockk<SurfaceViewRendererTuner>(relaxed = true)
-        val featureConfig = FeatureConfig()
+        val autoPlayConfig = mockk<AutoPlayConfig>()
+        every { autoPlayConfig.isAutoPlayEnabled(any()) } returns false
         return LiveBroadcastWithFriendsCard(liveBroadcastWithFriendsCardBinding, mapOf(), mapOf(), followManager,
             theme, theme, theme, theme, picasso, payloadId, coroutineScope,
-            stageControllerFactory, surfaceViewRendererTuner, featureConfig, clock, eventManager
+            stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager
         )
     }
 }

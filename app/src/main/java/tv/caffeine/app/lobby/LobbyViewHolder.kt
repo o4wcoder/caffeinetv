@@ -54,9 +54,8 @@ import tv.caffeine.app.di.ThemeFollowedLobby
 import tv.caffeine.app.di.ThemeFollowedLobbyLight
 import tv.caffeine.app.di.ThemeNotFollowedLobby
 import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
-import tv.caffeine.app.feature.Feature
-import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.AutoPlayConfig
 import tv.caffeine.app.stage.NewReyesController
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.UserTheme
@@ -317,7 +316,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
     @Assisted private val scope: CoroutineScope? = null,
     private val stageControllerFactory: NewReyesController.Factory,
     surfaceViewRendererTuner: SurfaceViewRendererTuner,
-    private val featureConfig: FeatureConfig,
+    private val autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
@@ -362,7 +361,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
         }
         previewImageView.setOnClickListener(cardClickListener)
         binding.primaryViewRenderer.setOnClickListener(cardClickListener)
-        if (featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
+        if (autoPlayConfig.isAutoPlayEnabled(liveBroadcastItem.broadcaster.displayOrder)) {
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
             val controller = stageControllerFactory.create(username, true)
@@ -388,7 +387,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
     @Assisted private val scope: CoroutineScope?,
     private val stageControllerFactory: NewReyesController.Factory,
     surfaceViewRendererTuner: SurfaceViewRendererTuner,
-    private val featureConfig: FeatureConfig,
+    private val autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
@@ -438,7 +437,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
         }
         previewImageView.setOnClickListener(cardClickListener)
         binding.primaryViewRenderer.setOnClickListener(cardClickListener)
-        if (featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
+        if (autoPlayConfig.isAutoPlayEnabled(broadcaster.displayOrder)) {
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
             val controller = stageControllerFactory.create(username, true)
@@ -565,10 +564,10 @@ class LiveBroadcastPickerCard @AssistedInject constructor(
     @Assisted scope: CoroutineScope,
     stageControllerFactory: NewReyesController.Factory,
     surfaceViewRendererTuner: SurfaceViewRendererTuner,
-    featureConfig: FeatureConfig,
+    autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
-) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, null, scope, stageControllerFactory, surfaceViewRendererTuner, featureConfig, clock, eventManager) {
+) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, null, scope, stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager) {
 
     @AssistedInject.Factory
     interface Factory {

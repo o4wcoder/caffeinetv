@@ -6,6 +6,7 @@ import android.security.keystore.KeyProperties
 import androidx.core.content.edit
 import okio.ByteString
 import tv.caffeine.app.api.model.CAID
+import tv.caffeine.app.di.CAFFEINE_SHARED_PREFERENCES
 import java.security.InvalidKeyException
 import java.security.KeyStore
 import java.security.UnrecoverableKeyException
@@ -14,6 +15,7 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.spec.IvParameterSpec
 import javax.inject.Inject
+import javax.inject.Named
 import kotlin.reflect.KProperty
 
 interface SettingsStorage {
@@ -43,7 +45,7 @@ private const val CLIENT_ID_KEY = "CLIENT_ID_KEY"
 private const val ENVIRONMENT = "ENVIRONMENT"
 
 class SharedPrefsStorage @Inject constructor(
-    sharedPreferences: SharedPreferences
+    @Named(CAFFEINE_SHARED_PREFERENCES) sharedPreferences: SharedPreferences
 ) : SettingsStorage {
     override var refreshToken by SharedPrefsDelegate(sharedPreferences, REFRESH_TOKEN_KEY)
 

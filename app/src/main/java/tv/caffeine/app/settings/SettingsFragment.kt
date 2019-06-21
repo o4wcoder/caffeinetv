@@ -49,6 +49,8 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.feature.Feature
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.FollowManager
@@ -65,7 +67,8 @@ private const val DISCONNECT_IDENTITY = 1
 class SettingsFragment @Inject constructor(
     private val childFragmentInjector: DispatchingAndroidInjector<Fragment>,
     private val viewModelFactory: ViewModelFactory,
-    private val facebookLoginManager: LoginManager
+    private val facebookLoginManager: LoginManager,
+    private val featureConfig: FeatureConfig
 ) : PreferenceFragmentCompat(), HasSupportFragmentInjector, DisconnectIdentityDialogFragment.Callback {
 
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
@@ -88,6 +91,9 @@ class SettingsFragment @Inject constructor(
         configureIgnoredUsers()
         configureSocialAccounts()
         configureDeleteAccount()
+        if (rootKey == null && featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
+            addPreferencesFromResource(R.xml.f316)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
