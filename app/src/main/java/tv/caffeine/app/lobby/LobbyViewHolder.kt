@@ -146,6 +146,7 @@ abstract class BroadcasterCard(
 
     override fun recycle() {
         stageController?.close()
+        stageController = null
     }
 
     override fun configure(item: LobbyItem) {
@@ -315,15 +316,11 @@ open class LiveBroadcastCard @AssistedInject constructor(
     @Assisted payloadId: String?,
     @Assisted private val scope: CoroutineScope? = null,
     private val stageControllerFactory: NewReyesController.Factory,
-    surfaceViewRendererTuner: SurfaceViewRendererTuner,
+    private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
-
-    init {
-        surfaceViewRendererTuner.configure(binding.primaryViewRenderer)
-    }
 
     @AssistedInject.Factory
     interface Factory {
@@ -336,10 +333,16 @@ open class LiveBroadcastCard @AssistedInject constructor(
         ): LiveBroadcastCard
     }
 
+    override fun recycle() {
+        super.recycle()
+        binding.primaryViewRenderer.release()
+    }
+
     override fun configure(item: LobbyItem) {
         super.configure(item)
         stageController?.close()
         binding.previewImageView.isInvisible = false
+        binding.primaryViewRenderer.release()
         val liveBroadcastItem = item as LiveBroadcast
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
@@ -362,6 +365,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
         previewImageView.setOnClickListener(cardClickListener)
         binding.primaryViewRenderer.setOnClickListener(cardClickListener)
         if (autoPlayConfig.isAutoPlayEnabled(liveBroadcastItem.broadcaster.displayOrder)) {
+            surfaceViewRendererTuner.configure(binding.primaryViewRenderer)
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
             val controller = stageControllerFactory.create(username, true)
@@ -386,15 +390,11 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
     @Assisted payloadId: String?,
     @Assisted private val scope: CoroutineScope?,
     private val stageControllerFactory: NewReyesController.Factory,
-    surfaceViewRendererTuner: SurfaceViewRendererTuner,
+    private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
 ) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
-
-    init {
-        surfaceViewRendererTuner.configure(binding.primaryViewRenderer)
-    }
 
     @AssistedInject.Factory
     interface Factory {
@@ -407,10 +407,16 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
         ): LiveBroadcastWithFriendsCard
     }
 
+    override fun recycle() {
+        super.recycle()
+        binding.primaryViewRenderer.release()
+    }
+
     override fun configure(item: LobbyItem) {
         super.configure(item)
         stageController?.close()
         binding.previewImageView.isInvisible = false
+        binding.primaryViewRenderer.release()
         val liveBroadcastItem = item as LiveBroadcastWithFriends
         binding.previewImageView.clipToOutline = true
         val broadcaster = item.broadcaster
@@ -438,6 +444,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
         previewImageView.setOnClickListener(cardClickListener)
         binding.primaryViewRenderer.setOnClickListener(cardClickListener)
         if (autoPlayConfig.isAutoPlayEnabled(broadcaster.displayOrder)) {
+            surfaceViewRendererTuner.configure(binding.primaryViewRenderer)
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
             val controller = stageControllerFactory.create(username, true)

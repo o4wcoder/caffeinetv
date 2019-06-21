@@ -129,6 +129,7 @@ class NewReyesController @AssistedInject constructor(
 
         val uuid = getClientId()
         stageDirector.stageConfiguration(username, uuid).collect { result ->
+            if (!isActive) return@collect
             when (result) {
                 is CaffeineResult.Success -> onSuccess(result.value)
                 is CaffeineResult.Error -> onError(result.error)
