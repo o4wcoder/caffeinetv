@@ -365,7 +365,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
         if (featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
-            val controller = stageControllerFactory.create(username)
+            val controller = stageControllerFactory.create(username, true)
             stageController = controller
             startLiveVideo(renderer, controller) {
                 binding.previewImageView.isInvisible = true
@@ -441,7 +441,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
         if (featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
-            val controller = stageControllerFactory.create(username)
+            val controller = stageControllerFactory.create(username, true)
             stageController = controller
             startLiveVideo(renderer, controller) {
                 binding.previewImageView.isInvisible = true

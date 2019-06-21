@@ -75,12 +75,13 @@ class NewReyesController @AssistedInject constructor(
     private val featureConfig: FeatureConfig,
     private val classicStageStateLooper: ClassicStageDirector,
     private val graphqlStageDirector: GraphqlStageDirector,
-    @Assisted private val username: String
+    @Assisted private val username: String,
+    @Assisted private val muteAudio: Boolean
 ) : CoroutineScope {
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(username: String): NewReyesController
+        fun create(username: String, muteAudio: Boolean): NewReyesController
     }
 
     sealed class Error {
@@ -287,7 +288,7 @@ class NewReyesController @AssistedInject constructor(
                             if (feed.capabilities.audio) {
                                 audioTracks[stream.id] = it
                                 it.setVolume(feed.volume)
-                                it.setEnabled(true)
+                                it.setEnabled(!muteAudio)
                             } else {
                                 it.setEnabled(false)
                             }
