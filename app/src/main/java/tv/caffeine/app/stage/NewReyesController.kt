@@ -172,8 +172,7 @@ class NewReyesController @AssistedInject constructor(
     private fun getFeedQuality(): FeedQuality {
         return when (feedQualityCounts.values.max()) {
             0 -> FeedQuality.GOOD
-            in 1 until 5 -> FeedQuality.POOR
-            else -> FeedQuality.BAD
+            else -> FeedQuality.POOR
         }
     }
 
