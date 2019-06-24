@@ -17,12 +17,7 @@
             android:gravity="center"
             android:layout_marginBottom="@dimen/two_step_auth_message_bottom_margin"
             tools:text="@string/two_step_auth_email_message"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatEditText
+            <EditText
                 android:id="@+id/verification_code_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,14 +28,13 @@
                 android:gravity="center"
                 tools:text="123456">
                 <requestFocus/>
-            </androidx.appcompat.widget.AppCompatEditText>
-        </com.google.android.material.textfield.TextInputLayout>
-
+            </EditText>
         <Button
             android:id="@+id/verification_code_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
+            android:enabled="false"
             android:text="@string/two_step_auth_email_button"/>
     </LinearLayout>
 </layout>

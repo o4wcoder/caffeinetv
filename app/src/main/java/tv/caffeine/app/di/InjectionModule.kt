@@ -35,6 +35,8 @@ import tv.caffeine.app.settings.GoldAndCreditsFragment
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.settings.SettingsFragment
 import tv.caffeine.app.settings.TransactionHistoryFragment
+import tv.caffeine.app.settings.authentication.TwoStepAuthDisableDialogFragment
+import tv.caffeine.app.settings.authentication.TwoStepAuthDoneFragment
 import tv.caffeine.app.social.TwitterAuthForLogin
 import tv.caffeine.app.social.TwitterAuthForSettings
 import tv.caffeine.app.stage.DICatalogFragment
@@ -97,4 +99,6 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun confirmEmailFragment(): ConfirmEmailFragment
     @ContributesAndroidInjector abstract fun updateAuthenticationFragment(): TwoStepAuthEmailFragment
     @ContributesAndroidInjector abstract fun arkoseFragment(): ArkoseFragment
+    @ContributesAndroidInjector abstract fun twoStepAuthDisableDialogFragment(): TwoStepAuthDisableDialogFragment
+    @ContributesAndroidInjector abstract fun twoStepAuthDoneFragment(): TwoStepAuthDoneFragment
 }

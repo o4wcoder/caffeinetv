@@ -144,15 +144,18 @@ fun DialogFragment.maybeShow(fragmentManager: FragmentManager?, tag: String) {
 fun convertLinks(
     @StringRes stringResId: Int,
     resources: Resources,
-    spanFactory: (url: String?) -> URLSpan
+    spanFactory: (url: String?) -> URLSpan,
+    vararg args: Any = emptyArray()
 ): Spannable {
-    val spannable = SpannableString(HtmlCompat.fromHtml(
-            resources.getString(stringResId), HtmlCompat.FROM_HTML_MODE_LEGACY))
+    val spannable = SpannableString(
+        HtmlCompat.fromHtml(resources.getString(stringResId, *args), HtmlCompat.FROM_HTML_MODE_LEGACY)
+    )
     for (urlSpan in spannable.getSpans<URLSpan>(0, spannable.length, URLSpan::class.java)) {
-        spannable.setSpan(spanFactory(urlSpan.url),
-                spannable.getSpanStart(urlSpan),
-                spannable.getSpanEnd(urlSpan),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannable.setSpan(
+            spanFactory(urlSpan.url),
+            spannable.getSpanStart(urlSpan),
+            spannable.getSpanEnd(urlSpan),
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannable.removeSpan(urlSpan)
     }
     return spannable

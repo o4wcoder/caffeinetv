@@ -149,14 +149,14 @@ class SettingsFragment @Inject constructor(
                 if (!showTwoStepAuthSetting) {
                     this.isVisible = false
                 } else {
-                    setOnPreferenceChangeListener { preference, newValue ->
+                    setOnPreferenceChangeListener { _, newValue ->
                         if (newValue as Boolean) {
                             viewModel.sendMTAEmailCode()
                             findNavController().safeNavigate(
                                 SettingsFragmentDirections.actionSettingsFragmentToTwoStepAuthFragment(
                                     userProfile.email ?: getString(R.string.email)))
                         } else {
-                            // TODO: Show confirmation dialog about turning off 2FA
+                            findNavController().safeNavigate(R.id.twoStepAuthDisableDialogFragment)
                         }
                         true
                     }
@@ -403,6 +403,7 @@ class SettingsViewModel @Inject constructor(
     fun sendMTAEmailCode() {
         viewModelScope.launch {
             val result = accountsService.sendMFAEmailCode().awaitEmptyAndParseErrors(gson)
+
             when (result) {
                 is CaffeineEmptyResult.Success -> Timber.d("Successful send MFA email code")
                 is CaffeineEmptyResult.Error -> Timber.d("Error attempting to send MFA email code ${result.error}")

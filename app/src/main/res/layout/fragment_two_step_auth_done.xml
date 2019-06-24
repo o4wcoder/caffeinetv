@@ -1,0 +1,30 @@
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  android:paddingStart="@dimen/two_step_auth_padding"
+                  android:paddingEnd="@dimen/two_step_auth_padding"
+                  android:paddingTop="@dimen/two_step_auth_top_padding"
+                  tools:context="tv.caffeine.app.settings.authentication.TwoStepAuthDoneFragment">
+        <ImageView
+            android:layout_width="@dimen/two_step_auth_done_image_size"
+            android:layout_height="@dimen/two_step_auth_done_image_size"
+            android:layout_gravity="center"
+            android:tint="@color/caffeine_blue"
+            app:srcCompat="@drawable/ic_check_black_24dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/two_step_auth_top_margin"
+            android:text="@string/two_step_auth_done_message"/>
+        <Button
+            android:id="@+id/done_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:text="@string/two_step_auth_done_button"/>
+    </LinearLayout>
+</layout>

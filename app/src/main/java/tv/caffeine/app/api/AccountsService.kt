@@ -16,6 +16,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import tv.caffeine.app.api.model.CAID
+import tv.caffeine.app.api.model.MfaMethod
 import tv.caffeine.app.di.IMAGES_BASE_URL
 
 interface AccountsService {
@@ -61,6 +62,9 @@ interface AccountsService {
 
     @GET("v1/account/mfa/email")
     fun sendMFAEmailCode(): Deferred<Response<Void>>
+
+    @POST("v1/account/mfa/")
+    fun setMFA(@Body setAccountMfaBody: SendAccountMFABody): Deferred<Response<Void>>
 }
 
 class SignInBody(val account: Account, val mfa: MfaCode? = null)
@@ -155,6 +159,10 @@ class LegalAcceptanceResult(val success: Boolean)
 class ConfirmEmailBody(val code: String, val caid: CAID)
 
 class ConfirmEmailResponse(val emailConfirmed: Boolean)
+
+class SendAccountMFABody(val mfa: SendAccountMFABody.Mfa) {
+    class Mfa(val method: MfaMethod, val otp: String)
+}
 
 enum class NextAccountAction {
     email_verification, mfa_otp_required, legal_acceptance_required
