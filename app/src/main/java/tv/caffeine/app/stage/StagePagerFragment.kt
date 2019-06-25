@@ -13,16 +13,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
-import org.webrtc.MediaCodecVideoDecoder
-import timber.log.Timber
-import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.ApiErrorResult
 import tv.caffeine.app.api.VersionCheckError
@@ -36,7 +32,6 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.broadcasterUsername
 import tv.caffeine.app.util.isNetworkAvailable
-import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.setImmersiveSticky
@@ -66,11 +61,6 @@ class StagePagerFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        if (!MediaCodecVideoDecoder.isH264HwSupported()) {
-            Timber.e(Exception("Failed to decode H264"))
-            findNavController().safeNavigate(MainNavDirections.actionGlobalHardwareNotSupportedFragment())
-            return
-        }
         context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
                 NetworkRequest.Builder().build(), networkCallback)
         sessionCheckViewModel.sessionCheck.observe(this, Observer { result ->

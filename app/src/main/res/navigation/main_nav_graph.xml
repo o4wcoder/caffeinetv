@@ -128,11 +128,6 @@
         android:name="tv.caffeine.app.stage.OutOfCapacityFragment"
         android:label="@string/out_of_capacity_title"
         tools:layout="@layout/fragment_out_of_capacity"/>
-    <fragment
-        android:id="@+id/hardwareNotSupportedFragment"
-        android:name="tv.caffeine.app.stage.HardwareNotSupportedFragment"
-        android:label="@string/hardware_not_supported_title"
-        tools:layout="@layout/fragment_hardware_not_supported"/>
     <dialog
         android:id="@+id/friendsWatchingFragment"
         android:name="tv.caffeine.app.stage.FriendsWatchingFragment"
@@ -402,10 +397,6 @@
     <action
         android:id="@+id/action_global_outOfCapacityFragment"
         app:destination="@id/outOfCapacityFragment"
-        app:popUpTo="@id/lobbySwipeFragment"/>
-    <action
-        android:id="@+id/action_global_hardwareNotSupportedFragment"
-        app:destination="@id/hardwareNotSupportedFragment"
         app:popUpTo="@id/lobbySwipeFragment"/>
     <navigation
         android:id="@+id/login"
