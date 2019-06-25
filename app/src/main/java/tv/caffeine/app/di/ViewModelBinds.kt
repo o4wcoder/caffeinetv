@@ -24,8 +24,7 @@ import tv.caffeine.app.settings.GoldBundlesViewModel
 import tv.caffeine.app.settings.NotificationSettingsViewModel
 import tv.caffeine.app.settings.SettingsViewModel
 import tv.caffeine.app.settings.TransactionHistoryViewModel
-import tv.caffeine.app.settings.authentication.DisableTwoStepAuthenticationViewModel
-import tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragmentViewModel
+import tv.caffeine.app.settings.authentication.TwoStepAuthViewModel
 import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
@@ -185,11 +184,6 @@ abstract class ViewModelBinds {
 
     @Binds
     @IntoMap
-    @ViewModelKey(DisableTwoStepAuthenticationViewModel::class)
-    abstract fun bindDisableTwoStepAuthenticationViewModel(viewModel: DisableTwoStepAuthenticationViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(TwoStepAuthEmailFragmentViewModel::class)
-    abstract fun bindTwoStepAuthEmailFragmentViewModel(viewModel: TwoStepAuthEmailFragmentViewModel): ViewModel
+    @ViewModelKey(TwoStepAuthViewModel::class)
+    abstract fun bindTwoStepAuthDoneViewModel(viewModel: TwoStepAuthViewModel): ViewModel
 }

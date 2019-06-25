@@ -7,11 +7,11 @@ import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.View
 import androidx.annotation.VisibleForTesting
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.ActionOnlyNavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CaffeineEmptyResult
@@ -29,7 +29,7 @@ class TwoStepAuthEmailFragment : CaffeineFragment(R.layout.fragment_two_step_aut
 
     private val args by navArgs<TwoStepAuthEmailFragmentArgs>()
     @VisibleForTesting lateinit var binding: FragmentTwoStepAuthEmailBinding
-    @VisibleForTesting val viewModel: TwoStepAuthEmailFragmentViewModel by viewModels { viewModelFactory }
+    @VisibleForTesting val viewModel: TwoStepAuthViewModel by navGraphViewModels(R.id.settings) { viewModelFactory }
     private var verificationCode = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

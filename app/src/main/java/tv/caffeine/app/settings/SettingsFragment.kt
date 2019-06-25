@@ -42,6 +42,7 @@ import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.isIdentityRateLimitExceeded
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.MfaMethod
 import tv.caffeine.app.api.model.User
@@ -54,8 +55,8 @@ import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.authentication.TwoStepAuthViewModel
 import tv.caffeine.app.social.TwitterAuthViewModel
-import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
@@ -75,7 +76,7 @@ class SettingsFragment @Inject constructor(
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
     private val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.settings) { viewModelFactory }
     private val notificationSettingsViewModel: NotificationSettingsViewModel by activityViewModels { viewModelFactory }
-
+    private val twoStepAuthViewModel: TwoStepAuthViewModel by navGraphViewModels(R.id.settings) { viewModelFactory }
     private val callbackManager: CallbackManager = CallbackManager.Factory.create()
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
@@ -101,6 +102,7 @@ class SettingsFragment @Inject constructor(
         twitterAuth.oauthResult.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }
         })
+        twoStepAuthViewModel.mfaEnabled.observe(this, Observer { processMfaChangeEvent(it) })
     }
 
     override fun onAttach(context: Context) {
@@ -128,42 +130,33 @@ class SettingsFragment @Inject constructor(
             true
         }
 
-        // TODO: Remove feature flag when feature is complete
-        val showTwoStepAuthSetting = false
+        // Set initial value
+        viewModel.userDetails.observe(this, Observer { user ->
+            (findPreference("manage_2fa_update") as? CheckBoxPreference)?.isChecked = user?.isMfaEnabled() ?: false
+        })
+
         myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
             @StringRes val status = when (userProfile.mfaMethod) {
                 MfaMethod.EMAIL, MfaMethod.TOTP -> R.string.mfa_status_on
                 else -> R.string.mfa_status_off
             }
-            findPreference("manage_2fa")?.apply {
-                setSummary(status)
-                if (!showTwoStepAuthSetting) {
-                    setOnPreferenceClickListener {
-                        val fragment = AlertDialogFragment.withMessage(R.string.manage_mfa_coming_soon)
-                        fragment.maybeShow(fragmentManager, "mfaSoonDialog")
-                        true
-                    }
-                }
-            }
+            findPreference("manage_2fa")?.summary = getString(status)
             findPreference("manage_2fa_update")?.apply {
-                if (!showTwoStepAuthSetting) {
-                    this.isVisible = false
-                } else {
-                    setOnPreferenceChangeListener { _, newValue ->
-                        if (newValue as Boolean) {
-                            viewModel.sendMTAEmailCode()
-                            findNavController().safeNavigate(
-                                SettingsFragmentDirections.actionSettingsFragmentToTwoStepAuthFragment(
-                                    userProfile.email ?: getString(R.string.email)))
-                        } else {
-                            findNavController().safeNavigate(R.id.twoStepAuthDisableDialogFragment)
-                        }
-                        true
+                setOnPreferenceChangeListener { _, newValue ->
+                    if (newValue as Boolean) {
+                        viewModel.sendMTAEmailCode()
+                        findNavController().safeNavigate(
+                            SettingsFragmentDirections.actionSettingsFragmentToTwoStepAuthFragment(
+                                userProfile.email ?: getString(R.string.email)
+                            )
+                        )
+                    } else {
+                        findNavController().safeNavigate(R.id.twoStepAuthDisableDialogFragment)
                     }
+                    false
                 }
             }
-            findPreference("change_email")?.summary = userProfile.email ?: getString(R.string.email)
-        })
+            findPreference("change_email")?.summary = userProfile.email ?: getString(R.string.email) })
     }
 
     private fun configureNotificationSettings() {
@@ -223,6 +216,15 @@ class SettingsFragment @Inject constructor(
                 Timber.e(result.throwable)
                 activity?.showSnackbar(R.string.twitter_login_failed)
             }
+        }
+    }
+
+    private fun processMfaChangeEvent(event: Event<Boolean>) {
+        event.getContentIfNotHandled()?.let { result ->
+            (findPreference("manage_2fa_update") as? CheckBoxPreference)?.isChecked = result
+
+            @StringRes val status = if (result) R.string.mfa_status_on else R.string.mfa_status_off
+            findPreference("manage_2fa")?.summary = getString(status)
         }
     }
 

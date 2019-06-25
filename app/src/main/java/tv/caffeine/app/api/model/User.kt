@@ -35,6 +35,8 @@ data class User(
     val emailVerified: Boolean?
 ) {
     val avatarImageUrl get() = "$IMAGES_BASE_URL$avatarImagePath"
+
+    fun isMfaEnabled() = mfaMethod != MfaMethod.NONE
 }
 
 class UserContainer(val user: User)

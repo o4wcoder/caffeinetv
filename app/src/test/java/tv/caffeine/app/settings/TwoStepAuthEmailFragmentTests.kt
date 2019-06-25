@@ -22,12 +22,12 @@ import tv.caffeine.app.di.ViewModelFactory
 import tv.caffeine.app.di.setApplicationInjector
 import tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragment
 import tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragmentArgs
-import tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragmentViewModel
+import tv.caffeine.app.settings.authentication.TwoStepAuthViewModel
 
 @RunWith(RobolectricTestRunner::class)
 class TwoStepAuthEmailFragmentTests {
     private lateinit var subject: TwoStepAuthEmailFragment
-    @MockK lateinit var viewModel: TwoStepAuthEmailFragmentViewModel
+    @MockK lateinit var viewModel: TwoStepAuthViewModel
     @MockK lateinit var viewModelFactory: ViewModelFactory
 
     @Before
@@ -36,7 +36,7 @@ class TwoStepAuthEmailFragmentTests {
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
         val testComponent = DaggerTestComponent.builder().create(app)
         app.setApplicationInjector(testComponent)
-        every { viewModelFactory.create(TwoStepAuthEmailFragmentViewModel::class.java) } returns viewModel
+        every { viewModelFactory.create(TwoStepAuthViewModel::class.java) } returns viewModel
         val arguments = TwoStepAuthEmailFragmentArgs("user@email.com").toBundle()
         val navController = mockk<NavController>(relaxed = true)
         val scenario = launchFragmentInContainer<TwoStepAuthEmailFragment>(arguments)
