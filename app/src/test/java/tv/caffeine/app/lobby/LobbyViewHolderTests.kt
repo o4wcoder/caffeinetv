@@ -158,7 +158,7 @@ class LobbyViewHolderTests {
         assertEquals("lobby123", eventData?.payloadId)
         assertEquals("caid123", eventData?.caid)
         assertEquals("456", eventData?.stageId)
-        assertEquals(123000L, eventData?.clickedAt)
+        assertEquals(123L, eventData?.clickedAt)
     }
 
     @Test
@@ -168,7 +168,7 @@ class LobbyViewHolderTests {
         assertEquals("lobby123", eventData?.payloadId)
         assertEquals("caid123", eventData?.caid)
         assertEquals("456", eventData?.stageId)
-        assertEquals(123000L, eventData?.clickedAt)
+        assertEquals(123L, eventData?.clickedAt)
     }
 
     @Test

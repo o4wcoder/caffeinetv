@@ -227,11 +227,13 @@ abstract class BroadcasterCard(
         Navigation.findNavController(itemView).safeNavigate(action)
     }
 
+    private fun Clock.seconds() = millis() / 1000
+
     @VisibleForTesting fun getLobbyClickedEventData(singleCard: SingleCard): LobbyClickedEventData? {
         if (payloadId == null) return null
         val caid = followManager.currentUserDetails()?.caid
         val stageId = singleCard.broadcaster.user.stageId
-        val timestamp = clock.millis()
+        val timestamp = clock.seconds()
         return LobbyClickedEventData(payloadId, caid, stageId, timestamp)
     }
 
