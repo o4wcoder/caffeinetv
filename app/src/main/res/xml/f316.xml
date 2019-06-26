@@ -4,7 +4,8 @@
     <PreferenceCategory android:title="Live in the Lobby">
         <SwitchPreferenceCompat
             android:key="autoplay"
-            android:title="Autoplay video in the lobby"/>
+            android:title="Autoplay video in the lobby"
+            android:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             android:key="play_all"

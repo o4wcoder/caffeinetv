@@ -95,6 +95,9 @@ class SettingsFragment @Inject constructor(
         if (rootKey == null && featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
             addPreferencesFromResource(R.xml.f316)
         }
+        if (rootKey == null && featureConfig.isFeatureEnabled(Feature.RELEASE_DESIGN)) {
+            addPreferencesFromResource(R.xml.design_v0)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
