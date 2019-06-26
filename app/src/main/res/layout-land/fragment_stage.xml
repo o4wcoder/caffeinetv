@@ -331,7 +331,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/bad_connection_title"/>
 
             <TextView
-                style="@style/ReallyPoorConnectionTitleText"
+                style="@style/BadConnectionTitleText"
                 android:id="@+id/bad_connection_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -343,7 +343,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
-                style="@style/ReallyPoorConnectionBodyText"
+                style="@style/BadConnectionBodyText"
                 android:id="@+id/bad_connection_body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
