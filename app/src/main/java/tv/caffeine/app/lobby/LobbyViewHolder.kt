@@ -239,7 +239,7 @@ abstract class BroadcasterCard(
 
     @VisibleForTesting
     fun getLobbyImpressionEventData(singleCard: SingleCard): LobbyImpressionEventData? =
-        payloadId?.let { singleCard.broadcaster.makeLobbyImpressionEventData(it) }
+        payloadId?.let { singleCard.broadcaster.makeLobbyImpressionEventData(it, clock.seconds()) }
 
     private fun sendImpressionEventData(lobbyItem: LobbyItem) {
         scope?.launch {

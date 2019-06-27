@@ -2,7 +2,7 @@ package tv.caffeine.app.api.model
 
 import tv.caffeine.app.api.LobbyImpressionEventData
 
-fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String) =
+fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String, renderedAt: Long) =
     LobbyImpressionEventData(
         payloadId,
         user.caid,
@@ -11,5 +11,6 @@ fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String) =
         broadcast != null,
         displayOrder,
         followingViewers.map { it.caid },
-        clusterId
+        clusterId,
+        renderedAt
     )

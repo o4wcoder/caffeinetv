@@ -47,5 +47,6 @@ class LobbyImpressionEventData(
     val isLive: Boolean,
     val displayOrder: Int,
     val friendsWatching: List<String>,
-    val clusterId: String?
+    val clusterId: String?,
+    val renderedAt: Long
 ) : EventData()

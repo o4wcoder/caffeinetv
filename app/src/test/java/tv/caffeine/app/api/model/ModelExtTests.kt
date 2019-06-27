@@ -10,7 +10,7 @@ class ModelExtTests {
         val subject = Lobby.Broadcaster("id", "type", genericUser, "tagId", broadcast, null,
             listOf(), 0, 0, "clusterId")
 
-        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId")
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 123000L)
         assertEquals("caid", lobbyImpressionEventData.caid)
         assertEquals("clusterId", lobbyImpressionEventData.clusterId)
         assertEquals(true, lobbyImpressionEventData.isLive)
@@ -21,7 +21,7 @@ class ModelExtTests {
         val subject = Lobby.Broadcaster("id", "type", genericUser, "tagId", null, null,
             listOf(), 0, 0, "clusterId")
 
-        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId")
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 123000L)
         assertEquals("caid", lobbyImpressionEventData.caid)
         assertEquals("clusterId", lobbyImpressionEventData.clusterId)
         assertEquals(false, lobbyImpressionEventData.isLive)
