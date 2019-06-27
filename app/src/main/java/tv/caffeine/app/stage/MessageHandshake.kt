@@ -1,5 +1,6 @@
 package tv.caffeine.app.stage
 
+import androidx.collection.LruCache
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -10,6 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
+import org.threeten.bp.Clock
 import timber.log.Timber
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaffeineResult
@@ -21,7 +23,10 @@ import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.realtime.WebSocketController
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.putIfAbsent
 import kotlin.coroutines.CoroutineContext
+
+const val MESSAGE_TIMES_MAX_SIZE = 1_000
 
 class MessageHandshake @AssistedInject constructor(
     private val dispatchConfig: DispatchConfig,
@@ -30,6 +35,7 @@ class MessageHandshake @AssistedInject constructor(
     private val usersService: UsersService,
     private val gson: Gson,
     private val serverConfig: ServerConfig,
+    private val clock: Clock,
     @Assisted private val stageIdentifier: String
 ) : CoroutineScope {
 
@@ -46,6 +52,8 @@ class MessageHandshake @AssistedInject constructor(
         get() = job + dispatchConfig.main
 
     val channel = Channel<MessageWrapper>()
+
+    private val messageCreationTimes = LruCache<String, Long>(MESSAGE_TIMES_MAX_SIZE)
 
     init {
         connect()
@@ -72,10 +80,12 @@ class MessageHandshake @AssistedInject constructor(
                     Timber.e(e)
                     return@consumeEach
                 }
-                val creationTime = System.currentTimeMillis()
+                val lastUpdateTime = clock.millis()
+                val creationTime = messageCreationTimes.get(message.id) ?: lastUpdateTime
+                messageCreationTimes.putIfAbsent(message.id, creationTime)
                 val dummyPosition = -1
                 val messageAuthorCaid = message.publisher.caid
-                val wrapper = MessageWrapper(message, creationTime, lastUpdateTime = creationTime, position = dummyPosition, isFromFollowedUser = followManager.isFollowing(messageAuthorCaid), isFromSelf = tokenStore.caid == messageAuthorCaid)
+                val wrapper = MessageWrapper(message, creationTime, lastUpdateTime = lastUpdateTime, position = dummyPosition, isFromFollowedUser = followManager.isFollowing(messageAuthorCaid), isFromSelf = tokenStore.caid == messageAuthorCaid)
                 channel.send(wrapper)
             }
         }
