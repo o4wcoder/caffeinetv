@@ -290,8 +290,6 @@ class StageFragment @Inject constructor(
             listOf(binding.liveIndicatorAndAvatarContainer)
         }
 
-        val viewsForLiveOnly = listOf(binding.gameLogoImageView, binding.liveIndicatorTextView, binding.weakConnectionContainer)
-
         if (visible) {
             viewsToToggle.forEach {
                 it.isVisible = true
@@ -300,7 +298,7 @@ class StageFragment @Inject constructor(
             // views for live only
             manageConnectionQualityDependentViews(stageIsLive)
         } else {
-            viewsToToggle.plus(viewsForLiveOnly).forEach {
+            viewsToToggle.forEach {
                 it.isVisible = false
             }
         }
