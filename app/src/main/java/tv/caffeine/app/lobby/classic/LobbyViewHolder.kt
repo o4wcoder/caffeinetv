@@ -1,4 +1,4 @@
-package tv.caffeine.app.lobby
+package tv.caffeine.app.lobby.classic
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -54,6 +54,18 @@ import tv.caffeine.app.di.ThemeFollowedLobby
 import tv.caffeine.app.di.ThemeFollowedLobbyLight
 import tv.caffeine.app.di.ThemeNotFollowedLobby
 import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
+import tv.caffeine.app.lobby.CardList
+import tv.caffeine.app.lobby.FollowPeople
+import tv.caffeine.app.lobby.Header
+import tv.caffeine.app.lobby.LiveBroadcast
+import tv.caffeine.app.lobby.LiveBroadcastWithFriends
+import tv.caffeine.app.lobby.LobbyItem
+import tv.caffeine.app.lobby.LobbySwipeFragmentDirections
+import tv.caffeine.app.lobby.PreviousBroadcast
+import tv.caffeine.app.lobby.SingleCard
+import tv.caffeine.app.lobby.Subtitle
+import tv.caffeine.app.lobby.WelcomeCard
+import tv.caffeine.app.lobby.formatFriendsWatchingString
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.AutoPlayConfig
 import tv.caffeine.app.stage.NewReyesController
@@ -82,7 +94,10 @@ class AvatarCard(
     override fun configure(item: LobbyItem) {
         binding.username = (item as WelcomeCard).username
         itemView.setOnClickListener {
-            val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToMyProfileFragment(true)
+            val action =
+                LobbySwipeFragmentDirections.actionLobbySwipeFragmentToMyProfileFragment(
+                    true
+                )
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }
@@ -354,14 +369,21 @@ open class LiveBroadcastCard @AssistedInject constructor(
             binding.gameLogoImageView.setImageDrawable(null)
         }
         liveBroadcastItem.broadcaster.user.let {
-            binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
+            binding.moreButton.setOnClickListener(
+                MoreButtonClickListener(
+                    it.caid,
+                    it.username
+                )
+            )
         }
         val cardClickListener: (View) -> Unit = {
             getLobbyClickedEventData(item)?.let { eventData ->
                 scope?.launch { eventManager.sendEvent(LobbyCardClickedEvent(eventData)) }
             }
             val action =
-                LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(item.broadcaster.user.username)
+                LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(
+                    item.broadcaster.user.username
+                )
             Navigation.findNavController(itemView).safeNavigate(action)
         }
         previewImageView.setOnClickListener(cardClickListener)
@@ -423,7 +445,8 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
         binding.previewImageView.clipToOutline = true
         val broadcaster = item.broadcaster
         val context = itemView.context
-        val friendsWatchingString = formatFriendsWatchingString(context, broadcaster)
+        val friendsWatchingString =
+            formatFriendsWatchingString(context, broadcaster)
         friendsWatchingString?.let { binding.friendsWatchingTextView.formatUsernameAsHtml(picasso, it, true, R.dimen.avatar_friends_watching) }
         val broadcast = liveBroadcastItem.broadcaster.broadcast ?: error("Unexpected broadcast state")
         val game = content[broadcast.contentId]
@@ -433,14 +456,21 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
             binding.gameLogoImageView.setImageDrawable(null)
         }
         liveBroadcastItem.broadcaster.user.let {
-            binding.moreButton.setOnClickListener(MoreButtonClickListener(it.caid, it.username))
+            binding.moreButton.setOnClickListener(
+                MoreButtonClickListener(
+                    it.caid,
+                    it.username
+                )
+            )
         }
         val cardClickListener: (View) -> Unit = {
             getLobbyClickedEventData(item)?.let { eventData ->
                 scope?.launch { eventManager.sendEvent(LobbyCardClickedEvent(eventData)) }
             }
             val action =
-                LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(broadcaster.user.username)
+                LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(
+                    broadcaster.user.username
+                )
             Navigation.findNavController(itemView).safeNavigate(action)
         }
         previewImageView.setOnClickListener(cardClickListener)
@@ -512,7 +542,7 @@ class ListCard @AssistedInject constructor(
     @Assisted private val content: Map<String, Lobby.Content>,
     @Assisted private val payloadId: String?,
     recycledViewPool: RecyclerView.RecycledViewPool,
-    private val lobbyAdapter: LobbyAdapter
+    private val lobbyAdapter: ClassicLobbyAdapter
 ) : LobbyViewHolder(binding.root) {
 
     @AssistedInject.Factory

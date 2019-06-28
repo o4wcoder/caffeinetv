@@ -13,17 +13,21 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentLobbyBinding
+import tv.caffeine.app.lobby.classic.ClassicLobbyAdapter
+import tv.caffeine.app.lobby.classic.LobbyViewHolder
 import tv.caffeine.app.ui.CaffeineFragment
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Provider
 
 class LobbyFragment @Inject constructor(
-    private val lobbyAdapter: LobbyAdapter
+    private val lobbyAdapterProvider: Provider<ClassicLobbyAdapter>
 ) : CaffeineFragment(R.layout.fragment_lobby) {
 
     private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
     private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
+    private val lobbyAdapter by lazy { lobbyAdapterProvider.get() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentLobbyBinding.bind(view)

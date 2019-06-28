@@ -1,4 +1,4 @@
-package tv.caffeine.app.lobby
+package tv.caffeine.app.lobby.classic
 
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -33,6 +33,8 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding
+import tv.caffeine.app.lobby.LiveBroadcast
+import tv.caffeine.app.lobby.LiveBroadcastWithFriends
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.AutoPlayConfig
 import tv.caffeine.app.stage.NewReyesController
@@ -201,7 +203,8 @@ class LobbyViewHolderTests {
         val surfaceViewRendererTuner = mockk<SurfaceViewRendererTuner>(relaxed = true)
         val autoPlayConfig = mockk<AutoPlayConfig>()
         every { autoPlayConfig.isAutoPlayEnabled(any()) } returns false
-        return LiveBroadcastCard(liveBroadcastCardBinding, mapOf(), mapOf(), followManager,
+        return LiveBroadcastCard(
+            liveBroadcastCardBinding, mapOf(), mapOf(), followManager,
             theme, theme, theme, theme, picasso, payloadId, coroutineScope,
             stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager
         )
@@ -213,7 +216,8 @@ class LobbyViewHolderTests {
         val surfaceViewRendererTuner = mockk<SurfaceViewRendererTuner>(relaxed = true)
         val autoPlayConfig = mockk<AutoPlayConfig>()
         every { autoPlayConfig.isAutoPlayEnabled(any()) } returns false
-        return LiveBroadcastWithFriendsCard(liveBroadcastWithFriendsCardBinding, mapOf(), mapOf(), followManager,
+        return LiveBroadcastWithFriendsCard(
+            liveBroadcastWithFriendsCardBinding, mapOf(), mapOf(), followManager,
             theme, theme, theme, theme, picasso, payloadId, coroutineScope,
             stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager
         )

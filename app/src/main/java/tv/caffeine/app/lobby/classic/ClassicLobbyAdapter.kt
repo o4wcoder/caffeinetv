@@ -1,4 +1,4 @@
-package tv.caffeine.app.lobby
+package tv.caffeine.app.lobby.classic
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,11 +18,13 @@ import tv.caffeine.app.databinding.LobbyHeaderBinding
 import tv.caffeine.app.databinding.LobbySubtitleBinding
 import tv.caffeine.app.databinding.PreviousBroadcastCardBinding
 import tv.caffeine.app.databinding.UpcomingButtonCardBinding
+import tv.caffeine.app.lobby.CardList
+import tv.caffeine.app.lobby.LobbyItem
 import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class LobbyAdapter @Inject constructor(
+class ClassicLobbyAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
     private val liveBroadcastCardFactory: LiveBroadcastCard.Factory,
     private val liveBroadcastWithFriendsCardFactory: LiveBroadcastWithFriendsCard.Factory,
@@ -83,20 +85,44 @@ class LobbyAdapter @Inject constructor(
     }
 
     private fun avatarCard(inflater: LayoutInflater, parent: ViewGroup) =
-            AvatarCard(LobbyAvatarCardBinding.inflate(inflater, parent, false))
+        AvatarCard(
+            LobbyAvatarCardBinding.inflate(
+                inflater,
+                parent,
+                false
+            )
+        )
 
     private fun followPeopleCard(inflater: LayoutInflater, parent: ViewGroup) =
-            FollowPeopleCard(LobbyFollowPeopleCardBinding.inflate(inflater, parent, false))
+        FollowPeopleCard(
+            LobbyFollowPeopleCardBinding.inflate(
+                inflater,
+                parent,
+                false
+            )
+        )
 
     private fun headerCard(inflater: LayoutInflater, parent: ViewGroup) =
-            HeaderCard(LobbyHeaderBinding.inflate(inflater, parent, false))
+        HeaderCard(
+            LobbyHeaderBinding.inflate(
+                inflater,
+                parent,
+                false
+            )
+        )
 
     private fun subtitleCard(inflater: LayoutInflater, parent: ViewGroup) =
-            SubtitleCard(LobbySubtitleBinding.inflate(inflater, parent, false))
+        SubtitleCard(
+            LobbySubtitleBinding.inflate(
+                inflater,
+                parent,
+                false
+            )
+        )
 
     private fun liveBroadcastCard(inflater: LayoutInflater, parent: ViewGroup) =
             liveBroadcastCardFactory.create(
-                LiveBroadcastCardBinding.inflate(inflater, parent, false).apply { isMiniStyle = this@LobbyAdapter.isMiniStyle },
+                LiveBroadcastCardBinding.inflate(inflater, parent, false).apply { isMiniStyle = this@ClassicLobbyAdapter.isMiniStyle },
                 tags,
                 content,
                 payloadId,
@@ -125,7 +151,13 @@ class LobbyAdapter @Inject constructor(
             listCardFactory.create(CardListBinding.inflate(inflater, parent, false), tags, content, payloadId)
 
     private fun upcomingButtonCard(inflater: LayoutInflater, parent: ViewGroup) =
-            UpcomingButtonCard(UpcomingButtonCardBinding.inflate(inflater, parent, false), null)
+        UpcomingButtonCard(
+            UpcomingButtonCardBinding.inflate(
+                inflater,
+                parent,
+                false
+            ), null
+        )
 
     override fun onBindViewHolder(holder: LobbyViewHolder, position: Int) {
         val item = getItem(position)

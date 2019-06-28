@@ -21,6 +21,7 @@ import tv.caffeine.app.broadcast.BroadcastPlaceholderDialogFragment
 import tv.caffeine.app.databinding.FragmentLobbySwipeBinding
 import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
+import tv.caffeine.app.lobby.classic.ClassicLobbyAdapter
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.ui.CaffeineFragment
@@ -29,6 +30,7 @@ import tv.caffeine.app.ui.loadRoundedImage
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
+import javax.inject.Provider
 
 class LobbySwipeFragment @Inject constructor(
     private val featureConfig: FeatureConfig,
@@ -97,7 +99,7 @@ class LobbySwipeFragment @Inject constructor(
 class LobbyPagerAdapter @AssistedInject constructor(
     @Assisted fm: FragmentManager,
     private val resources: Resources,
-    private val lobbyAdapter: LobbyAdapter,
+    private val lobbyAdapterProvider: Provider<ClassicLobbyAdapter>,
     private val guideAdapter: FeaturedProgramGuideAdapter
 ) : FragmentStatePagerAdapter(fm) {
 
@@ -109,7 +111,7 @@ class LobbyPagerAdapter @AssistedInject constructor(
     override fun getCount() = 2
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> LobbyFragment(lobbyAdapter)
+            0 -> LobbyFragment(lobbyAdapterProvider)
             else -> FeaturedProgramGuideFragment(guideAdapter)
         }
     }

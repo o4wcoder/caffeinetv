@@ -29,10 +29,10 @@ import tv.caffeine.app.databinding.FragmentLiveBroadcastPickerBinding
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.UpcomingButtonCardBinding
 import tv.caffeine.app.lobby.LiveBroadcast
-import tv.caffeine.app.lobby.LiveBroadcastPickerCard
+import tv.caffeine.app.lobby.classic.LiveBroadcastPickerCard
 import tv.caffeine.app.lobby.LobbyItem
-import tv.caffeine.app.lobby.LobbyViewHolder
-import tv.caffeine.app.lobby.UpcomingButtonCard
+import tv.caffeine.app.lobby.classic.LobbyViewHolder
+import tv.caffeine.app.lobby.classic.UpcomingButtonCard
 import tv.caffeine.app.lobby.UpcomingButtonItem
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.ui.PaddingItemDecoration
@@ -175,8 +175,8 @@ class LiveBroadcastPickerAdapter @Inject constructor(
             liveBroadcastPickerCardFactory.create(LiveBroadcastCardBinding.inflate(inflater, parent, false), mapOf(), mapOf(), this, broadcastCardCallback)
 
     private fun upcomingButtonCard(inflater: LayoutInflater, parent: ViewGroup) =
-            UpcomingButtonCard(
-                UpcomingButtonCardBinding.inflate(inflater, parent, false),
-                upcomingButtonCallback
-            )
+        UpcomingButtonCard(
+            UpcomingButtonCardBinding.inflate(inflater, parent, false),
+            upcomingButtonCallback
+        )
 }
