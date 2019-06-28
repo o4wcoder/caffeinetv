@@ -15,7 +15,7 @@ class Lobby(val payloadId: String, val tags: Map<String, Tag>, val content: Map<
         val tagId: String,
         val broadcast: Broadcast?,
         val lastBroadcast: Broadcast?,
-        val followingViewers: List<User>,
+        val followingViewers: List<User>?,
         val followingViewersCount: Int,
         val displayOrder: Int,
         val clusterId: String?

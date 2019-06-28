@@ -10,7 +10,7 @@ fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String, renderedAt
         user.isFeatured,
         broadcast != null,
         displayOrder,
-        followingViewers.map { it.caid },
+        followingViewers?.map { it.caid } ?: emptyList(),
         clusterId,
         renderedAt
     )
