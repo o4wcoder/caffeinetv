@@ -9,8 +9,10 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
+import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Picasso
 import tv.caffeine.app.R
+import tv.caffeine.app.util.getPicasso
 
 inline fun EditText.setOnActionGo(crossinline block: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -66,4 +68,9 @@ fun TextView.formatUsernameAsHtml(
         html.setSpan(CenterImageSpan(span.drawable), start, end, html.getSpanFlags(span))
     }
     text = html
+}
+
+@BindingAdapter("htmlText")
+fun TextView.formatHtmlText(string: String?) {
+    formatUsernameAsHtml(context.getPicasso(), string, false)
 }

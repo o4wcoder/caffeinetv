@@ -1,33 +1,53 @@
 package tv.caffeine.app.lobby
 
+import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import tv.caffeine.app.R
+import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.FragmentLobbyBinding
 import tv.caffeine.app.lobby.classic.ClassicLobbyAdapter
 import tv.caffeine.app.lobby.classic.LobbyViewHolder
+import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 
+abstract class GenericLobbyAdapter<VH : RecyclerView.ViewHolder>(
+    diffCallback: DiffUtil.ItemCallback<LobbyItem>
+) : ListAdapter<LobbyItem, VH>(diffCallback) {
+    abstract fun submitList(
+        list: List<LobbyItem>,
+        tags: Map<String, Lobby.Tag>,
+        content: Map<String, Lobby.Content>,
+        payloadId: String
+    )
+}
+
 class LobbyFragment @Inject constructor(
-    private val lobbyAdapterProvider: Provider<ClassicLobbyAdapter>
+    private val releaseDesignConfig: ReleaseDesignConfig,
+    private val classicLobbyAdapterProvider: Provider<ClassicLobbyAdapter>,
+    private val releaseLobbyAdapterFactoryProvider: Provider<ReleaseLobbyAdapter.Factory>
 ) : CaffeineFragment(R.layout.fragment_lobby) {
 
     private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
     private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
-    private val lobbyAdapter by lazy { lobbyAdapterProvider.get() }
+    private lateinit var lobbyAdapter: GenericLobbyAdapter<*>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentLobbyBinding.bind(view)
@@ -36,6 +56,16 @@ class LobbyFragment @Inject constructor(
     }
 
     private fun configure(binding: FragmentLobbyBinding) {
+        lobbyAdapter = if (releaseDesignConfig.isReleaseDesignActive()) {
+            releaseLobbyAdapterFactoryProvider.get().create(viewLifecycleOwner, findNavController())
+        } else {
+            classicLobbyAdapterProvider.get()
+        }
+        val itemDecorator = if (releaseDesignConfig.isReleaseDesignActive()) {
+            ReleaseLobbyItemDecoration(resources)
+        } else {
+            ClassicLobbyItemDecoration(resources, lobbyAdapter)
+        }
         binding.lifecycleOwner = viewLifecycleOwner
         binding.lobbyRecyclerView.run {
             adapter = lobbyAdapter
@@ -43,8 +73,8 @@ class LobbyFragment @Inject constructor(
         }
         binding.lobbySwipeRefreshLayout.setOnRefreshListener { refreshLobby() }
         binding.lobbyRecyclerView.setRecyclerListener { viewHolder ->
-            val lobbyViewHolder = viewHolder as LobbyViewHolder
-            lobbyViewHolder.recycle()
+            val lobbyViewHolder = viewHolder as? LobbyViewHolder
+            lobbyViewHolder?.recycle()
         }
         viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false
@@ -82,7 +112,12 @@ class LobbyFragment @Inject constructor(
         refreshJob?.cancel()
         refreshJob = null
     }
+}
 
+class ClassicLobbyItemDecoration(
+    private val resources: Resources,
+    private val lobbyAdapter: GenericLobbyAdapter<*>
+) : RecyclerView.ItemDecoration() {
     private val edgeOffset by lazy { resources.getDimensionPixelSize(R.dimen.lobby_card_side_margin) }
     private val listTopBottomOffset by lazy { resources.getDimensionPixelSize(R.dimen.lobby_list_top_bottom_margin) }
     private val cardSpacing by lazy { resources.getDimensionPixelSize(R.dimen.lobby_card_vertical_spacing) }
@@ -91,21 +126,28 @@ class LobbyFragment @Inject constructor(
     private val subtitleTopMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_subtitle_top_margin) }
     private val subtitleBottomMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_subtitle_bottom_margin) }
 
-    private val itemDecorator = object : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            val itemType = view.tag as? LobbyItem.Type ?: return
-            val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
-            val extraTopOffset = if (itemPosition == 0) listTopBottomOffset else 0
-            val extraBottomOffset = if (itemPosition == lobbyAdapter.itemCount - 1) listTopBottomOffset else 0
-            when (itemType) {
-                LobbyItem.Type.AVATAR_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset + cardSpacing)
-                // FOLLOW_PEOPLE_CARD is the last special card. Do not include cardSpacing as the bottom margin.
-                LobbyItem.Type.FOLLOW_PEOPLE_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset)
-                LobbyItem.Type.LIVE_BROADCAST_CARD, LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD, LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset + cardSpacing)
-                LobbyItem.Type.CARD_LIST -> outRect.set(0, extraTopOffset + cardSpacing, 0, extraBottomOffset + cardSpacing)
-                LobbyItem.Type.HEADER -> outRect.set(edgeOffset, extraTopOffset + headerTopMargin, edgeOffset, extraBottomOffset + headerBottomMargin)
-                LobbyItem.Type.SUBTITLE -> outRect.set(edgeOffset, extraTopOffset + subtitleTopMargin, edgeOffset, extraBottomOffset + subtitleBottomMargin)
-            }
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        val itemType = view.tag as? LobbyItem.Type ?: return
+        val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
+        val extraTopOffset = if (itemPosition == 0) listTopBottomOffset else 0
+        val extraBottomOffset = if (itemPosition == lobbyAdapter.itemCount - 1) listTopBottomOffset else 0
+        when (itemType) {
+            LobbyItem.Type.AVATAR_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset + cardSpacing)
+            // FOLLOW_PEOPLE_CARD is the last special card. Do not include cardSpacing as the bottom margin.
+            LobbyItem.Type.FOLLOW_PEOPLE_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset)
+            LobbyItem.Type.LIVE_BROADCAST_CARD, LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD, LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> outRect.set(edgeOffset, extraTopOffset + cardSpacing, edgeOffset, extraBottomOffset + cardSpacing)
+            LobbyItem.Type.CARD_LIST -> outRect.set(0, extraTopOffset + cardSpacing, 0, extraBottomOffset + cardSpacing)
+            LobbyItem.Type.HEADER -> outRect.set(edgeOffset, extraTopOffset + headerTopMargin, edgeOffset, extraBottomOffset + headerBottomMargin)
+            LobbyItem.Type.SUBTITLE -> outRect.set(edgeOffset, extraTopOffset + subtitleTopMargin, edgeOffset, extraBottomOffset + subtitleBottomMargin)
         }
+    }
+}
+
+class ReleaseLobbyItemDecoration(
+    private val resources: Resources
+) : RecyclerView.ItemDecoration() {
+    private val bottomMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_card_vertical_spacing) }
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        outRect.set(0, 0, 0, bottomMargin)
     }
 }

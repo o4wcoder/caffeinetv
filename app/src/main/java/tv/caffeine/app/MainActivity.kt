@@ -38,17 +38,18 @@ import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
 private val destinationsWithCustomToolbar = arrayOf(
-        R.id.lobbySwipeFragment,
-        R.id.landingFragment,
-        R.id.signInFragment,
-        R.id.signUpFragment,
-        R.id.forgotFragment,
-        R.id.mfaCodeFragment,
-        R.id.stagePagerFragment,
-        R.id.needsUpdateFragment,
-        R.id.friendsWatchingFragment,
-        R.id.sendDigitalItemFragment,
-        R.id.reportOrIgnoreDialogFragment
+    R.id.lobbySwipeFragment,
+    R.id.landingFragment,
+    R.id.signInFragment,
+    R.id.signUpFragment,
+    R.id.forgotFragment,
+    R.id.mfaCodeFragment,
+    R.id.stagePagerFragment,
+    R.id.needsUpdateFragment,
+    R.id.friendsWatchingFragment,
+    R.id.sendDigitalItemFragment,
+    R.id.reportOrIgnoreDialogFragment,
+    R.id.unfollowUserDialogFragment
 )
 
 private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)

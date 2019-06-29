@@ -3,7 +3,6 @@ package tv.caffeine.app.lobby.classic
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -19,6 +18,7 @@ import tv.caffeine.app.databinding.LobbySubtitleBinding
 import tv.caffeine.app.databinding.PreviousBroadcastCardBinding
 import tv.caffeine.app.databinding.UpcomingButtonCardBinding
 import tv.caffeine.app.lobby.CardList
+import tv.caffeine.app.lobby.GenericLobbyAdapter
 import tv.caffeine.app.lobby.LobbyItem
 import tv.caffeine.app.util.DispatchConfig
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class ClassicLobbyAdapter @Inject constructor(
     private val liveBroadcastWithFriendsCardFactory: LiveBroadcastWithFriendsCard.Factory,
     private val previousBroadcastCardFactory: PreviousBroadcastCard.Factory,
     private val listCardFactory: ListCard.Factory
-) : ListAdapter<LobbyItem, LobbyViewHolder>(
+) : GenericLobbyAdapter<LobbyViewHolder>(
         object : DiffUtil.ItemCallback<LobbyItem>() {
             override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) =
                     oldItem.itemType == newItem.itemType && oldItem.id == newItem.id
@@ -54,7 +54,7 @@ class ClassicLobbyAdapter @Inject constructor(
     private var payloadId: String? = null
     var isMiniStyle: Boolean = false
 
-    fun submitList(
+    override fun submitList(
         list: List<LobbyItem>,
         tags: Map<String, Lobby.Tag>,
         content: Map<String, Lobby.Content>,

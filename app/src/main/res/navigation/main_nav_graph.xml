@@ -306,14 +306,14 @@
         android:id="@+id/editBioFragment"
         android:name="tv.caffeine.app.profile.EditBioFragment"
         android:label="@string/edit_bio_title"/>
-    <fragment
+    <dialog
         android:id="@+id/unfollowUserDialogFragment"
         android:name="tv.caffeine.app.profile.UnfollowUserDialogFragment"
         android:label="@string/unfollow_button">
         <argument
             android:name="username"
             app:argType="string"/>
-    </fragment>
+    </dialog>
 
     <!-- Gold & Credits -->
     <fragment

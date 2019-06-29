@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.lobby.release.OnlineBroadcaster"/>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/online_broadcaster_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> viewModel.cardClicked()}">
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/primary_view_renderer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:keepScreenOn="true"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/preview_image_view"
+            app:layout_constraintEnd_toEndOf="@id/preview_image_view"
+            app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
+            app:layout_constraintTop_toTopOf="@id/preview_image_view"
+            tools:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/preview_image_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:foreground="@drawable/gradient_overlay"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{viewModel.mainPreviewImageUrl}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H, 16:9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/pip_image_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:foreground="@drawable/gradient_overlay"
+            android:layout_marginBottom="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
+            android:visibility="@{viewModel.pictureInPictureImageUrl != null ? View.VISIBLE : View.GONE}"
+            app:imageUrl="@{viewModel.pictureInPictureImageUrl}"
+            app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
+            app:layout_constraintEnd_toEndOf="@id/preview_image_view"
+            app:layout_constraintStart_toStartOf="@id/preview_image_view"
+            app:layout_constraintTop_toTopOf="@id/preview_image_view"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.25"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <View
+            android:id="@+id/blue_rectangle"
+            android:layout_width="64dp"
+            android:layout_height="36dp"
+            android:background="@color/pure_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/friends_watching_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="10dp"
+            android:background="@color/pure_blue"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/lobby_card_side_padding"
+            android:paddingTop="4dp"
+            android:paddingEnd="@dimen/lobby_card_side_padding"
+            android:paddingBottom="4dp"
+            android:textAppearance="@style/OnlineBroadcast_Large_Friends"
+            android:textColor="@color/white"
+            app:htmlText="@{viewModel.friendsWatchingText}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="ben is watching" />
+
+        <TextView
+            android:id="@+id/content_rating_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="10dp"
+            android:background="@color/black"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/lobby_card_side_padding"
+            android:paddingTop="4dp"
+            android:paddingEnd="@dimen/lobby_card_side_padding"
+            android:paddingBottom="4dp"
+            android:textAppearance="@style/OnlineBroadcast_Large_Friends"
+            android:textColor="@color/white"
+            android:text="@{viewModel.contentRating}"
+            android:layout_marginEnd="36dp"
+            android:visibility="@{viewModel.contentRating != null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="17+"
+            tools:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/avatar_image_view"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            app:roundedImageUrl="@{viewModel.avatarImageUrl}"
+            app:layout_constraintEnd_toEndOf="@id/preview_image_view"
+            app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
+            tools:src="@drawable/default_avatar_round" />
+
+        <TextView
+            android:id="@+id/username_text_view"
+            style="@style/OnlineBroadcast_Large_Username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/lobby_card_side_padding"
+            android:drawableEnd="@{viewModel.userIcon}"
+            android:text="@{viewModel.username}"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintTop_toTopOf="@id/avatar_image_view"
+            tools:drawableEnd="@drawable/verified"
+            tools:drawablePadding="@dimen/verified_icon_padding"
+            tools:text="@sample/usernames" />
+
+        <ImageView
+            android:id="@+id/game_logo_image_view"
+            android:layout_width="@dimen/game_logo_width"
+            android:layout_height="@dimen/game_logo_height"
+            app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/broadcast_title_text_view"
+            style="@style/OnlineBroadcast_Large_Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:maxLines="3"
+            android:text="@{viewModel.broadcastTitle }"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/preview_image_view"
+            app:layout_constraintEnd_toStartOf="@+id/more_button"
+            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintTop_toTopOf="@+id/preview_image_view"
+            tools:text="What is happening at Caffeine" />
+
+        <ImageView
+            android:id="@+id/follow_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:onClick="@{() -> viewModel.followClicked()}"
+            android:src="@{viewModel.isFollowing() ? @drawable/star_filled : @drawable/star_outline}"
+            android:text="@string/follow_button"
+            app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
+            app:layout_constraintStart_toEndOf="@+id/username_text_view"
+            app:layout_constraintTop_toTopOf="@+id/username_text_view"
+            tools:src="@drawable/star_outline" />
+
+        <ImageView
+            android:id="@+id/more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/more"
+            android:onClick="@{() -> viewModel.kebabClicked()}"
+            app:srcCompat="@drawable/ic_more_vertical"
+            app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
+            app:layout_constraintTop_toTopOf="@+id/preview_image_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

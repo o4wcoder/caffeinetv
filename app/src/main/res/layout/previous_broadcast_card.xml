@@ -44,7 +44,7 @@
                 android:id="@+id/preview_image_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:foreground="@drawable/gradient_overlay"
+                android:foreground="@drawable/gradient_overlay_rounded"
                 tools:src="@drawable/default_lobby_image"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
