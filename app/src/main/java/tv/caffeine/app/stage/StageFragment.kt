@@ -392,6 +392,7 @@ class StageFragment @Inject constructor(
 
     private fun connectStreams(username: String) {
         val controller = factory.create(username, false)
+        controller.connect()
         newReyesController = controller
         manageFeeds(controller)
         manageFeedQuality(controller)

@@ -393,6 +393,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
             val controller = stageControllerFactory.create(username, true)
+            controller.connect()
             stageController = controller
             startLiveVideo(renderer, controller) {
                 binding.previewImageView.isInvisible = true
@@ -480,6 +481,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
             val renderer = binding.primaryViewRenderer
             val username = liveBroadcastItem.broadcaster.user.username
             val controller = stageControllerFactory.create(username, true)
+            controller.connect()
             stageController = controller
             startLiveVideo(renderer, controller) {
                 binding.previewImageView.isInvisible = true

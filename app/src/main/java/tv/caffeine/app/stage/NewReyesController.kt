@@ -1,5 +1,8 @@
 package tv.caffeine.app.stage
 
+import android.media.AudioAttributes
+import android.media.AudioManager
+import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
@@ -75,6 +78,7 @@ class NewReyesController @AssistedInject constructor(
     private val featureConfig: FeatureConfig,
     private val classicStageStateLooper: ClassicStageDirector,
     private val graphqlStageDirector: GraphqlStageDirector,
+    private val audioManager: AudioManager,
     @Assisted private val username: String,
     @Assisted private val muteAudio: Boolean
 ) : CoroutineScope {
@@ -102,13 +106,13 @@ class NewReyesController @AssistedInject constructor(
     private val peerConnections: MutableMap<String, PeerConnection> = ConcurrentHashMap()
     private val peerConnectionStreamLabels: MutableMap<String, String> = ConcurrentHashMap()
     private val heartbeatUrls: MutableMap<String, String> = ConcurrentHashMap()
-    private val audioTracks: MutableMap<String, AudioTrack> = ConcurrentHashMap()
+    @VisibleForTesting var audioTracks: MutableMap<String, AudioTrack> = ConcurrentHashMap()
     private val feedQualityCounts: MutableMap<String, Int> = ConcurrentHashMap()
 
     private val videoStreamIds = mutableListOf<String>() // excludes audio-only feeds for connection_quality updates
 
-    init {
-        connect()
+    fun connect() {
+        connectStage()
         heartbeat()
         stats()
     }
@@ -118,7 +122,7 @@ class NewReyesController @AssistedInject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    private fun connect() = launch {
+    private fun connectStage() = launch {
         val stageDirector: StageDirector = if (featureConfig.isFeatureEnabled(Feature.REYES_V5)) {
             Timber.d("Using the new stage director")
             graphqlStageDirector
@@ -288,7 +292,7 @@ class NewReyesController @AssistedInject constructor(
                             if (feed.capabilities.audio) {
                                 audioTracks[stream.id] = it
                                 it.setVolume(feed.volume)
-                                it.setEnabled(!muteAudio)
+                                it.setEnabled(!muteAudio && requestAudioFocus())
                             } else {
                                 it.setEnabled(false)
                             }
@@ -297,6 +301,18 @@ class NewReyesController @AssistedInject constructor(
                     }
                 }
     }
+
+    @VisibleForTesting val onAudioFocusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+        val isAudioFocused = focusChange == AudioManager.AUDIOFOCUS_GAIN
+        audioTracks.values.forEach {
+            it.setEnabled(!muteAudio && isAudioFocused)
+        }
+    }
+
+    private fun requestAudioFocus() = audioManager.requestAudioFocus(
+        onAudioFocusChangeListener,
+        AudioAttributes.CONTENT_TYPE_MOVIE,
+        AudioManager.AUDIOFOCUS_GAIN) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
 
     fun NewReyes.Feed.streamLabel() = if (content != null) "content" else "camera"
 
@@ -386,6 +402,7 @@ class NewReyesController @AssistedInject constructor(
         feedQualityCounts.keys.forEach {
             feedQualityCounts.remove(it)
         }
+        audioManager.abandonAudioFocus(onAudioFocusChangeListener)
     }
 
     private fun PeerConnection.disposeAndReturnNull(): NewReyesConnectionInfo? {

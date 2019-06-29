@@ -2,6 +2,7 @@ package tv.caffeine.app.di
 
 import android.content.Context
 import android.content.res.Resources
+import android.media.AudioManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.Module
 import dagger.Provides
@@ -19,6 +20,9 @@ class UIModule {
 
     @Provides
     fun providesRecycledViewPool() = RecyclerView.RecycledViewPool()
+
+    @Provides
+    fun providesAudioManager(context: Context): AudioManager = context.getSystemService(AudioManager::class.java)
 }
 
 @Module
