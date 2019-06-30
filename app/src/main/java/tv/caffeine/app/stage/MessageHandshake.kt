@@ -9,7 +9,7 @@ import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
 import timber.log.Timber
@@ -20,7 +20,7 @@ import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.net.ServerConfig
-import tv.caffeine.app.realtime.WebSocketController
+import tv.caffeine.app.realtime.webSocketFlow
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.putIfAbsent
@@ -44,7 +44,6 @@ class MessageHandshake @AssistedInject constructor(
         fun create(stageIdentifier: String): MessageHandshake
     }
 
-    private var webSocketController: WebSocketController? = null
     private val webSocketGson: Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
     private val job = SupervisorJob()
@@ -62,7 +61,6 @@ class MessageHandshake @AssistedInject constructor(
     private fun connect() {
         val url = "${serverConfig.realtimeWebSocket}/v2/reaper/stages/$stageIdentifier/messages"
         val caid = tokenStore.caid ?: return
-        webSocketController?.close()
         launch {
             val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
             val payload = when (result) {
@@ -71,14 +69,13 @@ class MessageHandshake @AssistedInject constructor(
                 is CaffeineResult.Failure -> return@launch Timber.e(result.throwable)
             }
             val headers = tokenStore.webSocketHeaderAndSignedPayload(payload)
-            webSocketController = WebSocketController(dispatchConfig, "msg", url, headers)
-            webSocketController?.channel?.consumeEach {
+            webSocketFlow("msg", url, headers).collect {
                 Timber.d("Received message $it")
                 val message = try {
                     webSocketGson.fromJson(it, Message::class.java)
                 } catch (e: Exception) {
                     Timber.e(e)
-                    return@consumeEach
+                    return@collect
                 }
                 val lastUpdateTime = clock.millis()
                 val creationTime = messageCreationTimes.get(message.id) ?: lastUpdateTime
@@ -93,8 +90,6 @@ class MessageHandshake @AssistedInject constructor(
 
     fun close() {
         Timber.d("msg - closing handshake handler")
-        webSocketController?.close()
-        webSocketController = null
         channel.close()
         job.cancel()
     }
