@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -28,8 +27,8 @@ import com.facebook.login.LoginResult
 import com.google.gson.Gson
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
@@ -66,11 +65,11 @@ import kotlin.collections.set
 private const val DISCONNECT_IDENTITY = 1
 
 class SettingsFragment @Inject constructor(
-    private val childFragmentInjector: DispatchingAndroidInjector<Fragment>,
+    private val childFragmentInjector: DispatchingAndroidInjector<Any>,
     private val viewModelFactory: ViewModelFactory,
     private val facebookLoginManager: LoginManager,
     private val featureConfig: FeatureConfig
-) : PreferenceFragmentCompat(), HasSupportFragmentInjector, DisconnectIdentityDialogFragment.Callback {
+) : PreferenceFragmentCompat(), HasAndroidInjector, DisconnectIdentityDialogFragment.Callback {
 
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
@@ -79,7 +78,7 @@ class SettingsFragment @Inject constructor(
     private val twoStepAuthViewModel: TwoStepAuthViewModel by navGraphViewModels(R.id.settings) { viewModelFactory }
     private val callbackManager: CallbackManager = CallbackManager.Factory.create()
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any> = childFragmentInjector
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)

@@ -1,19 +1,18 @@
 package tv.caffeine.app.ui
 
 import android.content.Context
-import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-open class DaggerBottomSheetDialogFragment : BottomSheetDialogFragment(), HasSupportFragmentInjector {
+open class DaggerBottomSheetDialogFragment : BottomSheetDialogFragment(), HasAndroidInjector {
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<Any>
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any> = childFragmentInjector
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)

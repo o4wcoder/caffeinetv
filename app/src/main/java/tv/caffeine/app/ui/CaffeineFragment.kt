@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -27,11 +27,11 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId),
-        HasSupportFragmentInjector, CoroutineScope {
+        HasAndroidInjector, CoroutineScope {
 
-    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Any>
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any>? = childFragmentInjector
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
