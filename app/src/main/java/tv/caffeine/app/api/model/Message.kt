@@ -30,5 +30,6 @@ data class MessageWrapper(
     val isFromSelf: Boolean = false,
     val isStale: Boolean = false,
     val digitalItemInteractionCount: Int = 0,
-    val hasBeenEndorsed: Boolean = false
+    val hasBeenEndorsed: Boolean = false,
+    val hasMentions: Boolean = false
 )

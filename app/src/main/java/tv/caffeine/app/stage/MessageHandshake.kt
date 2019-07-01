@@ -19,6 +19,7 @@ import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.chat.classify
 import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.realtime.webSocketFlow
 import tv.caffeine.app.session.FollowManager
@@ -82,7 +83,14 @@ class MessageHandshake @AssistedInject constructor(
                 messageCreationTimes.putIfAbsent(message.id, creationTime)
                 val dummyPosition = -1
                 val messageAuthorCaid = message.publisher.caid
-                val wrapper = MessageWrapper(message, creationTime, lastUpdateTime = lastUpdateTime, position = dummyPosition, isFromFollowedUser = followManager.isFollowing(messageAuthorCaid), isFromSelf = tokenStore.caid == messageAuthorCaid)
+                val wrapper = MessageWrapper(
+                    message,
+                    creationTime,
+                    lastUpdateTime = lastUpdateTime,
+                    position = dummyPosition,
+                    isFromFollowedUser = followManager.isFollowing(messageAuthorCaid),
+                    isFromSelf = tokenStore.caid == messageAuthorCaid,
+                    hasMentions = message.classify(followManager).mentionsSelf)
                 channel.send(wrapper)
             }
         }

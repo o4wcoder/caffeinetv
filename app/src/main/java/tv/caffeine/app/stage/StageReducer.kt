@@ -55,7 +55,13 @@ class StageReducer {
     }
 
     private fun determineComparisonScore(incomingReaction: MessageWrapper, currentTime: Long): Double {
-        return reactionScores.calculateReactionComparisonScore(currentTime - incomingReaction.creationTime, incomingReaction.message.endorsementCount, incomingReaction.isFromFollowedUser, incomingReaction.isFromSelf)
+        return reactionScores.calculateReactionComparisonScore(
+            currentTime - incomingReaction.creationTime,
+            incomingReaction.message.endorsementCount,
+            incomingReaction.isFromSelf,
+            incomingReaction.message.body.digitalItem != null,
+            incomingReaction.hasMentions,
+            incomingReaction.isFromFollowedUser)
     }
 
     fun handleProcessOldReactions(
