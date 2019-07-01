@@ -28,7 +28,7 @@ sealed class LobbyCard
 class OnlineBroadcaster @AssistedInject constructor (
     context: Context,
     private val followManager: FollowManager,
-    @Assisted private val liveBroadcast: LiveBroadcast,
+    @Assisted val liveBroadcast: LiveBroadcast,
     @Assisted private val lobbyImpressionAnalytics: LobbyImpressionAnalytics,
     @Assisted private val coroutineScope: CoroutineScope
 ) : LobbyCard() {

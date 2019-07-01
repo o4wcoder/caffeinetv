@@ -20,6 +20,7 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.FragmentLobbyBinding
 import tv.caffeine.app.lobby.classic.ClassicLobbyAdapter
 import tv.caffeine.app.lobby.classic.LobbyViewHolder
+import tv.caffeine.app.lobby.release.LargeOnlineBroadcasterCard
 import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
@@ -73,8 +74,10 @@ class LobbyFragment @Inject constructor(
         }
         binding.lobbySwipeRefreshLayout.setOnRefreshListener { refreshLobby() }
         binding.lobbyRecyclerView.setRecyclerListener { viewHolder ->
-            val lobbyViewHolder = viewHolder as? LobbyViewHolder
-            lobbyViewHolder?.recycle()
+            when (viewHolder) {
+                is LobbyViewHolder -> viewHolder.recycle()
+                is LargeOnlineBroadcasterCard -> viewHolder.turnOffLiveVideo()
+            }
         }
         viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false

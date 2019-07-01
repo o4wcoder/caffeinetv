@@ -21,13 +21,9 @@ import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
 import org.webrtc.EglRenderer
-import org.webrtc.SurfaceViewRenderer
-import org.webrtc.VideoTrack
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.EventManager
@@ -36,7 +32,6 @@ import tv.caffeine.app.api.LobbyClickedEventData
 import tv.caffeine.app.api.LobbyFollowClickedEvent
 import tv.caffeine.app.api.LobbyImpressionEvent
 import tv.caffeine.app.api.LobbyImpressionEventData
-import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
@@ -60,6 +55,7 @@ import tv.caffeine.app.lobby.FollowPeople
 import tv.caffeine.app.lobby.Header
 import tv.caffeine.app.lobby.LiveBroadcast
 import tv.caffeine.app.lobby.LiveBroadcastWithFriends
+import tv.caffeine.app.lobby.LiveInTheLobbyCapable
 import tv.caffeine.app.lobby.LobbyItem
 import tv.caffeine.app.lobby.LobbySwipeFragmentDirections
 import tv.caffeine.app.lobby.PreviousBroadcast
@@ -145,7 +141,7 @@ abstract class BroadcasterCard(
     private val scope: CoroutineScope? = null,
     private val clock: Clock,
     protected val eventManager: EventManager
-) : LobbyViewHolder(view) {
+) : LobbyViewHolder(view), LiveInTheLobbyCapable {
     protected val previewImageView: ImageView = view.findViewById(R.id.preview_image_view)
     private val avatarImageView: ImageView = view.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = view.findViewById(R.id.username_text_view)
@@ -264,59 +260,7 @@ abstract class BroadcasterCard(
         }
     }
 
-    private var frameListener: EglRenderer.FrameListener? = null
-
-    protected fun startLiveVideo(
-        renderer: SurfaceViewRenderer,
-        controller: NewReyesController,
-        onConnectCallback: () -> Unit
-    ) {
-        scope?.launch {
-            launch {
-                controller.connectionChannel.consumeEach { feedInfo ->
-                    val audioTrack = feedInfo.connectionInfo.audioTrack
-                    audioTrack?.setEnabled(false)
-                    // audioTrack?.setVolume(0.0)
-                    if (feedInfo.role == NewReyes.Feed.Role.primary) {
-                        val videoTrack = feedInfo.connectionInfo.videoTrack
-                        configureRenderer(renderer, feedInfo.feed, videoTrack)
-                        frameListener = EglRenderer.FrameListener {
-                            launch(Dispatchers.Main) {
-                                renderer.removeFrameListener(frameListener)
-                                onConnectCallback()
-                            }
-                        }
-                        renderer.addFrameListener(frameListener, 1.0f)
-                    }
-                }
-            }
-            launch {
-                controller.stateChangeChannel.consumeEach { list ->
-                    list.forEach { stateChange ->
-                        when (stateChange) {
-                            is NewReyesController.StateChange.FeedRemoved -> {
-                                // TODO remove sink for primary video
-                                // TODO videoTrack.removeSink(binding.primaryViewRenderer)
-                            }
-                        }
-                    }
-                }
-            }
-            launch { controller.feedChannel.consumeEach { } }
-            launch { controller.errorChannel.consumeEach { } }
-            launch { controller.feedQualityChannel.consumeEach { } }
-        }
-    }
-
-    private fun configureRenderer(renderer: SurfaceViewRenderer, feed: NewReyes.Feed?, videoTrack: VideoTrack?) {
-        val hasVideo = videoTrack != null && (feed?.capabilities?.video ?: false)
-        renderer.isVisible = hasVideo
-        if (hasVideo) {
-            videoTrack?.addSink(renderer)
-        } else {
-            videoTrack?.removeSink(renderer)
-        }
-    }
+    override var frameListener: EglRenderer.FrameListener? = null
 }
 
 open class LiveBroadcastCard @AssistedInject constructor(
@@ -394,8 +338,10 @@ open class LiveBroadcastCard @AssistedInject constructor(
             val controller = stageControllerFactory.create(username, true)
             controller.connect()
             stageController = controller
-            startLiveVideo(renderer, controller) {
-                binding.previewImageView.isInvisible = true
+            scope?.launch {
+                startLiveVideo(renderer, controller) {
+                    binding.previewImageView.isInvisible = true
+                }
             }
         }
     }
@@ -482,8 +428,10 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
             val controller = stageControllerFactory.create(username, true)
             controller.connect()
             stageController = controller
-            startLiveVideo(renderer, controller) {
-                binding.previewImageView.isInvisible = true
+            scope?.launch {
+                startLiveVideo(renderer, controller) {
+                    binding.previewImageView.isInvisible = true
+                }
             }
         }
     }

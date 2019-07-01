@@ -36,6 +36,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     private val onlineBroadcasterFactory: OnlineBroadcaster.Factory,
     private val horizontalScrollCardFactory: HorizontalScrollCard.Factory,
     private val lobbyImpressionAnalyticsFactory: LobbyImpressionAnalytics.Factory,
+    private val largeOnlineBroadcasterCardFactory: LargeOnlineBroadcasterCard.Factory,
     @Assisted private val lifecycleOwner: LifecycleOwner,
     @Assisted private val navController: NavController
 ) : GenericLobbyAdapter<CardViewHolder>(DiffCallback()), CoroutineScope {
@@ -116,8 +117,9 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             )
 
     private fun largeOnlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup) =
-            LargeOnlineBroadcasterCard(
-                ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false)
+            largeOnlineBroadcasterCardFactory.create(
+                ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false),
+                this
             )
 
     private fun listCard(inflater: LayoutInflater, parent: ViewGroup) =
