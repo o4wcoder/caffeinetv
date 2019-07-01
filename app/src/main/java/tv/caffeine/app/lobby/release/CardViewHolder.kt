@@ -17,11 +17,11 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.ReleaseUiHeaderBinding
+import tv.caffeine.app.databinding.ReleaseUiOfflineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiOnlineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiSubtitleBinding
 import tv.caffeine.app.lobby.CardList
 import tv.caffeine.app.lobby.Header
-import tv.caffeine.app.lobby.LiveBroadcast
 import tv.caffeine.app.lobby.LiveInTheLobbyCapable
 import tv.caffeine.app.lobby.LobbyItem
 import tv.caffeine.app.lobby.Subtitle
@@ -68,7 +68,7 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
     fun bind(onlineBroadcaster: OnlineBroadcaster) {
         turnOffLiveVideo()
         binding.viewModel = onlineBroadcaster
-        turnOnLiveVideo(onlineBroadcaster.liveBroadcast)
+        turnOnLiveVideo(onlineBroadcaster.broadcaster)
     }
 
     override var frameListener: EglRenderer.FrameListener? = null
@@ -82,11 +82,11 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
         binding.primaryViewRenderer.release()
     }
 
-    private fun turnOnLiveVideo(liveBroadcast: LiveBroadcast) {
-        if (autoPlayConfig.isAutoPlayEnabled(liveBroadcast.broadcaster.displayOrder)) {
+    private fun turnOnLiveVideo(broadcaster: Lobby.Broadcaster) {
+        if (autoPlayConfig.isAutoPlayEnabled(broadcaster.displayOrder)) {
             surfaceViewRendererTuner.configure(binding.primaryViewRenderer)
             val renderer = binding.primaryViewRenderer
-            val username = liveBroadcast.broadcaster.user.username
+            val username = broadcaster.user.username
             val controller = stageControllerFactory.create(username, true)
             controller.connect()
             stageController = controller
@@ -96,6 +96,12 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
                 }
             }
         }
+    }
+}
+
+class OfflineBroadcasterCard(val binding: ReleaseUiOfflineBroadcasterCardBinding) : CardViewHolder(binding.root) {
+    fun bind(offlineBroadcaster: OfflineBroadcaster) {
+        binding.viewModel = offlineBroadcaster
     }
 }
 

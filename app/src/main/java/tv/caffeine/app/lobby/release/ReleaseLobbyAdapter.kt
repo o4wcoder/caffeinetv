@@ -20,6 +20,7 @@ import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.ReleaseUiHeaderBinding
+import tv.caffeine.app.databinding.ReleaseUiOfflineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiOnlineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiSubtitleBinding
 import tv.caffeine.app.lobby.CardList
@@ -28,12 +29,14 @@ import tv.caffeine.app.lobby.Header
 import tv.caffeine.app.lobby.LiveBroadcast
 import tv.caffeine.app.lobby.LiveBroadcastWithFriends
 import tv.caffeine.app.lobby.LobbyItem
+import tv.caffeine.app.lobby.PreviousBroadcast
 import tv.caffeine.app.lobby.Subtitle
 import tv.caffeine.app.util.safeNavigate
 import kotlin.coroutines.CoroutineContext
 
 class ReleaseLobbyAdapter @AssistedInject constructor(
     private val onlineBroadcasterFactory: OnlineBroadcaster.Factory,
+    private val offlineBroadcasterFactory: OfflineBroadcaster.Factory,
     private val horizontalScrollCardFactory: HorizontalScrollCard.Factory,
     private val lobbyImpressionAnalyticsFactory: LobbyImpressionAnalytics.Factory,
     private val largeOnlineBroadcasterCardFactory: LargeOnlineBroadcasterCard.Factory,
@@ -99,7 +102,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             LobbyItem.Type.SUBTITLE -> subtitleCard(inflater, parent)
             LobbyItem.Type.LIVE_BROADCAST_CARD -> largeOnlineBroadcasterCard(inflater, parent)
             LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD -> largeOnlineBroadcasterCard(inflater, parent)
-            // LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> previousBroadcastCard(inflater, parent)
+            LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> offlineBroadcasterCard(inflater, parent)
             LobbyItem.Type.CARD_LIST -> listCard(inflater, parent)
             // LobbyItem.Type.UPCOMING_BUTTON_CARD -> upcomingButtonCard(inflater, parent)
             else -> TextCard(TextView(parent.context))
@@ -122,6 +125,11 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
                 this
             )
 
+    private fun offlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup) =
+            OfflineBroadcasterCard(
+                ReleaseUiOfflineBroadcasterCardBinding.inflate(inflater, parent, false)
+            )
+
     private fun listCard(inflater: LayoutInflater, parent: ViewGroup) =
         horizontalScrollCardFactory.create(
             CardListBinding.inflate(inflater, parent, false),
@@ -138,6 +146,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             is ReleaseHeaderCard -> bind(holder, item)
             is ReleaseSubtitleCard -> bind(holder, item)
             is LargeOnlineBroadcasterCard -> bind(holder, item)
+            is OfflineBroadcasterCard -> bind(holder, item)
             is HorizontalScrollCard -> bind(holder, item)
         }
     }
@@ -158,9 +167,20 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             is LiveBroadcastWithFriends -> LiveBroadcast(item.id, item.broadcaster)
             else -> return
         }
-        val onlineBroadcaster = onlineBroadcasterFactory.create(liveBroadcast, lobbyImpressionAnalytics, this)
+        val onlineBroadcaster = onlineBroadcasterFactory.create(liveBroadcast.broadcaster, lobbyImpressionAnalytics, this)
         largeOnlineBroadcasterCard.bind(onlineBroadcaster)
         onlineBroadcaster.navigationCommands.observeEvents(lifecycleOwner) {
+            when (it) {
+                is NavigationCommand.To -> navController.safeNavigate(it.directions)
+            }
+        }
+    }
+
+    private fun bind(offlineBroadcasterCard: OfflineBroadcasterCard, item: LobbyItem) {
+        val offlineBroadcast = item as PreviousBroadcast
+        val offlineBroadcaster = offlineBroadcasterFactory.create(offlineBroadcast.broadcaster, lobbyImpressionAnalytics, this)
+        offlineBroadcasterCard.bind(offlineBroadcaster)
+        offlineBroadcaster.navigationCommands.observeEvents(lifecycleOwner) {
             when (it) {
                 is NavigationCommand.To -> navController.safeNavigate(it.directions)
             }

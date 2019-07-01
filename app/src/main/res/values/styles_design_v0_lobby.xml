@@ -20,6 +20,11 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="OfflineBroadcast_Large_Username" parent="LobbyCardText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="ReleaseUI_Lobby_Header" parent="LobbyCardText">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">27sp</item>

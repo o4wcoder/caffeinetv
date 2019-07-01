@@ -16,7 +16,7 @@ interface LobbyItem {
 
     companion object {
 
-        fun parse(result: Lobby): List<LobbyItem> {
+        fun parse(result: Lobby, separateOffline: Boolean = false): List<LobbyItem> {
             val lobbyItems = mutableListOf<LobbyItem>()
             result.header.avatarCard?.let {
                 lobbyItems.add(WelcomeCard("username", it.username))
@@ -33,7 +33,12 @@ interface LobbyItem {
                     section.broadcasters?.map(::convert)?.let { addAll(it) }
                     section.categories?.forEach { category ->
                         add(Subtitle(category.id, category.name))
-                        add(CardList(category.id + ".list", category.broadcasters.map(::convert)))
+                        if (!separateOffline) {
+                            add(CardList(category.id + ".list", category.broadcasters.map(::convert)))
+                        } else {
+                            add(CardList(category.id + ".list", category.broadcasters.filter { it.broadcast != null }.map(::convert)))
+                            addAll(category.broadcasters.filter { it.broadcast == null }.map(::convert))
+                        }
                     }
                 }.toList()
             })

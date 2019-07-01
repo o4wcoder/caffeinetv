@@ -129,6 +129,21 @@
         <item quantity="one"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/> and one other are watching]]></item>
         <item quantity="other"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/> and %3$s others are watching]]></item>
     </plurals>
+    <string name="user_watching_short"><![CDATA[<img src=\"%2$s\"> %1$s]]></string>
+    <string name="verified_user_watching_short"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"verified_white\"/>]]></string>
+    <string name="caster_watching_short"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/>]]></string>
+    <plurals name="user_and_friends_watching_short">
+        <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s + 1]]></item>
+        <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s + %3$s]]></item>
+    </plurals>
+    <plurals name="verified_user_and_friends_watching_short">
+        <item quantity="one"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"verified_white\"/> + 1]]></item>
+        <item quantity="other"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"verified_white\"/> + %3$s]]></item>
+    </plurals>
+    <plurals name="caster_and_friends_watching_short">
+        <item quantity="one"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/> + 1]]></item>
+        <item quantity="other"><![CDATA[<img src=\"%2$s\"> <b>%1$s</b> <img src=\"caster\"/> + %3$s]]></item>
+    </plurals>
     <plurals name="number_of_followers">
         <item quantity="one"><![CDATA[<b>1</b>]]> follower</item>
         <item quantity="other"><![CDATA[<b>]]><xliff:g example="1k" id="followers_count">%s</xliff:g><![CDATA[</b>]]> followers</item>

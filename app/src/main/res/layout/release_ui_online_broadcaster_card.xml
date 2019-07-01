@@ -64,16 +64,6 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintVertical_bias="1.0" />
 
-        <View
-            android:id="@+id/blue_rectangle"
-            android:layout_width="64dp"
-            android:layout_height="36dp"
-            android:background="@color/pure_blue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/friends_watching_text_view"
             android:layout_width="wrap_content"
@@ -92,7 +82,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/preview_image_view"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="ben is watching" />
+            tools:text="ben + 2" />
 
         <TextView
             android:id="@+id/content_rating_text_view"
@@ -139,6 +129,7 @@
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@+id/preview_image_view"
             app:layout_constraintTop_toTopOf="@id/avatar_image_view"
+            app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
             tools:drawableEnd="@drawable/verified"
             tools:drawablePadding="@dimen/verified_icon_padding"
             tools:text="@sample/usernames" />
@@ -188,6 +179,7 @@
             android:layout_marginEnd="4dp"
             android:contentDescription="@string/more"
             android:onClick="@{() -> viewModel.kebabClicked()}"
+            android:tint="@color/white"
             app:srcCompat="@drawable/ic_more_vertical"
             app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
             app:layout_constraintTop_toTopOf="@+id/preview_image_view" />

@@ -12,8 +12,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.GlobalScope
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,16 +24,17 @@ import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.lobby.LiveBroadcast
+import tv.caffeine.app.lobby.PreviousBroadcast
 import tv.caffeine.app.session.FollowManager
 
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class LobbyCardsOnlineBroadcasterTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+class LobbyCardsOfflineBroadcasterTests {
+    @Rule
+    @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
     lateinit var context: Context
-    lateinit var liveBroadcast: LiveBroadcast
+    lateinit var previousBroadcast: PreviousBroadcast
     @MockK lateinit var followManager: FollowManager
     @MockK lateinit var lobbyImpressionAnalytics: LobbyImpressionAnalytics
 
@@ -42,7 +42,7 @@ class LobbyCardsOnlineBroadcasterTests {
     fun setup() {
         MockKAnnotations.init(this)
         context = InstrumentationRegistry.getInstrumentation().context
-        liveBroadcast = makeLiveBroadcast()
+        previousBroadcast = makePreviousBroadcast()
         coEvery { lobbyImpressionAnalytics.sendImpressionEventData(any()) } just Runs
     }
 
@@ -50,15 +50,15 @@ class LobbyCardsOnlineBroadcasterTests {
     fun `clicking the card navigates to the stage`() {
         every { followManager.isFollowing(any()) } returns false
         coEvery { lobbyImpressionAnalytics.cardClicked(any()) } just Runs
-        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        val offlineBroadcaster = makeOfflineBroadcaster(previousBroadcast)
 
-        onlineBroadcaster.cardClicked()
+        offlineBroadcaster.cardClicked()
 
-        onlineBroadcaster.navigationCommands.observeForever {
+        offlineBroadcaster.navigationCommands.observeForever {
             val navigationCommand = it.peekContent()
-            assertTrue(navigationCommand is NavigationCommand.To)
+            Assert.assertTrue(navigationCommand is NavigationCommand.To)
             val directions = (navigationCommand as NavigationCommand.To).directions
-            assertEquals(R.id.action_lobbySwipeFragment_to_stagePagerFragment, directions.actionId)
+            Assert.assertEquals(R.id.action_lobbySwipeFragment_to_stagePagerFragment, directions.actionId)
         }
     }
 
@@ -68,9 +68,9 @@ class LobbyCardsOnlineBroadcasterTests {
         coEvery { followManager.followUser(any()) } returns mockk()
         every { followManager.currentUserDetails() } returns mockk(relaxed = true)
         coEvery { lobbyImpressionAnalytics.followClicked(any()) } just Runs
-        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        val offlineBroadcaster = makeOfflineBroadcaster(previousBroadcast)
 
-        onlineBroadcaster.followClicked()
+        offlineBroadcaster.followClicked()
 
         coVerify { followManager.followUser("caid") }
     }
@@ -83,9 +83,9 @@ class LobbyCardsOnlineBroadcasterTests {
         every { user.caid } returns "123"
         every { followManager.currentUserDetails() } returns user
         coEvery { lobbyImpressionAnalytics.followClicked(any()) } just Runs
-        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        val offlineBroadcaster = makeOfflineBroadcaster(previousBroadcast)
 
-        onlineBroadcaster.followClicked()
+        offlineBroadcaster.followClicked()
 
         coVerify { lobbyImpressionAnalytics.followClicked(any()) }
     }
@@ -94,51 +94,34 @@ class LobbyCardsOnlineBroadcasterTests {
     fun `clicking card sends lobby card click analytics`() {
         every { followManager.isFollowing(any()) } returns false
         coEvery { lobbyImpressionAnalytics.cardClicked(any()) } just Runs
-        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        val offlineBroadcaster = makeOfflineBroadcaster(previousBroadcast)
 
-        onlineBroadcaster.cardClicked()
+        offlineBroadcaster.cardClicked()
 
         coVerify { lobbyImpressionAnalytics.cardClicked(any()) }
     }
 
-    @Test
-    fun `clicking the kebab button navigates to the report-ignore dialog`() {
-        every { followManager.isFollowing(any()) } returns false
-        coEvery { lobbyImpressionAnalytics.cardClicked(any()) } just Runs
-        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
-
-        onlineBroadcaster.kebabClicked()
-
-        onlineBroadcaster.navigationCommands.observeForever {
-            val navigationCommand = it.peekContent()
-            assertTrue(navigationCommand is NavigationCommand.To)
-            val directions = (navigationCommand as NavigationCommand.To).directions
-            assertEquals(R.id.action_global_reportOrIgnoreDialogFragment, directions.actionId)
-        }
-    }
-
-    private fun makeLiveBroadcast(): LiveBroadcast {
+    private fun makePreviousBroadcast(): PreviousBroadcast {
         val genericUser = User("caid", "username", "name", "email",
             "/avatarImagePath", 0, 0, false, false,
             "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode",
             "countryName", "gender", false, false, null,
             null, false)
-        val onlineBroadcast = Broadcast("id", "name", "contentId", null, null,
-            "pip", Broadcast.State.ONLINE, "date", null, null)
-        val broadcaster = Lobby.Broadcaster("2", "OnlineBroadcaster", genericUser, "tag", onlineBroadcast, null,
+        val offlineBroadcast = Broadcast("id", "name", "contentId", null, null,
+            "pip", Broadcast.State.OFFLINE, "date", null, null)
+        val broadcaster = Lobby.Broadcaster("2", "OnlineBroadcaster", genericUser, "tag", null, offlineBroadcast,
             listOf(), 0, 0, null)
-        val liveBroadcast = LiveBroadcast("1", broadcaster)
-        return liveBroadcast
+        val previousBroadcast = PreviousBroadcast("1", broadcaster)
+        return previousBroadcast
     }
 
-    private fun makeOnlineBroadcaster(liveBroadcast: LiveBroadcast): OnlineBroadcaster {
-        val onlineBroadcaster = OnlineBroadcaster(
-            context,
+    private fun makeOfflineBroadcaster(previousBroadcast: PreviousBroadcast): OfflineBroadcaster {
+        val offlineBroadcaster = OfflineBroadcaster(
             followManager,
-            liveBroadcast.broadcaster,
+            previousBroadcast.broadcaster,
             lobbyImpressionAnalytics,
             GlobalScope
         )
-        return onlineBroadcaster
+        return offlineBroadcaster
     }
 }

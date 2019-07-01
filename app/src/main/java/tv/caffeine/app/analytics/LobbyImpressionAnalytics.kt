@@ -8,9 +8,9 @@ import tv.caffeine.app.api.LobbyClickedEventData
 import tv.caffeine.app.api.LobbyFollowClickedEvent
 import tv.caffeine.app.api.LobbyImpressionEvent
 import tv.caffeine.app.api.LobbyImpressionEventData
+import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.makeLobbyImpressionEventData
 import tv.caffeine.app.ext.seconds
-import tv.caffeine.app.lobby.SingleCard
 import tv.caffeine.app.session.FollowManager
 
 class LobbyImpressionAnalytics @AssistedInject constructor(
@@ -25,28 +25,28 @@ class LobbyImpressionAnalytics @AssistedInject constructor(
         fun create(payloadId: String): LobbyImpressionAnalytics
     }
 
-    suspend fun followClicked(singleCard: SingleCard) {
-        val eventData = makeLobbyClickedEventData(singleCard) ?: return
+    suspend fun followClicked(broadcaster: Lobby.Broadcaster) {
+        val eventData = makeLobbyClickedEventData(broadcaster) ?: return
         eventManager.sendEvent(LobbyFollowClickedEvent(eventData))
     }
 
-    suspend fun cardClicked(singleCard: SingleCard) {
-        val eventData = makeLobbyClickedEventData(singleCard) ?: return
+    suspend fun cardClicked(broadcaster: Lobby.Broadcaster) {
+        val eventData = makeLobbyClickedEventData(broadcaster) ?: return
         eventManager.sendEvent(LobbyCardClickedEvent(eventData))
     }
 
-    suspend fun sendImpressionEventData(singleCard: SingleCard) {
-        val eventData = getLobbyImpressionEventData(singleCard)
+    suspend fun sendImpressionEventData(broadcaster: Lobby.Broadcaster) {
+        val eventData = getLobbyImpressionEventData(broadcaster)
         eventManager.sendEvent(LobbyImpressionEvent(eventData))
     }
 
-    private fun makeLobbyClickedEventData(singleCard: SingleCard): LobbyClickedEventData? {
+    private fun makeLobbyClickedEventData(broadcaster: Lobby.Broadcaster): LobbyClickedEventData? {
         val caid = followManager.currentUserDetails()?.caid
-        val stageId = singleCard.broadcaster.user.stageId
+        val stageId = broadcaster.user.stageId
         val timestamp = clock.seconds()
         return LobbyClickedEventData(payloadId, caid, stageId, timestamp)
     }
 
-    private fun getLobbyImpressionEventData(singleCard: SingleCard): LobbyImpressionEventData =
-        singleCard.broadcaster.makeLobbyImpressionEventData(payloadId, clock.seconds())
+    private fun getLobbyImpressionEventData(broadcaster: Lobby.Broadcaster): LobbyImpressionEventData =
+        broadcaster.makeLobbyImpressionEventData(payloadId, clock.seconds())
 }

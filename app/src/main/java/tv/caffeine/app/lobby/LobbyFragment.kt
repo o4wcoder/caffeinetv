@@ -79,10 +79,11 @@ class LobbyFragment @Inject constructor(
                 is LargeOnlineBroadcasterCard -> viewHolder.turnOffLiveVideo()
             }
         }
+        val separateOffline = releaseDesignConfig.isReleaseDesignActive()
         viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { lobby ->
-                val items = LobbyItem.parse(lobby)
+                val items = LobbyItem.parse(lobby, separateOffline)
                 lobbyAdapter.submitList(items, lobby.tags, lobby.content, lobby.payloadId)
                 binding.lobbyLoadingIndicator.isVisible = false
             }
