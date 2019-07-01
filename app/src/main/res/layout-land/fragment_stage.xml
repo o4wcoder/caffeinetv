@@ -172,6 +172,7 @@
                     android:id="@+id/weak_connection_header_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/poor_connection_text_margin_start"
                     android:text="@string/weak_connection"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/no_network_data_image_view"/>
@@ -180,6 +181,7 @@
                     style="@style/PleaseCheckConnectionText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/poor_connection_text_margin_start"
                     android:text="@string/please_check_network_connection"
                     app:layout_constraintTop_toBottomOf="@id/weak_connection_header_text"
                     app:layout_constraintStart_toEndOf="@id/no_network_data_image_view"/>

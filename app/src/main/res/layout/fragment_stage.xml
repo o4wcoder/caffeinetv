@@ -342,7 +342,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/weak_connection"
-                    android:layout_marginLeft="11dp"
+                    android:layout_marginStart="@dimen/poor_connection_text_margin_start"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/no_network_data_image_view"/>
 
@@ -351,7 +351,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/please_check_network_connection"
-                    android:layout_marginLeft="11dp"
+                    android:layout_marginStart="@dimen/poor_connection_text_margin_start"
                     app:layout_constraintTop_toBottomOf="@id/weak_connection_header_text"
                     app:layout_constraintStart_toEndOf="@id/no_network_data_image_view"/>
 

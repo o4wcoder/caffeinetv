@@ -78,4 +78,6 @@
     <dimen name="two_step_auth_done_image_size">120dp</dimen>
 
     <dimen name="bad_connection_icon_size">40dp</dimen>
+
+    <dimen name="poor_connection_text_margin_start">12dp</dimen>
 </resources>
