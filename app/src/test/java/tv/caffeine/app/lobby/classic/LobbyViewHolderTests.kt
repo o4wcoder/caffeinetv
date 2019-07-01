@@ -100,7 +100,7 @@ class LobbyViewHolderTests {
         card.binding.followButton.performClick()
 
         assertEquals(2, sentEvents.size)
-        assertTrue(sentEvents.first() is LobbyImpressionEvent) // temporarily disabled
+        assertTrue(sentEvents.first() is LobbyImpressionEvent)
         assertTrue(sentEvents.last() is LobbyFollowClickedEvent)
     }
 
@@ -113,7 +113,7 @@ class LobbyViewHolderTests {
         card.binding.followButton.performClick()
 
         assertEquals(2, sentEvents.size)
-        assertTrue(sentEvents.first() is LobbyImpressionEvent) // temporarily disabled
+        assertTrue(sentEvents.first() is LobbyImpressionEvent)
         assertTrue(sentEvents.last() is LobbyFollowClickedEvent)
     }
 

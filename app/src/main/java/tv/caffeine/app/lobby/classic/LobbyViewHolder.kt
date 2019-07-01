@@ -54,6 +54,7 @@ import tv.caffeine.app.di.ThemeFollowedLobby
 import tv.caffeine.app.di.ThemeFollowedLobbyLight
 import tv.caffeine.app.di.ThemeNotFollowedLobby
 import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
+import tv.caffeine.app.ext.seconds
 import tv.caffeine.app.lobby.CardList
 import tv.caffeine.app.lobby.FollowPeople
 import tv.caffeine.app.lobby.Header
@@ -241,8 +242,6 @@ abstract class BroadcasterCard(
         val action = MainNavDirections.actionGlobalProfileFragment(caid)
         Navigation.findNavController(itemView).safeNavigate(action)
     }
-
-    private fun Clock.seconds() = millis() / 1000
 
     @VisibleForTesting fun getLobbyClickedEventData(singleCard: SingleCard): LobbyClickedEventData? {
         if (payloadId == null) return null

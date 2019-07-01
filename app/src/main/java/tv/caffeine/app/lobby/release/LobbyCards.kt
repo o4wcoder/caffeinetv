@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.lobby.LiveBroadcast
 import tv.caffeine.app.lobby.LobbySwipeFragmentDirections
@@ -28,12 +29,24 @@ class OnlineBroadcaster @AssistedInject constructor (
     context: Context,
     private val followManager: FollowManager,
     @Assisted private val liveBroadcast: LiveBroadcast,
+    @Assisted private val lobbyImpressionAnalytics: LobbyImpressionAnalytics,
     @Assisted private val coroutineScope: CoroutineScope
 ) : LobbyCard() {
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(liveBroadcast: LiveBroadcast, coroutineScope: CoroutineScope): OnlineBroadcaster
+        fun create(
+            liveBroadcast: LiveBroadcast,
+            lobbyImpressionAnalytics: LobbyImpressionAnalytics,
+            coroutineScope: CoroutineScope
+        ): OnlineBroadcaster
+    }
+
+    // TODO in the future, this should be called when the card is actually visible
+    init {
+        coroutineScope.launch {
+            lobbyImpressionAnalytics.sendImpressionEventData(liveBroadcast)
+        }
     }
 
     private val user = liveBroadcast.broadcaster.user
@@ -63,6 +76,7 @@ class OnlineBroadcaster @AssistedInject constructor (
             navigate(action)
         } else {
             followManager.followUser(caid)
+            lobbyImpressionAnalytics.followClicked(liveBroadcast)
         }
         withContext(Dispatchers.Main) {
             isFollowing.value = followManager.isFollowing(caid)
@@ -75,6 +89,9 @@ class OnlineBroadcaster @AssistedInject constructor (
     }
 
     fun cardClicked() {
+        coroutineScope.launch {
+            lobbyImpressionAnalytics.cardClicked(liveBroadcast)
+        }
         val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(username)
         navigate(action)
     }

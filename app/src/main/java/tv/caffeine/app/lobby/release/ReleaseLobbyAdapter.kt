@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import timber.log.Timber
+import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
@@ -34,6 +35,7 @@ import kotlin.coroutines.CoroutineContext
 class ReleaseLobbyAdapter @AssistedInject constructor(
     private val onlineBroadcasterFactory: OnlineBroadcaster.Factory,
     private val horizontalScrollCardFactory: HorizontalScrollCard.Factory,
+    private val lobbyImpressionAnalyticsFactory: LobbyImpressionAnalytics.Factory,
     @Assisted private val lifecycleOwner: LifecycleOwner,
     @Assisted private val navController: NavController
 ) : GenericLobbyAdapter<CardViewHolder>(DiffCallback()), CoroutineScope {
@@ -69,6 +71,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     private var tags: Map<String, Lobby.Tag> = mapOf()
     private var content: Map<String, Lobby.Content> = mapOf()
     private var payloadId: String? = null
+    private lateinit var lobbyImpressionAnalytics: LobbyImpressionAnalytics
 
     override fun submitList(
         list: List<LobbyItem>,
@@ -80,6 +83,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
         this.tags = tags
         this.content = content
         this.payloadId = payloadId
+        lobbyImpressionAnalytics = lobbyImpressionAnalyticsFactory.create(payloadId)
     }
 
     override fun getItemViewType(position: Int): Int = getItem(position).itemType.ordinal
@@ -152,7 +156,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             is LiveBroadcastWithFriends -> LiveBroadcast(item.id, item.broadcaster)
             else -> return
         }
-        val onlineBroadcaster = onlineBroadcasterFactory.create(liveBroadcast, this)
+        val onlineBroadcaster = onlineBroadcasterFactory.create(liveBroadcast, lobbyImpressionAnalytics, this)
         largeOnlineBroadcasterCard.bind(onlineBroadcaster)
         onlineBroadcaster.navigationCommands.observeEvents(lifecycleOwner) {
             when (it) {
