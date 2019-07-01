@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_no_network_data"
             android:contentDescription="@string/poor_connection_icon_content_description"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/secondary_view_renderer"
             tools:visibility="visible"/>
