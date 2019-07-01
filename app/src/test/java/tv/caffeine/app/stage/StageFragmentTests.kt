@@ -26,7 +26,7 @@ private inline fun launchStageFragmentWithArgs(
     crossinline action: (StageFragment) -> Unit
 ) {
     val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
-    val testComponent = DaggerTestComponent.builder().create(app)
+    val testComponent = DaggerTestComponent.factory().create(app)
     app.setApplicationInjector(testComponent)
     val arguments = StageFragmentArgs(broadcastUsername, canSwipe).toBundle()
     val navController = mockk<NavController>(relaxed = true)

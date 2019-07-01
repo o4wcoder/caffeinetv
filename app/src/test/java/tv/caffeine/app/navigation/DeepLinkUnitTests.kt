@@ -32,7 +32,7 @@ import tv.caffeine.app.di.InjectionActivityTestRule
 class DeepLinkUnitTests(private val url: String, @IdRes private val destination: Int) {
     private lateinit var navController: NavController
     private lateinit var resources: Resources
-    private val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.builder())
+    private val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.factory())
 
     companion object {
         @JvmStatic

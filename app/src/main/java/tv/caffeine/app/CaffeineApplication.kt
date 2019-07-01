@@ -15,7 +15,7 @@ class CaffeineApplication : DaggerApplication() {
     @Inject lateinit var picassoProvider: Provider<Picasso>
 
     override fun onCreate() {
-        injector = DaggerCaffeineComponent.builder().create(this)
+        injector = DaggerCaffeineComponent.factory().create(this)
         super.onCreate()
         initializers.init(this)
     }

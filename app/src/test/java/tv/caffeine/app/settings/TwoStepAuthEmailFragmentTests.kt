@@ -34,7 +34,7 @@ class TwoStepAuthEmailFragmentTests {
     fun setup() {
         MockKAnnotations.init(this)
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
-        val testComponent = DaggerTestComponent.builder().create(app)
+        val testComponent = DaggerTestComponent.factory().create(app)
         app.setApplicationInjector(testComponent)
         every { viewModelFactory.create(TwoStepAuthViewModel::class.java) } returns viewModel
         val arguments = TwoStepAuthEmailFragmentArgs("user@email.com").toBundle()

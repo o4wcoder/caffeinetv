@@ -8,7 +8,7 @@ import tv.caffeine.app.CaffeineApplication
 
 class InjectionActivityTestRule<T : Activity>(
     activityClass: Class<T>,
-    private val componentBuilder: AndroidInjector.Builder<CaffeineApplication>
+    private val componentBuilder: AndroidInjector.Factory<CaffeineApplication>
 ) : ActivityTestRule<T>(activityClass, true, false) {
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()

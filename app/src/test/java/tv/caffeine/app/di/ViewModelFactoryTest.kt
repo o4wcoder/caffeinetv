@@ -85,7 +85,7 @@ class ViewModelFactoryTest(private val modelClass: Class<out ViewModel>) {
     @Before
     fun setup() {
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
-        val testComponent = DaggerTestComponent.builder().create(app)
+        val testComponent = DaggerTestComponent.factory().create(app)
         app.setApplicationInjector(testComponent)
         val scenario = launchFragmentInContainer<NoNetworkFragment>()
         val navController = mockk<NavController>(relaxed = true)

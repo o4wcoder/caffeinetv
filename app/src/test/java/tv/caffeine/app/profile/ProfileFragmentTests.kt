@@ -36,7 +36,7 @@ class ProfileFragmentTests {
     fun setup() {
         MockKAnnotations.init(this)
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
-        val testComponent = DaggerTestComponent.builder().create(app)
+        val testComponent = DaggerTestComponent.factory().create(app)
         app.setApplicationInjector(testComponent)
         every { navController.navigate(any<NavDirections>()) } just Runs
         val scenario = launchFragmentInContainer<ProfileFragment>(bundleOf("caid" to "caid"))

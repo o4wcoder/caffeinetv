@@ -23,6 +23,6 @@ import javax.inject.Singleton
     ArkoseConfigModule::class
 ])
 interface TestComponent : AndroidInjector<CaffeineApplication> {
-    @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<CaffeineApplication>()
+    @Component.Factory
+    abstract class Factory : AndroidInjector.Factory<CaffeineApplication>
 }

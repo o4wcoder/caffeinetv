@@ -43,7 +43,7 @@ class GoldBundlesViewModelTests {
         private lateinit var subject: GoldBundlesViewModel
         private lateinit var billingClientBroadcastHelper: BillingClientBroadcastHelper
         @MockK private lateinit var processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase
-        private val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.builder())
+        private val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.factory())
         private val mainActivity = activityTestRule.launchActivity(Intent())
 
         @Before

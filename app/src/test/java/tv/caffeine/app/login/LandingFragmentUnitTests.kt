@@ -45,7 +45,7 @@ class LandingFragmentUnitTests {
     fun setup() {
         MockKAnnotations.init(this)
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
-        val testComponent = DaggerTestComponent.builder().create(app)
+        val testComponent = DaggerTestComponent.factory().create(app)
         app.setApplicationInjector(testComponent)
         val directions = MainNavDirections.actionGlobalLandingFragment(null)
         scenario = launchFragmentInContainer<LandingFragment>(directions.arguments) {
