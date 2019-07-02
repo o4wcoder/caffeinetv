@@ -160,12 +160,12 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
 
     // Push notifications
-    implementation 'com.google.firebase:firebase-messaging:19.0.0'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
 
     // Crash Reporting, Performance
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.firebase:firebase-core:17.0.0'
-    implementation 'com.google.firebase:firebase-perf:18.0.0'
+    implementation 'com.google.firebase:firebase-perf:18.0.1'
 
     // Logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
@@ -177,8 +177,8 @@ dependencies {
     releaseImplementation 'com.android.billingclient:billing:1.2'
 
     // GraphQL
-    implementation 'com.apollographql.apollo:apollo-runtime:1.0.0'
-    implementation 'com.apollographql.apollo:apollo-coroutines-support:1.0.0'
+    implementation 'com.apollographql.apollo:apollo-runtime:1.0.1'
+    implementation 'com.apollographql.apollo:apollo-coroutines-support:1.0.1'
     compileOnly 'org.jetbrains:annotations:16.0.1'
     testCompileOnly 'org.jetbrains:annotations:16.0.1'
 
