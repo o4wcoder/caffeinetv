@@ -11,10 +11,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.realtime.webSocketFlow
@@ -26,8 +24,7 @@ class FriendWatchingEvent(val isViewing: Boolean, val caid: CAID)
 class FriendsWatchingController @AssistedInject constructor(
     private val dispatchConfig: DispatchConfig,
     private val tokenStore: TokenStore,
-    private val usersService: UsersService,
-    private val gson: Gson,
+    private val getSignedUserDetailsUseCase: GetSignedUserDetailsUseCase,
     private val serverConfig: ServerConfig,
     @Assisted private val stageIdentifier: String
 ) : CoroutineScope {
@@ -53,7 +50,7 @@ class FriendsWatchingController @AssistedInject constructor(
         val url = "${serverConfig.realtimeWebSocket}/v2/reaper/stages/$stageIdentifier/viewers/followed"
         val caid = tokenStore.caid ?: return
         launch {
-            val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
+            val result = getSignedUserDetailsUseCase(caid)
             val payload = when (result) {
                 is CaffeineResult.Success -> result.value.token
                 is CaffeineResult.Error -> return@launch Timber.e("Failed to get signed user details")

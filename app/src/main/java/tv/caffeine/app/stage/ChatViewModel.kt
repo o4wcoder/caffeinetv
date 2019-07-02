@@ -6,23 +6,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.Reaction
-import tv.caffeine.app.api.Realtime
-import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.api.model.awaitAndParseErrors
-import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
@@ -31,14 +27,13 @@ private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
 
 class ChatViewModel @Inject constructor(
     context: Context,
-    private val realtime: Realtime,
     private val tokenStore: TokenStore,
-    private val usersService: UsersService,
+    private val getSignedUserDetailsUseCase: GetSignedUserDetailsUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val endorseMessageUseCase: EndorseMessageUseCase,
     private val followManager: FollowManager,
-    private val messageHandshakeFactory: MessageHandshake.Factory,
-    private val gson: Gson
+    private val messageController: MessageController
 ) : ViewModel() {
-    private var messageHandshake: MessageHandshake? = null
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
 
     private val columns = context.resources.getInteger(R.integer.chat_column_count)
@@ -51,7 +46,6 @@ class ChatViewModel @Inject constructor(
     val messages: LiveData<List<Message>> = _messages.map { it }
 
     fun load(stageIdentifier: String) {
-        messageHandshake = messageHandshakeFactory.create(stageIdentifier)
         viewModelScope.launch {
             while (isActive) {
                 displayMessages()
@@ -59,7 +53,9 @@ class ChatViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            messageHandshake?.channel?.consumeEach { processMessage(it) }
+            messageController.connect(stageIdentifier).collect {
+                processMessage(it)
+            }
         }
     }
 
@@ -67,27 +63,24 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
             val caid = tokenStore.caid ?: return@launch Timber.e("Not logged in")
-            val result = usersService.signedUserDetails(caid).awaitAndParseErrors(gson)
-            val publisher = when (result) {
+            val publisher = when (val result = getSignedUserDetailsUseCase(caid)) {
                 is CaffeineResult.Success -> result.value.token
                 is CaffeineResult.Error -> return@launch Timber.e("Failed to get signed user details")
                 is CaffeineResult.Failure -> return@launch Timber.e(result.throwable)
             }
             val stageId = userDetails.stageId
             val message = Reaction("reaction", publisher, Message.Body(text))
-            val result2 = realtime.sendMessage(stageId, message).awaitAndParseErrors(gson)
-            when (result2) {
+            when (val result = sendMessageUseCase(stageId, message)) {
                 is CaffeineResult.Success -> Timber.d("Sent message $text with result $result")
                 is CaffeineResult.Error -> Timber.e("Failed to send message")
-                is CaffeineResult.Failure -> Timber.e(result2.throwable)
+                is CaffeineResult.Failure -> Timber.e(result.throwable)
             }
         }
     }
 
     fun endorseMessage(message: Message) {
         viewModelScope.launch {
-            val result = realtime.endorseMessage(message.id).awaitEmptyAndParseErrors(gson)
-            when (result) {
+            when (val result = endorseMessageUseCase(message.id)) {
                 is CaffeineEmptyResult.Success -> Timber.d("Successfully endorsed a message")
                 is CaffeineEmptyResult.Error -> Timber.e(result.error.toString())
                 is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
@@ -156,6 +149,6 @@ class ChatViewModel @Inject constructor(
     }
 
     fun disconnect() {
-        messageHandshake?.close()
+        viewModelScope.coroutineContext.cancelChildren()
     }
 }
