@@ -3,7 +3,6 @@ package tv.caffeine.app.settings.authentication
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.View
 import androidx.annotation.VisibleForTesting
@@ -18,7 +17,7 @@ import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentTwoStepAuthEmailBinding
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.convertLinks
+import tv.caffeine.app.ui.configureEmbeddedLink
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showKeyboard
@@ -35,8 +34,8 @@ class TwoStepAuthEmailFragment : CaffeineFragment(R.layout.fragment_two_step_aut
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentTwoStepAuthEmailBinding.bind(view)
         binding.verificationMessageText.apply {
-            text = convertLinks(R.string.two_step_auth_email_message, resources, ::onResendEmailClick, args.email)
-            movementMethod = LinkMovementMethod.getInstance()
+            configureEmbeddedLink(
+                R.string.two_step_auth_email_message, ::onResendEmailClick, args.email)
         }
         context?.showKeyboard(binding.verificationCodeEditText)
 
@@ -46,7 +45,6 @@ class TwoStepAuthEmailFragment : CaffeineFragment(R.layout.fragment_two_step_aut
                 binding.verificationCodeButton.isEnabled = s.length >= MIN_CODE_LENGTH
                 verificationCode = s.toString()
             }
-
             override fun afterTextChanged(s: Editable) {}
         })
 
@@ -56,7 +54,8 @@ class TwoStepAuthEmailFragment : CaffeineFragment(R.layout.fragment_two_step_aut
                     when (result) {
                         is CaffeineEmptyResult.Success -> {
                             findNavController().safeNavigate(
-                                ActionOnlyNavDirections(R.id.action_twoStepAuthEmail_to_twoStepAuthDoneFragment))
+                                ActionOnlyNavDirections(R.id.action_twoStepAuthEmail_to_twoStepAuthDoneFragment)
+                            )
                         }
                         is CaffeineEmptyResult.Error -> {
                             Timber.e("Error sending verification code, ${result.error}")
