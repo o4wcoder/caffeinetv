@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.User
@@ -14,18 +15,16 @@ import javax.inject.Inject
 
 class FriendsWatchingViewModel @Inject constructor(
     private val followManager: FollowManager,
-    private val friendsWatchingControllerFactory: FriendsWatchingController.Factory
+    private var friendsWatchingController: FriendsWatchingController
 ) : ViewModel() {
-    private var friendsWatchingController: FriendsWatchingController? = null
     private val friendsWatchingSet: MutableSet<CAID> = mutableSetOf()
 
     private val _friendsWatching = MutableLiveData<List<User>>()
     val friendsWatching: LiveData<List<User>> = _friendsWatching.map { it }
 
     fun load(stageIdentifier: String) {
-        friendsWatchingController = friendsWatchingControllerFactory.create(stageIdentifier)
         viewModelScope.launch {
-            friendsWatchingController?.channel?.consumeEach { event ->
+            friendsWatchingController.connect(stageIdentifier).collect { event ->
                 if (event.isViewing) {
                     friendsWatchingSet.add(event.caid)
                 } else {
@@ -44,6 +43,6 @@ class FriendsWatchingViewModel @Inject constructor(
     }
 
     fun disconnect() {
-        friendsWatchingController?.close()
+        viewModelScope.coroutineContext.cancelChildren()
     }
 }
