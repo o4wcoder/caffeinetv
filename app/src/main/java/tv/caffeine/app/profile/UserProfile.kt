@@ -64,4 +64,6 @@ data class UserProfile(
         isCaster -> R.drawable.caster
         else -> 0
     }
+
+    fun isMfaEnabled() = mfaMethod != MfaMethod.NONE
 }

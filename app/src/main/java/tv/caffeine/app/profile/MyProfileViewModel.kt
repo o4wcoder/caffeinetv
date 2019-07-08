@@ -40,7 +40,7 @@ class MyProfileViewModel @Inject constructor(
         load()
     }
 
-    private fun load() {
+    fun load() {
         val caid = tokenStore.caid ?: return
         loadJob = viewModelScope.launch {
             getUserProfile(caid)?.let { updateViewModel(it) }

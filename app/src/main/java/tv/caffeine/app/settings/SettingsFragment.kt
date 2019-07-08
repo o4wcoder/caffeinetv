@@ -105,6 +105,7 @@ class SettingsFragment @Inject constructor(
             event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }
         })
         twoStepAuthViewModel.mfaEnabled.observe(this, Observer { processMfaChangeEvent(it) })
+        twoStepAuthViewModel.startEnableMfa.observe(this, Observer { processStartEnableMtaEvent(it) })
     }
 
     override fun onAttach(context: Context) {
@@ -132,33 +133,37 @@ class SettingsFragment @Inject constructor(
             true
         }
 
-        // Set initial value
-        viewModel.userDetails.observe(this, Observer { user ->
-            (findPreference("manage_2fa_update") as? CheckBoxPreference)?.isChecked = user?.isMfaEnabled() ?: false
-        })
-
         myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
             @StringRes val status = when (userProfile.mfaMethod) {
                 MfaMethod.EMAIL, MfaMethod.TOTP -> R.string.mfa_status_on
                 else -> R.string.mfa_status_off
             }
-            findPreference("manage_2fa")?.summary = getString(status)
-            findPreference("manage_2fa_update")?.apply {
-                setOnPreferenceChangeListener { _, newValue ->
-                    if (newValue as Boolean) {
-                        viewModel.sendMTAEmailCode()
-                        findNavController().safeNavigate(
-                            SettingsFragmentDirections.actionSettingsFragmentToTwoStepAuthFragment(
-                                userProfile.email ?: getString(R.string.email)
-                            )
-                        )
-                    } else {
+            findPreference("manage_2fa")?.apply {
+                setSummary(status)
+                setOnPreferenceClickListener {
+                    if (userProfile.isMfaEnabled()) {
                         findNavController().safeNavigate(R.id.twoStepAuthDisableDialogFragment)
+                    } else {
+                        findNavController().safeNavigate(R.id.twoStepAuthEnableDialogFragment)
                     }
                     false
                 }
             }
-            findPreference("change_email")?.summary = userProfile.email ?: getString(R.string.email) })
+            findPreference("change_email")?.summary = userProfile.email ?: getString(R.string.email)
+        })
+    }
+
+    private fun processStartEnableMtaEvent(event: Event<Boolean>) {
+        event.getContentIfNotHandled()?.let {
+            // Need to pop off dialog as it is still on the backstack and hasn't finished closing
+            // by the time this notification goes through
+            findNavController().popBackStack(R.id.twoStepAuthEnableDialogFragment, true)
+            findNavController().safeNavigate(
+                SettingsFragmentDirections.actionSettingsFragmentToTwoStepAuthFragment(
+                    myProfileViewModel.userProfile.value?.email ?: getString(R.string.email)
+                )
+            )
+        }
     }
 
     private fun configureNotificationSettings() {
@@ -223,10 +228,11 @@ class SettingsFragment @Inject constructor(
 
     private fun processMfaChangeEvent(event: Event<Boolean>) {
         event.getContentIfNotHandled()?.let { result ->
-            (findPreference("manage_2fa_update") as? CheckBoxPreference)?.isChecked = result
-
             @StringRes val status = if (result) R.string.mfa_status_on else R.string.mfa_status_off
             findPreference("manage_2fa")?.summary = getString(status)
+
+            // Go and reload the user profile so we are in sync
+            myProfileViewModel.load()
         }
     }
 
@@ -343,7 +349,6 @@ class SettingsViewModel @Inject constructor(
     private val usersService: UsersService,
     private val oauthService: OAuthService,
     private val facebookLoginManager: LoginManager,
-    private val accountsService: AccountsService,
     private val gson: Gson
 ) : ViewModel() {
     private val _userDetails = MutableLiveData<User>()
@@ -402,18 +407,6 @@ class SettingsViewModel @Inject constructor(
             liveData.value = result
         }
         return liveData.map { it }
-    }
-
-    fun sendMTAEmailCode() {
-        viewModelScope.launch {
-            val result = accountsService.sendMFAEmailCode().awaitEmptyAndParseErrors(gson)
-
-            when (result) {
-                is CaffeineEmptyResult.Success -> Timber.d("Successful send MFA email code")
-                is CaffeineEmptyResult.Error -> Timber.d("Error attempting to send MFA email code ${result.error}")
-                is CaffeineEmptyResult.Failure -> Timber.d("Failure attempting to send MFA email code ${result.throwable}")
-            }
-        }
     }
 }
 

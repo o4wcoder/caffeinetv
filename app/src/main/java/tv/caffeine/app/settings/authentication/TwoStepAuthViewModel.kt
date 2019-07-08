@@ -23,6 +23,13 @@ class TwoStepAuthViewModel @Inject constructor(
     private val update = MutableLiveData<Event<CaffeineEmptyResult>>()
     private val _mfaEnabled = MutableLiveData<Event<Boolean>>()
     val mfaEnabled: LiveData<Event<Boolean>> = _mfaEnabled.map { it }
+    private val _startEnableMfa = MutableLiveData<Event<Boolean>>()
+    val startEnableMfa: LiveData<Event<Boolean>> = _startEnableMfa.map { it }
+
+    fun startEnableMtaSetup() {
+        sendMTAEmailCode()
+        _startEnableMfa.value = Event(true)
+    }
 
     fun updateMfaEnabled(enabled: Boolean) {
         _mfaEnabled.value = Event(enabled)

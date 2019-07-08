@@ -581,6 +581,10 @@
             android:id="@+id/twoStepAuthDisableDialogFragment"
             android:name="tv.caffeine.app.settings.authentication.TwoStepAuthDisableDialogFragment">
         </dialog>
+        <dialog
+            android:id="@+id/twoStepAuthEnableDialogFragment"
+            android:name="tv.caffeine.app.settings.authentication.TwoStepAuthEnableDialogFragment">
+        </dialog>
         <fragment android:id="@+id/twoStepAuthDoneFragment"
                   android:name="tv.caffeine.app.settings.authentication.TwoStepAuthDoneFragment"
                   android:label="@string/two_step_auth_done_title">
