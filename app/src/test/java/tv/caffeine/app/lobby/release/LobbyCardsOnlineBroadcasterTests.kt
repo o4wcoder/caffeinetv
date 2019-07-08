@@ -22,11 +22,12 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.LooperMode
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.LobbyImpressionAnalytics
-import tv.caffeine.app.api.model.Broadcast
-import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.lobby.LiveBroadcast
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.util.makeBroadcaster
+import tv.caffeine.app.util.makeGenericUser
+import tv.caffeine.app.util.makeOnlineBroadcast
 
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -118,15 +119,9 @@ class LobbyCardsOnlineBroadcasterTests {
     }
 
     private fun makeLiveBroadcast(): LiveBroadcast {
-        val genericUser = User("caid", "username", "name", "email",
-            "/avatarImagePath", 0, 0, false, false,
-            "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode",
-            "countryName", "gender", false, false, null,
-            null, false)
-        val onlineBroadcast = Broadcast("id", "name", "contentId", null, null,
-            "pip", Broadcast.State.ONLINE, "date", null, null)
-        val broadcaster = Lobby.Broadcaster("2", "OnlineBroadcaster", genericUser, "tag", onlineBroadcast, null,
-            listOf(), 0, 0, null)
+        val genericUser = makeGenericUser()
+        val onlineBroadcast = makeOnlineBroadcast()
+        val broadcaster = makeBroadcaster(genericUser, onlineBroadcast)
         val liveBroadcast = LiveBroadcast("1", broadcaster)
         return liveBroadcast
     }

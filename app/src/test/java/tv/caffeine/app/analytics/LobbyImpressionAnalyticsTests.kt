@@ -17,6 +17,9 @@ import tv.caffeine.app.api.LobbyCardClickedEvent
 import tv.caffeine.app.api.LobbyFollowClickedEvent
 import tv.caffeine.app.api.LobbyImpressionEvent
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.util.makeBroadcaster
+import tv.caffeine.app.util.makeGenericUser
+import tv.caffeine.app.util.makeOnlineBroadcast
 
 class LobbyImpressionAnalyticsTests {
     lateinit var subject: LobbyImpressionAnalytics
@@ -55,5 +58,48 @@ class LobbyImpressionAnalyticsTests {
         subject.sendImpressionEventData(mockk(relaxed = true))
         assertEquals(1, list.size)
         assertTrue(list.first() is LobbyImpressionEvent)
+    }
+
+    @Test
+    fun `conversion from online broadcaster to lobby impression`() {
+        val user = makeGenericUser()
+        val broadcast = makeOnlineBroadcast()
+        val subject = makeBroadcaster(user, broadcast)
+
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 123000L)
+        assertEquals("caid", lobbyImpressionEventData.caid)
+        assertEquals("clusterId", lobbyImpressionEventData.clusterId)
+        assertEquals(true, lobbyImpressionEventData.isLive)
+    }
+
+    @Test
+    fun `conversion from offline broadcaster to lobby impression`() {
+        val user = makeGenericUser()
+        val subject = makeBroadcaster(user, null)
+
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 123000L)
+        assertEquals("caid", lobbyImpressionEventData.caid)
+        assertEquals("clusterId", lobbyImpressionEventData.clusterId)
+        assertEquals(false, lobbyImpressionEventData.isLive)
+    }
+
+    @Test
+    fun `lobby impression data contains payload id`() {
+        val user = makeGenericUser()
+        val broadcast = makeOnlineBroadcast()
+        val subject = makeBroadcaster(user, broadcast)
+
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 12300L)
+        assertEquals("payloadId", lobbyImpressionEventData.payloadId)
+    }
+
+    @Test
+    fun `lobby impression data contains content id`() {
+        val user = makeGenericUser()
+        val broadcast = makeOnlineBroadcast()
+        val subject = makeBroadcaster(user, broadcast)
+
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 12300L)
+        assertEquals("contentId", lobbyImpressionEventData.contentId)
     }
 }

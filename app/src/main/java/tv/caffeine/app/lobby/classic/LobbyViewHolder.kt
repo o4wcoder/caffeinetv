@@ -27,6 +27,7 @@ import org.webrtc.EglRenderer
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.EventManager
+import tv.caffeine.app.analytics.makeLobbyImpressionEventData
 import tv.caffeine.app.api.LobbyCardClickedEvent
 import tv.caffeine.app.api.LobbyClickedEventData
 import tv.caffeine.app.api.LobbyFollowClickedEvent
@@ -35,7 +36,6 @@ import tv.caffeine.app.api.LobbyImpressionEventData
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.api.model.makeLobbyImpressionEventData
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.LiveBroadcastCardBinding
 import tv.caffeine.app.databinding.LiveBroadcastWithFriendsCardBinding

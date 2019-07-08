@@ -9,7 +9,6 @@ import tv.caffeine.app.api.LobbyFollowClickedEvent
 import tv.caffeine.app.api.LobbyImpressionEvent
 import tv.caffeine.app.api.LobbyImpressionEventData
 import tv.caffeine.app.api.model.Lobby
-import tv.caffeine.app.api.model.makeLobbyImpressionEventData
 import tv.caffeine.app.ext.seconds
 import tv.caffeine.app.session.FollowManager
 
@@ -50,3 +49,17 @@ class LobbyImpressionAnalytics @AssistedInject constructor(
     private fun getLobbyImpressionEventData(broadcaster: Lobby.Broadcaster): LobbyImpressionEventData =
         broadcaster.makeLobbyImpressionEventData(payloadId, clock.seconds())
 }
+
+fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String, renderedAt: Long) =
+    LobbyImpressionEventData(
+        payloadId,
+        user.caid,
+        user.stageId,
+        user.isFeatured,
+        broadcast != null,
+        displayOrder,
+        followingViewers?.map { it.caid } ?: emptyList(),
+        clusterId,
+        broadcast?.contentId,
+        renderedAt
+    )
