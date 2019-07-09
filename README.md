@@ -80,3 +80,17 @@ The Android app for Caffeine.
 
 * [SceneForm finally supports FBX animations](https://developers.google.com/ar/develop/java/sceneform/animation/)
 
+### GraphQL
+1. Install `apollo-cli` and `jq`:
+```
+npm install -g apollo
+brew install jq
+```
+2. Get the credential. Referenced this [libcaffeine script](https://github.com/caffeinetv/libcaffeine/blob/master/generate-graphql-types.sh).
+```
+CREDENTIAL=$(curl "https://api.caffeine.tv/v1/credentials/anonymous" | jq -j .credential)
+```
+3. Download `graphql.schema`:
+```
+apollo schema:download --endpoint="https://realtime.caffeine.tv/public/graphql/query" --header="X-Credential: ${CREDENTIAL}"
+```

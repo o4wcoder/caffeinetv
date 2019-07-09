@@ -50,6 +50,7 @@ class GraphqlStageDirector @Inject constructor(
         val subscription = StageSubscription(
             clientId,
             ClientType.MOBILE,
+            Input.fromNullable("android"),
             Input.fromNullable(true),
             username,
             Input.fromNullable(listOf())

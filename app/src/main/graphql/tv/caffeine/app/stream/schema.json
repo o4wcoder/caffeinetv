@@ -17,7 +17,7 @@
         "fields": [
           {
             "name": "stage",
-            "description": "This query does not allocate streams. Any feeds returned will contain a\nzero-value stream.\n\nThis query will return all of the feeds on the stage.\n\nThis query isn't even required by our clients, but every GraphQL schema is\nrequired to have at least one query.",
+            "description": "NOTE All this query does is to read stage and sanitize it depending on who\nthe requester is.\n\nNo streams are allocated, and no feeds will be removed in order to show the\nclient-specific view.\n\nThere may be some stream information if Reyes has stored it, but clients\nshould never use this information for anything.",
             "args": [
               {
                 "name": "username",
@@ -35,9 +35,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "Stage",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Stage",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -566,12 +570,12 @@
         "possibleTypes": [
           {
             "kind": "OBJECT",
-            "name": "LiveHosting",
+            "name": "LiveHostable",
             "ofType": null
           },
           {
             "kind": "OBJECT",
-            "name": "LiveHostable",
+            "name": "LiveHosting",
             "ofType": null
           }
         ]
@@ -637,7 +641,7 @@
         "fields": [
           {
             "name": "addFeed",
-            "description": "Add a feed to the stage. Any non-required fields in the input will be filled\nwith default values if not specified.\n\nReyes will not allow you to add the feed if another client is controlling the\nstage.\n\nTODO Link to the client contention logic documentation in the repo.\n\nReyes may limit the number of feeds and live hostable feeds each client is allowed to add.\n\nAdding a feed may mutate other feeds, since Reyes always maintains a legal\nassignment of roles to the various feeds.",
+            "description": "Add a feed to the stage. Any non-required fields in the input will be filled\nwith default values if not specified.\n\nReyes will not allow you to add the feed if another client is controlling the\nstage.\n\nTODO Link to the client contention logic documentation in the repo.\n\nReyes may limit the number of feeds and live hostable feeds each client is\nallowed to add.\n\nAdding a feed may mutate other feeds, since Reyes always maintains a legal\nassignment of roles to the various feeds.\n\nRoles are assigned according to the following rules:\n\n1. Each client may have at most 2 feeds on the stage.\n2. Each client may have at most 1 live hosting feed on the stage.\n3. If the client did not specify the roles on the feeds, then the last feed\nthat was added will be PRIMARY.\n4. However, if one of the feeds is live hosting, then that feed will be made\nPRIMARY.",
             "args": [
               {
                 "name": "clientId",
@@ -683,16 +687,20 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "AddFeedPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AddFeedPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "setLiveHostingFeed",
-            "description": "Sets the live hosting feed to the stage. If a live hosting feed was already on\nthe stage, this mutation will remove the pre-existing feed.\n\nIf you try to set a non-hostable feed, then you will receive an error.\n\nYou may also add live hosting feeds using the regular addFeed mutation, but\ndoing so will give an error if you attempt to add more than a legal number of\nlive hosting feeds to the stage.",
+            "description": "Sets the live hosting feed to the stage. If a live hosting feed was already on\nthe stage, this mutation will remove the pre-existing feed.\n\nIf you try to set a non-hostable feed, then you will receive an error.\n\nYou may also add live hosting feeds using the regular addFeed mutation, but\ndoing so will give an error if you attempt to add more than a legal number of\nlive hosting feeds to the stage.\n\nNOTE Stream allocation will not be retried if it fails. Instead, adding the\nfeed will fail with a CdnError. This is also true for the other mutations.",
             "args": [
               {
                 "name": "clientId",
@@ -738,9 +746,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "SetLiveHostingFeedPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SetLiveHostingFeedPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -793,9 +805,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "UpdateFeedPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UpdateFeedPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -848,9 +864,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "RemoveFeedPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RemoveFeedPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -903,9 +923,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "ChangeStageTitlePayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ChangeStageTitlePayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -954,9 +978,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "StartBroadcastPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "StartBroadcastPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -991,9 +1019,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "StopBroadcastPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "StopBroadcastPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1032,9 +1064,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "RequestViewerStreamPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RequestViewerStreamPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1059,9 +1095,13 @@
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "TakedownStagePayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TakedownStagePayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1075,12 +1115,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "FeedInput",
-        "description": "Required fields that are not set will be set to the specified default values.",
+        "description": "Optional fields that are not set will be set to the specified default values.",
         "fields": null,
         "inputFields": [
           {
             "name": "id",
-            "description": "",
+            "description": "Must be a valid, lower-cased v4 UUID.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -1172,7 +1212,7 @@
           },
           {
             "name": "sdpOffer",
-            "description": "Include the SDP offer when adding a new feed whose content you own and will\nbe sending into the CDN. The SDP offer is used to allocate a\nbroadcaster stream for the feed.",
+            "description": "Include the SDP offer when adding a new feed whose content you own and will\nbe sending into the CDN. The SDP offer is used to allocate a\nbroadcaster stream for the feed.\n\nNOTE: You must either provide an sdpOffer or a viewerStream.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1198,7 +1238,7 @@
       {
         "kind": "SCALAR",
         "name": "Float",
-        "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). ",
+        "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -1395,7 +1435,7 @@
       {
         "kind": "INTERFACE",
         "name": "ErrorPayload",
-        "description": "",
+        "description": "If the error is present, then you should not expect the Stage to have\nmeaningful information (i.e. it will be a zero value).",
         "fields": [
           {
             "name": "error",
@@ -1496,17 +1536,22 @@
         "possibleTypes": [
           {
             "kind": "OBJECT",
+            "name": "ClientContentionError",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "CdnError",
             "ofType": null
           },
           {
             "kind": "OBJECT",
-            "name": "OutOfCapacityError",
+            "name": "GeoRestrictionError",
             "ofType": null
           },
           {
             "kind": "OBJECT",
-            "name": "ClientContentionError",
+            "name": "OutOfCapacityError",
             "ofType": null
           }
         ]
@@ -1896,7 +1941,7 @@
         "fields": [
           {
             "name": "stage",
-            "description": "Use this subscription to get reactive updates to the stage pushed from Reyes.\nUpon connecting, will return immediately with the client's current view of\nthe stage. As a viewer, this is where stream allocation happens.",
+            "description": "Use this subscription to get reactive updates to the stage pushed from Reyes.\nUpon connecting, will return immediately with the client's current view of\nthe stage. As a viewer, this is where stream allocation happens.\n\nIf Reyes fails to retrieve streams for any feed, it will return the feeds\n(possibly 0) that it was able to retrieve streams for. Reyes will then retry\na few times. If it is still not able to retrieve streams for every feed, then\nit will return a CdnError.\n\nNOTE Stream allocation is not retried in mutations (addFeed, updateFeed, etc.).\n\nViewer streams allocated here will be made available to views of the stage\nreturned in the mutations above; however, those streams will only be valid\nwhen returned from the mutation if the client is subscribed to stage updates.\nIf the client is not subscribed, then those streams may have expired.",
             "args": [
               {
                 "name": "clientId",
@@ -1914,7 +1959,7 @@
               },
               {
                 "name": "clientType",
-                "description": "",
+                "description": "clientType is a higher-level construct used for authorization.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -1923,6 +1968,16 @@
                     "name": "ClientType",
                     "ofType": null
                   }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "clientTypeForMetrics",
+                "description": "clientTypeForMetrics is a more granular client type specification,\nwhich can be freely specified by the clients. It is used for tracking\nthings like minutes watched or broadcasted for the data team.\n\nCommon values:\n\nWEB\nGENJI\nIOS\nANDROID\nLUCIO\nCOBS\n\nTODO Make this field required once clients have all migrated.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
                 "defaultValue": null
               },
@@ -1967,12 +2022,26 @@
                   }
                 },
                 "defaultValue": null
+              },
+              {
+                "name": "skipStreamAllocation",
+                "description": "If you'd like to subscribe as a \"headless\" user, set skipStreamAllocation\nto true. In this case, you will not be allocated any streams, and therefore\nReyes will not return any feeds in your view. Note that this is a bad idea\nif you are trying to broadcst, but Reyes will not stop you from doing it.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null
               }
             ],
             "type": {
-              "kind": "OBJECT",
-              "name": "StageSubscriptionPayload",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "StageSubscriptionPayload",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -2870,53 +2939,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "CdnError",
-        "description": "Sometimes life is hard and you can't get a stream, even when you retry (which\nReyes *should* do for you, but doesn't yet).",
-        "fields": [
-          {
-            "name": "title",
-            "description": "",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "message",
-            "description": "",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Error",
-            "ofType": null
-          }
-        ],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "OutOfCapacityError",
-        "description": "This is an error specifically for when we have no more capacity. Clients should\nnot retry when they get this.",
+        "name": "ClientContentionError",
+        "description": "Reyes will now enforce rules around when and how clients are able to take over\nthe stage. (See documentation here (TODO)).\n\nFor example, if you try to start a broadcaston Lucio and Reyes does not allow\nit, the user will receive a message via this Error type.",
         "fields": [
           {
             "name": "title",
@@ -3025,6 +3049,129 @@
       },
       {
         "kind": "OBJECT",
+        "name": "LiveHostable",
+        "description": "",
+        "fields": [
+          {
+            "name": "address",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "LiveHost",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CdnError",
+        "description": "This error will be returned when Reyes failed to retrieve streams for all of\nthe feeds even after retrying.",
+        "fields": [
+          {
+            "name": "title",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Error",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GeoRestrictionError",
+        "description": "This error will be returned when the user is not authorized to view requested\ncontent due to the user's location.",
+        "fields": [
+          {
+            "name": "title",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Error",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "LiveHosting",
         "description": "",
         "fields": [
@@ -3075,6 +3222,22 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "ownerUsername",
+            "description": "ownerUsername is the username of the owner of the stage that is providing the\nunderlying live-hostable content.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -3091,7 +3254,7 @@
       {
         "kind": "SCALAR",
         "name": "Int",
-        "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. ",
+        "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3100,11 +3263,23 @@
       },
       {
         "kind": "OBJECT",
-        "name": "LiveHostable",
-        "description": "",
+        "name": "OutOfCapacityError",
+        "description": "This is an error specifically for when we have no more capacity. Clients should\nnot retry when they get this.",
         "fields": [
           {
-            "name": "address",
+            "name": "title",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
             "description": "",
             "args": [],
             "type": {
@@ -3112,7 +3287,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -3124,7 +3299,7 @@
         "interfaces": [
           {
             "kind": "INTERFACE",
-            "name": "LiveHost",
+            "name": "Error",
             "ofType": null
           }
         ],
@@ -3195,74 +3370,9 @@
         ],
         "enumValues": null,
         "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ClientContentionError",
-        "description": "Reyes will now enforce rules around when and how clients are able to take over\nthe stage. (See documentation here (TODO)).\n\nFor example, if you try to start a broadcaston Lucio and Reyes does not allow\nit, the user will receive a message via this Error type.",
-        "fields": [
-          {
-            "name": "title",
-            "description": "",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "message",
-            "description": "",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Error",
-            "ofType": null
-          }
-        ],
-        "enumValues": null,
-        "possibleTypes": null
       }
     ],
     "directives": [
-      {
-        "name": "deprecated",
-        "description": "The @deprecated directive is used within the type system definition language to indicate deprecated portions of a GraphQL service’s schema, such as deprecated fields on a type or deprecated enum values.",
-        "locations": [
-          "FIELD_DEFINITION",
-          "ENUM_VALUE"
-        ],
-        "args": [
-          {
-            "name": "reason",
-            "description": "",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": "\"No longer supported\""
-          }
-        ]
-      },
       {
         "name": "include",
         "description": "The @include directive may be provided for fields, fragment spreads, and inline fragments, and allows for conditional inclusion during execution as described by the if argument.",
@@ -3312,8 +3422,27 @@
             "defaultValue": null
           }
         ]
+      },
+      {
+        "name": "deprecated",
+        "description": "The @deprecated directive is used within the type system definition language to indicate deprecated portions of a GraphQL service’s schema, such as deprecated fields on a type or deprecated enum values.",
+        "locations": [
+          "FIELD_DEFINITION",
+          "ENUM_VALUE"
+        ],
+        "args": [
+          {
+            "name": "reason",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": "\"No longer supported\""
+          }
+        ]
       }
     ]
   }
 }
-

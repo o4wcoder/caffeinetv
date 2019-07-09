@@ -1,6 +1,7 @@
 subscription Stage(
   $clientId: ID!
   $clientType: ClientType!
+  $clientTypeForMetrics: String
   $constrainedBaseline: Boolean
   $username: String!
   $viewerStreams: [StageSubscriptionViewerStreamInput!]
@@ -8,6 +9,7 @@ subscription Stage(
   stage(
     clientId: $clientId
     clientType: $clientType
+    clientTypeForMetrics: $clientTypeForMetrics
     constrainedBaseline: $constrainedBaseline
     username: $username
     viewerStreams: $viewerStreams
