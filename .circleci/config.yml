@@ -18,6 +18,7 @@ jobs:
       - run:
           name: Install Git LFS
           command: |
+              sudo apt-get update
               sudo apt-get install software-properties-common
               sudo add-apt-repository -y ppa:git-core/ppa
               curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
