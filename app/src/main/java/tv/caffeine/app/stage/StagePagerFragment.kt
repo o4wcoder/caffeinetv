@@ -61,8 +61,6 @@ class StagePagerFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
-                NetworkRequest.Builder().build(), networkCallback)
         sessionCheckViewModel.sessionCheck.observe(this, Observer { result ->
             handle(result) {}
         })
@@ -72,11 +70,6 @@ class StagePagerFragment @Inject constructor(
                 handleError(CaffeineResult.Error<ApiErrorResult>(VersionCheckError()))
             }
         }
-    }
-
-    override fun onDestroy() {
-        context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
-        super.onDestroy()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,6 +106,17 @@ class StagePagerFragment @Inject constructor(
             // The view pager restores the index.
             stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
+            NetworkRequest.Builder().build(), networkCallback)
+    }
+
+    override fun onPause() {
+        context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
+        super.onPause()
     }
 
     private fun setBroadcastersAndAdapter(
