@@ -27,7 +27,6 @@ The Android app for Caffeine.
   ```
   brew install ktlint
   ktlint --install-git-pre-commit-hook
-  ktlint --apply-to-idea-project --android
   ```
 5. Run unit tests:
   ```
@@ -75,6 +74,21 @@ The Android app for Caffeine.
 * [Detekt](https://arturbosch.github.io/detekt/index.html) - static code analysis
 * [JaCoCo](https://www.jacoco.org/jacoco/) - code coverage
 * [Dexcount Gradle Plugin](https://github.com/KeepSafe/dexcount-gradle-plugin)
+
+### Code Style
+
+The following command was used to configure code style:
+```
+ktlint --apply-to-idea-project --android
+```
+
+It affects the following files:
+
+* `.idea/codeStyles/codeStyleConfig.xml`
+* `./.idea/codeStyles/Project.xml`
+* `./.idea/inspectionProfiles/profiles_settings.xml`
+* `./.idea/inspectionProfiles/ktlint.xml`
+* `./.idea/workspace.xml`
 
 ### Digital Items
 

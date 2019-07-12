@@ -1,9 +1,14 @@
 *.iml
 .gradle
 /local.properties
-/.idea/
+/.idea/*
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 /node_modules
+
+# IDEA/Android Studio ignore exceptions
+!/.idea/vcs.xml
+!/.idea/inspectionProfiles/
+!/.idea/codeStyles/
