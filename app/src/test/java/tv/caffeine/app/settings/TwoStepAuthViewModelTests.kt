@@ -5,9 +5,9 @@ import com.google.gson.Gson
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Deferred
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,9 +21,7 @@ import tv.caffeine.app.settings.authentication.TwoStepAuthViewModel
 
 @RunWith(RobolectricTestRunner::class)
 class TwoStepAuthViewModelTests {
-    @Rule
-    @JvmField
-    val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var subject: TwoStepAuthViewModel
     @MockK lateinit var mockGson: Gson

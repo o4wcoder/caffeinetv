@@ -5,8 +5,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -15,9 +13,11 @@ import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
+import tv.caffeine.app.util.CoroutinesTestRule
 
 class LobbyViewModelTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutinesTestRule = CoroutinesTestRule()
 
     lateinit var subject: LobbyViewModel
 
@@ -30,7 +30,6 @@ class LobbyViewModelTests {
     fun setup() {
         MockKAnnotations.init(this)
         subject = LobbyViewModel(followManager, loadLobbyUseCase, loadFeatureConfigUseCase, isVersionSupportedUseCase)
-        Dispatchers.setMain(Dispatchers.Unconfined)
     }
 
     @Test

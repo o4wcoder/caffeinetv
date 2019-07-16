@@ -16,7 +16,7 @@ import tv.caffeine.app.session.FollowManager
 
 @RunWith(RobolectricTestRunner::class)
 class MyProfileViewModelTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var subject: MyProfileViewModel
 

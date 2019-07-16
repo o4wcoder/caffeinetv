@@ -47,9 +47,7 @@ private inline fun launchStageFragmentWithArgs(
 
 @RunWith(RobolectricTestRunner::class)
 class StageFragmentVisibilityTests {
-    @Rule
-    @JvmField
-    val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     lateinit var subject: StageFragment
 
@@ -223,7 +221,7 @@ class StageFragmentVisibilityTests {
 
 @RunWith(RobolectricTestRunner::class)
 class StageFragmentSwipeNotAllowedTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     lateinit var subject: StageFragment
 

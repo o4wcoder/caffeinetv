@@ -46,7 +46,7 @@ import tv.caffeine.app.wallet.WalletViewModel
 
 @RunWith(ParameterizedRobolectricTestRunner::class)
 class ViewModelFactoryTest(private val modelClass: Class<out ViewModel>) {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
     lateinit var subject: ViewModelFactory
 
     companion object {

@@ -10,7 +10,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.settings.InMemorySettingsStorage
 
 class SessionCheckViewModelTest {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     @Test fun `missing refresh token fails session check`() {
         val settingsStorage = InMemorySettingsStorage(refreshToken = null)

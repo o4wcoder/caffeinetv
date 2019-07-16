@@ -3,7 +3,7 @@ package tv.caffeine.app.explore
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.coEvery
 import io.mockk.mockk
-import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class ExploreViewModelTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var subject: ExploreViewModel
 
@@ -31,9 +31,9 @@ class ExploreViewModelTests {
     fun emptySearchStringReturnsExploreResult() {
         val countDownLatch = CountDownLatch(1)
         subject.data.observeForever { t ->
-            Assert.assertTrue(t != null)
-            Assert.assertTrue(t is CaffeineResult.Success)
-            Assert.assertTrue((t as CaffeineResult.Success).value is Findings.Explore)
+            assertTrue(t != null)
+            assertTrue(t is CaffeineResult.Success)
+            assertTrue((t as CaffeineResult.Success).value is Findings.Explore)
             countDownLatch.countDown()
         }
         subject.queryString = ""

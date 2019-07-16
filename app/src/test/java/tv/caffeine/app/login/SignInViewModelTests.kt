@@ -17,7 +17,7 @@ import tv.caffeine.app.api.model.CaffeineResult
 
 @RunWith(RobolectricTestRunner::class)
 class SignInViewModelTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var subject: SignInViewModel
     @MockK lateinit var signInUseCase: SignInUseCase

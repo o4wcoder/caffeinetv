@@ -32,7 +32,7 @@ import tv.caffeine.app.util.makeOnlineBroadcast
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class LobbyCardsOnlineBroadcasterTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     lateinit var context: Context
     lateinit var liveBroadcast: LiveBroadcast

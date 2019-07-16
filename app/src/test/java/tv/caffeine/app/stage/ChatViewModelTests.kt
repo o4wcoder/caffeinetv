@@ -3,18 +3,16 @@ package tv.caffeine.app.stage
 import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.viewModelScope
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -27,11 +25,11 @@ import tv.caffeine.app.api.model.SignedUserToken
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.util.CoroutinesTestRule
 
 class ChatViewModelTests {
-    @Rule
-    @JvmField val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutinesTestRule = CoroutinesTestRule()
 
     lateinit var subject: ChatViewModel
     @MockK lateinit var context: Context
@@ -51,13 +49,6 @@ class ChatViewModelTests {
         every { context.resources } returns resources
         every { resources.getInteger(any()) } returns 2
         subject = ChatViewModel(context, tokenStore, getSignedUserDetailsUseCase, sendMessageUseCase, endorseMessageUseCase, followManager, messageController)
-        Dispatchers.setMain(mainThreadSurrogate)
-    }
-
-    @After
-    fun teardown() {
-        Dispatchers.resetMain()
-        mainThreadSurrogate.close()
     }
 
     @Test
@@ -84,31 +75,46 @@ class ChatViewModelTests {
     @Test
     fun `rescind removes all messages by publisher`() {
         every { user.caid } returns "CAID1"
+        every { user.username } returns "username1"
+        every { user.name } returns "name1"
         val anotherUser = mockk<User>()
         every { anotherUser.caid } returns "CAID2"
+        every { anotherUser.username } returns "username2"
+        every { anotherUser.name } returns "name2"
         val message1 = MessageWrapper(Message(user, "1", Message.Type.reaction, Message.Body("body1"), 0), 1, 0)
         val message2 = MessageWrapper(Message(anotherUser, "2", Message.Type.reaction, Message.Body("body2"), 0), 2, 0)
         val message3 = MessageWrapper(Message(user, "3", Message.Type.reaction, Message.Body("body3"), 0), 3, 0)
         val message4 = MessageWrapper(Message(user, "4", Message.Type.rescind, Message.Body("body4"), 0), 4, 0)
         coEvery { messageController.connect(any()) } returns flowOf(message1, message2, message3, message4)
-        subject.messages.observeForever {
-            assertEquals(1, it.size)
-            assertEquals("CAID2", it.first().publisher.caid)
+        subject.load("stageId")
+        subject.messages.observeForever { list ->
+            val nonDummyMessages = list.filter { it.type != Message.Type.dummy }
+            assertEquals(1, nonDummyMessages.size)
+            assertEquals("CAID2", nonDummyMessages.first().publisher.caid)
         }
+        // manually stop the coroutine scope, because the subject uses an infinite loop
+        subject.viewModelScope.coroutineContext.cancelChildren()
     }
 
     @Test
-    fun `reactions are all published`() {
+    fun `reactions are all published`() = coroutinesTestRule.testDispatcher.runBlockingTest {
         every { user.caid } returns "CAID1"
+        every { user.username } returns "username1"
+        every { user.name } returns "name1"
         val anotherUser = mockk<User>()
         every { anotherUser.caid } returns "CAID2"
+        every { anotherUser.username } returns "username2"
+        every { anotherUser.name } returns "name2"
         val message1 = MessageWrapper(Message(user, "1", Message.Type.reaction, Message.Body("body1"), 0), 1, 0)
         val message2 = MessageWrapper(Message(anotherUser, "2", Message.Type.reaction, Message.Body("body2"), 0), 2, 0)
         val message3 = MessageWrapper(Message(user, "3", Message.Type.reaction, Message.Body("body3"), 0), 3, 0)
         val message4 = MessageWrapper(Message(anotherUser, "4", Message.Type.reaction, Message.Body("body4"), 0), 4, 0)
         coEvery { messageController.connect(any()) } returns flowOf(message1, message2, message3, message4)
+        subject.load("stageId")
         subject.messages.observeForever {
             assertEquals(4, it.size)
         }
+        // manually stop the coroutine scope, because the subject uses an infinite loop
+        subject.viewModelScope.coroutineContext.cancelChildren()
     }
 }

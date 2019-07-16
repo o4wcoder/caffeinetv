@@ -17,7 +17,7 @@ import tv.caffeine.app.session.FollowManager
 
 @RunWith(RobolectricTestRunner::class)
 class FriendsWatchingViewModelTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     companion object {
         const val CAID_1 = "CAID-1"

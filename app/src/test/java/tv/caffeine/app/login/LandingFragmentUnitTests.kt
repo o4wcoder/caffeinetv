@@ -39,7 +39,7 @@ class LandingFragmentUnitTests {
     @MockK(relaxed = true) lateinit var navController: NavController
     private lateinit var fragment: LandingFragment
     private lateinit var scenario: FragmentScenario<LandingFragment>
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {

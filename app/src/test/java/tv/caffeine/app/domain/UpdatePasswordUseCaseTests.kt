@@ -18,7 +18,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.profile.UpdatePasswordUseCase
 
 class UpdatePasswordUseCaseTests {
-    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK lateinit var accountsService: AccountsService
     @MockK lateinit var tokenStore: TokenStore
