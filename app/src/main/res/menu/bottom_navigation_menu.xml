@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottom_nav_star_menu_item"
+        android:icon="@drawable/bottom_nav_star"
+        android:title=""/>
+
+    <item
+        android:id="@+id/bottom_nav_flame_menu_item"
+        android:icon="@drawable/bottom_nav_flame"
+        android:title=""/>
+
+    <item
+        android:id="@+id/bottom_nav_clock_menu_item"
+        android:icon="@drawable/bottom_nav_clock"
+        android:title=""/>
+
+    <item
+        android:id="@+id/bottom_nav_profile_menu_item"
+        android:icon="@drawable/bottom_nav_profile"
+        android:title=""/>
+</menu>

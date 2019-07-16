@@ -122,6 +122,23 @@ fun Activity.setDarkMode(isDarkMode: Boolean) {
     }
 }
 
+fun Activity.setNavigationBarDarkMode(isDarkMode: Boolean) {
+    window.apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            navigationBarColor = ContextCompat.getColor(context,
+                    if (isDarkMode) android.R.color.black else R.color.nav_bar)
+            if (isDarkMode) {
+                decorView.systemUiVisibility = decorView.systemUiVisibility
+                        .and(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv())
+            } else {
+                decorView.systemUiVisibility = decorView.systemUiVisibility
+                        .or(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+            }
+        }
+    }
+}
+
 fun Activity.showSnackbar(@StringRes resId: Int) {
     Snackbar.make(window.decorView, resId, Snackbar.LENGTH_SHORT).show()
 }

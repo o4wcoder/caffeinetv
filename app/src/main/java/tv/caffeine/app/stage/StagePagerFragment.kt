@@ -28,6 +28,7 @@ import tv.caffeine.app.databinding.FragmentStagePagerBinding
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.session.SessionCheckViewModel
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.broadcasterUsername
@@ -35,6 +36,7 @@ import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.setImmersiveSticky
+import tv.caffeine.app.util.setNavigationBarDarkMode
 import tv.caffeine.app.util.unsetImmersiveSticky
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
@@ -44,7 +46,8 @@ private const val BUNDLE_KEY_BROADCASTERS = "broadcasters"
 class StagePagerFragment @Inject constructor(
     private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
     private val adapterFactory: StagePagerAdapter.Factory,
-    private val followManager: FollowManager
+    private val followManager: FollowManager,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_stage_pager) {
 
     private var binding: FragmentStagePagerBinding? = null
@@ -149,6 +152,9 @@ class StagePagerFragment @Inject constructor(
         activity?.apply {
             unsetImmersiveSticky()
             setDarkMode(false)
+            if (releaseDesignConfig.isReleaseDesignActive()) {
+                setNavigationBarDarkMode(true)
+            }
 
             getPreferences(Context.MODE_PRIVATE)?.let {
                 val key = getString(R.string.is_first_time_on_stage)

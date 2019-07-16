@@ -23,6 +23,7 @@ import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.SessionCheckViewModel
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.ViewPagerColorOnPageChangeListener
 import tv.caffeine.app.ui.loadRoundedImage
@@ -34,7 +35,8 @@ import javax.inject.Provider
 class LobbySwipeFragment @Inject constructor(
     private val featureConfig: FeatureConfig,
     private val firebaseAnalytics: FirebaseAnalytics,
-    private val adapterFactory: LobbyPagerAdapter.Factory
+    private val adapterFactory: LobbyPagerAdapter.Factory,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_lobby_swipe) {
 
     private lateinit var binding: FragmentLobbySwipeBinding
@@ -81,7 +83,8 @@ class LobbySwipeFragment @Inject constructor(
         binding.profileButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.myProfileFragment))
 
         binding.lobbyViewPager.apply {
-            adapter = adapterFactory.create(childFragmentManager)
+            val pageCount = if (releaseDesignConfig.isReleaseDesignActive()) 1 else 2
+            adapter = adapterFactory.create(childFragmentManager, pageCount)
             addOnPageChangeListener(ViewPagerColorOnPageChangeListener(this,
                     viewPagerBackgroundColors.map {
                         ContextCompat.getColor(context, it)
@@ -92,11 +95,18 @@ class LobbySwipeFragment @Inject constructor(
             binding.profileButton.loadRoundedImage(userProfile.avatarImageUrl, imageSizeRes = R.dimen.avatar_toolbar)
             binding.unverifiedMessageTextView.isVisible = userProfile.emailVerified == false
         })
+
+        // Release UI
+        val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
+        binding.cameraButton.isVisible = !isReleaseDesign
+        binding.profileButton.isVisible = !isReleaseDesign
+        binding.tabLayout.isVisible = !isReleaseDesign
     }
 }
 
 class LobbyPagerAdapter @AssistedInject constructor(
     @Assisted fm: FragmentManager,
+    @Assisted private val pageCount: Int,
     private val resources: Resources,
     private val lobbyFragmentProvider: Provider<LobbyFragment>,
     private val featuredProgramGuideFragmentProvider: Provider<FeaturedProgramGuideFragment>
@@ -104,10 +114,10 @@ class LobbyPagerAdapter @AssistedInject constructor(
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(fm: FragmentManager): LobbyPagerAdapter
+        fun create(fm: FragmentManager, pageCount: Int): LobbyPagerAdapter
     }
 
-    override fun getCount() = 2
+    override fun getCount() = pageCount
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> lobbyFragmentProvider.get()

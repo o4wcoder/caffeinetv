@@ -10,12 +10,14 @@ import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
 import dagger.android.support.DaggerAppCompatActivity
@@ -26,19 +28,36 @@ import tv.caffeine.app.analytics.NotificationEvent
 import tv.caffeine.app.analytics.Profiling
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.ActivityMainBinding
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.util.closeNoNetwork
 import tv.caffeine.app.util.dismissKeyboard
 import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.navigateToNoNetwork
 import tv.caffeine.app.util.notificationId
 import tv.caffeine.app.util.notificationTag
+import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.setImmersiveSticky
+import tv.caffeine.app.util.setNavigationBarDarkMode
 import tv.caffeine.app.util.unsetImmersiveSticky
 import javax.inject.Inject
 
 private val destinationsWithCustomToolbar = arrayOf(
     R.id.lobbySwipeFragment,
+    R.id.landingFragment,
+    R.id.signInFragment,
+    R.id.signUpFragment,
+    R.id.forgotFragment,
+    R.id.mfaCodeFragment,
+    R.id.stagePagerFragment,
+    R.id.needsUpdateFragment,
+    R.id.friendsWatchingFragment,
+    R.id.sendDigitalItemFragment,
+    R.id.reportOrIgnoreDialogFragment,
+    R.id.unfollowUserDialogFragment
+)
+
+private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.landingFragment,
     R.id.signInFragment,
     R.id.signUpFragment,
@@ -63,6 +82,7 @@ class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
     @Inject lateinit var firebaseInstanceId: FirebaseInstanceId
+    @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
 
     private lateinit var navController: NavController
 
@@ -75,6 +95,10 @@ class MainActivity : DaggerAppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             dismissKeyboard()
             binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
+            binding.bottomNavigation.isVisible = releaseDesignConfig.isReleaseDesignActive() &&
+                destination.id !in destinationsWithoutBottomNavBar
+            updateBottomNavigationStatus(binding.bottomNavigation, destination.id)
+
             requestedOrientation = if (destination.id in destinationInPortrait) {
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             } else {
@@ -82,6 +106,8 @@ class MainActivity : DaggerAppCompatActivity() {
             }
             firebaseAnalytics.setCurrentScreen(this, destination.label.toString(), null)
         }
+        setNavigationBarDarkMode(releaseDesignConfig.isReleaseDesignActive())
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         firebaseInstanceId.instanceId.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Timber.d("FCM registration token retrieved")
@@ -184,6 +210,34 @@ class MainActivity : DaggerAppCompatActivity() {
             if (!isNetworkAvailable()) {
                 handler.postDelayed(runnable, OPEN_NO_NETWORK_FRAGMENT_DELAY_MS)
             }
+        }
+    }
+
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+        val destinationId = when (menuItem.itemId) {
+            R.id.bottom_nav_star_menu_item -> R.id.lobbySwipeFragment
+            // TODO: flame menu item
+            R.id.bottom_nav_clock_menu_item -> R.id.featuredProgramGuideFragment
+            R.id.bottom_nav_profile_menu_item -> R.id.myProfileFragment
+            else -> -1
+        }
+        if (navController.currentDestination?.id != destinationId) {
+            navController.safeNavigate(destinationId)
+        }
+        true
+    }
+
+    @VisibleForTesting fun updateBottomNavigationStatus(bottomNavigationView: BottomNavigationView, destinationId: Int) {
+        val menuItemId = when (destinationId) {
+            R.id.lobbySwipeFragment -> R.id.bottom_nav_star_menu_item
+            // TODO: flame menu item
+            R.id.featuredProgramGuideFragment -> R.id.bottom_nav_clock_menu_item
+            R.id.myProfileFragment -> R.id.bottom_nav_profile_menu_item
+            else -> -1
+        }
+        if (menuItemId != -1) {
+            bottomNavigationView.isSelected = false
+            bottomNavigationView.menu.findItem(menuItemId)?.isChecked = true
         }
     }
 }

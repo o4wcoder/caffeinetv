@@ -26,6 +26,7 @@ import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineDialogFragment
 import tv.caffeine.app.ui.DialogActionBar
 import tv.caffeine.app.util.showSnackbar
@@ -38,10 +39,12 @@ class ReportDialogFragment : CaffeineDialogFragment() {
     private lateinit var username: String
     private var shouldNavigateBackWhenDone = false
     private val args by navArgs<ReportDialogFragmentArgs>()
+    @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullscreenDialogTheme)
+        setStyle(STYLE_NORMAL, if (releaseDesignConfig.isReleaseDesignActive())
+            R.style.FullscreenDialogWithDarkNavBarTheme else R.style.FullscreenDialogTheme)
         caid = args.caid
         username = args.username
         shouldNavigateBackWhenDone = args.shouldNavigateBackWhenDone
