@@ -30,6 +30,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.SecureSettingsStorage
 import tv.caffeine.app.util.CoroutinesTestRule
+import tv.caffeine.app.test.observeForTesting
 
 @RunWith(RobolectricTestRunner::class)
 class MyProfileViewModelTests {
@@ -78,14 +79,14 @@ class MyProfileViewModelTests {
     @Test
     fun `followers count is loaded correctly`() {
         assertNotEquals(FOLLOWERS_COUNT, FOLLOWING_COUNT)
-        subject.userProfile.observeForever { userProfile ->
+        subject.userProfile.observeForTesting { userProfile ->
             assertEquals(FOLLOWERS_COUNT_FORMATTED, userProfile.followersCount)
         }
     }
 
     @Test
     fun `following count is loaded correctly`() {
-        subject.userProfile.observeForever { userProfile ->
+        subject.userProfile.observeForTesting { userProfile ->
             assertEquals(FOLLOWING_COUNT.toString(), userProfile.followingCount)
         }
     }
@@ -123,7 +124,7 @@ class MyProfileViewModelTests {
     @Test
     fun `signOutComplete is set to true when sign out is finished`() {
         subject.signOut()
-        subject.signOutComplete.observeForever {
+        subject.signOutComplete.observeForTesting {
             val signOutComplete = it.peekContent()
             assertNotNull(signOutComplete)
             assertTrue(signOutComplete)

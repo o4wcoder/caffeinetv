@@ -27,6 +27,7 @@ import tv.caffeine.app.lobby.PreviousBroadcast
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.makeGenericUser
 import tv.caffeine.app.util.makeOfflineBroadcast
+import tv.caffeine.app.test.observeForTesting
 
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -54,7 +55,7 @@ class LobbyCardsOfflineBroadcasterTests {
 
         offlineBroadcaster.cardClicked()
 
-        offlineBroadcaster.navigationCommands.observeForever {
+        offlineBroadcaster.navigationCommands.observeForTesting {
             val navigationCommand = it.peekContent()
             Assert.assertTrue(navigationCommand is NavigationCommand.To)
             val directions = (navigationCommand as NavigationCommand.To).directions

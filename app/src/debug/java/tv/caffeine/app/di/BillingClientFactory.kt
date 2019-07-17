@@ -1,17 +1,20 @@
 package tv.caffeine.app.di
 
 import android.content.Context
+import androidx.arch.core.executor.ArchTaskExecutor
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.pixite.android.billingx.BillingStore
 import com.pixite.android.billingx.DebugBillingClient
 import com.pixite.android.billingx.SkuDetailsBuilder
-import java.util.concurrent.Executors
+import java.util.concurrent.Executor
 
 object BillingClientFactory {
 
     fun createBillingClient(context: Context, listener: PurchasesUpdatedListener) =
-            DebugBillingClient(context, listener, Executors.newSingleThreadExecutor())
+            DebugBillingClient(context, listener, Executor {
+                    ArchTaskExecutor.getInstance().postToMainThread(it)
+            })
 
     fun loadBillingStore(context: Context) {
         BillingStore.defaultStore(context)

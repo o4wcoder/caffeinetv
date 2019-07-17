@@ -14,6 +14,7 @@ import tv.caffeine.app.api.CaffeineCredentials
 import tv.caffeine.app.api.NextAccountAction
 import tv.caffeine.app.api.SignInResult
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.test.observeForTesting
 
 @RunWith(RobolectricTestRunner::class)
 class SignInViewModelTests {
@@ -41,7 +42,7 @@ class SignInViewModelTests {
     fun `accounts with two factor auth return MFARequired`() {
         coEvery { signInUseCase.invoke(any(), any()) } returns mfaRequired
         subject.login("", "")
-        subject.signInOutcome.observeForever {
+        subject.signInOutcome.observeForTesting {
             assertEquals(SignInOutcome.MFARequired, it)
         }
     }
@@ -50,7 +51,7 @@ class SignInViewModelTests {
     fun `old accounts must accept terms`() {
         coEvery { signInUseCase.invoke(any(), any()) } returns mustAcceptToc
         subject.login("", "")
-        subject.signInOutcome.observeForever {
+        subject.signInOutcome.observeForTesting {
             assertEquals(SignInOutcome.MustAcceptTerms, it)
         }
     }

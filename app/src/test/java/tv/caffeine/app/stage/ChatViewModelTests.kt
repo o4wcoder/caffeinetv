@@ -26,6 +26,7 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.CoroutinesTestRule
+import tv.caffeine.app.test.observeForTesting
 
 class ChatViewModelTests {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -87,7 +88,7 @@ class ChatViewModelTests {
         val message4 = MessageWrapper(Message(user, "4", Message.Type.rescind, Message.Body("body4"), 0), 4, 0)
         coEvery { messageController.connect(any()) } returns flowOf(message1, message2, message3, message4)
         subject.load("stageId")
-        subject.messages.observeForever { list ->
+        subject.messages.observeForTesting { list ->
             val nonDummyMessages = list.filter { it.type != Message.Type.dummy }
             assertEquals(1, nonDummyMessages.size)
             assertEquals("CAID2", nonDummyMessages.first().publisher.caid)
@@ -111,7 +112,7 @@ class ChatViewModelTests {
         val message4 = MessageWrapper(Message(anotherUser, "4", Message.Type.reaction, Message.Body("body4"), 0), 4, 0)
         coEvery { messageController.connect(any()) } returns flowOf(message1, message2, message3, message4)
         subject.load("stageId")
-        subject.messages.observeForever {
+        subject.messages.observeForTesting {
             assertEquals(4, it.size)
         }
         // manually stop the coroutine scope, because the subject uses an infinite loop

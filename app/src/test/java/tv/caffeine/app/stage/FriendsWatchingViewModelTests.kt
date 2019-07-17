@@ -14,6 +14,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.test.observeForTesting
 
 @RunWith(RobolectricTestRunner::class)
 class FriendsWatchingViewModelTests {
@@ -49,7 +50,7 @@ class FriendsWatchingViewModelTests {
         val flow = flowOf(FriendWatchingEvent(true, CAID_1))
         coEvery { mockFriendsWatchingController.connect(any()) } returns flow
         subject.load("blah")
-        subject.friendsWatching.observeForever {
+        subject.friendsWatching.observeForTesting {
             assertEquals(1, it.size)
         }
     }
@@ -62,7 +63,7 @@ class FriendsWatchingViewModelTests {
         )
         coEvery { mockFriendsWatchingController.connect(any()) } returns flow
         subject.load("blah")
-        subject.friendsWatching.observeForever {
+        subject.friendsWatching.observeForTesting {
             assertEquals(2, it.size)
         }
     }
@@ -76,7 +77,7 @@ class FriendsWatchingViewModelTests {
         )
         coEvery { mockFriendsWatchingController.connect(any()) } returns flow
         subject.load("blah")
-        subject.friendsWatching.observeForever {
+        subject.friendsWatching.observeForTesting {
             assertEquals(1, it.size)
         }
     }
@@ -91,7 +92,7 @@ class FriendsWatchingViewModelTests {
         )
         coEvery { mockFriendsWatchingController.connect(any()) } returns flow
         subject.load("blah")
-        subject.friendsWatching.observeForever {
+        subject.friendsWatching.observeForTesting {
             assertEquals(2, it.size)
         }
     }
@@ -105,7 +106,7 @@ class FriendsWatchingViewModelTests {
         )
         coEvery { mockFriendsWatchingController.connect(any()) } returns flow
         subject.load("blah")
-        subject.friendsWatching.observeForever {
+        subject.friendsWatching.observeForTesting {
             assertEquals(3, it.size)
         }
     }
@@ -122,7 +123,7 @@ class FriendsWatchingViewModelTests {
         )
         coEvery { mockFriendsWatchingController.connect(any()) } returns flow
         subject.load("blah")
-        subject.friendsWatching.observeForever {
+        subject.friendsWatching.observeForTesting {
             assertEquals(3, it.size)
         }
     }

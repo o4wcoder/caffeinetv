@@ -3,7 +3,7 @@ package tv.caffeine.app.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.Observer
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
@@ -14,11 +14,13 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
-import org.junit.After
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -28,11 +30,12 @@ import tv.caffeine.app.api.GoldBundle
 import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.PurchaseOption
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.InjectionActivityTestRule
+import tv.caffeine.app.util.CoroutinesTestRule
 import tv.caffeine.app.util.TestDispatchConfig
+import tv.caffeine.app.test.observeForTesting
 import tv.caffeine.app.wallet.WalletRepository
 import java.util.Date
 
@@ -40,6 +43,9 @@ class GoldBundlesViewModelTests {
 
     @RunWith(RobolectricTestRunner::class)
     class GooglePlayTests {
+        @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+        @get:Rule val coroutinesTestRule = CoroutinesTestRule()
+
         private lateinit var subject: GoldBundlesViewModel
         private lateinit var billingClientBroadcastHelper: BillingClientBroadcastHelper
         @MockK private lateinit var processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase
@@ -60,16 +66,11 @@ class GoldBundlesViewModelTests {
             subject = GoldBundlesViewModel(mainActivity.applicationContext, TokenStore(settingsStorage), walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
         }
 
-        @After
-        fun cleanup() {
-            subject.events.removeObservers(mainActivity)
-        }
-
         @Test
         fun `attempting to purchase a bundle with invalid SKU report an error`() {
             val bundle = GoldBundle("a", 1, 1, null, null, PurchaseOption.PurchaseUsingInAppBilling("b", true), null, null)
             subject.purchaseGoldBundleUsingPlayStore(mainActivity, bundle)
-            val observer: Observer<in Event<PurchaseStatus>> = Observer { event ->
+            subject.events.observeForTesting { event ->
                 val purchaseStatus = event.getContentIfNotHandled()
                         ?: Assert.fail("Expected to have an unprocessed event")
                 when (purchaseStatus) {
@@ -77,18 +78,17 @@ class GoldBundlesViewModelTests {
                     else -> Assert.fail("Expected to receive the Error event, got $purchaseStatus instead")
                 }
             }
-            subject.events.observe(mainActivity, observer)
         }
 
         @Test
-        fun `attempting to purchase a bundle with a valid SKU is successful`() {
+        fun `attempting to purchase a bundle with a valid SKU is successful`() = coroutinesTestRule.testDispatcher.runBlockingTest {
             val skuDetails = SkuDetails("{\"productId\":\"1\"}")
             val bundle = GoldBundle("a", 1, 1, null, null, PurchaseOption.PurchaseUsingInAppBilling("b", true), null, skuDetails)
             subject.purchaseGoldBundleUsingPlayStore(mainActivity, bundle)
 
             billingClientBroadcastHelper.broadcastPurchaseSuccess(skuDetails)
 
-            val observer: Observer<in Event<PurchaseStatus>> = Observer { event ->
+            subject.events.observeForTesting { event ->
                 val purchaseStatus = event.getContentIfNotHandled() ?: Assert.fail("Expected to have an unprocessed event")
                 when (purchaseStatus) {
                     is PurchaseStatus.GooglePlaySuccess -> assertNotNull("Expected success", purchaseStatus.purchaseToken)
@@ -96,7 +96,6 @@ class GoldBundlesViewModelTests {
                     else -> Assert.fail("Expected to receive the GooglePlaySuccess event, got $purchaseStatus instead")
                 }
             }
-            subject.events.observe(mainActivity, observer)
         }
 
         @Test
@@ -105,15 +104,14 @@ class GoldBundlesViewModelTests {
             val bundle = GoldBundle("a", 1, 1, null, null, PurchaseOption.PurchaseUsingInAppBilling("b", true), null, skuDetails)
             subject.purchaseGoldBundleUsingPlayStore(mainActivity, bundle)
             billingClientBroadcastHelper.broadcastUserCanceled()
-            val observer: Observer<in Event<PurchaseStatus>> = Observer { event ->
+            subject.events.observeForTesting { event ->
                 val purchaseStatus = event.getContentIfNotHandled() ?: Assert.fail("Expected to have an unprocessed event")
                 when (purchaseStatus) {
                     is PurchaseStatus.Error -> Assert.fail("Expected CanceledByUser, got error with message ${mainActivity.getString(purchaseStatus.error)}")
-                    PurchaseStatus.CanceledByUser -> Assert.assertTrue(true)
+                    PurchaseStatus.CanceledByUser -> assertTrue(true)
                     else -> Assert.fail("Expected to receive the CanceledByUser event, got $purchaseStatus instead")
                 }
             }
-            subject.events.observe(mainActivity, observer)
         }
 
         @Test
