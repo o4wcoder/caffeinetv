@@ -15,17 +15,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.facebook.login.LoginManager
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentMyProfileBinding
 import tv.caffeine.app.ui.CaffeineFragment
@@ -48,11 +41,8 @@ private const val REQUEST_GET_PHOTO = 1
 private const val CAMERA_IMAGE_PATH = "CAMERA_IMAGE_PATH"
 
 class MyProfileFragment @Inject constructor(
-    private val accountsService: AccountsService,
     private val tokenStore: TokenStore,
-    private val authWatcher: AuthWatcher,
-    private val picasso: Picasso,
-    private val facebookLoginManager: LoginManager
+    private val picasso: Picasso
 ) : CaffeineFragment(R.layout.fragment_my_profile) {
 
     private lateinit var binding: FragmentMyProfileBinding
@@ -79,9 +69,7 @@ class MyProfileFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentMyProfileBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
-        viewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
-            binding.userProfile = userProfile
-        })
+        binding.viewModel = viewModel
         binding.signOutButton.setOnClickListener { confirmSignOut() }
         binding.infoButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToEditBioFragment()
@@ -104,6 +92,9 @@ class MyProfileFragment @Inject constructor(
             val goldBalance = NumberFormat.getInstance().format(wallet.gold)
             val creditsBalance = NumberFormat.getInstance().format(wallet.credits)
             binding.goldAndCreditsBalanceButton.formatUsernameAsHtml(picasso, getString(R.string.gold_and_credits_button_balance, goldBalance, creditsBalance))
+        })
+        viewModel.signOutComplete.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let { signOutComplete -> if (signOutComplete) findNavController().navigateToLanding() }
         })
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }
@@ -212,18 +203,6 @@ class MyProfileFragment @Inject constructor(
     }
 
     private fun signOut() {
-        tokenStore.clear()
-        authWatcher.onSignOut()
-        findNavController().navigateToLanding()
-        facebookLoginManager.logOut()
-        accountsService.signOut().enqueue(object : Callback<Unit?> {
-            override fun onFailure(call: Call<Unit?>?, t: Throwable?) {
-                Timber.e(t, "Failed to sign out")
-            }
-
-            override fun onResponse(call: Call<Unit?>?, response: Response<Unit?>?) {
-                Timber.d("Signed out successfully $response")
-            }
-        })
+        viewModel.signOut()
     }
 }

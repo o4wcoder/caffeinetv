@@ -199,6 +199,9 @@ dependencies {
     implementation 'commons-codec:commons-codec:1.12'
     implementation fileTree(dir: 'libs', include: ['TrustDefender-5.3-91.aar'])
 
+    // Security
+    implementation "androidx.security:security-crypto:${versions.security}"
+
     // Tests
     testImplementation 'junit:junit:4.12'
     testImplementation 'io.mockk:mockk:1.9.3'

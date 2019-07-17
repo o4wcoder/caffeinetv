@@ -1,6 +1,8 @@
 package tv.caffeine.app.auth
 
+import tv.caffeine.app.api.model.CaffeineEmptyResult
+
 interface AuthWatcher {
     fun onSignIn()
-    fun onSignOut()
+    suspend fun onSignOut(deviceId: String?): CaffeineEmptyResult
 }

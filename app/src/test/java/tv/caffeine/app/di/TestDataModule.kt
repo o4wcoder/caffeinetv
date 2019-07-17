@@ -6,7 +6,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import dagger.Module
 import dagger.Provides
 import io.mockk.mockk
+import tv.caffeine.app.settings.InMemorySecureSettingsStorage
 import tv.caffeine.app.settings.InMemorySettingsStorage
+import tv.caffeine.app.settings.SecureSettingsStorage
 import tv.caffeine.app.settings.SettingsStorage
 import javax.inject.Singleton
 
@@ -14,6 +16,7 @@ import javax.inject.Singleton
     KeyStoreModule::class,
     SharedPreferencesModule::class,
     FakeSettingsStorageModule::class,
+    FakeSecureSettingsStorageModule::class,
     AuthWatcherModule::class,
     FeatureConfigModule::class,
     FakeFacebookModule::class,
@@ -21,6 +24,13 @@ import javax.inject.Singleton
     ClockModule::class
 ])
 class TestDataModule
+
+@Module
+class FakeSecureSettingsStorageModule {
+    @Provides
+    @Singleton
+    fun providesSecureSettingsStorage(): SecureSettingsStorage = InMemorySecureSettingsStorage()
+}
 
 @Module
 class FakeSettingsStorageModule {

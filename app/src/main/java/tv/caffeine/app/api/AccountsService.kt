@@ -2,7 +2,6 @@ package tv.caffeine.app.api
 
 import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -29,7 +28,7 @@ interface AccountsService {
     fun forgotPassword(@Body forgotPasswordBody: ForgotPasswordBody): Deferred<Response<Void>>
 
     @DELETE("v1/account/token")
-    fun signOut(): Call<Unit>
+    fun signOut(): Deferred<Response<Any>>
 
     @POST("v1/account")
     fun signUp(@Body signUpBody: SignUpBody): Deferred<Response<SignUpResult>>
