@@ -94,7 +94,7 @@ class AuthWatcherModule {
 class FeatureConfigModule {
     @Provides
     @Singleton
-    fun providesFeatureConfig(): FeatureConfig = FeatureConfig()
+    fun providesFeatureConfig(secureSettingsStorage: SecureSettingsStorage): FeatureConfig = FeatureConfig(secureSettingsStorage)
 }
 
 @Module

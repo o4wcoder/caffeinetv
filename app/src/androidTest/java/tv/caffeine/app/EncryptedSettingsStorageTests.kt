@@ -2,18 +2,20 @@ package tv.caffeine.app
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import tv.caffeine.app.feature.FeatureNode
 import tv.caffeine.app.settings.EncryptedSettingsStorage
+import tv.caffeine.app.settings.InMemorySecureSettingsStorage
 import tv.caffeine.app.settings.InMemorySettingsStorage
 import tv.caffeine.app.settings.KeyStoreHelper
 import java.nio.charset.Charset
 
 class EncryptedSettingsStorageTests {
     private val inMemorySettingsStorage = InMemorySettingsStorage()
-
     private val keyStoreHelper = KeyStoreHelper(KeyStoreHelper.defaultKeyStore())
-
     private val subject = EncryptedSettingsStorage(keyStoreHelper, inMemorySettingsStorage)
+    private val secureSubject = InMemorySecureSettingsStorage()
 
     @Test
     fun keyStoreHelperDoesTheRightThing() {
@@ -78,6 +80,18 @@ class EncryptedSettingsStorageTests {
         assertNull(decryptedCaid)
         val decryptedThirdTimeString = subject.refreshToken
         assertEquals(originalString, decryptedThirdTimeString)
+    }
+
+    @Test
+    fun featureConfigJsonConvertersCheck() {
+        val storedFeatureConfig: HashMap<String, FeatureNode> = hashMapOf()
+        storedFeatureConfig.put("config", FeatureNode("node", null))
+        secureSubject.setFeatureConfigData(storedFeatureConfig)
+        val pulledFeatureConfig = secureSubject.getFeatureConfigData()
+        assertTrue(pulledFeatureConfig.isNotEmpty())
+        assertTrue(pulledFeatureConfig.containsKey("config"))
+        assertEquals(pulledFeatureConfig["config"]?.group, storedFeatureConfig["config"]?.group)
+        assertEquals(pulledFeatureConfig["config"]?.attributes, storedFeatureConfig["config"]?.attributes)
     }
 
     private fun deleteKey() {

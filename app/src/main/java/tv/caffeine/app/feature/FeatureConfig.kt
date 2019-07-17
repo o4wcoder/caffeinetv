@@ -1,13 +1,22 @@
 package tv.caffeine.app.feature
 
 import com.google.gson.annotations.SerializedName
+import tv.caffeine.app.settings.SecureSettingsStorage
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FeatureConfig {
+class FeatureConfig @Inject constructor(
+    secureSettingsStorage: SecureSettingsStorage
+) {
 
     private val config = hashMapOf<String, FeatureNode>()
     private operator fun HashMap<String, FeatureNode>.get(feature: Feature) = get(feature.toString())
+
+    init {
+        val storedFeatures = secureSettingsStorage.getFeatureConfigData()
+        updateFeatures(storedFeatures)
+    }
 
     fun isFeatureEnabled(feature: Feature): Boolean {
         return config[feature]?.group?.let {

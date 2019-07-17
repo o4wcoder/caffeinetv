@@ -22,7 +22,6 @@ interface SettingsStorage {
     var refreshToken: String?
     var caid: CAID?
     var clientId: String?
-
     var environment: String?
 
     fun clearCredentials() {
