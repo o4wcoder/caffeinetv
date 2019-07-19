@@ -27,6 +27,7 @@ import tv.caffeine.app.lobby.LobbyItem
 import tv.caffeine.app.lobby.Subtitle
 import tv.caffeine.app.settings.AutoPlayConfig
 import tv.caffeine.app.stage.NewReyesController
+import tv.caffeine.app.util.fadeOut
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 
 sealed class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -92,7 +93,7 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
             stageController = controller
             scope.launch {
                 startLiveVideo(renderer, controller) {
-                    binding.previewImageView.isInvisible = true
+                    binding.previewImageView.fadeOut()
                 }
             }
         }

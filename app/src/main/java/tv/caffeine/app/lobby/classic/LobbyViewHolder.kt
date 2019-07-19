@@ -69,6 +69,7 @@ import tv.caffeine.app.stage.NewReyesController
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.fadeOut
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
@@ -340,7 +341,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
             stageController = controller
             scope?.launch {
                 startLiveVideo(renderer, controller) {
-                    binding.previewImageView.isInvisible = true
+                    binding.previewImageView.fadeOut()
                 }
             }
         }
@@ -430,7 +431,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
             stageController = controller
             scope?.launch {
                 startLiveVideo(renderer, controller) {
-                    binding.previewImageView.isInvisible = true
+                    binding.previewImageView.fadeOut()
                 }
             }
         }
