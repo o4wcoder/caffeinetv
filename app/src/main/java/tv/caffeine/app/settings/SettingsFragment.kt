@@ -17,6 +17,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.preference.CheckBoxPreference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import com.facebook.CallbackManager
@@ -85,14 +86,15 @@ class SettingsFragment @Inject constructor(
         findPreference(rootKey)?.title?.let { title ->
             (activity as? AppCompatActivity)?.supportActionBar?.title = title
         }
+        configureDeviceSettings()
         configureAuthSettings()
         configureNotificationSettings()
         configureLegalDocs()
         configureIgnoredUsers()
         configureSocialAccounts()
         configureDeleteAccount()
-        if (rootKey == null && featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)) {
-            addPreferencesFromResource(R.xml.f316)
+        if (rootKey == null && featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY_DEBUG)) {
+            addPreferencesFromResource(R.xml.f316_debug)
         }
         if (rootKey == null && featureConfig.isFeatureEnabled(Feature.RELEASE_DESIGN)) {
             addPreferencesFromResource(R.xml.design_v0)
@@ -121,6 +123,10 @@ class SettingsFragment @Inject constructor(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         callbackManager.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun configureDeviceSettings() {
+        (findPreference("device_settings") as PreferenceCategory).isVisible = featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)
     }
 
     private fun configureAuthSettings() {

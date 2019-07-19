@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Autoplay Debug">
+        <SwitchPreferenceCompat
+            android:key="play_all"
+            android:title="Autoplay Preview (all)"
+            android:dependency="autoplay"/>
+    </PreferenceCategory>
+</PreferenceScreen>

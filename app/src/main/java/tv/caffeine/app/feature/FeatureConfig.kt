@@ -34,7 +34,8 @@ class FeatureConfig @Inject constructor(
 enum class Feature(private val featureName: String) {
     BROADCAST("android_broadcast"),
     REYES_V5("reyes_v5"),
-    LIVE_IN_THE_LOBBY("f316"),
+    LIVE_IN_THE_LOBBY("f316ship"),
+    LIVE_IN_THE_LOBBY_DEBUG("f316"),
     RELEASE_DESIGN("design_v0");
 
     override fun toString(): String {
