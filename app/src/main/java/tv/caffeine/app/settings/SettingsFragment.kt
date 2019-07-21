@@ -126,7 +126,7 @@ class SettingsFragment @Inject constructor(
     }
 
     private fun configureDeviceSettings() {
-        (findPreference("device_settings") as PreferenceCategory).isVisible = featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)
+        (findPreference("device_settings") as? PreferenceCategory)?.isVisible = featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY)
     }
 
     private fun configureAuthSettings() {

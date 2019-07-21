@@ -3,10 +3,10 @@
 
     <PreferenceCategory
         android:key="device_settings"
-        android:title="Device Settings">
+        android:title="@string/device_settings">
         <SwitchPreferenceCompat
             android:key="autoplay"
-            android:title="Autoplay Preview"
+            android:title="@string/autoplay_preview"
             android:defaultValue="true"/>
     </PreferenceCategory>
 

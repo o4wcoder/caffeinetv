@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="device_settings">Device Settings</string>
+    <string name="autoplay_preview">Autoplay Preview</string>
     <string name="caffeine_on_twitter">\@caffeine on Twitter</string>
     <string name="two_step_authentication">Two-Step Authentication</string>
     <string name="change_password">Change Password</string>
