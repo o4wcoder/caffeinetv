@@ -12,6 +12,7 @@ import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
 import tv.caffeine.app.analytics.NotificationEvent
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.settings.SecureSettingsStorage
 import tv.caffeine.app.util.buildNotification
 import tv.caffeine.app.util.id
 import tv.caffeine.app.util.imageUrl
@@ -28,6 +29,7 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
     @Inject lateinit var analytics: Analytics
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var picasso: Picasso
+    @Inject lateinit var secureSettingsStorage: SecureSettingsStorage
 
     override fun onCreate() {
         AndroidInjection.inject(this)
@@ -37,6 +39,9 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String?) {
         super.onNewToken(token)
         Timber.d("New FCM token generated $token")
+        if (secureSettingsStorage.firebaseToken == null || token != secureSettingsStorage.firebaseToken) {
+            secureSettingsStorage.firebaseToken = token
+        }
     }
 
     override fun onMessageReceived(message: RemoteMessage?) {

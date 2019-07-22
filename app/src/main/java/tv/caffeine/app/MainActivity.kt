@@ -29,6 +29,7 @@ import tv.caffeine.app.analytics.Profiling
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.ActivityMainBinding
 import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.settings.SecureSettingsStorage
 import tv.caffeine.app.util.closeNoNetwork
 import tv.caffeine.app.util.dismissKeyboard
 import tv.caffeine.app.util.isNetworkAvailable
@@ -83,6 +84,7 @@ class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
     @Inject lateinit var firebaseInstanceId: FirebaseInstanceId
     @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
+    @Inject lateinit var secureSettingsStorage: SecureSettingsStorage
 
     private lateinit var navController: NavController
 
@@ -113,6 +115,9 @@ class MainActivity : DaggerAppCompatActivity() {
                 Timber.d("FCM registration token retrieved")
                 task.result?.let { result ->
                     Timber.d("${result.id}, ${result.token}")
+                    if (secureSettingsStorage.firebaseToken == null) {
+                        secureSettingsStorage.firebaseToken = result.token
+                    }
                 }
             } else {
                 Timber.e("Couldn't get the FCM registration token")

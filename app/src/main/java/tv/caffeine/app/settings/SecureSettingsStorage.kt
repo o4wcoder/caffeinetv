@@ -14,10 +14,12 @@ import kotlin.reflect.KProperty
 interface SecureSettingsStorage {
     var deviceId: String?
     var featureConfigJson: String?
+    var firebaseToken: String?
 
     fun clear() {
         deviceId = null
         featureConfigJson = null
+        firebaseToken = null
     }
 
     fun getFeatureConfigData(): Map<String, FeatureNode> {
@@ -39,11 +41,13 @@ interface SecureSettingsStorage {
 
 class InMemorySecureSettingsStorage(
     override var deviceId: String? = null,
-    override var featureConfigJson: String? = null
+    override var featureConfigJson: String? = null,
+    override var firebaseToken: String? = null
 ) : SecureSettingsStorage
 
 private const val DEVICE_ID = "DEVICE_ID"
 private const val FEATURE_CONFIG = "FEATURE_CONFIG"
+private const val FIREBASE_TOKEN = "FIREBASE_TOKEN"
 
 class SecureSharedPrefsStore @Inject constructor(
     @Named(SECURE_SHARED_PREFERENCES) sharedPreferences: SharedPreferences
@@ -51,6 +55,7 @@ class SecureSharedPrefsStore @Inject constructor(
 
     override var deviceId by SecureSharedPrefsDelegate(sharedPreferences, DEVICE_ID)
     override var featureConfigJson by SharedPrefsDelegate(sharedPreferences, FEATURE_CONFIG)
+    override var firebaseToken by SharedPrefsDelegate(sharedPreferences, FIREBASE_TOKEN)
 }
 
 class SecureSharedPrefsDelegate(private val sharedPreferences: SharedPreferences, private val prefKey: String) {
