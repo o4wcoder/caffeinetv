@@ -40,6 +40,7 @@ import tv.caffeine.app.settings.authentication.TwoStepAuthDoneFragment
 import tv.caffeine.app.settings.authentication.TwoStepAuthEnableDialogFragment
 import tv.caffeine.app.social.TwitterAuthForLogin
 import tv.caffeine.app.social.TwitterAuthForSettings
+import tv.caffeine.app.stage.ChatFragment
 import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.SendDigitalItemFragment
@@ -103,4 +104,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun twoStepAuthDisableDialogFragment(): TwoStepAuthDisableDialogFragment
     @ContributesAndroidInjector abstract fun twoStepAuthEnableDialogFragment(): TwoStepAuthEnableDialogFragment
     @ContributesAndroidInjector abstract fun twoStepAuthDoneFragment(): TwoStepAuthDoneFragment
+    @ContributesAndroidInjector abstract fun classicChatFragment(): ChatFragment
 }

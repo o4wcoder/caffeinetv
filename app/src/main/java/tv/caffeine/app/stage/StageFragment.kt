@@ -2,13 +2,10 @@ package tv.caffeine.app.stage
 
 import android.animation.LayoutTransition
 import android.os.Bundle
-import android.text.Spannable
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
-import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -22,29 +19,23 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.threeten.bp.Clock
 import org.webrtc.EglRenderer
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
-import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
-import tv.caffeine.app.api.model.Message
-import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
-import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
-import tv.caffeine.app.util.CropBorderedCircleTransformation
 import tv.caffeine.app.util.PulseAnimator
-import tv.caffeine.app.util.getHexColor
+import tv.caffeine.app.util.inTransaction
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
@@ -53,21 +44,15 @@ import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
 import kotlin.collections.set
 
-private const val PICK_DIGITAL_ITEM = 0
-private const val SEND_MESSAGE = 1
-
 class StageFragment @Inject constructor(
     private val factory: NewReyesController.Factory,
     private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val followManager: FollowManager,
-    private val picasso: Picasso,
-    private val clock: Clock
-) : CaffeineFragment(R.layout.fragment_stage), DICatalogFragment.Callback, SendMessageFragment.Callback {
+    private val picasso: Picasso
+) : CaffeineFragment(R.layout.fragment_stage) {
 
-    @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
-    @Inject lateinit var friendsWatchingAdapter: FriendsWatchingAdapter
-
-    @VisibleForTesting lateinit var binding: FragmentStageBinding
+    @VisibleForTesting
+    lateinit var binding: FragmentStageBinding
     private lateinit var broadcasterUsername: String
     private lateinit var frameListener: EglRenderer.FrameListener
     private lateinit var poorConnectionPulseAnimator: PulseAnimator
@@ -89,7 +74,8 @@ class StageFragment @Inject constructor(
     private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
-    @VisibleForTesting var stageIsLive = false
+    @VisibleForTesting
+    var stageIsLive = false
     var swipeButtonOnClickListener: View.OnClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,10 +92,6 @@ class StageFragment @Inject constructor(
             connectStageJob = launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
                 connectStreams(userDetails.username)
-                launch(dispatchConfig.main) {
-                    connectMessages(userDetails.stageId)
-                    connectFriendsWatching(userDetails.stageId)
-                }
             }
         }
         if (viewJob == null) {
@@ -151,16 +133,13 @@ class StageFragment @Inject constructor(
         }
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
-            binding.shareButton?.setOnClickListener {
-                val sharerId = followManager.currentUserDetails()?.caid
-                startActivity(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
-            }
             binding.followButton.setOnClickListener {
-                profileViewModel.follow(userProfile.caid).observe(viewLifecycleOwner, Observer { result ->
+                profileViewModel.follow(userProfile.caid).observe(this, Observer { result ->
                     when (result) {
                         is CaffeineEmptyResult.Error -> {
                             if (result.error.isMustVerifyEmailError()) {
-                                val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                                val fragment =
+                                    AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
                                 fragment.maybeShow(fragmentManager, "verifyEmail")
                             } else {
                                 Timber.e("Couldn't follow user ${result.error}")
@@ -170,12 +149,10 @@ class StageFragment @Inject constructor(
                     }
                 })
             }
-            binding.showIsOverTextView.formatUsernameAsHtml(picasso, getString(R.string.broadcaster_show_is_over, userProfile.username))
-            binding.saySomethingTextView?.text = if (userProfile.isMe) {
-                getString(R.string.messages_will_appear_here)
-            } else {
-                saySomethingToBroadcasterText(userProfile)
-            }
+            binding.showIsOverTextView.formatUsernameAsHtml(
+                picasso,
+                getString(R.string.broadcaster_show_is_over, userProfile.username)
+            )
             binding.avatarImageView.setOnClickListener {
                 findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
             }
@@ -188,35 +165,33 @@ class StageFragment @Inject constructor(
             updateBroadcastOnlineState(userProfile.isLive)
             if (shouldShowOverlayOnProfileLoaded) {
                 shouldShowOverlayOnProfileLoaded = false
-                toggleOverlayVisibility(!userProfile.isLive, false) // hide on the first frame instead of a timeout if live
+                toggleOverlayVisibility(
+                    !userProfile.isLive,
+                    false
+                ) // hide on the first frame instead of a timeout if live
             }
         })
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
-        binding.messagesRecyclerView?.adapter = chatMessageAdapter
-        chatMessageAdapter.callback = object : ChatMessageAdapter.Callback {
-            override fun replyClicked(message: Message) {
-                val string = getString(R.string.username_prepopulated_reply, message.publisher.username)
-                openSendMessage(string)
-            }
-
-            override fun upvoteClicked(message: Message) {
-                chatViewModel.endorseMessage(message)
-            }
-        }
         poorConnectionPulseAnimator = PulseAnimator(binding.poorConnectionPulseImageView)
         initSurfaceViewRenderer()
         configureButtons()
+
+        updateBottomFragment(BottomContainerType.CHAT)
     }
 
-    private fun saySomethingToBroadcasterText(userProfile: UserProfile): Spannable {
-        val colorRes = when {
-            userProfile.isFollowed -> R.color.caffeine_blue
-            else -> R.color.white
+    private fun updateBottomFragment(bottomContainerType: BottomContainerType) {
+
+        binding.bottomFragmentContainer?.let {
+            // TODO: Add Bio section fragment here
+            val fragment = when (bottomContainerType) {
+                BottomContainerType.CHAT -> ChatFragment.newInstance(broadcasterUsername)
+                else -> ChatFragment.newInstance(broadcasterUsername)
+            }
+            childFragmentManager.inTransaction {
+                replace(R.id.bottom_fragment_container, fragment)
+            }
         }
-        val fontColor = context?.getHexColor(colorRes)
-        val string = getString(R.string.say_something_to_user, broadcasterUsername, fontColor)
-        return HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, null, null) as Spannable
     }
 
     override fun onDestroyView() {
@@ -230,8 +205,6 @@ class StageFragment @Inject constructor(
         shouldShowOverlayOnProfileLoaded = !isStreamConnected
         connectStage()
     }
-
-    private fun isChangingConfigurations() = activity?.isChangingConfigurations != false
 
     override fun onPause() {
         if (!isChangingConfigurations()) disconnectStage()
@@ -258,7 +231,10 @@ class StageFragment @Inject constructor(
 
     private var overlayVisibilityJob: Job? = null
 
-    private fun toggleOverlayVisibility(shouldAutoHideAfterTimeout: Boolean = true, shouldIncludeAppBar: Boolean = true) {
+    private fun toggleOverlayVisibility(
+        shouldAutoHideAfterTimeout: Boolean = true,
+        shouldIncludeAppBar: Boolean = true
+    ) {
         overlayVisibilityJob?.cancel()
         if (!binding.stageAppbar.isVisible || !binding.liveIndicatorAndAvatarContainer.isVisible) {
             showOverlays(shouldIncludeAppBar)
@@ -342,31 +318,12 @@ class StageFragment @Inject constructor(
 
     private fun updateViewsOnMyStageVisibility() {
         listOf(
-            binding.giftButton,
-            binding.friendsWatchingButton,
             binding.avatarImageView,
             binding.usernameTextView,
             binding.followButton,
             binding.broadcastTitleTextView
         ).forEach {
             it?.isVisible = !isMe
-        }
-    }
-
-    private fun updateFriendsWatching(friendsWatching: List<User>, profileAvatarTransform: CropBorderedCircleTransformation) {
-        if (binding.friendsWatchingButton == null) return
-        val friendAvatarImageUrl = friendsWatching.firstOrNull()?.avatarImageUrl
-        if (friendAvatarImageUrl == null) {
-            binding.friendsWatchingButton?.isEnabled = false
-            binding.friendsWatchingButton?.setImageDrawable(null)
-        } else {
-            binding.friendsWatchingButton?.isEnabled = true
-            binding.friendsWatchingButton?.imageTintList = null
-            picasso.load(friendAvatarImageUrl)
-                    .resizeDimen(R.dimen.avatar_friends_watching, R.dimen.avatar_friends_watching)
-                    .placeholder(R.drawable.ic_profile)
-                    .transform(profileAvatarTransform)
-                    .into(binding.friendsWatchingButton)
         }
     }
 
@@ -483,75 +440,20 @@ class StageFragment @Inject constructor(
         }
     }
 
-    private fun connectMessages(stageIdentifier: String) {
-        chatViewModel.load(stageIdentifier)
-        chatViewModel.messages.observe(this, Observer { messages ->
-            chatMessageAdapter.submitList(messages)
-            binding.saySomethingTextView?.isVisible = messages.all { it.type == Message.Type.dummy }
-        })
-    }
-
-    private fun connectFriendsWatching(stageIdentifier: String) {
-        val profileAvatarTransform = CropBorderedCircleTransformation(resources.getColor(R.color.caffeine_blue, null),
-                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics))
-        friendsWatchingViewModel.load(stageIdentifier)
-        friendsWatchingViewModel.friendsWatching.observe(this, Observer { friendsWatching ->
-            updateFriendsWatching(friendsWatching, profileAvatarTransform)
-        })
-        binding.friendsWatchingButton?.setOnClickListener {
-            val action = StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(stageIdentifier)
-            findNavController().safeNavigate(action)
-        }
-    }
-
     private fun disconnectStreams() {
         newReyesController?.close()
         newReyesController = null
         videoTracks.clear()
     }
 
-    @VisibleForTesting fun configureButtons() {
-        binding.chatButton?.setOnClickListener { openSendMessage() }
-        binding.giftButton?.setOnClickListener {
-            sendDigitalItemWithMessage(null)
-        }
+    @VisibleForTesting
+    fun configureButtons() {
         binding.backToLobbyButton.setOnClickListener {
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)
         }
         binding.stageToolbar.apply { setTitleTextColor(context.getColor(R.color.transparent)) }
         binding.swipeButton.isVisible = canSwipe
         binding.swipeButton.setOnClickListener(swipeButtonOnClickListener)
-    }
-
-    override fun sendDigitalItemWithMessage(message: String?) {
-        val fragmentManager = fragmentManager ?: return
-        val fragment = DICatalogFragment(picasso)
-        val action = StagePagerFragmentDirections.actionStagePagerFragmentToDigitalItemListDialogFragment(broadcasterUsername, message)
-        fragment.setTargetFragment(this, PICK_DIGITAL_ITEM)
-        fragment.arguments = action.arguments
-        fragment.show(fragmentManager, "DI")
-    }
-
-    override fun sendMessage(message: String?) {
-        val text = message ?: return
-        chatViewModel.sendMessage(text, broadcasterUsername)
-    }
-
-    private fun openSendMessage(message: String? = null) {
-        val fragmentManager = fragmentManager ?: return
-        val fragment = SendMessageFragment()
-        val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendMessageFragment(message, !isMe)
-        fragment.arguments = action.arguments
-        fragment.show(fragmentManager, "sendMessage")
-        fragment.setTargetFragment(this, SEND_MESSAGE)
-    }
-
-    override fun digitalItemSelected(digitalItem: DigitalItem, message: String?) {
-        launch {
-            val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-            val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendDigitalItemFragment(digitalItem.id, userDetails.caid, message)
-            findNavController().safeNavigate(action)
-        }
     }
 
     private fun deinitSurfaceViewRenderers() {
@@ -563,4 +465,9 @@ class StageFragment @Inject constructor(
         }
         renderers.clear()
     }
+}
+
+enum class BottomContainerType {
+    BIO,
+    CHAT
 }

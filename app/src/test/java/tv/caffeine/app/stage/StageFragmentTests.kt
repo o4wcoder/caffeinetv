@@ -31,7 +31,7 @@ private inline fun launchStageFragmentWithArgs(
     val arguments = StageFragmentArgs(broadcastUsername, canSwipe).toBundle()
     val navController = mockk<NavController>(relaxed = true)
     val scenario = launchFragmentInContainer(arguments, R.style.AppTheme) {
-        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), mockk()).also {
+        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk()).also {
             it.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                 if (viewLifecycleOwner != null) {
                     // The fragment’s view has just been created

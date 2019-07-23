@@ -3,18 +3,25 @@ package tv.caffeine.app.util
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.profile.UnfollowUserDialogFragment
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.stage.DICatalogFragment
+import tv.caffeine.app.stage.SendMessageFragment
+import tv.caffeine.app.stage.StagePagerFragmentDirections
 
+private const val SEND_MESSAGE = 1
+private const val PICK_DIGITAL_ITEM = 0
 fun NavController.safeNavigate(directions: NavDirections) {
     try {
         navigate(directions)
@@ -103,5 +110,31 @@ fun FragmentManager.navigateToUnfollowUserDialog(caid: CAID, username: String, c
         positiveClickListener = DialogInterface.OnClickListener { _, _ -> callback.unfollow(caid) }
         arguments = MainNavDirections.actionGlobalUnfollowUserDialogFragment(username).arguments
         show(this@navigateToUnfollowUserDialog, "unfollowUser")
+    }
+}
+
+fun FragmentManager.navigateToSendMessage(callingFragment: Fragment, isMe: Boolean, message: String? = null) {
+    SendMessageFragment().apply {
+        val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendMessageFragment(message, !isMe)
+        arguments = action.arguments
+        setTargetFragment(callingFragment, SEND_MESSAGE)
+        show(this@navigateToSendMessage, "sendMessage")
+    }
+}
+
+fun FragmentManager.navigateToDigitalItemWithMessage(
+    callingFragment: Fragment,
+    picasso: Picasso,
+    broadcasterUsername: String,
+    message: String? = null
+) {
+    DICatalogFragment(picasso).apply {
+        val action = StagePagerFragmentDirections.actionStagePagerFragmentToDigitalItemListDialogFragment(
+            broadcasterUsername,
+            message
+        )
+        arguments = action.arguments
+        setTargetFragment(callingFragment, PICK_DIGITAL_ITEM)
+        show(this@navigateToDigitalItemWithMessage, "digitalItem")
     }
 }

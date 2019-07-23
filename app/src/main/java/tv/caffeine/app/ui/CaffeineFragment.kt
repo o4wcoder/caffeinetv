@@ -81,4 +81,6 @@ abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(cont
             findNavController().navigateToNoNetwork()
         }
     }
+
+    fun isChangingConfigurations() = activity?.isChangingConfigurations != false
 }
