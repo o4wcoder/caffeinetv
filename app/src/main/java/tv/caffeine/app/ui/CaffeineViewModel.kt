@@ -1,10 +1,10 @@
-package tv.caffeine.app.util
+package tv.caffeine.app.ui
 
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.ViewModel
 
-open class BaseObservableViewModel : ViewModel(), Observable {
+abstract class CaffeineViewModel : ViewModel(), Observable {
     private val callbacks: PropertyChangeRegistry by lazy { PropertyChangeRegistry() }
 
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {

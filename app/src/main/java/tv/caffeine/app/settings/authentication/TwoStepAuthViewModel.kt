@@ -1,52 +1,53 @@
 package tv.caffeine.app.settings.authentication
 
+import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import tv.caffeine.app.api.AccountsService
-import tv.caffeine.app.api.SendAccountMFABody
+import tv.caffeine.app.BR
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.Event
-import tv.caffeine.app.api.model.MfaMethod
-import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
+import tv.caffeine.app.repository.TwoStepAuthRepository
+import tv.caffeine.app.ui.CaffeineViewModel
 import javax.inject.Inject
 
+private const val MIN_CODE_LENGTH = 1
+
 class TwoStepAuthViewModel @Inject constructor(
-    private val accountsService: AccountsService,
-    private val gson: Gson
-) : ViewModel() {
-    private val update = MutableLiveData<Event<CaffeineEmptyResult>>()
-    private val _mfaEnabled = MutableLiveData<Event<Boolean>>()
-    val mfaEnabled: LiveData<Event<Boolean>> = _mfaEnabled.map { it }
-    private val _startEnableMfa = MutableLiveData<Event<Boolean>>()
-    val startEnableMfa: LiveData<Event<Boolean>> = _startEnableMfa.map { it }
+    private val twoStepAuthRepository: TwoStepAuthRepository
+) : CaffeineViewModel() {
+    private var verificationCode = ""
+
+    private val _sendVerificationCodeUpdate = MutableLiveData<Event<CaffeineEmptyResult>>()
+    val sendVerificationCodeUpdate = _sendVerificationCodeUpdate.map { it }
+    private val _mfaEnabledUpdate = MutableLiveData<Event<Boolean>>()
+    val mfaEnabledUpdate: LiveData<Event<Boolean>> = _mfaEnabledUpdate.map { it }
+    private val _startEnableMfaUpdate = MutableLiveData<Event<Boolean>>()
+    val startEnableMfaUpdate: LiveData<Event<Boolean>> = _startEnableMfaUpdate.map { it }
 
     fun startEnableMtaSetup() {
         sendMTAEmailCode()
-        _startEnableMfa.value = Event(true)
+        _startEnableMfaUpdate.value = Event(true)
     }
 
     fun updateMfaEnabled(enabled: Boolean) {
-        _mfaEnabled.value = Event(enabled)
+        _mfaEnabledUpdate.value = Event(enabled)
     }
 
     fun sendVerificationCode(code: String): LiveData<Event<CaffeineEmptyResult>> {
         viewModelScope.launch {
-            val result = accountsService.setMFA(SendAccountMFABody(SendAccountMFABody.Mfa(MfaMethod.EMAIL, code)))
-                .awaitEmptyAndParseErrors(gson)
-            update.value = Event(result)
+            val result = twoStepAuthRepository.sendVerificationCode(code)
+            _sendVerificationCodeUpdate.value = Event(result)
         }
-        return update
+        return _sendVerificationCodeUpdate
     }
 
     fun sendMTAEmailCode() {
         viewModelScope.launch {
-            val result = accountsService.sendMFAEmailCode().awaitEmptyAndParseErrors(gson)
+            val result = twoStepAuthRepository.sendMTAEmailCode()
             when (result) {
                 is CaffeineEmptyResult.Success -> Timber.d("Successful send MFA email code")
                 is CaffeineEmptyResult.Error -> Timber.d("Error attempting to send MFA email code ${result.error}")
@@ -57,8 +58,7 @@ class TwoStepAuthViewModel @Inject constructor(
 
     fun disableAuth() {
         viewModelScope.launch {
-            val result = accountsService.setMFA(SendAccountMFABody(SendAccountMFABody.Mfa(MfaMethod.NONE, "")))
-                .awaitEmptyAndParseErrors(gson)
+            val result = twoStepAuthRepository.disableAuth()
             when (result) {
                 is CaffeineEmptyResult.Success -> {
                     updateMfaEnabled(false)
@@ -72,4 +72,14 @@ class TwoStepAuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun onVerificationCodeTextChanged(text: CharSequence?) {
+        verificationCode = text.toString()
+        notifyPropertyChanged(BR.verificationCodeButtonEnabled)
+    }
+
+    @Bindable
+    fun isVerificationCodeButtonEnabled() = verificationCode.length >= MIN_CODE_LENGTH
+
+    fun onVerificationCodeButtonClick() = sendVerificationCode(verificationCode)
 }

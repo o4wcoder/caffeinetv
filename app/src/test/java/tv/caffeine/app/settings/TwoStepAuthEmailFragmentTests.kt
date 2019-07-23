@@ -9,7 +9,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,8 +26,8 @@ import tv.caffeine.app.settings.authentication.TwoStepAuthViewModel
 @RunWith(RobolectricTestRunner::class)
 class TwoStepAuthEmailFragmentTests {
     private lateinit var subject: TwoStepAuthEmailFragment
-    @MockK lateinit var viewModel: TwoStepAuthViewModel
-    @MockK lateinit var viewModelFactory: ViewModelFactory
+    @MockK lateinit var mockViewModel: TwoStepAuthViewModel
+    @MockK lateinit var mockViewModelFactory: ViewModelFactory
 
     @Before
     fun setup() {
@@ -36,24 +35,34 @@ class TwoStepAuthEmailFragmentTests {
         val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
         val testComponent = DaggerTestComponent.factory().create(app)
         app.setApplicationInjector(testComponent)
-        every { viewModelFactory.create(TwoStepAuthViewModel::class.java) } returns viewModel
+        every { mockViewModelFactory.create(TwoStepAuthViewModel::class.java) } returns mockViewModel
         val arguments = TwoStepAuthEmailFragmentArgs("user@email.com").toBundle()
         val navController = mockk<NavController>(relaxed = true)
-        val scenario = launchFragmentInContainer<TwoStepAuthEmailFragment>(arguments)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.requireView(), navController)
-            subject = it
-            subject.viewModelFactory = viewModelFactory
+
+        val scenario = launchFragmentInContainer(arguments) {
+            TwoStepAuthEmailFragment().also { fragment ->
+                fragment.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                    if (viewLifecycleOwner != null) {
+                        Navigation.setViewNavController(fragment.requireView(), navController)
+                    }
+                }
+                fragment.viewModelFactory = mockViewModelFactory
+            }
+        }
+        scenario.onFragment { fragment ->
+            subject = fragment
         }
         val result = MutableLiveData<Event<CaffeineEmptyResult>>()
         result.postValue(Event(CaffeineEmptyResult.Success))
-        every { viewModel.sendVerificationCode(any()) } returns result
+        every { mockViewModel.sendVerificationCode(any()) } returns result
     }
 
     @Test
     fun `clicking next button will send out verification check to endpoint`() {
-        subject.binding.verificationCodeButton.isEnabled = true
-        subject.binding.verificationCodeButton.performClick()
-        verify(exactly = 1) { viewModel.sendVerificationCode(any()) }
+        // Moved test over to TwoStepAuthEmailViewModelTests
+
+        // subject.binding.verificationCodeButton.isEnabled = true
+        // subject.binding.verificationCodeButton.performClick()
+        // verify (exactly = 1) { mockViewModel.sendVerificationCode(any()) }
     }
 }

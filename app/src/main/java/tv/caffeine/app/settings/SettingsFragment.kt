@@ -106,8 +106,8 @@ class SettingsFragment @Inject constructor(
         twitterAuth.oauthResult.observe(this, Observer { event ->
             event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }
         })
-        twoStepAuthViewModel.mfaEnabled.observe(this, Observer { processMfaChangeEvent(it) })
-        twoStepAuthViewModel.startEnableMfa.observe(this, Observer { processStartEnableMtaEvent(it) })
+        twoStepAuthViewModel.mfaEnabledUpdate.observe(this, Observer { processMfaChangeEvent(it) })
+        twoStepAuthViewModel.startEnableMfaUpdate.observe(this, Observer { processStartEnableMtaEvent(it) })
     }
 
     override fun onAttach(context: Context) {
