@@ -58,6 +58,13 @@ private val destinationsWithCustomToolbar = arrayOf(
     R.id.unfollowUserDialogFragment
 )
 
+private val destinationWithReleaseToolbar = arrayOf(
+    R.id.lobbySwipeFragment,
+    R.id.featuredProgramGuideFragment,
+    R.id.notificationsFragment,
+    R.id.myProfileFragment
+)
+
 private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.landingFragment,
     R.id.signInFragment,
@@ -87,25 +94,17 @@ class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var secureSettingsStorage: SecureSettingsStorage
 
     private lateinit var navController: NavController
+    @VisibleForTesting lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.activityToolbar)
         navController = findNavController(R.id.activity_main)
         setupActionBarWithNavController(this, navController)
+        binding.releaseAppBar.navController = navController
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            dismissKeyboard()
-            binding.activityAppbar.isVisible = destination.id !in destinationsWithCustomToolbar
-            binding.bottomNavigation.isVisible = releaseDesignConfig.isReleaseDesignActive() &&
-                destination.id !in destinationsWithoutBottomNavBar
-            updateBottomNavigationStatus(binding.bottomNavigation, destination.id)
-
-            requestedOrientation = if (destination.id in destinationInPortrait) {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            } else {
-                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            }
+            updateUiOnDestinationChange(destination.id, binding)
             firebaseAnalytics.setCurrentScreen(this, destination.label.toString(), null)
         }
         setNavigationBarDarkMode(releaseDesignConfig.isReleaseDesignActive())
@@ -130,6 +129,22 @@ class MainActivity : DaggerAppCompatActivity() {
                 val notificationEvent = NotificationEvent(NotificationEvent.Type.Opened, intent.notificationId, intent.notificationTag)
                 analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationEvent))
             }
+        }
+    }
+
+    @VisibleForTesting fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding) {
+        dismissKeyboard()
+        val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
+        binding.releaseAppBar.isVisible = isReleaseDesign && destinationId in destinationWithReleaseToolbar
+        binding.classicAppBar.isVisible = destinationId !in destinationsWithCustomToolbar && !binding.releaseAppBar.isVisible
+        binding.bottomNavigation.isVisible = isReleaseDesign &&
+            destinationId !in destinationsWithoutBottomNavBar
+        updateBottomNavigationStatus(binding.bottomNavigation, destinationId)
+
+        requestedOrientation = if (destinationId in destinationInPortrait) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 

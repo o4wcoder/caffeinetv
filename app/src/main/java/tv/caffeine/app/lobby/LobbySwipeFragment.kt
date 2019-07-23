@@ -98,8 +98,7 @@ class LobbySwipeFragment @Inject constructor(
 
         // Release UI
         val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
-        binding.cameraButton.isVisible = !isReleaseDesign
-        binding.profileButton.isVisible = !isReleaseDesign
+        binding.lobbyAppbar.isVisible = !isReleaseDesign
         binding.tabLayout.isVisible = !isReleaseDesign
     }
 }

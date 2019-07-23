@@ -1,8 +1,6 @@
 package tv.caffeine.app.navigation
 
 import android.content.Intent
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -21,14 +19,10 @@ class BottomNavigationTests {
 
     private val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.factory())
     private lateinit var mainActivity: MainActivity
-    private lateinit var navController: NavController
 
     @Before
     fun setup() {
         mainActivity = activityTestRule.launchActivity(Intent())
-        val fragmentManager = mainActivity.supportFragmentManager
-        val navHostFragment = fragmentManager.primaryNavigationFragment as NavHostFragment
-        navController = navHostFragment.navController
     }
 
     @After
