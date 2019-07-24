@@ -55,8 +55,16 @@
             android:summary=" ">
 
             <CheckBoxPreference
-                android:key="broadcast_live_email"
-                android:title="@string/people_you_follow_are_live"/>
+                android:key="caffeine_101_email"
+                android:title="@string/caffeine_101"/>
+
+            <CheckBoxPreference
+                android:key="broadcaster_101_email"
+                android:title="@string/broadcasting_101"/>
+
+            <CheckBoxPreference
+                android:key="broadcast_report_email"
+                android:title="@string/broadcast_reports"/>
 
             <CheckBoxPreference
                 android:key="new_follower_email"
@@ -67,16 +75,25 @@
                 android:title="@string/friends_new_to_caffeine"/>
 
             <CheckBoxPreference
+                android:key="broadcast_live_email"
+                android:title="@string/people_you_follow_are_live"/>
+
+            <CheckBoxPreference
                 android:key="weekly_suggestions_email"
-                android:title="@string/weekly_suggestions"/>
+                android:title="@string/recommended_for_you"/>
 
             <CheckBoxPreference
                 android:key="community_email"
-                android:title="@string/community_updates"/>
+                android:title="@string/community_announcements"/>
 
             <CheckBoxPreference
-                android:key="broadcast_report_email"
-                android:title="@string/broadcast_report"/>
+                android:key="product_updates_email"
+                android:title="@string/product_updates"/>
+
+            <CheckBoxPreference
+                android:key="broadcaster_programs_email"
+                android:title="@string/broadcaster_programs"/>
+
 
         </PreferenceScreen>
 

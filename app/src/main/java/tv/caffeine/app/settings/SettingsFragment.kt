@@ -473,7 +473,9 @@ class NotificationSettingsViewModel @Inject constructor(
     private fun getEmailCount(settings: NotificationSettings): Int {
         return listOf(settings.newFollowerEmail, settings.weeklySuggestionsEmail,
                 settings.broadcastLiveEmail, settings.friendJoinsEmail,
-                settings.communityEmail, settings.broadcastReportEmail)
+                settings.communityEmail, settings.broadcastReportEmail,
+                settings.caffeine101Email, settings.broadcaster101Email,
+                settings.broadcasterProgramsEmail, settings.productUpdatesEmail)
                 .count { it == true }
     }
 }

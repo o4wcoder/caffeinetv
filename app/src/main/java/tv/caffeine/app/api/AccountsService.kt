@@ -1,5 +1,6 @@
 package tv.caffeine.app.api
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -103,6 +104,12 @@ class NotificationSettings(
     val friendJoinsEmail: Boolean? = null,
     val communityEmail: Boolean? = null,
     val broadcastReportEmail: Boolean? = null,
+    @SerializedName("caffeine_101_email")
+    val caffeine101Email: Boolean? = null,
+    @SerializedName("broadcaster_101_email")
+    val broadcaster101Email: Boolean? = null,
+    val broadcasterProgramsEmail: Boolean? = null,
+    val productUpdatesEmail: Boolean? = null,
     val newFollowerAndroidPush: Boolean? = null,
     val broadcastLiveAndroidPush: Boolean? = null,
     val friendJoinsAndroidPush: Boolean? = null
@@ -113,8 +120,11 @@ class NotificationSettings(
         broadcast_live_email,
         friend_joins_email,
         community_email,
+        caffeine_101_email,
+        broadcaster_101_email,
+        broadcaster_programs_email,
         broadcast_report_email,
-
+        product_updates_email,
         new_follower_android_push,
         broadcast_live_android_push,
         friend_joins_android_push
@@ -128,11 +138,15 @@ class NotificationSettings(
                 SettingKey.friend_joins_email to friendJoinsEmail,
                 SettingKey.community_email to communityEmail,
                 SettingKey.broadcast_report_email to broadcastReportEmail,
+                SettingKey.caffeine_101_email to caffeine101Email,
+                SettingKey.broadcaster_101_email to broadcaster101Email,
+                SettingKey.broadcaster_programs_email to broadcasterProgramsEmail,
+                SettingKey.product_updates_email to productUpdatesEmail,
 
                 SettingKey.new_follower_android_push to newFollowerAndroidPush,
                 SettingKey.broadcast_live_android_push to broadcastLiveAndroidPush,
                 SettingKey.friend_joins_android_push to friendJoinsAndroidPush
-        )
+                )
     }
 
     companion object {
@@ -144,6 +158,10 @@ class NotificationSettings(
                     friendJoinsEmail = map[SettingKey.friend_joins_email],
                     communityEmail = map[SettingKey.community_email],
                     broadcastReportEmail = map[SettingKey.broadcast_report_email],
+                    caffeine101Email = map[SettingKey.caffeine_101_email],
+                    broadcaster101Email = map[SettingKey.broadcaster_101_email],
+                    broadcasterProgramsEmail = map[SettingKey.broadcaster_programs_email],
+                    productUpdatesEmail = map[SettingKey.product_updates_email],
 
                     newFollowerAndroidPush = map[SettingKey.new_follower_android_push],
                     broadcastLiveAndroidPush = map[SettingKey.broadcast_live_android_push],
