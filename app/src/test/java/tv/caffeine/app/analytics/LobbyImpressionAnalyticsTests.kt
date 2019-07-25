@@ -66,7 +66,7 @@ class LobbyImpressionAnalyticsTests {
         val broadcast = makeOnlineBroadcast()
         val subject = makeBroadcaster(user, broadcast)
 
-        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 123000L)
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", "caid", 123000L)
         assertEquals("caid", lobbyImpressionEventData.caid)
         assertEquals("clusterId", lobbyImpressionEventData.clusterId)
         assertEquals(true, lobbyImpressionEventData.isLive)
@@ -77,7 +77,7 @@ class LobbyImpressionAnalyticsTests {
         val user = makeGenericUser()
         val subject = makeBroadcaster(user, null)
 
-        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 123000L)
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", "caid", 123000L)
         assertEquals("caid", lobbyImpressionEventData.caid)
         assertEquals("clusterId", lobbyImpressionEventData.clusterId)
         assertEquals(false, lobbyImpressionEventData.isLive)
@@ -89,7 +89,7 @@ class LobbyImpressionAnalyticsTests {
         val broadcast = makeOnlineBroadcast()
         val subject = makeBroadcaster(user, broadcast)
 
-        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 12300L)
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", "caid", 12300L)
         assertEquals("payloadId", lobbyImpressionEventData.payloadId)
     }
 
@@ -99,7 +99,7 @@ class LobbyImpressionAnalyticsTests {
         val broadcast = makeOnlineBroadcast()
         val subject = makeBroadcaster(user, broadcast)
 
-        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", 12300L)
+        val lobbyImpressionEventData = subject.makeLobbyImpressionEventData("payloadId", "caid", 12300L)
         assertEquals("contentId", lobbyImpressionEventData.contentId)
     }
 }
