@@ -37,7 +37,7 @@ class LobbyImpressionAnalytics @AssistedInject constructor(
 
     suspend fun sendImpressionEventData(broadcaster: Lobby.Broadcaster) {
         val caid = followManager.currentUserDetails()?.caid
-        val eventData = getLobbyImpressionEventData(caid, broadcaster)
+        val eventData = broadcaster.makeLobbyImpressionEventData(payloadId, caid, clock.seconds())
         eventManager.sendEvent(LobbyImpressionEvent(eventData))
     }
 
@@ -47,9 +47,6 @@ class LobbyImpressionAnalytics @AssistedInject constructor(
         val timestamp = clock.seconds()
         return LobbyClickedEventData(payloadId, caid, stageId, timestamp)
     }
-
-    private fun getLobbyImpressionEventData(caid: CAID?, broadcaster: Lobby.Broadcaster): LobbyImpressionEventData =
-        broadcaster.makeLobbyImpressionEventData(payloadId, caid, clock.seconds())
 }
 
 fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String, caid: CAID?, renderedAt: Long) =
