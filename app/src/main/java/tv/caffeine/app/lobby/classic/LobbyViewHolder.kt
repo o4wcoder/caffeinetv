@@ -250,7 +250,9 @@ abstract class BroadcasterCard(
 
     @VisibleForTesting
     fun getLobbyImpressionEventData(singleCard: SingleCard): LobbyImpressionEventData? =
-        payloadId?.let { singleCard.broadcaster.makeLobbyImpressionEventData(it, clock.seconds()) }
+        payloadId?.let {
+            val caid = followManager.currentUserDetails()?.caid
+            singleCard.broadcaster.makeLobbyImpressionEventData(it, caid, clock.seconds()) }
 
     private fun sendImpressionEventData(lobbyItem: LobbyItem) {
         scope?.launch {

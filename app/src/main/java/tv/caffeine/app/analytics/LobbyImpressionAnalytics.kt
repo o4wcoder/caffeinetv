@@ -8,6 +8,7 @@ import tv.caffeine.app.api.LobbyClickedEventData
 import tv.caffeine.app.api.LobbyFollowClickedEvent
 import tv.caffeine.app.api.LobbyImpressionEvent
 import tv.caffeine.app.api.LobbyImpressionEventData
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.ext.seconds
 import tv.caffeine.app.session.FollowManager
@@ -35,7 +36,8 @@ class LobbyImpressionAnalytics @AssistedInject constructor(
     }
 
     suspend fun sendImpressionEventData(broadcaster: Lobby.Broadcaster) {
-        val eventData = getLobbyImpressionEventData(broadcaster)
+        val caid = followManager.currentUserDetails()?.caid
+        val eventData = broadcaster.makeLobbyImpressionEventData(payloadId, caid, clock.seconds())
         eventManager.sendEvent(LobbyImpressionEvent(eventData))
     }
 
@@ -45,15 +47,12 @@ class LobbyImpressionAnalytics @AssistedInject constructor(
         val timestamp = clock.seconds()
         return LobbyClickedEventData(payloadId, caid, stageId, timestamp)
     }
-
-    private fun getLobbyImpressionEventData(broadcaster: Lobby.Broadcaster): LobbyImpressionEventData =
-        broadcaster.makeLobbyImpressionEventData(payloadId, clock.seconds())
 }
 
-fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String, renderedAt: Long) =
+fun Lobby.Broadcaster.makeLobbyImpressionEventData(payloadId: String, caid: CAID?, renderedAt: Long) =
     LobbyImpressionEventData(
         payloadId,
-        user.caid,
+        caid,
         user.stageId,
         user.isFeatured,
         broadcast != null,
