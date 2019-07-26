@@ -1,9 +1,14 @@
 package tv.caffeine.app.stage
 
 import android.content.Context
+import android.text.Spannable
+import android.view.View
+import android.widget.TextView
+import androidx.core.text.HtmlCompat
+import androidx.databinding.Bindable
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.cancelChildren
@@ -12,6 +17,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.BR
 import tv.caffeine.app.R
 import tv.caffeine.app.api.Reaction
 import tv.caffeine.app.api.model.CaffeineEmptyResult
@@ -20,20 +26,48 @@ import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.MessageWrapper
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.profile.UserProfile
+import tv.caffeine.app.repository.ChatRepository
+import tv.caffeine.app.repository.ProfileRepository
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.CaffeineViewModel
+import tv.caffeine.app.util.getHexColor
 import javax.inject.Inject
 
 private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
+
+@BindingAdapter("broadcasterUserName", "userProfile")
+fun setSaySomethingText(textView: TextView, broadcasterUserName: String?, userProfile: UserProfile?) {
+    userProfile?.let {
+        if (userProfile.isMe) {
+            textView.text = textView.context.getString(R.string.messages_will_appear_here)
+        } else {
+            val colorRes = when {
+                userProfile.isFollowed -> R.color.caffeine_blue
+                else -> R.color.white
+            }
+            val fontColor = textView.context.getHexColor(colorRes)
+            val string =
+                textView.context.getString(R.string.say_something_to_user, broadcasterUserName, fontColor)
+            textView.text = HtmlCompat.fromHtml(
+                string,
+                HtmlCompat.FROM_HTML_MODE_LEGACY,
+                null,
+                null
+            ) as Spannable
+        }
+    }
+}
 
 class ChatViewModel @Inject constructor(
     context: Context,
     private val tokenStore: TokenStore,
     private val getSignedUserDetailsUseCase: GetSignedUserDetailsUseCase,
-    private val sendMessageUseCase: SendMessageUseCase,
-    private val endorseMessageUseCase: EndorseMessageUseCase,
     private val followManager: FollowManager,
-    private val messageController: MessageController
-) : ViewModel() {
+    private val messageController: MessageController,
+    private val chatRepository: ChatRepository,
+    private val profileRepository: ProfileRepository
+) : CaffeineViewModel() {
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
 
     private val columns = context.resources.getInteger(R.integer.chat_column_count)
@@ -41,9 +75,23 @@ class ChatViewModel @Inject constructor(
 
     private val maxVisibleReactions = columns * rows
     private val preferredPositions = (0 until maxVisibleReactions).toList()
-
     private val _messages = MutableLiveData<List<Message>>()
+
+    private var broadcasterUserName = ""
+
+    private val _userProfile = MutableLiveData<UserProfile>()
+    val userProfile: LiveData<UserProfile> = _userProfile.map { it }
     val messages: LiveData<List<Message>> = _messages.map { it }
+
+    @Bindable
+    fun getChatButtonsVisibility() = if (userProfile.value?.isMe ?: false) View.GONE else View.VISIBLE
+
+    @Bindable
+    fun getSaySomethingTextVisibility() =
+        if (messages.value?.all { it.type == Message.Type.dummy } ?: true) View.VISIBLE else View.GONE
+
+    @Bindable
+    fun getBroadcasterUserName() = broadcasterUserName
 
     fun load(stageIdentifier: String) {
         viewModelScope.launch {
@@ -59,6 +107,16 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun loadUserProfile(broadcasterUserName: String): LiveData<UserProfile> {
+        this.broadcasterUserName = broadcasterUserName
+        viewModelScope.launch {
+            val result = profileRepository.getUserProfile(broadcasterUserName)
+            _userProfile.value = result
+            notifyChange()
+        }
+        return _userProfile
+    }
+
     fun sendMessage(text: String, broadcaster: String) {
         viewModelScope.launch {
             val userDetails = followManager.userDetails(broadcaster) ?: return@launch
@@ -70,7 +128,7 @@ class ChatViewModel @Inject constructor(
             }
             val stageId = userDetails.stageId
             val message = Reaction("reaction", publisher, Message.Body(text))
-            when (val result = sendMessageUseCase(stageId, message)) {
+            when (val result = chatRepository.sendMessage(stageId, message)) {
                 is CaffeineResult.Success -> Timber.d("Sent message $text with result $result")
                 is CaffeineResult.Error -> Timber.e("Failed to send message")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
@@ -80,7 +138,7 @@ class ChatViewModel @Inject constructor(
 
     fun endorseMessage(message: Message) {
         viewModelScope.launch {
-            when (val result = endorseMessageUseCase(message.id)) {
+            when (val result = chatRepository.endorseMessage(message.id)) {
                 is CaffeineEmptyResult.Success -> Timber.d("Successfully endorsed a message")
                 is CaffeineEmptyResult.Error -> Timber.e(result.error.toString())
                 is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
@@ -140,6 +198,7 @@ class ChatViewModel @Inject constructor(
             nonStaleMessages.find { it.position == position }?.message ?: dummyMessage.copy(id = "$position")
         }
         _messages.value = messagesToShow
+        notifyPropertyChanged(BR.saySomethingTextVisibility)
         Timber.d("Chat Messages [$currentTime] - to display $messagesToShow")
     }
 

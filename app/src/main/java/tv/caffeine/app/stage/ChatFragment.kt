@@ -1,12 +1,8 @@
 package tv.caffeine.app.stage
 
 import android.os.Bundle
-import android.text.Spannable
 import android.util.TypedValue
 import android.view.View
-import androidx.annotation.VisibleForTesting
-import androidx.core.text.HtmlCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -20,12 +16,9 @@ import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.FragmentChatBinding
-import tv.caffeine.app.profile.ProfileViewModel
-import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.CropBorderedCircleTransformation
-import tv.caffeine.app.util.getHexColor
 import tv.caffeine.app.util.navigateToDigitalItemWithMessage
 import tv.caffeine.app.util.navigateToSendMessage
 import tv.caffeine.app.util.safeNavigate
@@ -42,7 +35,6 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
     private lateinit var binding: FragmentChatBinding
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
-    private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
     private val args by navArgs<ChatFragmentArgs>()
     private var isMe = false
     private var broadcasterUsername = ""
@@ -60,21 +52,27 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentChatBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = chatViewModel
         broadcasterUsername = args.broadcastUsername
-        profileViewModel.load(broadcasterUsername)
-        profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
-            isMe = userProfile.isMe
-            updateViewsOnMyChatVisibity()
-            updateSaySomethingText(userProfile)
-
-            binding.shareButton?.setOnClickListener {
-                val sharerId = followManager.currentUserDetails()?.caid
-                startActivity(StageShareIntentBuilder(userProfile, sharerId, resources, clock).build())
+        chatViewModel.loadUserProfile(broadcasterUsername).observe(viewLifecycleOwner, Observer { userProfile ->
+            userProfile?.let {
+                isMe = userProfile.isMe
+                binding.shareButton?.setOnClickListener {
+                    val sharerId = followManager.currentUserDetails()?.caid
+                    startActivity(
+                        StageShareIntentBuilder(
+                            userProfile,
+                            sharerId,
+                            resources,
+                            clock
+                        ).build()
+                    )
+                }
             }
         })
 
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
-
         chatMessageAdapter.callback = object : ChatMessageAdapter.Callback {
             override fun replyClicked(message: Message) {
                 val usernameMessage = getString(R.string.username_prepopulated_reply, message.publisher.username)
@@ -85,7 +83,10 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
             }
         }
 
-        configureButtons()
+        binding.chatButton?.setOnClickListener { fragmentManager?.navigateToSendMessage(this@ChatFragment, isMe) }
+        binding.giftButton?.setOnClickListener {
+            sendDigitalItemWithMessage(null)
+        }
     }
 
     override fun onResume() {
@@ -112,7 +113,6 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
                     chatViewModel.load(userDetails.stageId)
                     chatViewModel.messages.observe(viewLifecycleOwner, Observer { messages ->
                         chatMessageAdapter.submitList(messages)
-                        binding.saySomethingTextView?.isVisible = messages.all { it.type == Message.Type.dummy }
                     })
                 }
             }
@@ -124,31 +124,6 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
         chatJob = null
         chatViewModel.disconnect()
         friendsWatchingViewModel.disconnect()
-    }
-
-    @VisibleForTesting
-    fun configureButtons() {
-        binding.chatButton?.setOnClickListener { fragmentManager?.navigateToSendMessage(this@ChatFragment, isMe) }
-        binding.giftButton?.setOnClickListener {
-            sendDigitalItemWithMessage(null)
-        }
-    }
-
-    private fun updateSaySomethingText(userProfile: UserProfile) {
-        binding.saySomethingTextView?.text = if (isMe) {
-            getString(R.string.messages_will_appear_here)
-        } else {
-            saySomethingToBroadcasterText(userProfile)
-        }
-    }
-
-    private fun updateViewsOnMyChatVisibity() {
-        listOf(
-            binding.giftButton,
-            binding.friendsWatchingButton
-        ).forEach {
-            it?.isVisible = !isMe
-        }
     }
 
     private fun connectFriendsWatching(stageIdentifier: String) {
@@ -184,16 +159,6 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
                 .transform(profileAvatarTransform)
                 .into(binding.friendsWatchingButton)
         }
-    }
-
-    private fun saySomethingToBroadcasterText(userProfile: UserProfile): Spannable {
-        val colorRes = when {
-            userProfile.isFollowed -> R.color.caffeine_blue
-            else -> R.color.white
-        }
-        val fontColor = context?.getHexColor(colorRes)
-        val string = getString(R.string.say_something_to_user, broadcasterUsername, fontColor)
-        return HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY, null, null) as Spannable
     }
 
     override fun sendDigitalItemWithMessage(message: String?) {

@@ -63,7 +63,6 @@ class StageFragment @Inject constructor(
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
 
-    private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
 
@@ -110,7 +109,6 @@ class StageFragment @Inject constructor(
         viewJob?.cancel()
         viewJob = null
         disconnectStreams()
-        chatViewModel.disconnect()
         friendsWatchingViewModel.disconnect()
     }
 
@@ -181,7 +179,6 @@ class StageFragment @Inject constructor(
     }
 
     private fun updateBottomFragment(bottomContainerType: BottomContainerType) {
-
         binding.bottomFragmentContainer?.let {
             // TODO: Add Bio section fragment here
             val fragment = when (bottomContainerType) {
