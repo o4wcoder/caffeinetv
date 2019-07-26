@@ -1,6 +1,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="viewModel"
+                  type="tv.caffeine.app.stage.ChatViewModel">
+
+        </variable>
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -23,10 +29,13 @@
             style="@style/SaySomethingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{viewModel.saySomethingTextVisibility}"
             app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/messages_recycler_view"
+            app:broadcasterUserName="@{viewModel.broadcasterUserName}"
+            app:userProfile="@{viewModel.userProfile}"
             tools:text="Say something to\n\nCaffeine\n ↓"/>
 
         <androidx.appcompat.widget.Toolbar
@@ -82,6 +91,7 @@
                     android:background="@android:color/transparent"
                     android:tint="@color/white"
                     android:contentDescription="@string/gift_button_content_description"
+                    android:visibility="@{viewModel.chatButtonsVisibility}"
                     app:srcCompat="@drawable/ic_digital_items"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/friends_watching_button"
@@ -98,6 +108,7 @@
                     android:tint="@color/white"
                     android:contentDescription="@string/friends_watching_button_content_description"
                     android:scaleType="centerCrop"
+                    android:visibility="@{viewModel.chatButtonsVisibility}"
                     app:srcCompat="@drawable/ic_profile"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
