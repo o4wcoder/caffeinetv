@@ -6,6 +6,7 @@ import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import tv.caffeine.app.BuildConfig
@@ -16,6 +17,9 @@ interface DevicesService {
 
     @DELETE("v1/devices/{deviceId}")
     fun unregisterDevice(@Path("deviceId") deviceId: String): Deferred<Response<Any>>
+
+    @PATCH("v1/devices/{deviceId}")
+    fun updateDevice(@Path("deviceId") deviceId: String, @Body body: RegisterDeviceBody): Deferred<Response<Device>>
 }
 
 class RegisterDeviceBody(val device: DeviceRegistration)
