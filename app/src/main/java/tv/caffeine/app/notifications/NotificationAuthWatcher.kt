@@ -4,8 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.api.ApiErrorResult
-import tv.caffeine.app.api.DeviceRegistration
-import tv.caffeine.app.api.RegisterDeviceBody
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.AuthWatcher
@@ -23,9 +21,8 @@ class NotificationAuthWatcher @Inject constructor(
         Timber.d("NotificationAuthWatcher.onSignIn()")
         secureSettingsStorage.firebaseToken?.let {
             scope.launch {
-                val body = RegisterDeviceBody(DeviceRegistration(notificationToken = it))
                 Timber.d("Registering device, token $it")
-                val result = deviceRepository.registerDevice(body)
+                val result = deviceRepository.registerDevice(it)
                 when (result) {
                     is CaffeineResult.Success -> secureSettingsStorage.deviceId = result.value.deviceRegistration?.id
                     is CaffeineResult.Error -> Timber.e("Error creating device on server ${result.error}")
@@ -38,6 +35,6 @@ class NotificationAuthWatcher @Inject constructor(
     override suspend fun onSignOut(deviceId: String?): CaffeineEmptyResult {
         Timber.d("NotificationAuthWatcher.onSignOut()")
         val id = deviceId ?: return CaffeineEmptyResult.Error(ApiErrorResult(errors = null, reason = "Device Id is null"))
-        return deviceRepository.unRegisterDevice(id)
+        return deviceRepository.unregisterDevice(id)
     }
 }

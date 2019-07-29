@@ -38,7 +38,7 @@ class NotificationAuthWatcherTests {
     fun setUp() {
         MockKAnnotations.init(this)
         val emptyResult = CaffeineEmptyResult.Success
-        coEvery { fakeDeviceRepository.unRegisterDevice(any()) } returns emptyResult
+        coEvery { fakeDeviceRepository.unregisterDevice(any()) } returns emptyResult
         val result: CaffeineResult<Device> = CaffeineResult.Success(fakeDevice)
         coEvery { fakeDevice.deviceRegistration?.id } returns fakeDeviceId
         coEvery { fakeDeviceRepository.registerDevice(any()) } returns result
@@ -64,13 +64,13 @@ class NotificationAuthWatcherTests {
     fun `unregister device is not called on sign out with null device id`() = runBlockingTest {
         val id = null
         subject.onSignOut(id)
-        coVerify(exactly = 0) { fakeDeviceRepository.unRegisterDevice(any()) }
+        coVerify(exactly = 0) { fakeDeviceRepository.unregisterDevice(any()) }
     }
 
     @Test
     fun `unregister device is called on sign out with valid device id`() = runBlockingTest {
         val id = "123"
         subject.onSignOut(id)
-        coVerify(exactly = 1) { fakeDeviceRepository.unRegisterDevice(any()) }
+        coVerify(exactly = 1) { fakeDeviceRepository.unregisterDevice(any()) }
     }
 }
