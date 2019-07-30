@@ -166,6 +166,20 @@ class StageFragmentVisibilityTests {
     }
 
     @Test
+    fun `showing overlays on a live stage shows avatar username container`() {
+        subject.stageIsLive = true
+        subject.showOverlays()
+        assertTrue(subject.binding.avatarUsernameContainer.isVisible)
+    }
+
+    @Test
+    fun `showing overlays on an offline stage shows avatar username container`() {
+        subject.stageIsLive = false
+        subject.showOverlays()
+        assertTrue(subject.binding.avatarUsernameContainer.isVisible)
+    }
+
+    @Test
     fun `showing overlays does not change the visibility of the follow button`() {
         subject.showOverlays()
         // verify(exactly = 0) { subject.binding.followButton.visibility = any() }

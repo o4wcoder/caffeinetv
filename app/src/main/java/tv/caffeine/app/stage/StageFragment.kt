@@ -281,20 +281,20 @@ class StageFragment @Inject constructor(
         when (feedQuality) {
             FeedQuality.GOOD -> {
                 binding.gameLogoImageView.isVisible = stageIsLive
-                binding.avatarUsernameContainer.isVisible = stageIsLive
                 binding.liveIndicatorTextView.isVisible = stageIsLive
+                binding.avatarUsernameContainer.isVisible = true
                 binding.weakConnectionContainer.isVisible = false
             }
             FeedQuality.POOR -> {
                 binding.gameLogoImageView.isVisible = stageIsLive
-                binding.avatarUsernameContainer.isVisible = stageIsLive
                 binding.liveIndicatorTextView.isVisible = stageIsLive
+                binding.avatarUsernameContainer.isVisible = true
                 binding.weakConnectionContainer.isVisible = true
             }
             else -> {
                 binding.gameLogoImageView.isVisible = false
-                binding.avatarUsernameContainer.isVisible = false
                 binding.liveIndicatorTextView.isVisible = false
+                binding.avatarUsernameContainer.isVisible = false
                 binding.weakConnectionContainer.isVisible = false
             }
         }
