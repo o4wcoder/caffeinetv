@@ -31,6 +31,7 @@ import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
@@ -40,6 +41,7 @@ import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
+import tv.caffeine.app.util.transformToClassicUI
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
 import kotlin.collections.set
@@ -48,7 +50,8 @@ class StageFragment @Inject constructor(
     private val factory: NewReyesController.Factory,
     private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val followManager: FollowManager,
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_stage) {
 
     @VisibleForTesting
@@ -124,29 +127,21 @@ class StageFragment @Inject constructor(
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        var isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
+        binding.isReleaseDesign = isReleaseDesign
+
+        if (!isReleaseDesign) {
+            binding.avatarUsernameContainer.transformToClassicUI()
+        }
+
         view.setOnClickListener { toggleOverlayVisibility() }
         (view as ViewGroup).apply {
             layoutTransition = LayoutTransition()
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
+
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
-            binding.followButton.setOnClickListener {
-                profileViewModel.follow(userProfile.caid).observe(this, Observer { result ->
-                    when (result) {
-                        is CaffeineEmptyResult.Error -> {
-                            if (result.error.isMustVerifyEmailError()) {
-                                val fragment =
-                                    AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                                fragment.maybeShow(fragmentManager, "verifyEmail")
-                            } else {
-                                Timber.e("Couldn't follow user ${result.error}")
-                            }
-                        }
-                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                    }
-                })
-            }
             binding.showIsOverTextView.formatUsernameAsHtml(
                 picasso,
                 getString(R.string.broadcaster_show_is_over, userProfile.username)
@@ -157,6 +152,46 @@ class StageFragment @Inject constructor(
             binding.moreButton.setOnClickListener {
                 findNavController().navigateToReportOrIgnoreDialog(userProfile.caid, userProfile.username, true)
             }
+
+            if (isReleaseDesign) {
+                binding.stageToolbar.apply {
+                    if (menu.findItem(R.id.overflow_menu_item) != null) return@apply
+                    inflateMenu(R.menu.overflow_menu)
+                    menu.findItem(R.id.overflow_menu_item).setOnMenuItemClickListener {
+                        if (it.itemId == R.id.overflow_menu_item) {
+                            findNavController().navigateToReportOrIgnoreDialog(
+                                userProfile.caid, userProfile.username, true
+                            )
+                        }
+                        true
+                    }
+                }
+            }
+
+            // TODO: extract to VM
+            val followListener = View.OnClickListener {
+                if (userProfile.isFollowed) {
+                    profileViewModel.unfollow(userProfile.caid)
+                } else {
+                    profileViewModel.follow(userProfile.caid).observe(this, Observer { result ->
+                        when (result) {
+                            is CaffeineEmptyResult.Error -> {
+                                if (result.error.isMustVerifyEmailError()) {
+                                    val fragment =
+                                        AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                                    fragment.maybeShow(fragmentManager, "verifyEmail")
+                                } else {
+                                    Timber.e("Couldn't follow user ${result.error}")
+                                }
+                            }
+                            is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+                        }
+                    })
+                }
+            }
+
+            binding.followButtonText.setOnClickListener(followListener)
+            binding.followButtonImage.setOnClickListener(followListener)
 
             isMe = userProfile.isMe
             updateViewsOnMyStageVisibility()
@@ -317,7 +352,8 @@ class StageFragment @Inject constructor(
         listOf(
             binding.avatarImageView,
             binding.usernameTextView,
-            binding.followButton,
+            binding.followButtonText,
+            binding.followButtonImage,
             binding.broadcastTitleTextView
         ).forEach {
             it?.isVisible = !isMe

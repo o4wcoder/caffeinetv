@@ -8,6 +8,9 @@
         <variable
             name="userProfile"
             type="tv.caffeine.app.profile.UserProfile"/>
+        <variable
+            name="isReleaseDesign"
+            type="Boolean"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -124,7 +127,7 @@
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark">
 
-                 <ImageView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -241,8 +244,7 @@
                 android:background="@drawable/gradient_overlay_stage_bottom"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0">
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:id="@+id/avatar_image_view"
@@ -251,7 +253,7 @@
                     android:src="@drawable/default_avatar_round"
                     android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                     android:padding="2dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:roundedImageUrl="@{userProfile.avatarImageUrl}"
                     app:placeholder="@{@drawable/default_avatar_round}"
@@ -268,40 +270,55 @@
                     android:text="@{userProfile.username}"
                     android:textColor="@{userProfile.isFollowed ? @color/caffeine_blue : @color/white}"
                     app:userIcon="@{userProfile.userIcon}"
-                    app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/broadcast_title_text_view"
                     tools:drawableEnd="@drawable/verified"
                     tools:drawablePadding="4dp"
                     tools:text="@sample/usernames"/>
 
                 <TextView
                     style="@style/FollowText.Night"
-                    android:id="@+id/follow_button"
+                    android:id="@+id/follow_button_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/follow_button"
-                    android:visibility="@{userProfile.shouldShowFollow ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{userProfile.shouldShowFollow &amp;&amp; !isReleaseDesign ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toTopOf="@+id/username_text_view"
                     app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
                     app:layout_constraintStart_toEndOf="@+id/username_text_view"/>
+
+                <ImageView
+                    android:id="@+id/follow_button_image"
+                    android:layout_width="@dimen/stage_follow_star_size"
+                    android:layout_height="@dimen/stage_follow_star_size"
+                    android:layout_marginEnd="16dp"
+                    android:background="@{userProfile.shouldShowFollow ? @drawable/star_outline : @drawable/star_filled}"
+                    android:text="@string/follow_button"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/avatar_image_view"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:background="@drawable/ic_star_border_24dp"/>
 
                 <TextView
                     style="@style/BroadcastTitle.Night"
                     android:id="@+id/broadcast_title_text_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginStart="10dp"
+                    android:maxLines="1"
                     android:text="@{userProfile.broadcastName}"
-                    app:layout_constraintStart_toStartOf="@+id/username_text_view"
-                    app:layout_constraintEnd_toStartOf="@+id/more_button"
-                    app:layout_constraintTop_toBottomOf="@+id/username_text_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/follow_button_image"
                     tools:text="What is happening at Caffeine"/>
 
                 <ImageView
                     android:id="@+id/more_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:contentDescription="@string/more"
                     app:srcCompat="@drawable/ic_more_vertical"
                     app:layout_constraintEnd_toEndOf="parent"

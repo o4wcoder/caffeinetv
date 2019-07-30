@@ -7,6 +7,8 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -19,10 +21,12 @@ import tv.caffeine.app.CaffeineApplication
 import tv.caffeine.app.R
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
+import tv.caffeine.app.settings.ReleaseDesignConfig
 
 private inline fun launchStageFragmentWithArgs(
     broadcastUsername: String,
     canSwipe: Boolean,
+    releaseDesignConfig: ReleaseDesignConfig,
     crossinline action: (StageFragment) -> Unit
 ) {
     val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
@@ -31,7 +35,7 @@ private inline fun launchStageFragmentWithArgs(
     val arguments = StageFragmentArgs(broadcastUsername, canSwipe).toBundle()
     val navController = mockk<NavController>(relaxed = true)
     val scenario = launchFragmentInContainer(arguments, R.style.AppTheme) {
-        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk()).also {
+        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), releaseDesignConfig).also {
             it.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                 if (viewLifecycleOwner != null) {
                     // The fragment’s view has just been created
@@ -49,12 +53,15 @@ private inline fun launchStageFragmentWithArgs(
 class StageFragmentVisibilityTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
+    @MockK private lateinit var releaseDesignConfig: ReleaseDesignConfig
+
     lateinit var subject: StageFragment
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        launchStageFragmentWithArgs("username", true) {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        launchStageFragmentWithArgs("username", true, releaseDesignConfig) {
             subject = it
         }
     }
@@ -237,12 +244,15 @@ class StageFragmentVisibilityTests {
 class StageFragmentSwipeNotAllowedTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
+    @MockK private lateinit var releaseDesignConfig: ReleaseDesignConfig
+
     lateinit var subject: StageFragment
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        launchStageFragmentWithArgs("ABC", false) {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        launchStageFragmentWithArgs("ABC", false, releaseDesignConfig) {
             subject = it
         }
     }

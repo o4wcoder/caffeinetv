@@ -108,3 +108,6 @@ CREDENTIAL=$(curl "https://api.caffeine.tv/v1/credentials/anonymous" | jq -j .cr
 ```
 apollo schema:download --endpoint="https://realtime.caffeine.tv/public/graphql/query" --header="X-Credential: ${CREDENTIAL}"
 ```
+
+### Release UI
+* In October we plan to release with the Release UI. In the /docs directory there is a readme outlining the changes that need to be made to remove the Classic UI.
