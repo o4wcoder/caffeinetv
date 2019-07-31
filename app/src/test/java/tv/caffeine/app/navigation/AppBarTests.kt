@@ -76,7 +76,7 @@ class AppBarTests {
     }
 
     @Test
-    fun `the standard classic app bar is visible on the explore fragment in release UI`() {
+    fun `the standard classic app bar is visible on the search fragment in release UI`() {
         every { releaseDesignConfig.isReleaseDesignActive() } returns true
         val binding = mainActivity.binding
         mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
@@ -115,7 +115,7 @@ class AppBarTests {
     }
 
     @Test
-    fun `the standard classic app bar is visible on the explore fragment in classic UI`() {
+    fun `the standard classic app bar is visible on the search fragment in classic UI`() {
         every { releaseDesignConfig.isReleaseDesignActive() } returns false
         val binding = mainActivity.binding
         mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
