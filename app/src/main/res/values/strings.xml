@@ -319,4 +319,7 @@
     <string name="two_step_auth_dialog_off_disable_button">Disable</string>
     <string name="two_step_auth_dialog_on_message">Do you want to enable Two-Step Authentication?</string>
     <string name="two_step_auth_dialog_on_enable_button">Enable</string>
+
+    <!-- Chat -->
+    <string name="chat_react_button">react</string>
 </resources>
