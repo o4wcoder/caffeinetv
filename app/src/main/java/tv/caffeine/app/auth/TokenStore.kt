@@ -8,13 +8,15 @@ import tv.caffeine.app.api.RefreshTokenBody
 import tv.caffeine.app.api.RefreshTokenResult
 import tv.caffeine.app.api.SignInResult
 import tv.caffeine.app.api.model.CAID
+import tv.caffeine.app.settings.SecureSettingsStorage
 import tv.caffeine.app.settings.SettingsStorage
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TokenStore @Inject constructor(
-    private val settingsStorage: SettingsStorage
+    private val settingsStorage: SettingsStorage,
+    private val secureSettingsStorage: SecureSettingsStorage
 ) {
     private var accessToken: String? = null
     private var credential: String? = null
@@ -56,6 +58,7 @@ class TokenStore @Inject constructor(
 
     fun clear() {
         settingsStorage.clearCredentials()
+        secureSettingsStorage.clear()
         caid = null
         accessToken = null
         credential = null

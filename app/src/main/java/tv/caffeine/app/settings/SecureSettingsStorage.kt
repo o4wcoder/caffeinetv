@@ -19,7 +19,6 @@ interface SecureSettingsStorage {
     fun clear() {
         deviceId = null
         featureConfigJson = null
-        firebaseToken = null
     }
 
     fun getFeatureConfigData(): Map<String, FeatureNode> {
@@ -54,8 +53,8 @@ class SecureSharedPrefsStore @Inject constructor(
 ) : SecureSettingsStorage {
 
     override var deviceId by SecureSharedPrefsDelegate(sharedPreferences, DEVICE_ID)
-    override var featureConfigJson by SharedPrefsDelegate(sharedPreferences, FEATURE_CONFIG)
-    override var firebaseToken by SharedPrefsDelegate(sharedPreferences, FIREBASE_TOKEN)
+    override var featureConfigJson by SecureSharedPrefsDelegate(sharedPreferences, FEATURE_CONFIG)
+    override var firebaseToken by SecureSharedPrefsDelegate(sharedPreferences, FIREBASE_TOKEN)
 }
 
 class SecureSharedPrefsDelegate(private val sharedPreferences: SharedPreferences, private val prefKey: String) {
