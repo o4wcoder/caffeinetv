@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Spannable
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
 import androidx.core.text.HtmlCompat
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
@@ -30,6 +31,7 @@ import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.repository.ChatRepository
 import tv.caffeine.app.repository.ProfileRepository
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.getHexColor
 import javax.inject.Inject
@@ -66,7 +68,9 @@ class ChatViewModel @Inject constructor(
     private val followManager: FollowManager,
     private val messageController: MessageController,
     private val chatRepository: ChatRepository,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    @VisibleForTesting
+    val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineViewModel() {
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
 
@@ -84,7 +88,15 @@ class ChatViewModel @Inject constructor(
     val messages: LiveData<List<Message>> = _messages.map { it }
 
     @Bindable
-    fun getChatButtonsVisibility() = if (userProfile.value?.isMe ?: false) View.GONE else View.VISIBLE
+    fun getGiftButtonVisibility() = getButtonVisibility()
+
+    @Bindable
+    fun getFriendsWatchingButtonVisibility() =
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            View.GONE
+        } else {
+            getButtonVisibility()
+        }
 
     @Bindable
     fun getSaySomethingTextVisibility() =
@@ -145,6 +157,8 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getButtonVisibility() = if (userProfile.value?.isMe == true) View.GONE else View.VISIBLE
 
     private val stageReducer = StageReducer()
 

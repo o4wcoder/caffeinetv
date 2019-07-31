@@ -11,6 +11,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -22,11 +23,12 @@ import tv.caffeine.app.R
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
 import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.stage.classic.ClassicChatFragment
+import tv.caffeine.app.stage.release.ReleaseChatFragment
 
 private inline fun launchStageFragmentWithArgs(
     broadcastUsername: String,
     canSwipe: Boolean,
-    releaseDesignConfig: ReleaseDesignConfig,
     crossinline action: (StageFragment) -> Unit
 ) {
     val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
@@ -35,7 +37,7 @@ private inline fun launchStageFragmentWithArgs(
     val arguments = StageFragmentArgs(broadcastUsername, canSwipe).toBundle()
     val navController = mockk<NavController>(relaxed = true)
     val scenario = launchFragmentInContainer(arguments, R.style.AppTheme) {
-        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), releaseDesignConfig).also {
+        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), mockk(relaxed = true)).also {
             it.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                 if (viewLifecycleOwner != null) {
                     // The fragment’s view has just been created
@@ -61,7 +63,7 @@ class StageFragmentVisibilityTests {
     fun setup() {
         MockKAnnotations.init(this)
         every { releaseDesignConfig.isReleaseDesignActive() } returns true
-        launchStageFragmentWithArgs("username", true, releaseDesignConfig) {
+        launchStageFragmentWithArgs("username", true) {
             subject = it
         }
     }
@@ -238,21 +240,44 @@ class StageFragmentVisibilityTests {
         subject.updateBadConnectionOverlay()
         assertTrue(!subject.binding.badConnectionContainer.isVisible)
     }
+
+    @Test
+    fun `show that bottom container contains chat fragment`() {
+        subject.updateBottomFragment(BottomContainerType.CHAT)
+        val chatFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
+        assertNotNull(chatFragment)
+    }
+
+    @Test
+    fun `when release config is set show release chat fragment`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        subject.updateBottomFragment(BottomContainerType.CHAT)
+        val chatFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ReleaseChatFragment
+        assertNotNull(chatFragment)
+    }
+
+    @Test
+    fun `when release config is not set show classic chat fragment`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
+        subject.updateBottomFragment(BottomContainerType.CHAT)
+        val chatFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ClassicChatFragment
+        assertNotNull(chatFragment)
+    }
 }
 
 @RunWith(RobolectricTestRunner::class)
 class StageFragmentSwipeNotAllowedTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    @MockK private lateinit var releaseDesignConfig: ReleaseDesignConfig
-
     lateinit var subject: StageFragment
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        every { releaseDesignConfig.isReleaseDesignActive() } returns true
-        launchStageFragmentWithArgs("ABC", false, releaseDesignConfig) {
+        launchStageFragmentWithArgs("ABC", false) {
             subject = it
         }
     }

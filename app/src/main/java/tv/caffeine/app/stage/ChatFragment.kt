@@ -1,7 +1,6 @@
 package tv.caffeine.app.stage
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -14,35 +13,42 @@ import org.threeten.bp.Clock
 import tv.caffeine.app.R
 import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.model.Message
-import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.FragmentChatBinding
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.stage.classic.ClassicChatFragment
+import tv.caffeine.app.stage.release.ReleaseChatFragment
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.CropBorderedCircleTransformation
 import tv.caffeine.app.util.navigateToDigitalItemWithMessage
 import tv.caffeine.app.util.navigateToSendMessage
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 
 private const val ARG_BROADCAST_USERNAME = "broadcastUsername"
-class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragment.Callback, DICatalogFragment.Callback {
+
+abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
+    SendMessageFragment.Callback, DICatalogFragment.Callback {
 
     @Inject lateinit var chatMessageAdapter: ChatMessageAdapter
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var picasso: Picasso
     @Inject lateinit var clock: Clock
 
-    private lateinit var binding: FragmentChatBinding
-    private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
+    protected lateinit var binding: FragmentChatBinding
+    protected var isMe = false
+    protected val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
     private val args by navArgs<ChatFragmentArgs>()
-    private var isMe = false
+
     private var broadcasterUsername = ""
     private var chatJob: Job? = null
 
+    abstract fun setButtonLayout()
+
+    abstract fun connectFriendsWatching(stageIdentifier: String)
+
     companion object {
-        fun newInstance(broadcasterUsername: String): ChatFragment {
-            val fragment = ChatFragment()
+        fun newInstance(broadcasterUsername: String, isRelease: Boolean): ChatFragment {
+            val fragment = if (isRelease) ReleaseChatFragment() else ClassicChatFragment()
             val args = Bundle()
             args.putString(ARG_BROADCAST_USERNAME, broadcasterUsername)
             fragment.arguments = args
@@ -55,38 +61,42 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = chatViewModel
         broadcasterUsername = args.broadcastUsername
-        chatViewModel.loadUserProfile(broadcasterUsername).observe(viewLifecycleOwner, Observer { userProfile ->
-            userProfile?.let {
-                isMe = userProfile.isMe
-                binding.shareButton?.setOnClickListener {
-                    val sharerId = followManager.currentUserDetails()?.caid
-                    startActivity(
-                        StageShareIntentBuilder(
-                            userProfile,
-                            sharerId,
-                            resources,
-                            clock
-                        ).build()
-                    )
+        chatViewModel.loadUserProfile(broadcasterUsername)
+            .observe(viewLifecycleOwner, Observer { userProfile ->
+                userProfile?.let {
+                    isMe = userProfile.isMe
+                    binding.shareButton?.setOnClickListener {
+                        val sharerId = followManager.currentUserDetails()?.caid
+                        startActivity(
+                            StageShareIntentBuilder(
+                                userProfile,
+                                sharerId,
+                                resources,
+                                clock
+                            ).build()
+                        )
+                    }
                 }
-            }
-        })
+            })
 
         binding.messagesRecyclerView?.adapter = chatMessageAdapter
         chatMessageAdapter.callback = object : ChatMessageAdapter.Callback {
             override fun replyClicked(message: Message) {
-                val usernameMessage = getString(R.string.username_prepopulated_reply, message.publisher.username)
+                val usernameMessage =
+                    getString(R.string.username_prepopulated_reply, message.publisher.username)
                 fragmentManager?.navigateToSendMessage(this@ChatFragment, isMe, usernameMessage)
             }
+
             override fun upvoteClicked(message: Message) {
                 chatViewModel.endorseMessage(message)
             }
         }
 
-        binding.chatButton?.setOnClickListener { fragmentManager?.navigateToSendMessage(this@ChatFragment, isMe) }
         binding.giftButton?.setOnClickListener {
             sendDigitalItemWithMessage(null)
         }
+
+        setButtonLayout()
     }
 
     override fun onResume() {
@@ -126,43 +136,13 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
         friendsWatchingViewModel.disconnect()
     }
 
-    private fun connectFriendsWatching(stageIdentifier: String) {
-        val profileAvatarTransform = CropBorderedCircleTransformation(
-            resources.getColor(R.color.caffeine_blue, null),
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics)
-        )
-        friendsWatchingViewModel.load(stageIdentifier)
-        friendsWatchingViewModel.friendsWatching.observe(this, Observer { friendsWatching ->
-            updateFriendsWatching(friendsWatching, profileAvatarTransform)
-        })
-        binding.friendsWatchingButton?.setOnClickListener {
-            val action = StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(stageIdentifier)
-            findNavController().safeNavigate(action)
-        }
-    }
-
-    private fun updateFriendsWatching(
-        friendsWatching: List<User>,
-        profileAvatarTransform: CropBorderedCircleTransformation
-    ) {
-        if (binding.friendsWatchingButton == null) return
-        val friendAvatarImageUrl = friendsWatching.firstOrNull()?.avatarImageUrl
-        if (friendAvatarImageUrl == null) {
-            binding.friendsWatchingButton?.isEnabled = false
-            binding.friendsWatchingButton?.setImageDrawable(null)
-        } else {
-            binding.friendsWatchingButton?.isEnabled = true
-            binding.friendsWatchingButton?.imageTintList = null
-            picasso.load(friendAvatarImageUrl)
-                .resizeDimen(R.dimen.avatar_friends_watching, R.dimen.avatar_friends_watching)
-                .placeholder(R.drawable.ic_profile)
-                .transform(profileAvatarTransform)
-                .into(binding.friendsWatchingButton)
-        }
-    }
-
     override fun sendDigitalItemWithMessage(message: String?) {
-        fragmentManager?.navigateToDigitalItemWithMessage(this@ChatFragment, picasso, broadcasterUsername, message)
+        fragmentManager?.navigateToDigitalItemWithMessage(
+            this@ChatFragment,
+            picasso,
+            broadcasterUsername,
+            message
+        )
     }
 
     override fun sendMessage(message: String?) {
@@ -173,7 +153,12 @@ class ChatFragment : CaffeineFragment(R.layout.fragment_chat), SendMessageFragme
     override fun digitalItemSelected(digitalItem: DigitalItem, message: String?) {
         launch {
             val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
-            val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendDigitalItemFragment(digitalItem.id, userDetails.caid, message)
+            val action =
+                StagePagerFragmentDirections.actionStagePagerFragmentToSendDigitalItemFragment(
+                    digitalItem.id,
+                    userDetails.caid,
+                    message
+                )
             findNavController().safeNavigate(action)
         }
     }

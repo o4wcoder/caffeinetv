@@ -29,6 +29,27 @@ fun ConstraintLayout.transformToClassicUI() {
             constraintSet.connect(R.id.username_text_view, ConstraintSet.START, R.id.avatar_image_view, ConstraintSet.END)
             constraintSet.connect(R.id.username_text_view, ConstraintSet.TOP, this.id, ConstraintSet.TOP)
         }
+        R.id.chat_button_layout -> {
+            constraintSet.createHorizontalChain(this.id, ConstraintSet.LEFT, this.id, ConstraintSet.RIGHT,
+                intArrayOf(R.id.share_button, R.id.chat_button, R.id.gift_button, R.id.friends_watching_button),
+                null, ConstraintSet.CHAIN_SPREAD_INSIDE)
+            constraintSet.connect(R.id.share_button, ConstraintSet.BOTTOM, this.id, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.share_button, ConstraintSet.END, R.id.chat_button, ConstraintSet.START)
+            constraintSet.connect(R.id.share_button, ConstraintSet.START, this.id, ConstraintSet.START)
+            constraintSet.connect(R.id.share_button, ConstraintSet.TOP, this.id, ConstraintSet.TOP)
+            constraintSet.setMargin(R.id.share_button, ConstraintSet.START, 0)
+
+            constraintSet.connect(R.id.chat_button, ConstraintSet.END, R.id.gift_button, ConstraintSet.START)
+            constraintSet.connect(R.id.chat_button, ConstraintSet.START, R.id.share_button, ConstraintSet.END)
+            constraintSet.setVisibility(R.id.chat_button, ConstraintSet.VISIBLE)
+
+            constraintSet.connect(R.id.gift_button, ConstraintSet.END, R.id.friends_watching_button, ConstraintSet.START)
+            constraintSet.connect(R.id.gift_button, ConstraintSet.START, R.id.chat_button, ConstraintSet.END)
+            constraintSet.setMargin(R.id.gift_button, ConstraintSet.END, 0)
+            constraintSet.setVisibility(R.id.friends_watching_button, ConstraintSet.VISIBLE)
+
+            constraintSet.setVisibility(R.id.react_button, ConstraintSet.GONE)
+        }
         else -> {
             Timber.e("No matching constraint layout id for classic transform")
         }

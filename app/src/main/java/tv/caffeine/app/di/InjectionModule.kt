@@ -47,6 +47,8 @@ import tv.caffeine.app.stage.SendDigitalItemFragment
 import tv.caffeine.app.stage.SendMessageFragment
 import tv.caffeine.app.stage.StageFragment
 import tv.caffeine.app.stage.StagePagerFragment
+import tv.caffeine.app.stage.classic.ClassicChatFragment
+import tv.caffeine.app.stage.release.ReleaseChatFragment
 import tv.caffeine.app.update.NeedsUpdateFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowingFragment
@@ -104,5 +106,7 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun twoStepAuthDisableDialogFragment(): TwoStepAuthDisableDialogFragment
     @ContributesAndroidInjector abstract fun twoStepAuthEnableDialogFragment(): TwoStepAuthEnableDialogFragment
     @ContributesAndroidInjector abstract fun twoStepAuthDoneFragment(): TwoStepAuthDoneFragment
-    @ContributesAndroidInjector abstract fun classicChatFragment(): ChatFragment
+    @ContributesAndroidInjector abstract fun chatFragment(): ChatFragment
+    @ContributesAndroidInjector abstract fun classicChatFragment(): ClassicChatFragment
+    @ContributesAndroidInjector abstract fun releaseChatFragment(): ReleaseChatFragment
 }

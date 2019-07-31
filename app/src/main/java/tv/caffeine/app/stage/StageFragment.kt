@@ -51,7 +51,8 @@ class StageFragment @Inject constructor(
     private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val followManager: FollowManager,
     private val picasso: Picasso,
-    private val releaseDesignConfig: ReleaseDesignConfig
+    @VisibleForTesting
+    val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_stage) {
 
     @VisibleForTesting
@@ -139,7 +140,6 @@ class StageFragment @Inject constructor(
             layoutTransition = LayoutTransition()
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
-
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
             binding.showIsOverTextView.formatUsernameAsHtml(
@@ -213,12 +213,16 @@ class StageFragment @Inject constructor(
         updateBottomFragment(BottomContainerType.CHAT)
     }
 
-    private fun updateBottomFragment(bottomContainerType: BottomContainerType) {
+    @VisibleForTesting
+    fun updateBottomFragment(bottomContainerType: BottomContainerType) {
         binding.bottomFragmentContainer?.let {
             // TODO: Add Bio section fragment here
             val fragment = when (bottomContainerType) {
-                BottomContainerType.CHAT -> ChatFragment.newInstance(broadcasterUsername)
-                else -> ChatFragment.newInstance(broadcasterUsername)
+                BottomContainerType.CHAT -> {
+                    val isRelease = releaseDesignConfig.isReleaseDesignActive()
+                    ChatFragment.newInstance(broadcasterUsername, isRelease)
+                }
+                else -> ChatFragment.newInstance(broadcasterUsername, false)
             }
             childFragmentManager.inTransaction {
                 replace(R.id.bottom_fragment_container, fragment)

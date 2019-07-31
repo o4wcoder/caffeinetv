@@ -83,4 +83,5 @@
     <dimen name="bad_connection_icon_size">40dp</dimen>
 
     <dimen name="poor_connection_text_margin_start">12dp</dimen>
+    
 </resources>
