@@ -57,13 +57,21 @@ class GoldBundlesViewModelTests {
             MockKAnnotations.init(this)
             billingClientBroadcastHelper = BillingClientBroadcastHelper(mainActivity)
             val settingsStorage = InMemorySettingsStorage(caid = "random")
+            val secureSettingsStorage = InMemorySecureSettingsStorage()
             val gson = Gson()
             val paymentsClientService = mockk<PaymentsClientService>(relaxed = true)
             val walletRepository = WalletRepository(TestDispatchConfig, gson, paymentsClientService)
             val loadGoldBundlesUseCase = LoadGoldBundlesUseCase(paymentsClientService, gson)
             val purchaseGoldBundleUseCase = PurchaseGoldBundleUseCase(paymentsClientService, gson)
             coEvery { processPlayStorePurchaseUseCase.invoke(any(), any()) } returns CaffeineResult.Success("random")
-            subject = GoldBundlesViewModel(mainActivity.applicationContext, TokenStore(settingsStorage), walletRepository, loadGoldBundlesUseCase, purchaseGoldBundleUseCase, processPlayStorePurchaseUseCase)
+            subject = GoldBundlesViewModel(
+                mainActivity.applicationContext,
+                TokenStore(settingsStorage, secureSettingsStorage),
+                walletRepository,
+                loadGoldBundlesUseCase,
+                purchaseGoldBundleUseCase,
+                processPlayStorePurchaseUseCase
+            )
         }
 
         @Test
