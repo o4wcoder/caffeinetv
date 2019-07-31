@@ -10,10 +10,12 @@ import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
@@ -28,8 +30,11 @@ import tv.caffeine.app.analytics.NotificationEvent
 import tv.caffeine.app.analytics.Profiling
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.ActivityMainBinding
+import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.settings.SecureSettingsStorage
+import tv.caffeine.app.ui.BottomNavigationAvatar
 import tv.caffeine.app.util.closeNoNetwork
 import tv.caffeine.app.util.dismissKeyboard
 import tv.caffeine.app.util.isNetworkAvailable
@@ -96,19 +101,21 @@ class MainActivity : DaggerAppCompatActivity() {
     private lateinit var navController: NavController
     @VisibleForTesting lateinit var binding: ActivityMainBinding
 
+    @Inject lateinit var viewModelFactory: ViewModelFactory
+    private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
+    private lateinit var bottomNavigationAvatar: BottomNavigationAvatar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(binding.activityToolbar)
         navController = findNavController(R.id.activity_main)
-        setupActionBarWithNavController(this, navController)
-        binding.releaseAppBar.navController = navController
+        setAppBar(binding, navController)
+        setBottomNavigation(binding)
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateUiOnDestinationChange(destination.id, binding)
             firebaseAnalytics.setCurrentScreen(this, destination.label.toString(), null)
         }
-        setNavigationBarDarkMode(releaseDesignConfig.isReleaseDesignActive())
-        binding.bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         firebaseInstanceId.instanceId.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Timber.d("FCM registration token retrieved")
@@ -130,6 +137,26 @@ class MainActivity : DaggerAppCompatActivity() {
                 analytics.trackEvent(AnalyticsEvent.Notification(tokenStore.caid, notificationEvent))
             }
         }
+    }
+
+    private fun setAppBar(binding: ActivityMainBinding, navController: NavController) {
+        setSupportActionBar(binding.activityToolbar)
+        setupActionBarWithNavController(this, navController)
+        binding.releaseAppBar.navController = navController
+    }
+
+    private fun setBottomNavigation(binding: ActivityMainBinding) {
+        bottomNavigationAvatar = BottomNavigationAvatar(
+            applicationContext, binding.bottomNavigation.menu.findItem(R.id.bottom_nav_profile_menu_item))
+        val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
+        if (isReleaseDesign) {
+            // The default tint list will apply a solid color to the avatar. Set to null before loading.
+            binding.bottomNavigation.itemIconTintList = null
+            loadBottomNavigationAvatar()
+            binding.bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        }
+        // The system navigation bar should be dark so we don't have two white bars
+        setNavigationBarDarkMode(isReleaseDesign)
     }
 
     @VisibleForTesting fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding) {
@@ -259,5 +286,12 @@ class MainActivity : DaggerAppCompatActivity() {
             bottomNavigationView.isSelected = false
             bottomNavigationView.menu.findItem(menuItemId)?.isChecked = true
         }
+        bottomNavigationAvatar.updateSelectedState()
+    }
+
+    private fun loadBottomNavigationAvatar() {
+        myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
+            bottomNavigationAvatar.loadAvatar(userProfile.avatarImageUrl)
+        })
     }
 }
