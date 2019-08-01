@@ -345,6 +345,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
                 startLiveVideo(renderer, controller) {
                     binding.previewImageView.fadeOut()
                     binding.pipImageView.fadeOut()
+                    binding.gameLogoImageView.fadeOut()
                 }
             }
         }
@@ -436,6 +437,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
                 startLiveVideo(renderer, controller) {
                     binding.previewImageView.fadeOut()
                     binding.pipImageView.fadeOut()
+                    binding.gameLogoImageView.fadeOut()
                 }
             }
         }
