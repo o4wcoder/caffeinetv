@@ -344,6 +344,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
             scope?.launch {
                 startLiveVideo(renderer, controller) {
                     binding.previewImageView.fadeOut()
+                    binding.pipImageView.fadeOut()
                 }
             }
         }
@@ -434,6 +435,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
             scope?.launch {
                 startLiveVideo(renderer, controller) {
                     binding.previewImageView.fadeOut()
+                    binding.pipImageView.fadeOut()
                 }
             }
         }
