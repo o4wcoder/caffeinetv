@@ -27,6 +27,7 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.SecureSettingsStorage
 import tv.caffeine.app.util.CoroutinesTestRule
@@ -44,8 +45,9 @@ class MyProfileViewModelTests {
     @MockK private lateinit var fakeGson: Gson
     @MockK private lateinit var fakeSecureSettingsStorage: SecureSettingsStorage
     @MockK private lateinit var fakeFollowManager: FollowManager
-    @MockK private lateinit var fakeTokenStore: TokenStore
     @MockK private lateinit var fakeUploadAvatarUseCase: UploadAvatarUseCase
+    @MockK(relaxed = true) private lateinit var fakeTokenStore: TokenStore
+    @MockK(relaxed = true) private lateinit var fakeFeatureConfig: FeatureConfig
     companion object {
         private const val FOLLOWING_COUNT = 42
         private const val FOLLOWERS_COUNT = 1000
@@ -59,7 +61,6 @@ class MyProfileViewModelTests {
     fun setup() {
         MockKAnnotations.init(this)
         coEvery { fakeTokenStore.caid } returns "caid"
-        coEvery { fakeTokenStore.clear() } just runs
         coEvery { fakeFollowManager.userDetails(any()) } returns justUser
         coEvery { fakeFollowManager.loadUserDetails(any()) } returns justUser
         coEvery { fakeFollowManager.isSelf(any()) } returns false
@@ -73,7 +74,7 @@ class MyProfileViewModelTests {
 
         every { fakeFacebookLoginManager.logOut() } just runs
         every { fakeAccountsService.signOut() } returns mockk()
-        subject = MyProfileViewModel(fakeAccountsService, fakeTokenStore, fakeAuthWatcher, fakeFollowManager, fakeUploadAvatarUseCase, fakeFacebookLoginManager, fakeSecureSettingsStorage, fakeGson)
+        subject = MyProfileViewModel(fakeAccountsService, fakeTokenStore, fakeAuthWatcher, fakeFollowManager, fakeUploadAvatarUseCase, fakeFacebookLoginManager, fakeSecureSettingsStorage, fakeFeatureConfig, fakeGson)
     }
 
     @Test
@@ -113,6 +114,12 @@ class MyProfileViewModelTests {
     fun `token store clear gets called on sign out`() {
         subject.signOut()
         coVerify(exactly = 1) { fakeTokenStore.clear() }
+    }
+
+    @Test
+    fun `feature config clear gets called on sign out`() {
+        subject.signOut()
+        coVerify(exactly = 1) { fakeFeatureConfig.clear() }
     }
 
     @Test

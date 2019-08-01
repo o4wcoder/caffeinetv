@@ -23,6 +23,7 @@ import tv.caffeine.app.api.DeleteAccountBody
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.ui.CaffeineDialogFragment
 import tv.caffeine.app.util.navigateToLanding
 import javax.inject.Inject
@@ -79,7 +80,8 @@ class DeleteAccountDialogFragment : CaffeineDialogFragment() {
 class DeleteAccountViewModel @Inject constructor(
     private val accountsService: AccountsService,
     private val tokenStore: TokenStore,
-    private val gson: Gson
+    private val gson: Gson,
+    private val featureConfig: FeatureConfig
 ) : ViewModel() {
 
     private val _deleteAccountResult = MutableLiveData<DeleteAccountResult>()
@@ -94,6 +96,7 @@ class DeleteAccountViewModel @Inject constructor(
                 is CaffeineEmptyResult.Success -> {
                     _deleteAccountResult.value = DeleteAccountResult(true)
                     tokenStore.clear()
+                    featureConfig.clear()
                 }
                 is CaffeineEmptyResult.Error -> _deleteAccountResult.value = DeleteAccountResult(false)
                 is CaffeineEmptyResult.Failure -> Timber.e(result.throwable, "Failed to delete the account")
