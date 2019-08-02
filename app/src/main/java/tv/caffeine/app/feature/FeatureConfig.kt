@@ -29,6 +29,10 @@ class FeatureConfig @Inject constructor(
             config[featureName] = featureNode
         }
     }
+
+    fun clear() {
+        config.clear()
+    }
 }
 
 enum class Feature(private val featureName: String) {

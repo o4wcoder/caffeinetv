@@ -94,6 +94,8 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
             scope.launch {
                 startLiveVideo(renderer, controller) {
                     binding.previewImageView.fadeOut()
+                    binding.pipImageView.fadeOut()
+                    binding.gameLogoImageView.fadeOut()
                 }
             }
         }

@@ -23,6 +23,7 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.awaitEmptyAndParseErrors
 import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.SecureSettingsStorage
 import java.text.NumberFormat
@@ -36,6 +37,7 @@ class MyProfileViewModel @Inject constructor(
     private val uploadAvatarUseCase: UploadAvatarUseCase,
     private val facebookLoginManager: LoginManager,
     private val secureSettingsStorage: SecureSettingsStorage,
+    private val featureConfig: FeatureConfig,
     private val gson: Gson
 ) : ViewModel() {
 
@@ -105,6 +107,7 @@ class MyProfileViewModel @Inject constructor(
                 is CaffeineEmptyResult.Failure -> Timber.e(authWatcherResult.throwable)
             }
             tokenStore.clear()
+            featureConfig.clear()
             facebookLoginManager.logOut()
             val accountsServiceResult = accountsService.signOut().awaitEmptyAndParseErrors(gson)
             when (accountsServiceResult) {
