@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="FPGDateHeader" parent="CaffeineText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+</resources>
