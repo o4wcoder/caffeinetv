@@ -12,6 +12,13 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import tv.caffeine.app.R
 import tv.caffeine.app.util.getPicasso
 
+@BindingAdapter("rawImageUrl")
+fun ImageView.loadRawImage(imageUrl: String?) {
+    if (imageUrl == null) return setImageDrawable(null)
+    val picasso = context.getPicasso()
+    picasso.load(imageUrl).into(this)
+}
+
 @BindingAdapter("imageUrl", "placeholder", "cornerRadius", requireAll = false)
 fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, cornerRadius: Float? = null) {
     if (imageUrl == null) return setImageDrawable(null)

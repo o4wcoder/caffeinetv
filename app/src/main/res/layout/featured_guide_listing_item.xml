@@ -125,7 +125,7 @@
                     android:layout_marginStart="@dimen/margin_line_spacing_small"
                     android:layout_marginEnd="@dimen/margin_list"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@string/us_only_label"
+                    android:text="@string/us_only_label_with_a_bar"
                     android:textSize="11sp"
                     android:textColor="@color/almost_black"
                     android:visibility="gone"

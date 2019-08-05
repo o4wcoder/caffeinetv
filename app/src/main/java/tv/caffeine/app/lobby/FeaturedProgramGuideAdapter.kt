@@ -5,11 +5,18 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -30,10 +37,14 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.FeaturedGuideDateHeaderBinding
 import tv.caffeine.app.databinding.FeaturedGuideListingItemBinding
 import tv.caffeine.app.databinding.FeaturedGuideReleaseDateHeaderBinding
+import tv.caffeine.app.databinding.FeaturedGuideReleaseListingItemBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.lobby.FeaturedGuideItem.DateHeader
 import tv.caffeine.app.lobby.FeaturedGuideItem.ListingItem
+import tv.caffeine.app.lobby.release.FPGBroadcaster
+import tv.caffeine.app.lobby.release.NavigationCommand
+import tv.caffeine.app.lobby.release.observeEvents
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.util.DispatchConfig
@@ -45,7 +56,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 sealed class FeaturedGuideItem {
@@ -73,13 +83,14 @@ sealed class FeaturedGuideItem {
     }
 }
 
-class FeaturedProgramGuideAdapter @Inject constructor(
+class FeaturedProgramGuideAdapter @AssistedInject constructor(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
     @ThemeFollowedExplore private val followedTheme: UserTheme,
     @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
     private val picasso: Picasso,
-    private val releaseDesignConfig: ReleaseDesignConfig
+    private val releaseDesignConfig: ReleaseDesignConfig,
+    @Assisted private val lifecycleOwner: LifecycleOwner
 ) : ListAdapter<FeaturedGuideItem, GuideViewHolder>(
         object : DiffUtil.ItemCallback<FeaturedGuideItem>() {
             override fun areItemsTheSame(oldItem: FeaturedGuideItem, newItem: FeaturedGuideItem) = oldItem === newItem
@@ -93,6 +104,11 @@ class FeaturedProgramGuideAdapter @Inject constructor(
         }
 ), CoroutineScope {
 
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(lifecycleOwner: LifecycleOwner): FeaturedProgramGuideAdapter
+    }
+
     private val job = SupervisorJob()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable, "Coroutine throwable")
@@ -105,8 +121,13 @@ class FeaturedProgramGuideAdapter @Inject constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
         return when (FeaturedGuideItem.Type.ofViewType(viewType)) {
             FeaturedGuideItem.Type.LISTING_ITEM -> {
-                val binding = FeaturedGuideListingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                ListingItemViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    val binding = FeaturedGuideReleaseListingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ReleaseListingItemViewHolder(binding, this, followManager, lifecycleOwner)
+                } else {
+                    val binding = FeaturedGuideListingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ListingItemViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
+                }
             }
             FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
                 if (releaseDesignConfig.isReleaseDesignActive()) {
@@ -123,7 +144,11 @@ class FeaturedProgramGuideAdapter @Inject constructor(
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
         return when (getItem(position).getItemType()) {
             FeaturedGuideItem.Type.LISTING_ITEM -> {
-                (holder as ListingItemViewHolder).bind(getItem(position) as ListingItem)
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    (holder as ReleaseListingItemViewHolder).bind(getItem(position) as ListingItem)
+                } else {
+                    (holder as ListingItemViewHolder).bind(getItem(position) as ListingItem)
+                }
             }
             FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
                 if (releaseDesignConfig.isReleaseDesignActive()) {
@@ -279,4 +304,54 @@ class ListingItemViewHolder(
             SimpleDateFormat("h:mm a", Locale.getDefault()).format(this.time)
         }
     }
+}
+
+class ReleaseListingItemViewHolder(
+    private val binding: FeaturedGuideReleaseListingItemBinding,
+    private val scope: CoroutineScope,
+    private val followManager: FollowManager,
+    private val lifecycleOwner: LifecycleOwner
+) : GuideViewHolder(binding.root) {
+    var job: Job? = null
+
+    fun bind(listingItem: ListingItem) {
+        job?.cancel()
+        clear()
+
+        binding.listing = listingItem.listing
+        job = scope.launch {
+            val user = followManager.userDetails(listingItem.listing.caid) ?: return@launch
+            val fpgBroadcaster = FPGBroadcaster(followManager, user, scope)
+            binding.user = fpgBroadcaster
+
+            fpgBroadcaster.navigationCommands.observeEvents(lifecycleOwner) {
+                when (it) {
+                    is NavigationCommand.To -> Navigation.findNavController(itemView).safeNavigate(it.directions)
+                }
+            }
+            fpgBroadcaster.isFollowing.observe(lifecycleOwner, Observer {
+                binding.followButton.apply {
+                    val drawableId = if (it == true) R.drawable.star_filled else R.drawable.star_outline
+                    setImageDrawable(ContextCompat.getDrawable(context, drawableId))
+                }
+            })
+        }
+    }
+
+    private fun clear() {
+        binding.detailImageView.setImageDrawable(null)
+        binding.timeTextView.text = null
+        binding.usOnlyLabelTextView.isVisible = false
+        binding.titleTextView.text = null
+        binding.descriptionTextView.text = null
+        binding.avatarImageView.setImageDrawable(null)
+        binding.usernameTextView.text = null
+    }
+}
+
+@BindingAdapter("fpgTime")
+fun TextView.setFPGTime(startTimestamp: Long) {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = TimeUnit.SECONDS.toMillis(startTimestamp)
+    text = SimpleDateFormat("h:mm a", Locale.getDefault()).format(calendar.time)
 }

@@ -15,6 +15,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.lobby.LobbySwipeFragmentDirections
 import tv.caffeine.app.lobby.formatFriendsWatchingShortString
 import tv.caffeine.app.session.FollowManager
@@ -25,12 +26,10 @@ sealed class NavigationCommand {
 
 abstract class AbstractBroadcaster(
     val followManager: FollowManager,
-    val broadcaster: Lobby.Broadcaster,
-    val lobbyImpressionAnalytics: LobbyImpressionAnalytics,
+    val user: User,
     val coroutineScope: CoroutineScope
 ) {
 
-    private val user = broadcaster.user
     val username = user.username
     protected val caid = user.caid
 
@@ -50,7 +49,46 @@ abstract class AbstractBroadcaster(
         _navigationCommands.value = Event(navigationCommand)
     }
 
-    fun cardClicked() {
+    open fun followClicked() {
+        coroutineScope.launch {
+            if (followManager.isFollowing(caid)) {
+                followManager.unfollowUser(caid)
+            } else {
+                followManager.followUser(caid)
+            }
+            withContext(Dispatchers.Main) {
+                isFollowing.value = followManager.isFollowing(caid)
+            }
+        }
+    }
+
+    open fun cardClicked() {
+    }
+
+    open fun userClicked() {
+    }
+}
+
+class FPGBroadcaster(
+    followManager: FollowManager,
+    user: User,
+    coroutineScope: CoroutineScope
+) : AbstractBroadcaster(followManager, user, coroutineScope) {
+
+    override fun userClicked() {
+        val action = MainNavDirections.actionGlobalProfileFragment(caid)
+        navigate(action)
+    }
+}
+
+abstract class AbstractLobbyBroadcaster(
+    followManager: FollowManager,
+    val broadcaster: Lobby.Broadcaster,
+    private val lobbyImpressionAnalytics: LobbyImpressionAnalytics,
+    coroutineScope: CoroutineScope
+) : AbstractBroadcaster(followManager, broadcaster.user, coroutineScope) {
+
+    override fun cardClicked() {
         coroutineScope.launch {
             lobbyImpressionAnalytics.cardClicked(broadcaster)
         }
@@ -58,16 +96,10 @@ abstract class AbstractBroadcaster(
         navigate(action)
     }
 
-    fun followClicked() = coroutineScope.launch {
-        if (followManager.isFollowing(caid)) {
-            val action = MainNavDirections.actionGlobalUnfollowUserDialogFragment(username)
-            navigate(action)
-        } else {
-            followManager.followUser(caid)
+    override fun followClicked() {
+        super.followClicked()
+        coroutineScope.launch {
             lobbyImpressionAnalytics.followClicked(broadcaster)
-        }
-        withContext(Dispatchers.Main) {
-            isFollowing.value = followManager.isFollowing(caid)
         }
     }
 }
@@ -78,7 +110,7 @@ class OnlineBroadcaster @AssistedInject constructor (
     @Assisted broadcaster: Lobby.Broadcaster,
     @Assisted lobbyImpressionAnalytics: LobbyImpressionAnalytics,
     @Assisted coroutineScope: CoroutineScope
-) : AbstractBroadcaster(followManager, broadcaster, lobbyImpressionAnalytics, coroutineScope) {
+) : AbstractLobbyBroadcaster(followManager, broadcaster, lobbyImpressionAnalytics, coroutineScope) {
     @AssistedInject.Factory
     interface Factory {
         fun create(
@@ -113,7 +145,7 @@ class OfflineBroadcaster @AssistedInject constructor(
     @Assisted broadcaster: Lobby.Broadcaster,
     @Assisted lobbyImpressionAnalytics: LobbyImpressionAnalytics,
     @Assisted coroutineScope: CoroutineScope
-) : AbstractBroadcaster(followManager, broadcaster, lobbyImpressionAnalytics, coroutineScope) {
+) : AbstractLobbyBroadcaster(followManager, broadcaster, lobbyImpressionAnalytics, coroutineScope) {
 
     @AssistedInject.Factory
     interface Factory {

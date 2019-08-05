@@ -66,12 +66,6 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + exceptionHandler
 
-    fun <T> LiveData<Event<T>>.observeEvents(lifecycleOwner: LifecycleOwner, block: (T) -> Unit) {
-        observe(lifecycleOwner, Observer<Event<T>> { event ->
-            event.getContentIfNotHandled()?.let { block(it) }
-        })
-    }
-
     private var tags: Map<String, Lobby.Tag> = mapOf()
     private var content: Map<String, Lobby.Content> = mapOf()
     private var payloadId: String? = null
@@ -191,4 +185,10 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
         val cardList = item as CardList
         horizontalScrollCard.bind(cardList)
     }
+}
+
+fun <T> LiveData<Event<T>>.observeEvents(lifecycleOwner: LifecycleOwner, block: (T) -> Unit) {
+    observe(lifecycleOwner, Observer<Event<T>> { event ->
+        event.getContentIfNotHandled()?.let { block(it) }
+    })
 }

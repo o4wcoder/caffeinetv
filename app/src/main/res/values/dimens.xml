@@ -21,6 +21,7 @@
     <dimen name="avatar_rim_size_not_following">1dp</dimen>
     <dimen name="avatar_rim_size_threshold_on_avatar_size">150dp</dimen>
     <dimen name="avatar_featured_guide">60dp</dimen>
+    <dimen name="avatar_featured_guide_release">40dp</dimen>
     <dimen name="unread_badge">6dp</dimen>
 
     <dimen name="game_logo_width">120dp</dimen>
@@ -53,6 +54,7 @@
     <dimen name="lobby_card_narrow_margin">4dp</dimen>
     <dimen name="lobby_list_top_bottom_margin">0dp</dimen>
     <dimen name="lobby_card_vertical_spacing">10dp</dimen>
+    <dimen name="lobby_card_badge_height">40dp</dimen>
     <dimen name="lobby_header_top_margin">20dp</dimen>
     <dimen name="lobby_header_bottom_margin">0dp</dimen>
     <dimen name="lobby_subtitle_top_margin">0dp</dimen>
