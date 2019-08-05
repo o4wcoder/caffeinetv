@@ -1,5 +1,6 @@
 package tv.caffeine.app.lobby
 
+import android.content.Context
 import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
@@ -28,11 +29,13 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.FeaturedGuideDateHeaderBinding
 import tv.caffeine.app.databinding.FeaturedGuideListingItemBinding
+import tv.caffeine.app.databinding.FeaturedGuideReleaseDateHeaderBinding
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.lobby.FeaturedGuideItem.DateHeader
 import tv.caffeine.app.lobby.FeaturedGuideItem.ListingItem
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.animateSlideUpAndHide
@@ -75,7 +78,8 @@ class FeaturedProgramGuideAdapter @Inject constructor(
     private val followManager: FollowManager,
     @ThemeFollowedExplore private val followedTheme: UserTheme,
     @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : ListAdapter<FeaturedGuideItem, GuideViewHolder>(
         object : DiffUtil.ItemCallback<FeaturedGuideItem>() {
             override fun areItemsTheSame(oldItem: FeaturedGuideItem, newItem: FeaturedGuideItem) = oldItem === newItem
@@ -105,8 +109,13 @@ class FeaturedProgramGuideAdapter @Inject constructor(
                 ListingItemViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
             }
             FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
-                val binding = FeaturedGuideDateHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                DateHeaderViewHolder(binding)
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    val binding = FeaturedGuideReleaseDateHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ReleaseDateHeaderViewHolder(binding)
+                } else {
+                    val binding = FeaturedGuideDateHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    DateHeaderViewHolder(binding)
+                }
             }
         }
     }
@@ -117,7 +126,11 @@ class FeaturedProgramGuideAdapter @Inject constructor(
                 (holder as ListingItemViewHolder).bind(getItem(position) as ListingItem)
             }
             FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
-                (holder as DateHeaderViewHolder).bind(getItem(position) as DateHeader)
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    (holder as ReleaseDateHeaderViewHolder).bind(getItem(position) as DateHeader)
+                } else {
+                    (holder as DateHeaderViewHolder).bind(getItem(position) as DateHeader)
+                }
             }
         }
     }
@@ -131,28 +144,34 @@ class FeaturedProgramGuideAdapter @Inject constructor(
 sealed class GuideViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 class DateHeaderViewHolder(private val binding: FeaturedGuideDateHeaderBinding) : GuideViewHolder(binding.root) {
-
     fun bind(dateHeader: DateHeader) {
-        binding.dateTextView.text = getDateText(dateHeader)
+        binding.dateTextView.text = dateHeader.getDateText(itemView.context)
     }
+}
 
-    /**
-     * TODO (AND-139): Localize the date format.
-     */
-    fun getDateText(dateHeader: DateHeader): String {
-        return Calendar.getInstance().run {
-            val seconds = dateHeader.startTimestamp
-            timeInMillis = TimeUnit.SECONDS.toMillis(seconds)
-            val instant = Instant.ofEpochSecond(seconds)
-            val dateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
-            val localDate = dateTime.toLocalDate()
-            val today = LocalDate.now()
-            val tomorrow = today.plusDays(1)
-            when (localDate) {
-                today -> itemView.context.getString(R.string.today)
-                tomorrow -> itemView.context.getString(R.string.tomorrow)
-                else -> SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
-            }
+class ReleaseDateHeaderViewHolder(private val binding: FeaturedGuideReleaseDateHeaderBinding) :
+    GuideViewHolder(binding.root) {
+    fun bind(dateHeader: DateHeader) {
+        binding.dateTextView.text = dateHeader.getDateText(itemView.context)
+    }
+}
+
+/**
+ * TODO (AND-139): Localize the date format.
+ */
+fun DateHeader.getDateText(context: Context): String {
+    return Calendar.getInstance().run {
+        val seconds = startTimestamp
+        timeInMillis = TimeUnit.SECONDS.toMillis(seconds)
+        val instant = Instant.ofEpochSecond(seconds)
+        val dateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val localDate = dateTime.toLocalDate()
+        val today = LocalDate.now()
+        val tomorrow = today.plusDays(1)
+        when (localDate) {
+            today -> context.getString(R.string.today)
+            tomorrow -> context.getString(R.string.tomorrow)
+            else -> SimpleDateFormat("EEEE, MMMM d", Locale.getDefault()).format(this.time)
         }
     }
 }
