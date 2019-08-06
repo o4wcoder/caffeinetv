@@ -67,12 +67,12 @@ class AppBarTests {
     }
 
     @Test
-    fun `the release app bar is visible on the notifications fragment in release UI`() {
+    fun `the standard classic app bar is visible on the notifications fragment in release UI`() {
         every { releaseDesignConfig.isReleaseDesignActive() } returns true
         val binding = mainActivity.binding
         mainActivity.updateUiOnDestinationChange(R.id.notificationsFragment, binding)
-        assertTrue(binding.releaseAppBar.isVisible)
-        assertFalse(binding.classicAppBar.isVisible)
+        assertFalse(binding.releaseAppBar.isVisible)
+        assertTrue(binding.classicAppBar.isVisible)
     }
 
     @Test
@@ -80,6 +80,36 @@ class AppBarTests {
         every { releaseDesignConfig.isReleaseDesignActive() } returns true
         val binding = mainActivity.binding
         mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
+        assertFalse(binding.releaseAppBar.isVisible)
+        assertTrue(binding.classicAppBar.isVisible)
+    }
+
+    @Test
+    fun `the app bar's visibility does not change when the report or ignore dialog shows in the release UI`() {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        val binding = mainActivity.binding
+        mainActivity.updateUiOnDestinationChange(R.id.lobbySwipeFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.reportOrIgnoreDialogFragment, binding)
+        assertTrue(binding.releaseAppBar.isVisible)
+        assertFalse(binding.classicAppBar.isVisible)
+
+        mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.reportOrIgnoreDialogFragment, binding)
+        assertFalse(binding.releaseAppBar.isVisible)
+        assertTrue(binding.classicAppBar.isVisible)
+    }
+
+    @Test
+    fun `the app bar's visibility does not change when the unfollow dialog shows in the release UI`() {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        val binding = mainActivity.binding
+        mainActivity.updateUiOnDestinationChange(R.id.lobbySwipeFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.unfollowUserDialogFragment, binding)
+        assertTrue(binding.releaseAppBar.isVisible)
+        assertFalse(binding.classicAppBar.isVisible)
+
+        mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.unfollowUserDialogFragment, binding)
         assertFalse(binding.releaseAppBar.isVisible)
         assertTrue(binding.classicAppBar.isVisible)
     }
@@ -119,6 +149,36 @@ class AppBarTests {
         every { releaseDesignConfig.isReleaseDesignActive() } returns false
         val binding = mainActivity.binding
         mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
+        assertFalse(binding.releaseAppBar.isVisible)
+        assertTrue(binding.classicAppBar.isVisible)
+    }
+
+    @Test
+    fun `the app bar's visibility does not change when the report or ignore dialog shows in classic UI`() {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns false
+        val binding = mainActivity.binding
+        mainActivity.updateUiOnDestinationChange(R.id.lobbySwipeFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.reportOrIgnoreDialogFragment, binding)
+        assertFalse(binding.releaseAppBar.isVisible)
+        assertFalse(binding.classicAppBar.isVisible)
+
+        mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.reportOrIgnoreDialogFragment, binding)
+        assertFalse(binding.releaseAppBar.isVisible)
+        assertTrue(binding.classicAppBar.isVisible)
+    }
+
+    @Test
+    fun `the app bar's visibility does not change when the unfollow dialog shows in classic UI`() {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns false
+        val binding = mainActivity.binding
+        mainActivity.updateUiOnDestinationChange(R.id.lobbySwipeFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.unfollowUserDialogFragment, binding)
+        assertFalse(binding.releaseAppBar.isVisible)
+        assertFalse(binding.classicAppBar.isVisible)
+
+        mainActivity.updateUiOnDestinationChange(R.id.exploreFragment, binding)
+        mainActivity.updateUiOnDestinationChange(R.id.unfollowUserDialogFragment, binding)
         assertFalse(binding.releaseAppBar.isVisible)
         assertTrue(binding.classicAppBar.isVisible)
     }
