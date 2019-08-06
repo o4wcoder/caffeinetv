@@ -58,15 +58,12 @@ private val destinationsWithCustomToolbar = arrayOf(
     R.id.stagePagerFragment,
     R.id.needsUpdateFragment,
     R.id.friendsWatchingFragment,
-    R.id.sendDigitalItemFragment,
-    R.id.reportOrIgnoreDialogFragment,
-    R.id.unfollowUserDialogFragment
+    R.id.sendDigitalItemFragment
 )
 
 private val destinationWithReleaseToolbar = arrayOf(
     R.id.lobbySwipeFragment,
     R.id.featuredProgramGuideFragment,
-    R.id.notificationsFragment,
     R.id.myProfileFragment
 )
 
@@ -79,7 +76,10 @@ private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.stagePagerFragment,
     R.id.needsUpdateFragment,
     R.id.friendsWatchingFragment,
-    R.id.sendDigitalItemFragment,
+    R.id.sendDigitalItemFragment
+)
+
+private val destinationsAsDialog = arrayOf(
     R.id.reportOrIgnoreDialogFragment,
     R.id.unfollowUserDialogFragment
 )
@@ -162,11 +162,15 @@ class MainActivity : DaggerAppCompatActivity() {
     @VisibleForTesting fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding) {
         dismissKeyboard()
         val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
-        binding.releaseAppBar.isVisible = isReleaseDesign && destinationId in destinationWithReleaseToolbar
-        binding.classicAppBar.isVisible = destinationId !in destinationsWithCustomToolbar && !binding.releaseAppBar.isVisible
-        binding.bottomNavigation.isVisible = isReleaseDesign &&
-            destinationId !in destinationsWithoutBottomNavBar
-        updateBottomNavigationStatus(binding.bottomNavigation, destinationId)
+        if (destinationId !in destinationsAsDialog) {
+            // Keep both bars as they are if we are navigating to a dialog.
+            binding.releaseAppBar.isVisible = isReleaseDesign && destinationId in destinationWithReleaseToolbar
+            binding.classicAppBar.isVisible = destinationId !in destinationsWithCustomToolbar &&
+                !binding.releaseAppBar.isVisible
+            binding.bottomNavigation.isVisible = isReleaseDesign &&
+                destinationId !in destinationsWithoutBottomNavBar
+            updateBottomNavigationStatus(binding.bottomNavigation, destinationId)
+        }
 
         requestedOrientation = if (destinationId in destinationInPortrait) {
             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
