@@ -95,7 +95,7 @@
             app:layout_constraintTop_toBottomOf="@+id/time_text_view"
             tools:text="@sample/guide.json/listings/title"/>
 
-        <TextView
+        <tv.caffeine.app.ui.AutoEllipsizeTextView
             style="@style/FPGDescription"
             android:id="@+id/description_text_view"
             android:layout_width="0dp"
