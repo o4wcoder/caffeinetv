@@ -18,11 +18,12 @@ import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
 class FeaturedProgramGuideFragment @Inject constructor(
-    private val guideAdapter: FeaturedProgramGuideAdapter
+    private val guideAdapterFactory: FeaturedProgramGuideAdapter.Factory
 ) : CaffeineFragment(R.layout.fragment_featured_program_guide) {
 
     private var binding: FragmentFeaturedProgramGuideBinding? = null
     private val viewModel: FeaturedProgramGuideViewModel by viewModels { viewModelFactory }
+    lateinit var guideAdapter: FeaturedProgramGuideAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentFeaturedProgramGuideBinding.bind(view).apply {
@@ -37,6 +38,7 @@ class FeaturedProgramGuideFragment @Inject constructor(
     }
 
     private fun configure(binding: FragmentFeaturedProgramGuideBinding) {
+        guideAdapter = guideAdapterFactory.create(viewLifecycleOwner)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.guideRecyclerView.adapter = guideAdapter
         binding.guideSwipeRefreshLayout.setOnRefreshListener { viewModel.load() }

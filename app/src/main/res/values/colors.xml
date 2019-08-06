@@ -16,6 +16,8 @@
     <color name="yellow">#FFCC00</color>
     <color name="warning_red">#ff3b30</color>
 
+    <color name="text_shadow">#33000000</color>
+    <color name="fpg_card_gradient_top">#22000000</color>
     <color name="poor_connection_dim">#bf000000</color>
 
     <color name="very_very_light_gray">#f2f2f2</color>
