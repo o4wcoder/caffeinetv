@@ -23,6 +23,7 @@
     <dimen name="avatar_featured_guide">60dp</dimen>
     <dimen name="avatar_featured_guide_release">40dp</dimen>
     <dimen name="unread_badge">6dp</dimen>
+    <dimen name="unread_badge_release">12dp</dimen>
 
     <dimen name="game_logo_width">120dp</dimen>
     <dimen name="game_logo_height">90dp</dimen>
