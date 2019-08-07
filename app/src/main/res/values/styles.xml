@@ -302,7 +302,7 @@
 
     <!-- Design approved - End -->
 
-    <style name="ScreenCaption" parent="@style/TextAppearance.MaterialComponents.Caption" />
+    <style name="ScreenCaption" parent="@style/TextAppearance.MaterialComponents.Caption"/>
 
     <style name="GoldAndCreditsBalance" parent="@style/TextAppearance.MaterialComponents.Headline5">
         <item name="android:textSize">27sp</item>
@@ -384,11 +384,11 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="NoNetworkData" >
+    <style name="NoNetworkData">
         <item name="android:tint">@color/white</item>
     </style>
 
-    <style name="PoorConnectionPulse" >
+    <style name="PoorConnectionPulse">
         <item name="android:tint">@color/white</item>
         <item name="android:layout_marginStart">12dp</item>
         <item name="android:layout_marginTop">12dp</item>
@@ -461,6 +461,17 @@
         <!-- Support library compatibility -->
         <item name="windowActionBarOverlay">true</item>
     </style>
+
+    <!--  Notifications  -->
+    <style name="NotificationSubtitle" parent="CaffeineText">
+        <item name="android:fontFamily">@font/poppins</item>
+    </style>
+
+    <style name="NotificationTitle" parent="CaffeineText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+
+    </style>
+
 
 
 </resources>

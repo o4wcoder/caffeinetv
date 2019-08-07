@@ -26,9 +26,11 @@ import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
@@ -36,6 +38,7 @@ import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.maybeShow
+import tv.caffeine.app.util.navigateToUnfollowUserDialog
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -43,6 +46,7 @@ import kotlin.coroutines.CoroutineContext
 class NotificationsAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
+    private val isReleaseDesignConfig: ReleaseDesignConfig,
     @ThemeFollowedExplore private val followedTheme: UserTheme,
     @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
     private val picasso: Picasso
@@ -62,6 +66,8 @@ class NotificationsAdapter @Inject constructor(
     }
     override val coroutineContext: CoroutineContext
         get() = dispatchConfig.main + job + exceptionHandler
+
+    var isReleaseDesign = isReleaseDesignConfig.isReleaseDesignActive()
 
     var fragmentManager: FragmentManager? = null
     val callback = object : FollowManager.Callback() {
@@ -101,7 +107,8 @@ class NotificationsAdapter @Inject constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.notification_new_follower, parent, false)
+        val layout = if (isReleaseDesign) R.layout.notification_new_follower else R.layout.notification_new_follower_classic
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return FollowNotificationViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this, picasso)
     }
 
@@ -109,7 +116,7 @@ class NotificationsAdapter @Inject constructor(
         val item = getItem(position)
         when {
             holder is FollowNotificationViewHolder && item is FollowNotification ->
-                holder.bind(item, followManager, followedTheme, notFollowedTheme)
+                holder.bind(item, followManager, followedTheme, notFollowedTheme, isReleaseDesign)
             else -> TODO()
         }
     }
@@ -130,23 +137,40 @@ class FollowNotificationViewHolder(
 ) : NotificationViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
-    private val followButton: Button = itemView.findViewById(R.id.follow_button)
     private val notificationStatusImageView: ImageView = itemView.findViewById(R.id.notification_status_image_view)
+    private lateinit var followButton: Button
+    private lateinit var followStar: ImageView
 
     var job: Job? = null
 
-    fun bind(item: FollowNotification, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    fun bind(item: FollowNotification, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme, isReleaseDesign: Boolean) {
         job?.cancel()
-        clear()
+        if (isReleaseDesign) {
+            if (!::followStar.isInitialized) followStar = itemView.findViewById(R.id.follow_star)
+            notificationStatusImageView.visibility = if (item.isNew) View.VISIBLE else View.INVISIBLE
+        } else {
+            if (!::followButton.isInitialized) followButton = itemView.findViewById(R.id.follow_button)
+            notificationStatusImageView.setImageResource(if (item.isNew) R.drawable.blue_coin else R.drawable.gray_coin)
+        }
+        clear(isReleaseDesign)
+
         val caidRecord = item.caid
-        notificationStatusImageView.setImageResource(if (item.isNew) R.drawable.blue_coin else R.drawable.gray_coin)
         notificationStatusImageView.contentDescription = itemView.context.getString(
                 if (item.isNew) R.string.unread_notification_badge_content_description
                 else R.string.read_notification_badge_content_description)
         job = scope.launch {
             val user = followManager.userDetails(caidRecord.caid) ?: return@launch
-            followButton.isVisible = caidRecord !is CaidRecord.IgnoreRecord
-            val maybeFollowButton = if (caidRecord is CaidRecord.IgnoreRecord) null else followButton
+
+            var maybeFollowButton: Button? = null
+            if (isReleaseDesign) {
+                if (caidRecord !is CaidRecord.IgnoreRecord) {
+                    configureFollowStar(followManager, user)
+                }
+            } else {
+                followButton.isVisible = caidRecord !is CaidRecord.IgnoreRecord
+                maybeFollowButton = if (caidRecord is CaidRecord.IgnoreRecord) null else followButton
+            }
+
             user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
                     followedTheme, notFollowedTheme)
         }
@@ -156,13 +180,39 @@ class FollowNotificationViewHolder(
         }
     }
 
-    private fun clear() {
+    private fun configureFollowStar(followManager: FollowManager, user: User) {
+        val isFollowing = followManager.isFollowing(user.caid)
+        if (followManager.followersLoaded() && !isFollowing) {
+            followStar.setImageResource(R.drawable.star_outline_black)
+            followStar.setOnClickListener {
+                if (followHandler != null) {
+                    followHandler.callback.follow(user.caid)
+                } else {
+                    followStar.setImageResource(R.drawable.star_filled_black)
+                    scope.launch {
+                        followManager.followUser(user.caid)
+                    }
+                }
+            }
+        } else if (followManager.followersLoaded() && isFollowing) {
+            followStar.setImageResource(R.drawable.star_filled_black)
+            followStar.setOnClickListener {
+                followHandler?.let { handler ->
+                    handler.fragmentManager?.navigateToUnfollowUserDialog(user.caid, user.username, handler.callback)
+                }
+            }
+        }
+    }
+
+    private fun clear(isReleaseDesign: Boolean) {
         avatarImageView.setImageResource(R.drawable.default_avatar_round)
         usernameTextView.text = null
-        followButton.apply {
-            isVisible = false
-            FollowButtonDecorator(Style.FOLLOW).decorate(this)
-            setOnClickListener(null)
+        if (!isReleaseDesign) {
+            followButton.apply {
+                isVisible = false
+                FollowButtonDecorator(Style.FOLLOW).decorate(this)
+                setOnClickListener(null)
+            }
         }
         itemView.setOnClickListener(null)
     }
