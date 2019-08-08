@@ -148,6 +148,10 @@
         <item quantity="one"><![CDATA[<b>1</b>]]> follower</item>
         <item quantity="other"><![CDATA[<b>]]><xliff:g example="1k" id="followers_count">%s</xliff:g><![CDATA[</b>]]> followers</item>
     </plurals>
+    <plurals name="number_of_followers_release">
+        <item quantity="one"><![CDATA[<b>1</b>]]></item>
+        <item quantity="other"><![CDATA[<b>]]><xliff:g example="1k" id="followers_count">%s</xliff:g><![CDATA[</b>]]></item>
+    </plurals>
     <string name="stage_image_content_description">Stage image</string>
     <string name="stage_swipe_image_content_description">Swipe to the next stage</string>
     <string name="share_others_stage_with_twitter_username">Watching <xliff:g example="caffeine" id="broadcaster">%1$s</xliff:g> LIVE: \"<xliff:g example="LIVE on Caffeine" id="stage_name">%2$s</xliff:g>\". #caffeinetv <xliff:g example="@caffeine" id="twitter_username">%3$s</xliff:g> <xliff:g example="https://..." id="url">%4$s</xliff:g></string>

@@ -5,6 +5,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -16,10 +17,10 @@ import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.api.SearchUsersResult
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.explore.FindBroadcastersUseCase
+import tv.caffeine.app.repository.FindBroadcastersRepository
 import tv.caffeine.app.explore.Findings
 
-class FindBroadcastersUseCaseTests {
+class FindBroadcastersRepositoryTests {
     @MockK lateinit var user1: SearchUserItem
     @MockK lateinit var user2: SearchUserItem
     @MockK lateinit var user3: SearchUserItem
@@ -27,7 +28,7 @@ class FindBroadcastersUseCaseTests {
     @MockK lateinit var fakeSearchService: SearchService
     @MockK lateinit var mockListSuggestionsResponse: Deferred<Response<List<SearchUserItem>>>
     @MockK lateinit var fakeUsersService: UsersService
-    private lateinit var subject: FindBroadcastersUseCase
+    private lateinit var subject: FindBroadcastersRepository
 
     @Before
     fun setup() {
@@ -39,12 +40,12 @@ class FindBroadcastersUseCaseTests {
         coEvery { mockListSuggestionsResponse.await() } returns Response.success(resultList)
         every { fakeUsersService.listSuggestions() } returns mockListSuggestionsResponse
         val gson = Gson()
-        subject = FindBroadcastersUseCase(fakeSearchService, fakeUsersService, gson)
+        subject = FindBroadcastersRepository(fakeSearchService, fakeUsersService, gson, mockk(relaxed = true))
     }
 
     @Test
     fun emptySearchStringReturnsExploreResult() {
-        val result = runBlocking { subject(null) }
+        val result = runBlocking { subject.search(null) }
         when {
             result !is CaffeineResult.Success -> Assert.fail("Was expecting lobby to load")
             result.value !is Findings.Explore -> Assert.fail("Expected explore to be returned")
@@ -55,7 +56,7 @@ class FindBroadcastersUseCaseTests {
 
     @Test
     fun nonEmptySearchStringReturnsSearchResults() {
-        val result = runBlocking { subject("random") }
+        val result = runBlocking { subject.search("random") }
         when {
             result !is CaffeineResult.Success -> Assert.fail("Expected the call to succeed")
             result.value !is Findings.Search -> Assert.fail("Expected search to be returned")

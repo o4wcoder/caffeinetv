@@ -286,6 +286,16 @@
     </style>
     <style name="ExploreFollowerCount" parent="@style/TextAppearance.MaterialComponents.Caption"/>
 
+
+    <style name="ExploreFollowerCountRelease" parent="@style/TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
+    <style name="SearchUsername" parent="@style/ListTitle">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
     <!-- Tab -->
     <style name="TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabIndicatorColor">@color/black</item>

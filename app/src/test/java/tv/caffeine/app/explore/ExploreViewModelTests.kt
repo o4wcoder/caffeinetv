@@ -10,6 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.repository.FindBroadcastersRepository
 import tv.caffeine.app.test.observeForTesting
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -23,9 +24,9 @@ class ExploreViewModelTests {
     @Before
     fun setup() {
         val result: CaffeineResult<Findings> = CaffeineResult.Success(Findings.Explore(arrayOf()))
-        val findBroadcastersUseCase = mockk<FindBroadcastersUseCase>()
-        coEvery { findBroadcastersUseCase.invoke(any()) } returns result
-        subject = ExploreViewModel(findBroadcastersUseCase)
+        val findBroadcastersRepository = mockk<FindBroadcastersRepository>()
+        coEvery { findBroadcastersRepository.search(any()) } returns result
+        subject = ExploreViewModel(findBroadcastersRepository)
     }
 
     @Test

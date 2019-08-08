@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.ui.FollowStarViewModel" />
+    </data>
+
+    <ImageView
+        android:id="@+id/follow_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> viewModel.onFollowClick()}"
+        android:src="@{viewModel.following ? @drawable/star_filled_black : @drawable/star_outline_black}"
+        android:visibility="@{viewModel.starVisibility}"
+        tools:src="@drawable/star_outline_black" />
+</layout>
