@@ -8,10 +8,11 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.repository.FindBroadcastersRepository
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    private val findBroadcastersUseCase: FindBroadcastersUseCase
+    private val findBroadcastersRepository: FindBroadcastersRepository
 ) : ViewModel() {
     private val _data = MutableLiveData<CaffeineResult<Findings>>()
     val data: LiveData<CaffeineResult<Findings>> = _data.map { it }
@@ -31,7 +32,7 @@ class ExploreViewModel @Inject constructor(
     private fun usersMatching(query: String?) {
         exploreJob?.cancel()
         exploreJob = viewModelScope.launch {
-            val result = findBroadcastersUseCase(query)
+            val result = findBroadcastersRepository.search(query)
             _data.value = result
         }
     }

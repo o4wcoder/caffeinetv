@@ -47,30 +47,16 @@
 
                     <ImageButton
                         style="@android:style/Widget.Material.ActionButton"
-                        android:id="@+id/cameraButton"
+                        android:id="@+id/searchButton"
                         android:layout_width="@dimen/lobby_toolbar_icon"
                         android:layout_height="@dimen/lobby_toolbar_icon"
                         android:layout_marginStart="0dp"
                         android:background="@android:color/transparent"
                         android:tint="@color/medium_gray"
-                        android:contentDescription="@string/camera_button_content_description"
-                        app:srcCompat="@drawable/ic_camera_light"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        style="@android:style/Widget.Material.ActionButton"
-                        android:id="@+id/searchButton"
-                        android:layout_width="@dimen/lobby_toolbar_icon"
-                        android:layout_height="@dimen/lobby_toolbar_icon"
-                        android:layout_marginStart="8dp"
-                        android:background="@android:color/transparent"
-                        android:tint="@color/medium_gray"
                         android:contentDescription="@string/search_button_content_description"
                         app:srcCompat="@drawable/ic_search_light"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/cameraButton"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton

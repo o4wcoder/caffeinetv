@@ -16,12 +16,15 @@ fun compactNumberFormatWithDecimal(number: Int): String {
     }
 }
 
-private fun englishCompactNumberFormat(number: Int): String {
-    return when (log10(number.toDouble()).toInt()) {
-        in 0..2 -> "$number"
-        in 3..5 -> "${number / 1000}k"
-        in 6..8 -> "${number / 1000000}M"
-        in 9..11 -> "${number / 1000000000}B"
-        else -> "${number / 1000000000000}T"
+private fun englishCompactNumberFormat(number: Int): String =
+    if (number == 0) {
+        "$number"
+    } else {
+        when (log10(number.toDouble()).toInt()) {
+            in 0..2 -> "$number"
+            in 3..5 -> "${number / 1000}k"
+            in 6..8 -> "${number / 1000000}M"
+            in 9..11 -> "${number / 1000000000}B"
+            else -> "${number / 1000000000000}T"
+        }
     }
-}

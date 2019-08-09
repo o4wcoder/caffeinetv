@@ -69,7 +69,6 @@
     <dimen name="stage_follow_star_size">32dp</dimen>
     <dimen name="stage_more_button_appbar_margin_right">26dp</dimen>
 
-
     <dimen name="broadcast_username">14sp</dimen>
     <dimen name="broadcast_username_mini">13sp</dimen>
     <dimen name="broadcast_title">17sp</dimen>
@@ -87,5 +86,7 @@
     <dimen name="bad_connection_icon_size">40dp</dimen>
 
     <dimen name="poor_connection_text_margin_start">12dp</dimen>
+
+    <dimen name="search_number_followers_margin_end">8dp</dimen>
     
 </resources>
