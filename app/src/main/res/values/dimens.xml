@@ -22,6 +22,7 @@
     <dimen name="avatar_rim_size_threshold_on_avatar_size">150dp</dimen>
     <dimen name="avatar_featured_guide">60dp</dimen>
     <dimen name="avatar_featured_guide_release">40dp</dimen>
+    <dimen name="avatar_margin_left">16dp</dimen> <!-- on notification cells -->
     <dimen name="unread_badge">6dp</dimen>
     <dimen name="unread_badge_release">12dp</dimen>
 
@@ -88,5 +89,7 @@
     <dimen name="poor_connection_text_margin_start">12dp</dimen>
 
     <dimen name="search_number_followers_margin_end">8dp</dimen>
+
+    <dimen name="notifications_follow_star_size">24dp</dimen>
     
 </resources>
