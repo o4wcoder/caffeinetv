@@ -9,10 +9,11 @@ import kotlinx.coroutines.launch
 import tv.caffeine.app.api.PaymentsEnvelope
 import tv.caffeine.app.api.TransactionHistoryPayload
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.repository.TransactionHistoryRepository
 import javax.inject.Inject
 
 class TransactionHistoryViewModel @Inject constructor(
-    private val transactionHistoryUseCase: TransactionHistoryUseCase
+    private val transactionHistoryRepository: TransactionHistoryRepository
 ) : ViewModel() {
     private val _transactionHistory = MutableLiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>>()
     val transactionHistory: LiveData<CaffeineResult<PaymentsEnvelope<TransactionHistoryPayload>>> = _transactionHistory.map { it }
@@ -23,7 +24,7 @@ class TransactionHistoryViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch {
-            _transactionHistory.value = transactionHistoryUseCase()
+            _transactionHistory.value = transactionHistoryRepository.getTransactionHistory()
         }
     }
 }

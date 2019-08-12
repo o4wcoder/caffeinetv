@@ -291,6 +291,7 @@
     <!-- Notifications -->
     <string name="notification_channel_general_name">General</string>
     <string name="notification_channel_general_description">General notifications</string>
+    <string name="received_digital_item_notification_subtitle">Sent <xliff:g id="quantity" example="1">%d</xliff:g> <xliff:g id="digitalItemName" example="sneakers">%s</xliff:g></string>
 
     <!-- Stage/Broadcast: Content descriptions -->
     <string name="share_button_content_description">Share the broadcast</string>

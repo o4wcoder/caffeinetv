@@ -479,9 +479,11 @@
 
     <style name="NotificationTitle" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_medium</item>
-
     </style>
 
-
+    <style name="NotificationCreditTitle" parent="CaffeineText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 
 </resources>

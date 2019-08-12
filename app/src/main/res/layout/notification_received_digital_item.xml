@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -31,13 +32,12 @@
         android:id="@+id/user_live_status_view"
         android:layout_width="@dimen/unread_badge_release"
         android:layout_height="@dimen/unread_badge_release"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="@dimen/list_item_spacing_half"
         android:contentDescription="@string/unread_notification_badge_content_description"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
         app:srcCompat="@drawable/pure_blue_coin"/>
-
 
     <TextView
         android:id="@+id/username_text_view"
@@ -47,31 +47,55 @@
         android:layout_marginEnd="@dimen/margin_list"
         android:drawablePadding="@dimen/verified_icon_padding"
         android:textAppearance="@style/NotificationTitle"
-        app:layout_constraintBottom_toTopOf="@+id/followed_you_text_view"
-        app:layout_constraintEnd_toStartOf="@+id/follow_star"
+        app:layout_constraintBottom_toTopOf="@+id/sent_you_text_view"
+        app:layout_constraintEnd_toStartOf="@+id/digital_item_image_view"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
         tools:drawableEnd="@drawable/verified"
-        tools:text="@sample/usernames" />
-
-    <ImageView
-        android:id="@+id/follow_star"
-        android:layout_width="@dimen/notifications_follow_star_size"
-        android:layout_height="@dimen/notifications_follow_star_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"/>
+        tools:text="@sample/usernames"/>
 
     <TextView
-        android:id="@+id/followed_you_text_view"
+        android:id="@+id/sent_you_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_list"
-        android:text="@string/followed_you"
         android:textAppearance="@style/NotificationSubtitle"
         app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
-        app:layout_constraintEnd_toStartOf="@+id/follow_star"
-        app:layout_constraintStart_toStartOf="@+id/username_text_view" />
+        app:layout_constraintEnd_toStartOf="@+id/digital_item_image_view"
+        app:layout_constraintStart_toStartOf="@+id/username_text_view"/>
+
+    <ImageView
+        android:id="@+id/digital_item_image_view"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_marginEnd="@dimen/list_item_spacing_half"
+        android:contentDescription="@string/digital_item"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/credit_coin_image_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/ic_digital_items"/>
+
+    <ImageView
+        android:id="@+id/credit_coin_image_view"
+        android:layout_width="@dimen/unread_badge_release"
+        android:layout_height="@dimen/unread_badge_release"
+        android:layout_marginEnd="@dimen/list_item_spacing_half"
+        android:contentDescription="@string/unread_notification_badge_content_description"
+        app:layout_constraintBottom_toBottomOf="@+id/credits_available_text_view"
+        app:layout_constraintEnd_toStartOf="@id/credits_available_text_view"
+        app:layout_constraintTop_toTopOf="@+id/credits_available_text_view"
+        app:srcCompat="@drawable/purple_coin"/>
+
+    <TextView
+        android:id="@+id/credits_available_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/credits_available"
+        android:textAppearance="@style/NotificationCreditTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

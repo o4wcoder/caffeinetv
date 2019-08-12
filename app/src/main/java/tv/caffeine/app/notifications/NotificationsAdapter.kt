@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.api.digitalItemStaticImageUrl
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
@@ -29,11 +30,14 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.di.ThemeFollowedExplore
 import tv.caffeine.app.di.ThemeNotFollowedExplore
+import tv.caffeine.app.repository.ProfileRepository
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
+import tv.caffeine.app.ui.configureUserIcon
+import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
@@ -47,6 +51,7 @@ class NotificationsAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
     private val isReleaseDesignConfig: ReleaseDesignConfig,
+    private val profileRepository: ProfileRepository,
     @ThemeFollowedExplore private val followedTheme: UserTheme,
     @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
     private val picasso: Picasso
@@ -106,17 +111,37 @@ class NotificationsAdapter @Inject constructor(
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is FollowNotification -> CellType.FOLLOW.ordinal
+            is ReceivedDigitalItemNotification -> CellType.RECEIVED_DIGITAL_ITEM.ordinal
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        val layout = if (isReleaseDesign) R.layout.notification_new_follower else R.layout.notification_new_follower_classic
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return FollowNotificationViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this, picasso)
+        return when (viewType) {
+            CellType.FOLLOW.ordinal -> {
+                val layout = if (isReleaseDesign) R.layout.notification_new_follower else R.layout.notification_new_follower_classic
+                val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+                if (isReleaseDesign) FollowNotificationViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this) else
+                    ClassicFollowNotificationViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this)
+            }
+            else -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.notification_received_digital_item, parent, false)
+                return ReceivedDigitalItemNotificationViewHolder(view, this)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         val item = getItem(position)
         when {
             holder is FollowNotificationViewHolder && item is FollowNotification ->
-                holder.bind(item, followManager, followedTheme, notFollowedTheme, isReleaseDesign)
+                holder.bind(item, followManager, profileRepository)
+            holder is ClassicFollowNotificationViewHolder && item is FollowNotification ->
+                holder.bind(item, followManager, followedTheme, notFollowedTheme)
+            holder is ReceivedDigitalItemNotificationViewHolder && item is ReceivedDigitalItemNotification ->
+                holder.bind(item, followManager, picasso, profileRepository)
             else -> TODO()
         }
     }
@@ -125,54 +150,100 @@ class NotificationsAdapter @Inject constructor(
         super.onDetachedFromRecyclerView(recyclerView)
         job.cancelChildren()
     }
+
+    enum class CellType {
+        FOLLOW,
+        RECEIVED_DIGITAL_ITEM
+    }
 }
 
 sealed class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class FollowNotificationViewHolder(
+class ClassicFollowNotificationViewHolder(
     itemView: View,
     private val followHandler: FollowManager.FollowHandler,
-    private val scope: CoroutineScope,
-    private val picasso: Picasso
+    private val scope: CoroutineScope
 ) : NotificationViewHolder(itemView) {
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
+    private val followButton: Button = itemView.findViewById(R.id.follow_button)
     private val notificationStatusImageView: ImageView = itemView.findViewById(R.id.notification_status_image_view)
-    private lateinit var followButton: Button
-    private lateinit var followStar: ImageView
 
     var job: Job? = null
 
-    fun bind(item: FollowNotification, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme, isReleaseDesign: Boolean) {
+    fun bind(item: FollowNotification, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
         job?.cancel()
-        if (isReleaseDesign) {
-            if (!::followStar.isInitialized) followStar = itemView.findViewById(R.id.follow_star)
-            notificationStatusImageView.visibility = if (item.isNew) View.VISIBLE else View.INVISIBLE
-        } else {
-            if (!::followButton.isInitialized) followButton = itemView.findViewById(R.id.follow_button)
-            notificationStatusImageView.setImageResource(if (item.isNew) R.drawable.blue_coin else R.drawable.gray_coin)
-        }
-        clear(isReleaseDesign)
-
+        clear()
         val caidRecord = item.caid
+        notificationStatusImageView.setImageResource(if (item.isNew) R.drawable.blue_coin else R.drawable.gray_coin)
         notificationStatusImageView.contentDescription = itemView.context.getString(
-                if (item.isNew) R.string.unread_notification_badge_content_description
-                else R.string.read_notification_badge_content_description)
+            if (item.isNew) R.string.unread_notification_badge_content_description
+            else R.string.read_notification_badge_content_description)
         job = scope.launch {
             val user = followManager.userDetails(caidRecord.caid) ?: return@launch
+            followButton.isVisible = caidRecord !is CaidRecord.IgnoreRecord
+            val maybeFollowButton = if (caidRecord is CaidRecord.IgnoreRecord) null else followButton
+            user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
+                followedTheme, notFollowedTheme)
+        }
+        itemView.setOnClickListener {
+            val action = MainNavDirections.actionGlobalProfileFragment(caidRecord.caid)
+            itemView.findNavController().safeNavigate(action)
+        }
+    }
 
-            var maybeFollowButton: Button? = null
-            if (isReleaseDesign) {
-                if (caidRecord !is CaidRecord.IgnoreRecord) {
-                    configureFollowStar(followManager, user)
-                }
-            } else {
-                followButton.isVisible = caidRecord !is CaidRecord.IgnoreRecord
-                maybeFollowButton = if (caidRecord is CaidRecord.IgnoreRecord) null else followButton
+    private fun clear() {
+        avatarImageView.setImageResource(R.drawable.default_avatar_round)
+        usernameTextView.text = null
+        followButton.apply {
+            isVisible = false
+            FollowButtonDecorator(Style.FOLLOW).decorate(this)
+            setOnClickListener(null)
+        }
+        itemView.setOnClickListener(null)
+    }
+}
+
+class FollowNotificationViewHolder(
+    itemView: View,
+    private val followHandler: FollowManager.FollowHandler,
+    private val scope: CoroutineScope
+) : NotificationViewHolder(itemView) {
+    private val userIsLiveStatusView: ImageView = itemView.findViewById(R.id.user_live_status_view)
+    private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
+    private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
+    private val newNotificationIndicatorImageView: ImageView = itemView.findViewById(R.id.new_notification_indicator)
+    private val followStar: ImageView = itemView.findViewById(R.id.follow_star)
+
+    var job: Job? = null
+
+    fun bind(item: FollowNotification, followManager: FollowManager, profileRepository: ProfileRepository) {
+        job?.cancel()
+        clear()
+
+        val caidRecord = item.caid
+        newNotificationIndicatorImageView.contentDescription = itemView.context.getString(
+                if (item.isNew) R.string.unread_notification_badge_content_description
+                else R.string.read_notification_badge_content_description)
+        newNotificationIndicatorImageView.isVisible = item.isNew
+        job = scope.launch {
+            val user = followManager.userDetails(caidRecord.caid) ?: return@launch
+            val userProfile = profileRepository.getUserProfile(user.username)
+            avatarImageView.loadAvatar(user.avatarImageUrl, false, R.dimen.avatar_size)
+            usernameTextView.apply {
+                text = user.username
+                configureUserIcon(when {
+                    user.isVerified -> R.drawable.verified
+                    user.isCaster -> R.drawable.caster
+                    else -> 0
+                })
             }
 
-            user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme)
+            userProfile?.let { userIsLiveStatusView.isVisible = it.isLive }
+
+            if (caidRecord !is CaidRecord.IgnoreRecord) {
+                configureFollowStar(followManager, user)
+            }
         }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(caidRecord.caid)
@@ -204,16 +275,66 @@ class FollowNotificationViewHolder(
         }
     }
 
-    private fun clear(isReleaseDesign: Boolean) {
+    private fun clear() {
         avatarImageView.setImageResource(R.drawable.default_avatar_round)
         usernameTextView.text = null
-        if (!isReleaseDesign) {
-            followButton.apply {
-                isVisible = false
-                FollowButtonDecorator(Style.FOLLOW).decorate(this)
-                setOnClickListener(null)
+        itemView.setOnClickListener(null)
+    }
+}
+
+class ReceivedDigitalItemNotificationViewHolder(
+    itemView: View,
+    private val scope: CoroutineScope
+) : NotificationViewHolder(itemView) {
+    private val userIsLiveStatusView: ImageView = itemView.findViewById(R.id.user_live_status_view)
+    private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
+    private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
+    private val sentYouTextView: TextView = itemView.findViewById(R.id.sent_you_text_view)
+    private val digitalItemImageView: ImageView = itemView.findViewById(R.id.digital_item_image_view)
+    private val newNotificationIndicatorImageView: ImageView = itemView.findViewById(R.id.new_notification_indicator)
+    private val creditsAvailableTextView: TextView = itemView.findViewById(R.id.credits_available_text_view)
+
+    var job: Job? = null
+
+    fun bind(item: ReceivedDigitalItemNotification, followManager: FollowManager, picasso: Picasso, profileRepository: ProfileRepository) {
+        job?.cancel()
+        clear()
+        newNotificationIndicatorImageView.contentDescription = itemView.context.getString(
+            if (item.isNew) R.string.unread_notification_badge_content_description
+            else R.string.read_notification_badge_content_description)
+
+        val caid = item.digitalItem.sender
+        newNotificationIndicatorImageView.isVisible = item.isNew
+
+        job = scope.launch {
+            val user = followManager.userDetails(caid) ?: return@launch
+            val userProfile = profileRepository.getUserProfile(user.username)
+            avatarImageView.loadAvatar(user.avatarImageUrl, false, R.dimen.avatar_size)
+            usernameTextView.apply {
+                text = user.username
+                configureUserIcon(when {
+                    user.isVerified -> R.drawable.verified
+                    user.isCaster -> R.drawable.caster
+                    else -> 0
+                })
+            }
+            val digitalItemName = if (item.digitalItem.quantity == 1) item.digitalItem.name else item.digitalItem.pluralName
+            sentYouTextView.text = itemView.context.getString(R.string.received_digital_item_notification_subtitle, item.digitalItem.quantity, digitalItemName)
+            picasso.load(item.digitalItem.digitalItemStaticImageUrl).into(digitalItemImageView)
+            creditsAvailableTextView.text = "${item.digitalItem.value}"
+
+            userProfile?.let { userIsLiveStatusView.isVisible = it.isLive }
+
+            itemView.setOnClickListener {
+                val action = MainNavDirections.actionGlobalProfileFragment(caid)
+                itemView.findNavController().safeNavigate(action)
             }
         }
+    }
+
+    private fun clear() {
+        avatarImageView.setImageResource(R.drawable.default_avatar_round)
+        usernameTextView.text = null
         itemView.setOnClickListener(null)
     }
 }
