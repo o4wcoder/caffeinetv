@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.ui.LiveStatusIndicatorViewModel" />
+    </data>
+
+    <ImageView
+        android:id="@+id/user_live_status_view"
+        android:layout_width="@dimen/live_round_indicator_size"
+        android:layout_height="@dimen/live_round_indicator_size"
+        android:contentDescription="@string/unread_notification_badge_content_description"
+        android:visibility="@{viewModel.indicatorVisibility}"
+        app:srcCompat="@drawable/live_round_indicator" />
+</layout>

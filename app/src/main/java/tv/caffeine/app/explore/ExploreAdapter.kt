@@ -34,6 +34,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowStarViewModel
+import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.compactNumberFormat
@@ -202,10 +203,10 @@ class ReleaseUserViewHolder(
     private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     @VisibleForTesting
     var followButton: Button? = null
-    private val numberOfFollowersTextView: TextView? = itemView.findViewById(R.id.number_of_followers_text_view)
 
     init {
         binding.followStarViewModel = FollowStarViewModel(onFollowStarClick)
+        binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 
     override fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
@@ -220,16 +221,7 @@ class ReleaseUserViewHolder(
             R.dimen.avatar_explore, followedTheme, notFollowedTheme
         )
 
-        numberOfFollowersTextView?.apply {
-            val followersCount = item.user.followersCount
-            val compactFollowersCount = compactNumberFormat(followersCount)
-            val string = itemView.resources.getQuantityString(
-                R.plurals.number_of_followers_release,
-                followersCount,
-                compactFollowersCount
-            )
-            text = HtmlCompat.fromHtml(string, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        }
+        item.user.isBroadcasting?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(item.user.caid)
             Navigation.findNavController(itemView).safeNavigate(action)

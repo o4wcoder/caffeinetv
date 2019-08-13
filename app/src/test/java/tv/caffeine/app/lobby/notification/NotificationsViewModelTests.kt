@@ -54,7 +54,7 @@ class NotificationsViewModelTests {
     }
 
     private val notificationLastViewed = ZonedDateTime.now()
-    private val justUser = User("caid", "username", "name", "email", "avatarImagePath", FOLLOWING_COUNT, FOLLOWERS_COUNT, false, false, "broadcastId", "stageId", mapOf(), mapOf(), AGE, "bio", "countryCode", "countryName", "gender", false, false, notificationLastViewed, null, false)
+    private val justUser = User("caid", "username", "name", "email", "avatarImagePath", FOLLOWING_COUNT, FOLLOWERS_COUNT, false, false, "broadcastId", "stageId", mapOf(), mapOf(), AGE, "bio", "countryCode", "countryName", "gender", false, false, notificationLastViewed, null, false, false)
     private val followRecordsNew = listOf(CaidRecord.FollowRecord("123", notificationLastViewed.plusHours(1L)))
     private val followRecordsOld = listOf(CaidRecord.FollowRecord("123", notificationLastViewed.minusHours(1L)))
     private val paginatedFollowersNew = PaginatedFollowers(0, 100, followRecordsNew)

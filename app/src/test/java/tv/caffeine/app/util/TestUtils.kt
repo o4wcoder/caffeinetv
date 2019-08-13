@@ -12,7 +12,7 @@ fun makeGenericUser() = User("caid", "username", "name", "email",
     "/avatarImagePath", 0, 0, false, false,
     "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode",
     "countryName", "gender", false, false, null,
-    null, false)
+    null, false, false)
 
 fun makeOnlineBroadcast(game: Game? = null) = Broadcast("id", "name", "contentId", game,
     null, "pip", Broadcast.State.ONLINE, "date", null, null)
