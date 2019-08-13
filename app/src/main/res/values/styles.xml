@@ -435,11 +435,27 @@
         <item name="android:drawablePadding">4dp</item>
     </style>
 
+    <style name="ChatMessageUsername.Release" parent="@style/TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/chat_bubble_text_username_not_follow</item>
+        <item name="android:drawablePadding">4dp</item>
+    </style>
     <style name="ChatMessageUsername.Following">
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
     <style name="ChatMessageUsername.NotFollowing">
+    </style>
+
+    <style name="ChatMessageUsername.Release.Following">
+        <item name="android:textColor">@color/chat_bubble_text_username_follow</item>
+    </style>
+
+    <style name="ChatMessageUsername.Release.NotFollowing">
+    </style>
+
+    <style name="ChatMessageUsername.Release.CurrentUser">
+        <item name="android:textColor">@color/chat_bubble_text_username_current_user</item>
     </style>
 
     <style name="ReactionInteraction" parent="@style/TextAppearance.MaterialComponents.Headline3">
@@ -464,6 +480,26 @@
     <style name="ChatMessageText.CurrentUserReference">
         <item name="android:textColor">@color/current_user_reference</item>
         <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="ChatMessageText.UserReferenceFollow">
+        <item name="android:textColor">@color/chat_bubble_text_user_reference_follow</item>
+    </style>
+
+    <style name="ChatMessageText.UserReferenceNotFollow">
+        <item name="android:textColor">@color/chat_bubble_text_user_reference_not_follow</item>
+    </style>
+
+    <style name="ChatMessageText.UserReferenceCurrentUser">
+        <item name="android:textColor">@color/chat_bubble_text_user_reference_current_user</item>
+    </style>
+
+    <style name="ChatMessageText.Dark">
+        <item name="android:textColor">@color/chat_bubble_text_dark</item>
+    </style>
+
+    <style name="ChatMessageText.Light">
+        <item name="android:textColor">@color/chat_bubble_text_light</item>
     </style>
 
     <style name="StageToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

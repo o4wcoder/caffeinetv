@@ -29,7 +29,7 @@ class ClassicUserViewHolderTests {
     private val notFollowingTheme = UserTheme(R.style.ExploreUsername_NotFollowing)
     private lateinit var userViewHolder: ClassicUserViewHolder
 
-    @MockK lateinit var user: User
+    @MockK(relaxed = true) lateinit var user: User
     @MockK lateinit var followManager: FollowManager
     @MockK lateinit var followHandler: FollowManager.FollowHandler
 
@@ -42,7 +42,7 @@ class ClassicUserViewHolderTests {
 
         mockkStatic("tv.caffeine.app.util.UsernameThemingKt")
         every {
-            user.configure(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            user.configure(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
         } returns Unit
         every { followManager.isFollowing(any()) } returns false
         every { followManager.followersLoaded() } returns true

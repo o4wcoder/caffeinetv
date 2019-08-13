@@ -61,14 +61,4 @@ class UserThemeModule {
     @Singleton
     @ThemeNotFollowedLobbyLight
     fun providesNotFollowedUserThemeLobbyLight() = UserTheme(R.style.BroadcastCardUsername_NotFollowing_Previous)
-
-    @Provides
-    @Singleton
-    @ThemeFollowedChat
-    fun providesFollowedUserThemeChat() = UserTheme(R.style.ChatMessageUsername_Following)
-
-    @Provides
-    @Singleton
-    @ThemeNotFollowedChat
-    fun providesNotFollowedUserThemeChat() = UserTheme(R.style.ChatMessageUsername_NotFollowing)
 }

@@ -40,18 +40,48 @@ fun String.mentionsUsername(username: String): Boolean {
 }
 
 @ColorRes
-fun messageBackground(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Boolean) = when {
-    !isSelf && mentionsSelf -> R.color.chat_bubble_orange
-    isFollowing || isSelf -> R.color.chat_bubble_blue
-    else -> R.color.chat_bubble_gray
-}
+fun messageBackground(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Boolean, isRelease: Boolean) =
+    if (isRelease) {
+        when {
+            isFollowing || mentionsSelf -> R.color.chat_bubble_purple_gray_follow
+            isSelf -> R.color.chat_bubble_cyan
+            else -> R.color.chat_bubble_dark_gray_not_follow
+        }
+    } else {
+        when {
+            !isSelf && mentionsSelf -> R.color.chat_bubble_orange
+            isFollowing || isSelf -> R.color.chat_bubble_blue
+            else -> R.color.chat_bubble_gray
+        }
+    }
 
 @StyleRes
-fun userReferenceStyle(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Boolean) = when {
-    !isSelf && mentionsSelf -> R.style.ChatMessageText_CurrentUserReference
-    isFollowing || isSelf -> R.style.ChatMessageText_FollowedUserReference
-    else -> R.style.ChatMessageText_DefaultUserReference
-}
+fun userReferenceStyle(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Boolean, isRelease: Boolean) =
+    if (isRelease) {
+        when {
+            isSelf -> R.style.ChatMessageText_UserReferenceCurrentUser
+            isFollowing -> R.style.ChatMessageText_UserReferenceFollow
+            else -> R.style.ChatMessageText_UserReferenceNotFollow
+        }
+    } else {
+        when {
+            !isSelf && mentionsSelf -> R.style.ChatMessageText_CurrentUserReference
+            isFollowing || isSelf -> R.style.ChatMessageText_FollowedUserReference
+            else -> R.style.ChatMessageText_DefaultUserReference
+        }
+    }
+
+@ColorRes
+fun chatMessageTextColor(isSelf: Boolean, isRelease: Boolean): Int =
+    if (isRelease) {
+        if (isSelf) {
+            R.color.black
+        } else {
+            R.color.white
+        }
+    } else {
+        R.color.white
+    }
 
 val Message.endorsementTextColorResId get() = when (endorsementCount) {
     in 0..4 -> R.color.endorsement_4_text
@@ -82,13 +112,19 @@ fun Message.classify(followManager: FollowManager): MessageContent {
 }
 
 @ColorRes
-fun Message.chatBubbleBackground(followManager: FollowManager): Int {
+fun Message.chatBubbleBackground(followManager: FollowManager, isRelease: Boolean): Int {
     val (isSelf, mentionsSelf, isFollowing) = classify(followManager)
-    return messageBackground(isSelf, mentionsSelf, isFollowing)
+    return messageBackground(isSelf, mentionsSelf, isFollowing, isRelease)
 }
 
 @StyleRes
-fun Message.userReferenceStyle(followManager: FollowManager): Int {
+fun Message.userReferenceStyle(followManager: FollowManager, isRelease: Boolean): Int {
     val (isSelf, mentionsSelf, isFollowing) = classify(followManager)
-    return userReferenceStyle(isSelf, mentionsSelf, isFollowing)
+    return userReferenceStyle(isSelf, mentionsSelf, isFollowing, isRelease)
+}
+
+@ColorRes
+fun Message.chatMessageTextColor(followManager: FollowManager, isRelease: Boolean): Int {
+    val isSelf = followManager.isSelf(publisher.caid)
+    return chatMessageTextColor(isSelf, isRelease)
 }

@@ -80,6 +80,7 @@ class LobbyViewHolderTests {
         every { broadcaster.user } returns broadcasterUser
         every { followManager.isFollowing(any()) } returns false
         every { followManager.followersLoaded() } returns true
+        every { followManager.isSelf(any()) } returns false
         every { followManager.currentUserDetails() } returns watcherUser
         coEvery { followManager.followUser(any(), any()) } returns CaffeineEmptyResult.Success
         every { liveBroadcast.broadcaster } returns broadcaster
