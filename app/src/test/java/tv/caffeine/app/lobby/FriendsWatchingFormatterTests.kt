@@ -12,10 +12,10 @@ import tv.caffeine.app.util.makeGenericUser
 
 @RunWith(RobolectricTestRunner::class)
 class FriendsWatchingFormatterTests {
-    private val unverifiedUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, false, false, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false)
-    private val verifiedUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, true, false, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false)
-    private val casterUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, false, true, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false)
-    private val verifiedCasterUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, true, true, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false)
+    private val unverifiedUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, false, false, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false, false)
+    private val verifiedUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, true, false, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false, false)
+    private val casterUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, false, true, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false, false)
+    private val verifiedCasterUser = User("caidA", "usernameA", "name", "email", "/avatarImagePath", 0, 0, true, true, "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode", "countryName", "gender", false, false, null, null, false, false)
 
     @Test
     fun `when no friend is watching, return null`() {

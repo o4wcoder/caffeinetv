@@ -88,8 +88,8 @@
 
     <dimen name="poor_connection_text_margin_start">12dp</dimen>
 
-    <dimen name="search_number_followers_margin_end">8dp</dimen>
-
     <dimen name="notifications_follow_star_size">24dp</dimen>
+
+    <dimen name="live_round_indicator_size">12dp</dimen>
     
 </resources>
