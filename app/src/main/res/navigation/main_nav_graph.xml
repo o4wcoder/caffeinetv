@@ -44,7 +44,7 @@
         app:destination="@id/login"
         app:popUpToInclusive="true"/>
 
-    <!-- Lobby & Stage -->
+    <!-- Lobby -->
     <fragment
         android:id="@+id/lobbySwipeFragment"
         android:name="tv.caffeine.app.lobby.LobbySwipeFragment"
@@ -91,6 +91,19 @@
             app:argType="boolean"
             android:defaultValue="true"/>
     </fragment>
+    <dialog
+        android:id="@+id/sending_verification_email_dialog_fragment"
+        android:name="tv.caffeine.app.lobby.SendingVerificationEmailDialogFragment"
+        android:label="@string/sending_verification_email_title">
+        <argument
+            android:name="email"
+            app:argType="string"/>
+    </dialog>
+    <action
+        android:id="@+id/action_global_sendingVerificationEmailDialogFragment"
+        app:destination="@+id/sending_verification_email_dialog_fragment"/>
+
+    <!-- Stage -->
     <fragment
         android:id="@+id/stagePagerFragment"
         android:name="tv.caffeine.app.stage.StagePagerFragment"

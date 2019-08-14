@@ -14,6 +14,7 @@ import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
+import tv.caffeine.app.lobby.SendingVerificationEmailDialogFragment
 import tv.caffeine.app.profile.UnfollowUserDialogFragment
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.stage.DICatalogFragment
@@ -110,6 +111,13 @@ fun FragmentManager.navigateToUnfollowUserDialog(caid: CAID, username: String, c
         positiveClickListener = DialogInterface.OnClickListener { _, _ -> callback.unfollow(caid) }
         arguments = MainNavDirections.actionGlobalUnfollowUserDialogFragment(username).arguments
         show(this@navigateToUnfollowUserDialog, "unfollowUser")
+    }
+}
+
+fun FragmentManager.navigateToSendingVerificationEmailDialog(email: String) {
+    SendingVerificationEmailDialogFragment().apply {
+        arguments = MainNavDirections.actionGlobalSendingVerificationEmailDialogFragment(email).arguments
+        show(this@navigateToSendingVerificationEmailDialog, "verificationEmailSent")
     }
 }
 

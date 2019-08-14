@@ -107,6 +107,10 @@ class FollowManager @Inject constructor(
         return null
     }
 
+    suspend fun loadMyUserDetails(): User? {
+        return tokenStore.caid?.let { loadUserDetails(it) }
+    }
+
     suspend fun updateUser(caid: CAID, name: String? = null, bio: String? = null): CaffeineResult<UserContainer> {
         val userUpdateBody = UserUpdateBody(UserUpdateDetails(name, bio, null))
         val result = usersService.updateUser(caid, userUpdateBody).awaitAndParseErrors(gson)

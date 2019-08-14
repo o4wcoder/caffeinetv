@@ -58,7 +58,8 @@ private val destinationsWithCustomToolbar = arrayOf(
     R.id.stagePagerFragment,
     R.id.needsUpdateFragment,
     R.id.friendsWatchingFragment,
-    R.id.sendDigitalItemFragment
+    R.id.sendDigitalItemFragment,
+    R.id.confirmEmailFragment
 )
 
 private val destinationWithReleaseToolbar = arrayOf(
@@ -76,7 +77,8 @@ private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.stagePagerFragment,
     R.id.needsUpdateFragment,
     R.id.friendsWatchingFragment,
-    R.id.sendDigitalItemFragment
+    R.id.sendDigitalItemFragment,
+    R.id.confirmEmailFragment
 )
 
 private val destinationsAsDialog = arrayOf(

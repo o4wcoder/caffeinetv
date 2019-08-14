@@ -77,7 +77,9 @@ class LobbySwipeFragment @Inject constructor(
 
         myProfileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.profileButton.loadRoundedImage(userProfile.avatarImageUrl, imageSizeRes = R.dimen.avatar_toolbar)
-            binding.unverifiedMessageTextView.isVisible = userProfile.emailVerified == false
+            if (!releaseDesignConfig.isReleaseDesignActive()) {
+                binding.unverifiedMessageTextView.isVisible = userProfile.emailVerified == false
+            }
         })
 
         // Release UI

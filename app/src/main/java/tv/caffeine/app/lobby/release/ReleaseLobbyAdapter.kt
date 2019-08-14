@@ -1,8 +1,8 @@
 package tv.caffeine.app.lobby.release
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -99,7 +99,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> offlineBroadcasterCard(inflater, parent)
             LobbyItem.Type.CARD_LIST -> listCard(inflater, parent)
             // LobbyItem.Type.UPCOMING_BUTTON_CARD -> upcomingButtonCard(inflater, parent)
-            else -> TextCard(TextView(parent.context))
+            else -> TextCard(View(parent.context))
         }
     }
 
