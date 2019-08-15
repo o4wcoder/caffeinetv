@@ -80,6 +80,7 @@
     <string name="update_button">Update</string>
 
     <string name="live_indicator">LIVE</string>
+    <string name="live_indicator_lowercase">live</string>
     <string name="follow_button">Follow</string>
     <string name="following_button">Following</string>
     <string name="unfollow_button">Unfollow</string>

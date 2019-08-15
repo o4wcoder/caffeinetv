@@ -184,6 +184,9 @@
     <style name="CaffeineText.Release">
         <item name="android:fontFamily">@font/poppins</item>
     </style>
+    <style name="CaffeineText.Bold">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+    </style>
     <style name="LightText" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>

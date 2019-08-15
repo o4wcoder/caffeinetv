@@ -3,18 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="tv.caffeine.app.lobby.Subtitle"/>
-
     </data>
 
     <TextView
+        style="@style/LobbySubtitleRelease"
         android:id="@+id/subtitle_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/ReleaseUI_Lobby_Subtitle"
         android:text="@{viewModel.text}"
         tools:text="Follow more people to see what they are watching or broadcasting." />
 </layout>

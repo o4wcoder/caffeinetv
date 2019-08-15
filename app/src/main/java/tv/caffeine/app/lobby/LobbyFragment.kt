@@ -1,17 +1,14 @@
 package tv.caffeine.app.lobby
 
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Job
@@ -68,7 +65,7 @@ class LobbyFragment @Inject constructor(
             classicLobbyAdapterProvider.get()
         }
         val itemDecorator = if (isReleaseDesign) {
-            ReleaseLobbyItemDecoration(binding.lobbyRecyclerView.context)
+            ReleaseLobbyItemDecoration(resources)
         } else {
             ClassicLobbyItemDecoration(resources, lobbyAdapter)
         }
@@ -162,8 +159,18 @@ class ClassicLobbyItemDecoration(
     }
 }
 
-class ReleaseLobbyItemDecoration(context: Context) : DividerItemDecoration(context, VERTICAL) {
-    init {
-        ContextCompat.getDrawable(context, R.drawable.transparent_divider_8dp)?.let { setDrawable(it) }
+class ReleaseLobbyItemDecoration(
+    private val resources: Resources
+) : RecyclerView.ItemDecoration() {
+    private val cardMargin by lazy { resources.getDimensionPixelSize(R.dimen.release_lobby_card_vertical_spacing) }
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        val itemType = view.tag as? LobbyItem.Type ?: return
+        val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
+        val cardTopMargin = if (itemPosition == 0) 0 else cardMargin / 2
+        val cardBottomMargin = cardMargin / 2
+        when (itemType) {
+            LobbyItem.Type.LIVE_BROADCAST_CARD, LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD, LobbyItem.Type.CARD_LIST -> outRect.set(0, cardTopMargin, 0, cardBottomMargin)
+            else -> outRect.set(0, 0, 0, 0)
+        }
     }
 }

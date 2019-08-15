@@ -3,18 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="tv.caffeine.app.lobby.Header"/>
-
     </data>
 
     <TextView
+        style="@style/LobbyHeaderRelease"
         android:id="@+id/header_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/ReleaseUI_Lobby_Header"
         android:text="@{viewModel.text}"
         tools:text="Friends You Follow" />
 </layout>

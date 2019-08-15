@@ -44,6 +44,8 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     @Assisted private val navController: NavController
 ) : GenericLobbyAdapter<CardViewHolder>(DiffCallback()), CoroutineScope {
 
+    var isMiniStyle = false
+
     class DiffCallback : DiffUtil.ItemCallback<LobbyItem>() {
         override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) =
             oldItem.itemType == newItem.itemType && oldItem.id == newItem.id
@@ -115,7 +117,9 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
 
     private fun largeOnlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup) =
             largeOnlineBroadcasterCardFactory.create(
-                ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false),
+                ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false).apply {
+                    isMiniStyle = this@ReleaseLobbyAdapter.isMiniStyle
+                },
                 this
             )
 
@@ -136,6 +140,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         val item = getItem(position)
+        holder.setItemViewType(item)
         when (holder) {
             is ReleaseHeaderCard -> bind(holder, item)
             is ReleaseSubtitleCard -> bind(holder, item)

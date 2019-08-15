@@ -4,13 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View"/>
-
         <variable
             name="viewModel"
             type="tv.caffeine.app.lobby.release.OnlineBroadcaster"/>
-
+        <variable name="isMiniStyle" type="boolean"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +40,7 @@
             app:layout_constraintDimensionRatio="H, 16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/pip_image_view"
@@ -62,127 +60,98 @@
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.25"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"/>
 
         <TextView
+            style="@style/LobbyCardLiveBadge"
             android:id="@+id/friends_watching_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="10dp"
-            android:background="@color/pure_blue"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/lobby_card_side_padding"
-            android:paddingTop="4dp"
-            android:paddingEnd="@dimen/lobby_card_side_padding"
-            android:paddingBottom="4dp"
-            android:textAppearance="@style/OnlineBroadcast_Large_Friends"
-            android:textColor="@color/white"
+            android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height}"
             app:htmlText="@{viewModel.friendsWatchingText}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="ben + 2" />
+            tools:text="ben + 2"/>
 
         <TextView
+            style="@style/LobbyCardContentRating"
             android:id="@+id/content_rating_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="10dp"
-            android:background="@color/black"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/lobby_card_side_padding"
-            android:paddingTop="4dp"
-            android:paddingEnd="@dimen/lobby_card_side_padding"
-            android:paddingBottom="4dp"
-            android:textAppearance="@style/OnlineBroadcast_Large_Friends"
-            android:textColor="@color/white"
+            android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height}"
             android:text="@{viewModel.contentRating}"
-            android:layout_marginEnd="36dp"
             android:visibility="@{viewModel.contentRating != null ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintEnd_toStartOf="@+id/more_button"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="17+"
             tools:visibility="visible"/>
 
         <ImageView
-            android:id="@+id/avatar_image_view"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
-            android:layout_marginEnd="@dimen/margin"
-            android:layout_marginBottom="@dimen/margin"
-            app:roundedImageUrl="@{viewModel.avatarImageUrl}"
-            app:layout_constraintEnd_toEndOf="@id/preview_image_view"
-            app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
-            tools:src="@drawable/default_avatar_round" />
+            android:id="@+id/more_button"
+            android:layout_width="@{isMiniStyle ? @dimen/release_lobby_card_more_button_width_mini : @dimen/release_lobby_card_more_button_width, default=@dimen/release_lobby_card_more_button_width}"
+            android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height, default=@dimen/release_lobby_card_badge_height}"
+            android:scaleType="center"
+            android:onClick="@{() -> viewModel.kebabClicked()}"
+            android:tint="@color/white"
+            android:contentDescription="@string/more"
+            app:srcCompat="@drawable/ic_more_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
+            style="@style/LobbyCardTitle"
+            android:id="@+id/broadcast_title_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/lobby_card_side_padding_release"
+            android:layout_marginEnd="@dimen/lobby_card_side_padding_release"
+            android:text="@{viewModel.broadcastTitle}"
+            android:textSize="@{isMiniStyle ? @dimen/release_lobby_card_title_mini : @dimen/release_lobby_card_title}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="What is happening at Caffeine"/>
+
+        <TextView
+            style="@style/LobbyCardUsername"
             android:id="@+id/username_text_view"
-            style="@style/OnlineBroadcast_Large_Username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/lobby_card_side_padding"
+            android:layout_marginStart="@dimen/lobby_card_side_padding_release"
             android:text="@{viewModel.username}"
-            android:textColor="@color/white"
             app:userIcon="@{viewModel.userIcon}"
-            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/avatar_image_view"
             app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
             tools:drawableEnd="@drawable/verified"
             tools:drawablePadding="@dimen/verified_icon_padding"
-            tools:text="@sample/usernames" />
-
-        <ImageView
-            android:id="@+id/game_logo_image_view"
-            android:layout_width="@dimen/game_logo_width"
-            android:layout_height="@dimen/game_logo_height"
-            app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/broadcast_title_text_view"
-            style="@style/OnlineBroadcast_Large_Title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:maxLines="3"
-            android:text="@{viewModel.broadcastTitle }"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/preview_image_view"
-            app:layout_constraintEnd_toStartOf="@+id/more_button"
-            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
-            app:layout_constraintTop_toTopOf="@+id/preview_image_view"
-            tools:text="What is happening at Caffeine" />
+            tools:text="@sample/usernames"/>
 
         <ImageView
             android:id="@+id/follow_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:onClick="@{() -> viewModel.followClicked()}"
             android:src="@{viewModel.isFollowing() ? @drawable/star_filled : @drawable/star_outline}"
-            android:text="@string/follow_button"
-            app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
+            android:contentDescription="@{viewModel.isFollowing() ? @string/unfollow_button : @string/follow_button}"
             app:layout_constraintStart_toEndOf="@+id/username_text_view"
-            app:layout_constraintTop_toTopOf="@+id/username_text_view"
-            tools:src="@drawable/star_outline" />
+            app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
+            app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
+            tools:src="@drawable/star_outline"/>
 
         <ImageView
-            android:id="@+id/more_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:contentDescription="@string/more"
-            android:onClick="@{() -> viewModel.kebabClicked()}"
-            android:tint="@color/white"
-            app:srcCompat="@drawable/ic_more_vertical"
-            app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
-            app:layout_constraintTop_toTopOf="@+id/preview_image_view" />
+            android:id="@+id/avatar_image_view"
+            android:layout_width="@{isMiniStyle ? @dimen/avatar_lobby_mini : @dimen/avatar_size, default=@dimen/avatar_size}"
+            android:layout_height="@{isMiniStyle ? @dimen/avatar_lobby_mini : @dimen/avatar_size, default=@dimen/avatar_size}"
+            android:layout_marginEnd="@dimen/lobby_card_side_padding_release"
+            android:layout_marginBottom="10dp"
+            android:contentDescription="@string/user_avatar_content_description"
+            app:roundedImageUrl="@{viewModel.avatarImageUrl}"
+            app:layout_constraintEnd_toEndOf="@id/preview_image_view"
+            app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
+            tools:src="@drawable/default_avatar_round"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

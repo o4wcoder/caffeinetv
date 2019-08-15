@@ -51,7 +51,7 @@
             style="@style/FPGTime"
             android:id="@+id/time_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/lobby_card_badge_height"
+            android:layout_height="@dimen/release_lobby_card_badge_height"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             app:fpgTime="@{listing.startTimestamp}"
@@ -71,7 +71,7 @@
             style="@style/FPGTime"
             android:id="@+id/us_only_label_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/lobby_card_badge_height"
+            android:layout_height="@dimen/release_lobby_card_badge_height"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
             android:text="@string/us_only_label"
@@ -153,6 +153,7 @@
             app:layout_constraintStart_toEndOf="@id/username_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/avatar_image_view"
-            app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"/>
+            app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
+            tools:src="@drawable/star_outline"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
