@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="liveStatusIndicatorViewModel"
+            type="tv.caffeine.app.ui.LiveStatusIndicatorViewModel" />
+
+        <variable
+            name="followStarViewModel"
+            type="tv.caffeine.app.ui.FollowStarViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingEnd="@dimen/margin_list">
@@ -27,16 +38,13 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars"/>
 
-    <ImageView
-        android:id="@+id/user_live_status_view"
-        android:layout_width="@dimen/unread_badge_release"
-        android:layout_height="@dimen/unread_badge_release"
-        android:layout_marginEnd="4dp"
-        android:contentDescription="@string/unread_notification_badge_content_description"
-        android:visibility="gone"
+    <include
+        layout="@layout/live_status_indicator"
+        android:layout_width="@dimen/live_round_indicator_size"
+        android:layout_height="@dimen/live_round_indicator_size"
         app:layout_constraintStart_toStartOf="@id/avatar_image_view"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
-        app:srcCompat="@drawable/pure_blue_coin"/>
+        bind:viewModel="@{liveStatusIndicatorViewModel}" />
 
 
     <TextView
@@ -55,13 +63,14 @@
         tools:drawableEnd="@drawable/verified"
         tools:text="@sample/usernames" />
 
-    <ImageView
-        android:id="@+id/follow_star"
-        android:layout_width="@dimen/notifications_follow_star_size"
-        android:layout_height="@dimen/notifications_follow_star_size"
+    <include
+        layout="@layout/follow_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar_image_view"/>
+        bind:viewModel="@{followStarViewModel}" />
 
     <TextView
         android:id="@+id/followed_you_text_view"
@@ -75,3 +84,4 @@
         app:layout_constraintStart_toStartOf="@+id/username_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

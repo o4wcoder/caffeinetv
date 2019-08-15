@@ -199,8 +199,6 @@ class ReleaseUserViewHolder(
     private val followHandler: FollowManager.FollowHandler,
     onFollowStarClick: (user: User, isFollowing: Boolean) -> Unit
 ) : UserViewHolder(binding.root) {
-    private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
-    private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
     @VisibleForTesting
     var followButton: Button? = null
 
@@ -217,7 +215,7 @@ class ReleaseUserViewHolder(
         binding.executePendingBindings()
 
         item.user.configure(
-            avatarImageView, usernameTextView, followButton, followManager, true, followHandler,
+            binding.avatarImageView, binding.usernameTextView, followButton, followManager, true, followHandler,
             R.dimen.avatar_explore, followedTheme, notFollowedTheme
         )
 
