@@ -70,15 +70,18 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_digital_items" />
 
-
-                <Button
+                <TextView
+                    style="@style/ChatReactButtonText"
                     android:id="@+id/react_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/chat_react_button_width"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:background="@drawable/ic_btn_react"
                     android:text="@string/chat_react_button"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/share_button"
-                    app:layout_constraintStart_toEndOf="@+id/gift_button" />
+                    app:layout_constraintStart_toEndOf="@+id/gift_button"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
                     style="@android:style/Widget.Material.ActionButton"

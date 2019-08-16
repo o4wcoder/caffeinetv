@@ -100,5 +100,6 @@
     <dimen name="notifications_follow_star_size">24dp</dimen>
 
     <dimen name="live_round_indicator_size">12dp</dimen>
-    
+
+    <dimen name="chat_react_button_width">135dp</dimen>
 </resources>
