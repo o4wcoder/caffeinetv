@@ -140,6 +140,9 @@ class HorizontalScrollCard @AssistedInject constructor(
     private val lobbyAdapter = lobbyAdapterFactory.create(lifecycleOwner, navController).apply { isMiniStyle = true }
 
     init {
+        // TODO (David) Remove the bottom padding from the xml so we don't need to set to 0 here.
+        // The XML is used in the classic UI and the bottom padding was added for the shadow.
+        binding.cardListRecyclerView.setPadding(0, 0, 0, 0)
         binding.cardListRecyclerView.adapter = lobbyAdapter
         binding.cardListRecyclerView.run {
             addItemDecoration(object : RecyclerView.ItemDecoration() {

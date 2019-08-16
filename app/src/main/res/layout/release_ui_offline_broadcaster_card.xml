@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/lobby_card_side_padding_release"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageView
             android:id="@+id/avatar_image_view"

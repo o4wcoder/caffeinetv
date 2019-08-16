@@ -72,5 +72,5 @@ fun TextView.formatUsernameAsHtml(
 
 @BindingAdapter("htmlText")
 fun TextView.formatHtmlText(string: String?) {
-    formatUsernameAsHtml(context.getPicasso(), string, false)
+    formatUsernameAsHtml(context.getPicasso(), string, false, R.dimen.avatar_friends_watching)
 }

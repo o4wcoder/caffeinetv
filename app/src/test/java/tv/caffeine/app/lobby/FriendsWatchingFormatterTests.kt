@@ -47,9 +47,9 @@ class FriendsWatchingFormatterTests {
         val context = InstrumentationRegistry.getInstrumentation().context
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
         val string = formatFriendsWatchingString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/> is watching", string)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> is watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/>", shortString)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/>", shortString)
     }
 
     @Test
@@ -59,9 +59,9 @@ class FriendsWatchingFormatterTests {
         val context = InstrumentationRegistry.getInstrumentation().context
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
         val string = formatFriendsWatchingString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"caster\"/> is watching", string)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"caster\"/> is watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"caster\"/>", shortString)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"caster\"/>", shortString)
     }
 
     @Test
@@ -71,9 +71,9 @@ class FriendsWatchingFormatterTests {
         val context = InstrumentationRegistry.getInstrumentation().context
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
         val string = formatFriendsWatchingString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/> is watching", string)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> is watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/>", shortString)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/>", shortString)
     }
 
     @Test
@@ -86,9 +86,9 @@ class FriendsWatchingFormatterTests {
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
             followingViewers, followingViewers.size, 10, null)
         val string = formatFriendsWatchingString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/> and one other are watching", string)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> and one other are watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/> + 1", shortString)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> + 1", shortString)
     }
 
     @Test
@@ -102,8 +102,8 @@ class FriendsWatchingFormatterTests {
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
             followingViewers, followingViewers.size, 10, null)
         val string = formatFriendsWatchingString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/> and 2 others are watching", string)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> and 2 others are watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> <b>usernameA</b> <img src=\"verified_white\"/> + 2", shortString)
+        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> + 2", shortString)
     }
 }
