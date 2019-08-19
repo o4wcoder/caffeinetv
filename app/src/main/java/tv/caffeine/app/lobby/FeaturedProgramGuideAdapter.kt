@@ -330,7 +330,7 @@ class ReleaseListingItemViewHolder(
                 }
             }
             fpgBroadcaster.isFollowing.observe(lifecycleOwner, Observer {
-                binding.followButton.apply {
+                binding.followButtonLayout.followButton.apply {
                     val drawableId = if (it == true) R.drawable.star_filled else R.drawable.star_outline
                     setImageDrawable(ContextCompat.getDrawable(context, drawableId))
                 }

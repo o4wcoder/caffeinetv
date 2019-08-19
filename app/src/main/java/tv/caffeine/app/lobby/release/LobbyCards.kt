@@ -37,6 +37,7 @@ abstract class AbstractBroadcaster(
     val navigationCommands = _navigationCommands.map { it }
 
     val isFollowing = MutableLiveData(followManager.isFollowing(caid))
+    val isSelf = followManager.isSelf(caid)
     val userIcon = when {
         user.isVerified -> R.drawable.verified
         user.isCaster -> R.drawable.caster

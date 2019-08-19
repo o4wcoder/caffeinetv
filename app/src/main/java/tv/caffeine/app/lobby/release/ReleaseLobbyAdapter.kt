@@ -120,12 +120,14 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
                 ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false).apply {
                     isMiniStyle = this@ReleaseLobbyAdapter.isMiniStyle
                 },
-                this
+                this,
+                lifecycleOwner
             )
 
     private fun offlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup) =
             OfflineBroadcasterCard(
-                ReleaseUiOfflineBroadcasterCardBinding.inflate(inflater, parent, false)
+                ReleaseUiOfflineBroadcasterCardBinding.inflate(inflater, parent, false),
+                lifecycleOwner
             )
 
     private fun listCard(inflater: LayoutInflater, parent: ViewGroup) =

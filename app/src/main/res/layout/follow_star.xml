@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="tv.caffeine.app.ui.FollowStarViewModel" />
@@ -14,7 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.onFollowClick()}"
-        android:src="@{viewModel.following ? @drawable/star_filled_black : @drawable/star_outline_black}"
+        android:src="@{viewModel.following ? @drawable/star_filled : @drawable/star_outline}"
+        android:tint="@color/black"
+        android:contentDescription="@{viewModel.following ? @string/unfollow_button : @string/follow_button}"
         android:visibility="@{viewModel.starVisibility}"
-        tools:src="@drawable/star_outline_black" />
+        tools:src="@drawable/star_outline"/>
 </layout>
