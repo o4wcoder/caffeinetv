@@ -39,7 +39,6 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.AutoPlayConfig
 import tv.caffeine.app.stage.NewReyesController
 import tv.caffeine.app.ui.loadAvatar
-import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 
 @RunWith(RobolectricTestRunner::class)
@@ -199,27 +198,23 @@ class LobbyViewHolderTests {
     }
 
     private fun createLiveBroadcastCard(payloadId: String): LiveBroadcastCard {
-        val theme = mockk<UserTheme>(relaxed = true)
         val stageControllerFactory = mockk<NewReyesController.Factory>(relaxed = true)
         val surfaceViewRendererTuner = mockk<SurfaceViewRendererTuner>(relaxed = true)
         val autoPlayConfig = mockk<AutoPlayConfig>()
         every { autoPlayConfig.isAutoPlayEnabled(any()) } returns false
         return LiveBroadcastCard(
-            liveBroadcastCardBinding, mapOf(), mapOf(), followManager,
-            theme, theme, theme, theme, picasso, payloadId, coroutineScope,
+            liveBroadcastCardBinding, mapOf(), mapOf(), followManager, picasso, payloadId, coroutineScope,
             stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager
         )
     }
 
     private fun createLiveBroadcastWithFriendsCard(payloadId: String): LiveBroadcastWithFriendsCard {
-        val theme = mockk<UserTheme>(relaxed = true)
         val stageControllerFactory = mockk<NewReyesController.Factory>(relaxed = true)
         val surfaceViewRendererTuner = mockk<SurfaceViewRendererTuner>(relaxed = true)
         val autoPlayConfig = mockk<AutoPlayConfig>()
         every { autoPlayConfig.isAutoPlayEnabled(any()) } returns false
         return LiveBroadcastWithFriendsCard(
-            liveBroadcastWithFriendsCardBinding, mapOf(), mapOf(), followManager,
-            theme, theme, theme, theme, picasso, payloadId, coroutineScope,
+            liveBroadcastWithFriendsCardBinding, mapOf(), mapOf(), followManager, picasso, payloadId, coroutineScope,
             stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager
         )
     }

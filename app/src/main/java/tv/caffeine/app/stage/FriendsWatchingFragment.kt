@@ -23,12 +23,10 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
@@ -66,9 +64,7 @@ class FriendsWatchingFragment @Inject constructor(
 
 class FriendsWatchingAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
-    private val followManager: FollowManager,
-    @ThemeFollowedExplore private val followedTheme: UserTheme,
-    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme
+    private val followManager: FollowManager
 ) : ListAdapter<User, FriendWatchingViewHolder>(
         object : DiffUtil.ItemCallback<User?>() {
             override fun areItemsTheSame(oldItem: User, newItem: User) = oldItem === newItem
@@ -87,7 +83,7 @@ class FriendsWatchingAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendWatchingViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
-        return FriendWatchingViewHolder(view, followManager, followedTheme, notFollowedTheme) { caid ->
+        return FriendWatchingViewHolder(view, followManager) { caid ->
             callback?.invoke(caid)
         }
     }
@@ -106,8 +102,6 @@ class FriendsWatchingAdapter @Inject constructor(
 class FriendWatchingViewHolder(
     itemView: View,
     private val followManager: FollowManager,
-    private val followedTheme: UserTheme,
-    private val notFollowedTheme: UserTheme,
     private val callback: (String) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
@@ -118,7 +112,7 @@ class FriendWatchingViewHolder(
     fun bind(user: User) {
         followButton.isVisible = false
         user.configure(avatarImageView, usernameTextView, null, followManager, false, null, R.dimen.avatar_size,
-                followedTheme, notFollowedTheme)
+            UsernameTheming.STANDARD)
         itemView.setOnClickListener { callback(user.caid) }
     }
 }

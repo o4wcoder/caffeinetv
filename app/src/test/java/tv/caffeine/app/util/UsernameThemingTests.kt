@@ -107,7 +107,7 @@ class ReleaseHighlightUsernamesTests {
 @RunWith(RobolectricTestRunner::class)
 class UsernameColorTests {
 
-    val usernameChatTheme = UsernameTheming.getChatUsernameTheme(false)
+    val usernameChatTheme = UsernameTheming.getChatTheme(false)
 
     @Test
     fun `verify chat message username following text color`() {
@@ -128,7 +128,7 @@ class UsernameColorTests {
 @RunWith(RobolectricTestRunner::class)
 class ReleaseUsernameColorTests {
 
-    val usernameChatTheme = UsernameTheming.getChatUsernameTheme(true)
+    val usernameChatTheme = UsernameTheming.getChatTheme(true)
 
     @Test
     fun `verify chat message username following text color`() {

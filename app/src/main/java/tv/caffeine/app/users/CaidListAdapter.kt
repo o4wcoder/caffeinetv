@@ -25,12 +25,10 @@ import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
@@ -40,8 +38,6 @@ import kotlin.coroutines.CoroutineContext
 class CaidListAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
-    @ThemeFollowedExplore private val followedTheme: UserTheme,
-    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
     private val picasso: Picasso
 ) : ListAdapter<CaidRecord, CaidViewHolder>(
         object : DiffUtil.ItemCallback<CaidRecord?>() {
@@ -100,7 +96,7 @@ class CaidListAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: CaidViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, followManager, followedTheme, notFollowedTheme)
+        holder.bind(item, followManager)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -117,7 +113,7 @@ class CaidViewHolder(itemView: View, private val followHandler: FollowManager.Fo
 
     var job: Job? = null
 
-    fun bind(item: CaidRecord, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    fun bind(item: CaidRecord, followManager: FollowManager) {
         job?.cancel()
         clear()
         job = scope.launch {
@@ -125,7 +121,7 @@ class CaidViewHolder(itemView: View, private val followHandler: FollowManager.Fo
             followButton.isVisible = item !is CaidRecord.IgnoreRecord
             val maybeFollowButton = if (item is CaidRecord.IgnoreRecord) null else followButton
             user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
-                    followedTheme, notFollowedTheme)
+                    UsernameTheming.STANDARD)
         }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(item.caid)

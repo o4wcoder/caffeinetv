@@ -28,15 +28,13 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.UserItemSearchReleaseBinding
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.compactNumberFormat
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.maybeShow
@@ -47,8 +45,6 @@ import kotlin.coroutines.CoroutineContext
 abstract class UsersAdapter(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
-    private val followedTheme: UserTheme,
-    private val notFollowedTheme: UserTheme,
     protected val releaseDesignConfig: ReleaseDesignConfig
 ) : ListAdapter<SearchUserItem, UserViewHolder>(
         object : DiffUtil.ItemCallback<SearchUserItem?>() {
@@ -114,7 +110,7 @@ abstract class UsersAdapter(
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, followManager, followedTheme, notFollowedTheme)
+        holder.bind(item, followManager)
     }
 
     private fun onFollowStarClick(user: User, isFollowing: Boolean) {
@@ -132,31 +128,25 @@ abstract class UsersAdapter(
 class SearchUsersAdapter @Inject constructor(
     dispatchConfig: DispatchConfig,
     followManager: FollowManager,
-    @ThemeFollowedExplore followedTheme: UserTheme,
-    @ThemeNotFollowedExplore notFollowedTheme: UserTheme,
     releaseDesignConfig: ReleaseDesignConfig
 ) :
-    UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme, releaseDesignConfig) {
+    UsersAdapter(dispatchConfig, followManager, releaseDesignConfig) {
     override val userItemLayout = R.layout.user_item_search
 }
 
 class ExploreAdapter @Inject constructor(
     dispatchConfig: DispatchConfig,
     followManager: FollowManager,
-    @ThemeFollowedExplore followedTheme: UserTheme,
-    @ThemeNotFollowedExplore notFollowedTheme: UserTheme,
     releaseDesignConfig: ReleaseDesignConfig
 ) :
-    UsersAdapter(dispatchConfig, followManager, followedTheme, notFollowedTheme, releaseDesignConfig) {
+    UsersAdapter(dispatchConfig, followManager, releaseDesignConfig) {
     override val userItemLayout = R.layout.user_item_explore
 }
 
 abstract class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     abstract fun bind(
         item: SearchUserItem,
-        followManager: FollowManager,
-        followedTheme: UserTheme,
-        notFollowedTheme: UserTheme
+        followManager: FollowManager
     )
 }
 
@@ -171,11 +161,10 @@ class ClassicUserViewHolder(
     private val numberOfFollowersTextView: TextView? =
         itemView.findViewById(R.id.number_of_followers_text_view)
 
-    override fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    override fun bind(item: SearchUserItem, followManager: FollowManager) {
         item.user.configure(
             avatarImageView, usernameTextView, followButton, followManager, true, followHandler,
-            R.dimen.avatar_explore, followedTheme, notFollowedTheme
-        )
+            R.dimen.avatar_explore, UsernameTheming.STANDARD)
         followButton.isVisible = !followManager.isSelf(item.id)
         numberOfFollowersTextView?.apply {
             val followersCount = item.user.followersCount
@@ -207,7 +196,7 @@ class ReleaseUserViewHolder(
         binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 
-    override fun bind(item: SearchUserItem, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    override fun bind(item: SearchUserItem, followManager: FollowManager) {
 
         val isFollowing = followManager.isFollowing(item.user.caid)
         val isSelf = followManager.isSelf(item.id)
@@ -216,8 +205,7 @@ class ReleaseUserViewHolder(
 
         item.user.configure(
             binding.avatarImageView, binding.usernameTextView, followButton, followManager, true, followHandler,
-            R.dimen.avatar_explore, followedTheme, notFollowedTheme
-        )
+            R.dimen.avatar_explore, UsernameTheming.STANDARD)
 
         item.user.isBroadcasting?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it }
         itemView.setOnClickListener {

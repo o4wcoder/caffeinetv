@@ -38,8 +38,6 @@ import tv.caffeine.app.databinding.FeaturedGuideDateHeaderBinding
 import tv.caffeine.app.databinding.FeaturedGuideListingItemBinding
 import tv.caffeine.app.databinding.FeaturedGuideReleaseDateHeaderBinding
 import tv.caffeine.app.databinding.FeaturedGuideReleaseListingItemBinding
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.lobby.FeaturedGuideItem.DateHeader
 import tv.caffeine.app.lobby.FeaturedGuideItem.ListingItem
 import tv.caffeine.app.lobby.release.FPGBroadcaster
@@ -48,7 +46,7 @@ import tv.caffeine.app.lobby.release.observeEvents
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.animateSlideUpAndHide
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.safeNavigate
@@ -86,8 +84,6 @@ sealed class FeaturedGuideItem {
 class FeaturedProgramGuideAdapter @AssistedInject constructor(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
-    @ThemeFollowedExplore private val followedTheme: UserTheme,
-    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
     private val picasso: Picasso,
     private val releaseDesignConfig: ReleaseDesignConfig,
     @Assisted private val lifecycleOwner: LifecycleOwner
@@ -126,7 +122,7 @@ class FeaturedProgramGuideAdapter @AssistedInject constructor(
                     ReleaseListingItemViewHolder(binding, this, followManager, lifecycleOwner)
                 } else {
                     val binding = FeaturedGuideListingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                    ListingItemViewHolder(binding, this, followManager, followedTheme, notFollowedTheme, picasso)
+                    ListingItemViewHolder(binding, this, followManager, picasso)
                 }
             }
             FeaturedGuideItem.Type.DATE_HEADER_ITEM -> {
@@ -205,8 +201,6 @@ class ListingItemViewHolder(
     private val binding: FeaturedGuideListingItemBinding,
     private val scope: CoroutineScope,
     private val followManager: FollowManager,
-    private val followedTheme: UserTheme,
-    private val notFollowedTheme: UserTheme,
     private val picasso: Picasso
 ) : GuideViewHolder(binding.root) {
 
@@ -266,7 +260,7 @@ class ListingItemViewHolder(
     private fun configureUser(user: User, followHandler: FollowManager.FollowHandler?) {
         user.configure(binding.avatarImageView, binding.usernameTextView, binding.followButton, followManager,
                 followHandler = followHandler, avatarImageSize = R.dimen.avatar_featured_guide,
-                followedTheme = followedTheme, notFollowedTheme = notFollowedTheme)
+                theme = UsernameTheming.STANDARD)
     }
 
     private fun animateDetailView(listingItem: ListingItem) {

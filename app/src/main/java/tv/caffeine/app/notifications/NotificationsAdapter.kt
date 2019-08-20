@@ -31,8 +31,6 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.NotificationNewFollowerBinding
 import tv.caffeine.app.databinding.NotificationReceivedDigitalItemBinding
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExplore
 import tv.caffeine.app.repository.ProfileRepository
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
@@ -44,7 +42,7 @@ import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.ui.configureUserIcon
 import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
@@ -56,8 +54,6 @@ class NotificationsAdapter @Inject constructor(
     private val followManager: FollowManager,
     isReleaseDesignConfig: ReleaseDesignConfig,
     private val profileRepository: ProfileRepository,
-    @ThemeFollowedExplore private val followedTheme: UserTheme,
-    @ThemeNotFollowedExplore private val notFollowedTheme: UserTheme,
     private val picasso: Picasso
 ) : ListAdapter<CaffeineNotification, NotificationViewHolder>(
         object : DiffUtil.ItemCallback<CaffeineNotification?>() {
@@ -148,7 +144,7 @@ class NotificationsAdapter @Inject constructor(
             holder is FollowNotificationViewHolder && item is FollowNotification ->
                 holder.bind(item, followManager, profileRepository)
             holder is ClassicFollowNotificationViewHolder && item is FollowNotification ->
-                holder.bind(item, followManager, followedTheme, notFollowedTheme)
+                holder.bind(item, followManager)
             holder is ReceivedDigitalItemNotificationViewHolder && item is ReceivedDigitalItemNotification ->
                 holder.bind(item, followManager, picasso, profileRepository)
             else -> TODO()
@@ -191,7 +187,7 @@ class ClassicFollowNotificationViewHolder(
 
     var job: Job? = null
 
-    fun bind(item: FollowNotification, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    fun bind(item: FollowNotification, followManager: FollowManager) {
         job?.cancel()
         clear()
         val caidRecord = item.caid
@@ -204,7 +200,7 @@ class ClassicFollowNotificationViewHolder(
             followButton.isVisible = caidRecord !is CaidRecord.IgnoreRecord
             val maybeFollowButton = if (caidRecord is CaidRecord.IgnoreRecord) null else followButton
             user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
-                followedTheme, notFollowedTheme)
+                UsernameTheming.STANDARD)
         }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(caidRecord.caid)

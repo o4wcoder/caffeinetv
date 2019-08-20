@@ -20,15 +20,26 @@ enum class UsernameTheming(
     val notFollowedTheme: UserTheme,
     val currentUserTheme: UserTheme
 ) {
-    CHAT_USERNAME(UserTheme(R.style.ChatMessageUsername_Following), UserTheme(R.style.ChatMessageUsername_NotFollowing), UserTheme(R.style.ChatMessageUsername_NotFollowing)),
-    CHAT_RELEASE_USERNAME(UserTheme(R.style.ChatMessageUsername_Release_Following), UserTheme(R.style.ChatMessageUsername_Release_NotFollowing), UserTheme(R.style.ChatMessageUsername_Release_CurrentUser));
+    STANDARD(UserTheme(R.style.ExploreUsername_Following), UserTheme(R.style.ExploreUsername_NotFollowing), UserTheme(R.style.ExploreUsername_NotFollowing)),
+    STANDARD_DARK(UserTheme(R.style.ExploreUsername_Following), UserTheme(R.style.ExploreUsername_NotFollowingDark), UserTheme(R.style.ExploreUsername_NotFollowingDark)),
+    CHAT(UserTheme(R.style.ChatMessageUsername_Following), UserTheme(R.style.ChatMessageUsername_NotFollowing), UserTheme(R.style.ChatMessageUsername_NotFollowing)),
+    CHAT_RELEASE(UserTheme(R.style.ChatMessageUsername_Release_Following), UserTheme(R.style.ChatMessageUsername_Release_NotFollowing), UserTheme(R.style.ChatMessageUsername_Release_CurrentUser)),
+    LOBBY(UserTheme(R.style.BroadcastCardUsername_Following), UserTheme(R.style.BroadcastCardUsername_NotFollowing), UserTheme(R.style.BroadcastCardUsername_NotFollowing)),
+    LOBBY_LIGHT(UserTheme(R.style.BroadcastCardUsername_Following_Previous), UserTheme(R.style.BroadcastCardUsername_NotFollowing_Previous), UserTheme(R.style.BroadcastCardUsername_NotFollowing_Previous));
 
     companion object {
-        fun getChatUsernameTheme(isRelease: Boolean) =
+        fun getChatTheme(isRelease: Boolean) =
             if (isRelease) {
-                CHAT_RELEASE_USERNAME
+                CHAT_RELEASE
             } else {
-                CHAT_USERNAME
+                CHAT
+            }
+
+        fun getLobbyTheme(isLight: Boolean) =
+            if (isLight) {
+                LOBBY_LIGHT
+            } else {
+                LOBBY
             }
     }
 }
@@ -43,16 +54,14 @@ fun User.configure(
     allowUnfollowing: Boolean = false,
     followHandler: FollowManager.FollowHandler? = null,
     @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme,
-    currentUserTheme: UserTheme = notFollowedTheme
+    theme: UsernameTheming
 ) {
     val isFollowing = followManager.isFollowing(caid)
     val isSelf = followManager.isSelf(caid)
     val theme = when {
-        isSelf -> currentUserTheme
-        isFollowing -> followedTheme
-        else -> notFollowedTheme
+        isSelf -> theme.currentUserTheme
+        isFollowing -> theme.followedTheme
+        else -> theme.notFollowedTheme
     }
 
     if (followButton != null) {
