@@ -292,13 +292,13 @@
 
     <string name="browse_more_broadcasts">See what\'s LIVE</string>
     <string name="broadcaster_show_is_over"><xliff:g example="Caffeine" id="broadcaster">%s</xliff:g> isn\'t live right now</string>
-    <string name="say_something_to_user">Say something to<![CDATA[<br><br><b><font color=\"%2$s\">]]><xliff:g id="username" example="Caffeine">%1$s</xliff:g><![CDATA[</font></b><br><br>]]>↓</string>
+    <string name="say_something_to_user">Say something to<![CDATA[<br><br><b><font color=\"%2$s\">]]><xliff:g example="Caffeine" id="username">%1$s</xliff:g><![CDATA[</font></b><br><br>]]>↓</string>
     <string name="messages_will_appear_here">Messages will appear here.</string>
 
     <!-- Notifications -->
     <string name="notification_channel_general_name">General</string>
     <string name="notification_channel_general_description">General notifications</string>
-    <string name="received_digital_item_notification_subtitle">Sent <xliff:g id="quantity" example="1">%d</xliff:g> <xliff:g id="digitalItemName" example="sneakers">%s</xliff:g></string>
+    <string name="received_digital_item_notification_subtitle">Sent <xliff:g example="1" id="quantity">%d</xliff:g> <xliff:g example="sneakers" id="digitalItemName">%s</xliff:g></string>
 
     <!-- Stage/Broadcast: Content descriptions -->
     <string name="share_button_content_description">Share the broadcast</string>
@@ -309,6 +309,9 @@
     <string name="gift_button_content_description">Send a digital item</string>
     <string name="friends_watching_button_content_description">Friends watching this broadcast</string>
     <string name="game_logo_content_description">Game logo</string>
+    <string name="stage_broadcast_biography_tab">Biography</string>
+    <string name="stage_broadcast_followers_tab">Followers</string>
+    <string name="stage_broadcast_following_tab">Following</string>
 
     <!-- Feature Program Guide -->
     <string name="fpg_empty_message">There are currently no scheduled events.\nCheck back soon!</string>
@@ -335,4 +338,5 @@
 
     <!-- Chat -->
     <string name="chat_react_button">react</string>
+
 </resources>

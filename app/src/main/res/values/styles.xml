@@ -339,6 +339,19 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="StageBroadcastTabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabIndicatorColor">@color/cyan</item>
+        <item name="tabSelectedTextColor">@color/cyan</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabTextAppearance">@style/StageBroadcastTabTextAppearance</item>
+    </style>
+
+    <style name="StageBroadcastTabTextAppearance">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <!-- Design approved - End -->
 
     <style name="ScreenCaption" parent="@style/TextAppearance.MaterialComponents.Caption"/>

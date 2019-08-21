@@ -146,6 +146,17 @@
     </fragment>
 
     <fragment
+        android:id="@+id/stageBroadcasterDetailsPagerFragment"
+        android:name="tv.caffeine.app.stage.StageBroadcastDetailsPagerFragment">
+        <argument
+            android:name="broadcastUsername"
+            app:argType="string" />
+        <argument
+            android:name="caid"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/outOfCapacityFragment"
         android:name="tv.caffeine.app.stage.OutOfCapacityFragment"
         android:label="@string/out_of_capacity_title"

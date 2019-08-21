@@ -44,6 +44,7 @@ import tv.caffeine.app.util.showSnackbar
 import tv.caffeine.app.util.transformToClassicUI
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
+import javax.inject.Provider
 import kotlin.collections.set
 
 class StageFragment @Inject constructor(
@@ -53,7 +54,9 @@ class StageFragment @Inject constructor(
     private val picasso: Picasso,
     @VisibleForTesting
     val releaseDesignConfig: ReleaseDesignConfig
-) : CaffeineFragment(R.layout.fragment_stage) {
+) : CaffeineFragment(R.layout.fragment_stage), StageBroadcastDetailsPagerFragment.Callback {
+
+    @Inject lateinit var stageBroadcastDetailsPagerFragmentProvider: Provider<StageBroadcastDetailsPagerFragment>
 
     @VisibleForTesting
     lateinit var binding: FragmentStageBinding
@@ -147,7 +150,11 @@ class StageFragment @Inject constructor(
                 getString(R.string.broadcaster_show_is_over, userProfile.username)
             )
             binding.avatarImageView.setOnClickListener {
-                findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
+                if (isReleaseDesign) {
+                    updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
+                } else {
+                    findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
+                }
             }
             binding.moreButton.setOnClickListener {
                 findNavController().navigateToReportOrIgnoreDialog(userProfile.caid, userProfile.username, true)
@@ -214,7 +221,7 @@ class StageFragment @Inject constructor(
     }
 
     @VisibleForTesting
-    fun updateBottomFragment(bottomContainerType: BottomContainerType) {
+    fun updateBottomFragment(bottomContainerType: BottomContainerType, caid: String = "") {
         binding.bottomFragmentContainer?.let {
             // TODO: Add Bio section fragment here
             val fragment = when (bottomContainerType) {
@@ -222,12 +229,20 @@ class StageFragment @Inject constructor(
                     val isRelease = releaseDesignConfig.isReleaseDesignActive()
                     ChatFragment.newInstance(broadcasterUsername, isRelease)
                 }
-                else -> ChatFragment.newInstance(broadcasterUsername, false)
+                BottomContainerType.PROFILE -> {
+                    stageBroadcastDetailsPagerFragmentProvider.get().apply {
+                        arguments = StageBroadcastDetailsPagerFragmentArgs(broadcasterUsername, caid).toBundle()
+                    }
+                }
             }
             childFragmentManager.inTransaction {
                 replace(R.id.bottom_fragment_container, fragment)
             }
         }
+    }
+
+    override fun returnToChat() {
+        updateBottomFragment(BottomContainerType.CHAT)
     }
 
     override fun onDestroyView() {
@@ -505,6 +520,6 @@ class StageFragment @Inject constructor(
 }
 
 enum class BottomContainerType {
-    BIO,
+    PROFILE,
     CHAT
 }

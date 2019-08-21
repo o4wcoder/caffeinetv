@@ -78,6 +78,8 @@
 
     <dimen name="stage_follow_star_size">32dp</dimen>
     <dimen name="stage_more_button_appbar_margin_right">26dp</dimen>
+    <dimen name="stage_container_height">256dp</dimen>
+    <dimen name="stage_profile_button_margin">48dp</dimen>
 
     <dimen name="broadcast_username">14sp</dimen>
     <dimen name="broadcast_username_mini">13sp</dimen>

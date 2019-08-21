@@ -266,6 +266,15 @@ class StageFragmentVisibilityTests {
             subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ClassicChatFragment
         assertNotNull(chatFragment)
     }
+
+    @Test
+    fun `when release config is set show broadcast details fragment`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        subject.updateBottomFragment(BottomContainerType.PROFILE)
+        val stageBroadcastDetailsPagerFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as StageBroadcastDetailsPagerFragment
+        assertNotNull(stageBroadcastDetailsPagerFragment)
+    }
 }
 
 @RunWith(RobolectricTestRunner::class)

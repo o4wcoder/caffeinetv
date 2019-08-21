@@ -45,8 +45,10 @@ import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.SendDigitalItemFragment
 import tv.caffeine.app.stage.SendMessageFragment
+import tv.caffeine.app.stage.StageBroadcastDetailsPagerFragment
 import tv.caffeine.app.stage.StageFragment
 import tv.caffeine.app.stage.StagePagerFragment
+import tv.caffeine.app.stage.biography.BiographyFragment
 import tv.caffeine.app.stage.classic.ClassicChatFragment
 import tv.caffeine.app.stage.release.ReleaseChatFragment
 import tv.caffeine.app.update.NeedsUpdateFragment
@@ -109,4 +111,6 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun chatFragment(): ChatFragment
     @ContributesAndroidInjector abstract fun classicChatFragment(): ClassicChatFragment
     @ContributesAndroidInjector abstract fun releaseChatFragment(): ReleaseChatFragment
+    @ContributesAndroidInjector abstract fun stageBroadcastDetailsPagerFragment(): StageBroadcastDetailsPagerFragment
+    @ContributesAndroidInjector abstract fun biographyFragment(): BiographyFragment
 }

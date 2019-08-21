@@ -30,6 +30,7 @@ import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.FriendsWatchingViewModel
 import tv.caffeine.app.stage.SendDigitalItemViewModel
+import tv.caffeine.app.stage.StageBroadcastDetailsPagerViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
@@ -186,4 +187,9 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(TwoStepAuthViewModel::class)
     abstract fun bindTwoStepAuthDoneViewModel(viewModel: TwoStepAuthViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StageBroadcastDetailsPagerViewModel::class)
+    abstract fun bindStageBroadcastDetailsPagerViewModel(viewModel: StageBroadcastDetailsPagerViewModel): ViewModel
 }

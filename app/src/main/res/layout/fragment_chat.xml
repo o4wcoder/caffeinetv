@@ -14,7 +14,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messages_recycler_view"
             android:layout_width="0dp"
-            android:layout_height="256dp"
+            android:layout_height="@dimen/stage_container_height"
             app:layoutManager="tv.caffeine.app.ui.ChatLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/bottom_stage_toolbar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -78,6 +78,7 @@
                     android:gravity="center"
                     android:background="@drawable/ic_btn_react"
                     android:text="@string/chat_react_button"
+                    android:tint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/share_button"
                     app:layout_constraintStart_toEndOf="@+id/gift_button"
