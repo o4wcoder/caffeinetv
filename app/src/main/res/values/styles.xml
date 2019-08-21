@@ -187,6 +187,9 @@
     <style name="CaffeineText.Bold">
         <item name="android:fontFamily">@font/poppins_bold</item>
     </style>
+    <style name="CaffeineText.Medium">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
     <style name="LightText" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
@@ -313,8 +316,13 @@
         <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
-    <style name="SearchUsername" parent="@style/ListTitle">
-        <item name="android:fontFamily">@font/poppins_medium</item>
+    <style name="SearchEditText" parent="CaffeineText.Medium">
+        <item name="android:padding">6dp</item>
+        <item name="android:drawableStart">@drawable/ic_search_light_gray</item>
+        <item name="android:drawablePadding">@dimen/search_drawable_margin</item>
+        <item name="android:textColorHint">@color/medium_gray</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/gray_rounded_rect_filled</item>
     </style>
 
     <!-- Tab -->

@@ -2,6 +2,7 @@ package tv.caffeine.app.explore
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentExploreBinding
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.clearItemDecoration
 import tv.caffeine.app.util.setItemDecoration
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 class ExploreFragment @Inject constructor(
     private val exploreAdapter: ExploreAdapter,
-    private val searchUsersAdapter: SearchUsersAdapter
+    private val searchUsersAdapter: SearchUsersAdapter,
+    val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_explore) {
 
     private val viewModel: ExploreViewModel by viewModels { viewModelFactory }
@@ -24,6 +27,11 @@ class ExploreFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentExploreBinding.bind(view)
+
+        val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
+        binding.searchEditTextClassic.isVisible = !isReleaseDesign
+        binding.searchEditTextRelease.isVisible = isReleaseDesign
+
         viewModel.data.observe(viewLifecycleOwner, Observer { result ->
             handle(result) { findings ->
                 val adapter: UsersAdapter

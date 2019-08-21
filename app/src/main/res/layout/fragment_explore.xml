@@ -9,32 +9,56 @@
             type="tv.caffeine.app.explore.ExploreViewModel"/>
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".explore.ExploreFragment">
+        android:layout_height="match_parent" >
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/search_edit_text"
+        <FrameLayout
+            android:id="@+id/search_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:inputType="text"
-            android:hint="@string/search"
-            android:text="@={viewModel.queryString}" />
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/search_edit_text_classic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
+                android:inputType="text"
+                android:hint="@string/search"
+                android:text="@={viewModel.queryString}"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                style="@style/SearchEditText"
+                android:id="@+id/search_edit_text_release"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_search"
+                android:layout_marginStart="@dimen/margin_search"
+                android:layout_marginEnd="@dimen/margin_list"
+                android:layout_marginBottom="@dimen/margin_search"
+                android:inputType="text|textNoSuggestions"
+                android:hint="@string/search_release_hint"
+                android:text="@={viewModel.queryString}"
+                app:layout_constraintTop_toTopOf="parent" />
+        </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/explore_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@id/search_layout"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/user_item_explore"
             tools:spanCount="3"/>
 
-    </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

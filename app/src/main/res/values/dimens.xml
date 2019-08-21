@@ -102,4 +102,7 @@
     <dimen name="live_round_indicator_size">12dp</dimen>
 
     <dimen name="chat_react_button_width">135dp</dimen>
+
+    <dimen name="search_drawable_margin">18dp</dimen>
+    <dimen name="margin_search">16dp</dimen>
 </resources>
