@@ -202,6 +202,12 @@ dependencies {
     // Security
     implementation "androidx.security:security-crypto:${versions.security}"
 
+    // Shake detector for dev options
+    implementation 'com.squareup:seismic:1.0.2'
+
+    // Process Phoenix for dev options
+    implementation 'com.jakewharton:process-phoenix:2.0.0'
+
     // Tests
     testImplementation 'junit:junit:4.12'
     testImplementation 'io.mockk:mockk:1.9.3'

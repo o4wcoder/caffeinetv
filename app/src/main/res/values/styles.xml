@@ -570,4 +570,8 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <!-- Dev options -->
+    <style name="CaffeineSwitch">
+        <item name="android:switchPadding">8dp</item>
+    </style>
 </resources>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <data>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/FPGTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:text="@string/dev_options_fragment_title"/>
+
+        <Switch
+            style="@style/CaffeineSwitch"
+            android:id="@+id/release_ui_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Release UI"
+            tools:checked="true"/>
+
+        <Switch
+            style="@style/CaffeineSwitch"
+            android:id="@+id/autoplay_preview_all_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Autoplay Preview (all)"/>
+
+        <TextView
+            style="@style/CaffeineText.Release"
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/ok"
+            android:background="@drawable/ic_btn_react"
+            android:backgroundTint="@color/black"/>
+    </LinearLayout>
+</layout>

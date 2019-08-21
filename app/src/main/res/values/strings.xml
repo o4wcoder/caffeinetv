@@ -339,4 +339,6 @@
     <!-- Chat -->
     <string name="chat_react_button">react</string>
 
+    <!-- Dev options -->
+    <string name="dev_options_fragment_title" translatable="false">Dev Options</string>
 </resources>

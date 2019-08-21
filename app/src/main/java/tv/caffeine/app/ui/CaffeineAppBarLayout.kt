@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.navigation.NavController
 import com.google.android.material.appbar.AppBarLayout
 import tv.caffeine.app.R
@@ -26,6 +27,13 @@ class CaffeineAppBarLayout : AppBarLayout {
         }
         findViewById<ImageButton>(R.id.releaseActivityButton).setOnClickListener {
             navController?.safeNavigate(R.id.notificationsFragment)
+        }
+    }
+
+    fun setWordmarkLongClickListener(onLongClick: (View) -> Unit) {
+        findViewById<ImageView>(R.id.caffeine_wordmark).setOnLongClickListener {
+            onLongClick(it)
+            true
         }
     }
 }

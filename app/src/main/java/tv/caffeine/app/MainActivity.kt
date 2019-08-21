@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.hardware.SensorManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -22,6 +23,7 @@ import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
+import com.squareup.seismic.ShakeDetector
 import dagger.android.support.DaggerAppCompatActivity
 import timber.log.Timber
 import tv.caffeine.app.analytics.Analytics
@@ -31,6 +33,9 @@ import tv.caffeine.app.analytics.Profiling
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.ActivityMainBinding
 import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.feature.DevOptionsDialog
+import tv.caffeine.app.feature.Feature
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.settings.SecureSettingsStorage
@@ -90,13 +95,14 @@ private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFra
 
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
 
-class MainActivity : DaggerAppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
 
     @Inject lateinit var profiling: Profiling
     @Inject lateinit var analytics: Analytics
     @Inject lateinit var tokenStore: TokenStore
     @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
     @Inject lateinit var firebaseInstanceId: FirebaseInstanceId
+    @Inject lateinit var featureConfig: FeatureConfig
     @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
     @Inject lateinit var secureSettingsStorage: SecureSettingsStorage
 
@@ -106,6 +112,7 @@ class MainActivity : DaggerAppCompatActivity() {
     @Inject lateinit var viewModelFactory: ViewModelFactory
     private val myProfileViewModel: MyProfileViewModel by viewModels { viewModelFactory }
     private lateinit var bottomNavigationAvatar: BottomNavigationAvatar
+    private var isDevOptionsOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +120,7 @@ class MainActivity : DaggerAppCompatActivity() {
         navController = findNavController(R.id.activity_main)
         setAppBar(binding, navController)
         setBottomNavigation(binding)
+        setShakeDetector()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateUiOnDestinationChange(destination.id, binding)
@@ -145,6 +153,9 @@ class MainActivity : DaggerAppCompatActivity() {
         setSupportActionBar(binding.activityToolbar)
         setupActionBarWithNavController(this, navController)
         binding.releaseAppBar.navController = navController
+        if (featureConfig.isFeatureEnabled(Feature.DEV_OPTIONS)) {
+            binding.releaseAppBar.setWordmarkLongClickListener { launchDevOptions() }
+        }
     }
 
     private fun setBottomNavigation(binding: ActivityMainBinding) {
@@ -159,6 +170,14 @@ class MainActivity : DaggerAppCompatActivity() {
         }
         // The system navigation bar should be dark so we don't have two white bars
         setNavigationBarDarkMode(isReleaseDesign)
+    }
+
+    private fun setShakeDetector() {
+        if (featureConfig.isFeatureEnabled(Feature.DEV_OPTIONS)) {
+            getSystemService<SensorManager>()?.let { sensorManager ->
+                ShakeDetector(this).start(sensorManager)
+            }
+        }
     }
 
     @VisibleForTesting fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding) {
@@ -299,5 +318,20 @@ class MainActivity : DaggerAppCompatActivity() {
         myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
             bottomNavigationAvatar.loadAvatar(userProfile.avatarImageUrl)
         })
+    }
+
+    override fun hearShake() {
+        if (!isDevOptionsOpen) {
+            isDevOptionsOpen = true
+            launchDevOptions()
+        }
+    }
+
+    private fun launchDevOptions() {
+        val dialog = DevOptionsDialog(this)
+        dialog.show()
+        dialog.setOnDismissListener {
+            isDevOptionsOpen = false
+        }
     }
 }
