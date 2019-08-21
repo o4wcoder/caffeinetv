@@ -72,16 +72,12 @@ class StageFragment @Inject constructor(
 
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
-
     @VisibleForTesting
-    var feedQuality: FeedQuality = FeedQuality.GOOD
-    private var overlayIsVisible = false
+    val stageViewModel: StageViewModel by viewModels { viewModelFactory }
 
-    private var isMe = false
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting
-    var stageIsLive = false
     var swipeButtonOnClickListener: View.OnClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,7 +128,12 @@ class StageFragment @Inject constructor(
         binding.lifecycleOwner = viewLifecycleOwner
 
         var isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
-        binding.isReleaseDesign = isReleaseDesign
+
+        stageViewModel.showPoorConnectionAnimation.observe(viewLifecycleOwner, Observer {
+            if (it) poorConnectionPulseAnimator.startPulse() else poorConnectionPulseAnimator.stopPulse()
+        })
+
+        binding.viewModel = stageViewModel
 
         if (!isReleaseDesign) {
             binding.avatarUsernameContainer.transformToClassicUI()
@@ -200,8 +201,7 @@ class StageFragment @Inject constructor(
             binding.followButtonText.setOnClickListener(followListener)
             binding.followButtonImage.setOnClickListener(followListener)
 
-            isMe = userProfile.isMe
-            updateViewsOnMyStageVisibility()
+            stageViewModel.updateIsMe(userProfile.isMe)
             updateBroadcastOnlineState(userProfile.isLive)
             if (shouldShowOverlayOnProfileLoaded) {
                 shouldShowOverlayOnProfileLoaded = false
@@ -308,80 +308,12 @@ class StageFragment @Inject constructor(
 
     @VisibleForTesting
     fun setOverlayVisible(visible: Boolean, shouldIncludeAppBar: Boolean = true) {
-        overlayIsVisible = visible
-        updatePoorConnectionAnimation()
-
-        val viewsToToggle = if (shouldIncludeAppBar) {
-            listOf(binding.stageAppbar, binding.liveIndicatorAndAvatarContainer)
-        } else {
-            listOf(binding.liveIndicatorAndAvatarContainer)
-        }
-
-        if (visible) {
-            viewsToToggle.forEach {
-                it.isVisible = true
-            }
-
-            // views for live only
-            manageConnectionQualityDependentViews(stageIsLive)
-        } else {
-            viewsToToggle.forEach {
-                it.isVisible = false
-            }
-        }
+        stageViewModel.updateOverlayIsVisible(visible, shouldIncludeAppBar)
     }
 
-    private fun manageConnectionQualityDependentViews(stageIsLive: Boolean) {
-        when (feedQuality) {
-            FeedQuality.GOOD -> {
-                binding.gameLogoImageView.isVisible = stageIsLive
-                binding.liveIndicatorTextView.isVisible = stageIsLive
-                binding.avatarUsernameContainer.isVisible = true
-                binding.weakConnectionContainer.isVisible = false
-            }
-            FeedQuality.POOR -> {
-                binding.gameLogoImageView.isVisible = stageIsLive
-                binding.liveIndicatorTextView.isVisible = stageIsLive
-                binding.avatarUsernameContainer.isVisible = true
-                binding.weakConnectionContainer.isVisible = true
-            }
-            else -> {
-                binding.gameLogoImageView.isVisible = false
-                binding.liveIndicatorTextView.isVisible = false
-                binding.avatarUsernameContainer.isVisible = false
-                binding.weakConnectionContainer.isVisible = false
-            }
-        }
-    }
-
-    @VisibleForTesting
-    fun updatePoorConnectionAnimation() {
-        if (!overlayIsVisible && feedQuality == FeedQuality.POOR) {
-            poorConnectionPulseAnimator.startPulse()
-        } else {
-            poorConnectionPulseAnimator.stopPulse()
-        }
-    }
-
-    fun updateBadConnectionOverlay() {
-        binding.badConnectionContainer.isVisible = feedQuality == FeedQuality.BAD
-    }
-
-    private fun updateViewsOnMyStageVisibility() {
-        listOf(
-            binding.avatarImageView,
-            binding.usernameTextView,
-            binding.followButtonText,
-            binding.followButtonImage,
-            binding.broadcastTitleTextView
-        ).forEach {
-            it?.isVisible = !isMe
-        }
-    }
-
-    @VisibleForTesting
+    @VisibleForTesting // TODO: view model
     fun updateBroadcastOnlineState(broadcastIsOnline: Boolean) {
-        stageIsLive = broadcastIsOnline
+        stageViewModel.updateStageIsLive(broadcastIsOnline)
         if (!broadcastIsOnline) {
             loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = false
         }
@@ -425,9 +357,7 @@ class StageFragment @Inject constructor(
 
     private fun manageFeedQuality(controller: NewReyesController) = launch {
         controller.feedQualityChannel.consumeEach {
-            feedQuality = it
-            updatePoorConnectionAnimation()
-            updateBadConnectionOverlay()
+            stageViewModel.updateFeedQuality(it)
         }
     }
 
@@ -504,7 +434,7 @@ class StageFragment @Inject constructor(
             findNavController().popBackStack(R.id.lobbySwipeFragment, false)
         }
         binding.stageToolbar.apply { setTitleTextColor(context.getColor(R.color.transparent)) }
-        binding.swipeButton.isVisible = canSwipe
+        binding.swipeButton.isVisible = canSwipe // TODO: view model
         binding.swipeButton.setOnClickListener(swipeButtonOnClickListener)
     }
 

@@ -91,99 +91,96 @@ class StageFragmentVisibilityTests {
 
     @Test
     fun `showing overlays on an offline stage does not show live indicator`() {
-        subject.stageIsLive = false
+        subject.stageViewModel.updateStageIsLive(false)
         subject.showOverlays()
         assertFalse(subject.binding.liveIndicatorTextView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage with good quality shows live indicator`() {
-        subject.stageIsLive = true
-        subject.feedQuality = FeedQuality.GOOD
+        subject.stageViewModel.updateStageIsLive(true)
+        subject.stageViewModel.updateFeedQuality(FeedQuality.GOOD)
         subject.showOverlays()
         assertTrue(subject.binding.liveIndicatorTextView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage with poor quality shows live indicator`() {
-        subject.stageIsLive = true
-        subject.feedQuality = FeedQuality.POOR
+        subject.stageViewModel.updateStageIsLive(true)
+        subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)
         subject.showOverlays()
         assertTrue(subject.binding.liveIndicatorTextView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage with poor quality shows weak connection container`() {
-        subject.stageIsLive = true
-        subject.feedQuality = FeedQuality.POOR
+        subject.stageViewModel.updateStageIsLive(true)
+        subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)
         subject.showOverlays()
         assertTrue(subject.binding.weakConnectionContainer.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage with good quality does not show weak connection overlay`() {
-        subject.stageIsLive = true
-        subject.feedQuality = FeedQuality.GOOD
+        subject.stageViewModel.updateStageIsLive(true)
+        subject.stageViewModel.updateFeedQuality(FeedQuality.GOOD)
         subject.showOverlays()
         assertFalse(subject.binding.weakConnectionContainer.isVisible)
     }
 
     @Test
     fun `poor network quality shows blinking no network data indicator`() {
-        subject.stageIsLive = true
-        subject.feedQuality = FeedQuality.POOR
-        subject.updatePoorConnectionAnimation()
+        subject.stageViewModel.updateStageIsLive(true)
+        subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)
         assertTrue(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test
     fun `good network quality does not show blinking no network data indicator`() {
-        subject.stageIsLive = true
-        subject.feedQuality = FeedQuality.GOOD
-        subject.updatePoorConnectionAnimation()
+        subject.stageViewModel.updateStageIsLive(true)
+        subject.stageViewModel.updateFeedQuality(FeedQuality.GOOD)
         assertFalse(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage with poor quality hides blinking no network data indicator`() {
-        subject.stageIsLive = true
-        subject.feedQuality = FeedQuality.POOR
-        subject.updatePoorConnectionAnimation()
+        subject.stageViewModel.updateStageIsLive(true)
+        subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)
         subject.showOverlays()
         assertFalse(subject.binding.poorConnectionPulseImageView.isVisible)
     }
 
     @Test
     fun `showing overlays on an offline stage does not show game logo`() {
-        subject.stageIsLive = false
+        subject.stageViewModel.updateStageIsLive(false)
         subject.showOverlays()
         assertFalse(subject.binding.gameLogoImageView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage shows game logo`() {
-        subject.stageIsLive = true
+        subject.stageViewModel.updateStageIsLive(true)
         subject.showOverlays()
         assertTrue(subject.binding.gameLogoImageView.isVisible)
     }
 
     @Test
     fun `hiding overlays on an offline stage hides game logo`() {
-        subject.stageIsLive = true
+        subject.stageViewModel.updateStageIsLive(true)
         subject.hideOverlays()
         assertFalse(subject.binding.gameLogoImageView.isVisible)
     }
 
     @Test
     fun `showing overlays on a live stage shows avatar username container`() {
-        subject.stageIsLive = true
+        subject.stageViewModel.updateStageIsLive(true)
         subject.showOverlays()
         assertTrue(subject.binding.avatarUsernameContainer.isVisible)
     }
 
     @Test
     fun `showing overlays on an offline stage shows avatar username container`() {
-        subject.stageIsLive = false
+        subject.stageViewModel.updateStageIsLive(false)
         subject.showOverlays()
         assertTrue(subject.binding.avatarUsernameContainer.isVisible)
     }
@@ -222,22 +219,19 @@ class StageFragmentVisibilityTests {
 
     @Test
     fun `the poor connection overlay should be visible when feedQuality is BAD`() {
-        subject.feedQuality = FeedQuality.BAD
-        subject.updateBadConnectionOverlay()
+        subject.stageViewModel.updateFeedQuality(FeedQuality.BAD)
         assertTrue(subject.binding.badConnectionContainer.isVisible)
     }
 
     @Test
     fun `the poor connection overlay should be gone when feedQuality is POOR`() {
-        subject.feedQuality = FeedQuality.POOR
-        subject.updateBadConnectionOverlay()
+        subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)
         assertTrue(!subject.binding.badConnectionContainer.isVisible)
     }
 
     @Test
     fun `the poor connection overlay should be gone when feedQuality is GOOD`() {
-        subject.feedQuality = FeedQuality.GOOD
-        subject.updateBadConnectionOverlay()
+        subject.stageViewModel.updateFeedQuality(FeedQuality.GOOD)
         assertTrue(!subject.binding.badConnectionContainer.isVisible)
     }
 
