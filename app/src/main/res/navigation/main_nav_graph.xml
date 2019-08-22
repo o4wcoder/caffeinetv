@@ -157,6 +157,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/biographyFragment"
+        android:name="tv.caffeine.app.stage.biography.BiographyFragment">
+        <argument
+            android:name="caid"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/outOfCapacityFragment"
         android:name="tv.caffeine.app.stage.OutOfCapacityFragment"
         android:label="@string/out_of_capacity_title"

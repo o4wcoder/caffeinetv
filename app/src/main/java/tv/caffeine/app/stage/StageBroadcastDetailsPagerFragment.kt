@@ -16,6 +16,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentStageBroadcastDetailsPagerBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.stage.biography.BiographyFragment
+import tv.caffeine.app.stage.biography.BiographyFragmentArgs
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowersFragmentArgs
@@ -71,6 +72,7 @@ class StageBroadcastDetailsPagerAdapter @AssistedInject constructor(
     @Assisted fm: FragmentManager,
     @Assisted private val caid: String,
     private val resources: Resources,
+    private val biographyFragmentProvider: Provider<BiographyFragment>,
     private val followingFragmentProvider: Provider<FollowingFragment>,
     private val followersFragmentProvider: Provider<FollowersFragment>
 ) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -81,7 +83,7 @@ class StageBroadcastDetailsPagerAdapter @AssistedInject constructor(
     }
     override fun getItem(position: Int): Fragment =
         when (position) {
-            0 -> BiographyFragment.newInstance()
+            0 -> { biographyFragmentProvider.get().apply { arguments = BiographyFragmentArgs(caid).toBundle() } }
             1 -> { followingFragmentProvider.get().apply { arguments = FollowingFragmentArgs(caid).toBundle() } }
             2 -> { followersFragmentProvider.get().apply { arguments = FollowersFragmentArgs(caid).toBundle() } }
             else -> throw IllegalStateException("Unknown exception")

@@ -1,14 +1,13 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/CaffeineText.Release"
+    android:id="@+id/biography_text_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tv.caffeine.app.stage.biography.BiographyFragment">
+    android:padding="16dp"
+    android:textColor="@color/white"
+    tools:textColor="@color/black"
+    tools:text="This is my bio about how awesome I am." />
+</layout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:text="TODO: Add Broadcaster Bio" />
-
-</FrameLayout>
