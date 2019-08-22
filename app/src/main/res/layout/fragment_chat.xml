@@ -92,7 +92,7 @@
                     android:layout_marginStart="16dp"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/share_button_content_description"
-                    android:paddingBottom="6dp"
+                    android:paddingBottom="4dp"
                     android:tint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
