@@ -48,6 +48,11 @@ class StageViewModel @Inject constructor(
     fun getWeakConnnectionContainerVisibility() =
         if (feedQuality == FeedQuality.POOR) View.VISIBLE else View.GONE
 
+    /*
+    TODO: using this to manage the visibility of bad_connection_container causes the stage pager to show the first stage
+    when tapping the 2nd stage from the lobby FEAT1-322
+    When FeedQuality.BAD becomes relevant we need to address this - for now we're not ever showing this overlay
+     */
     @Bindable
     fun getBadConnectionOverlayVisibility() =
         if (feedQuality == FeedQuality.BAD) View.VISIBLE else View.GONE

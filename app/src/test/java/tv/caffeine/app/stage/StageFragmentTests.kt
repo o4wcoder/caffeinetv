@@ -217,20 +217,23 @@ class StageFragmentVisibilityTests {
         assertTrue(subject.binding.swipeButton.isVisible)
     }
 
-    @Test
-    fun `the poor connection overlay should be visible when feedQuality is BAD`() {
-        subject.stageViewModel.updateFeedQuality(FeedQuality.BAD)
-        assertTrue(subject.binding.badConnectionContainer.isVisible)
-    }
+    /*
+    add this test back when FeedQuality.Bad is utilized
+     */
+    // @Test
+    // fun `the bad connection overlay should be visible when feedQuality is BAD`() {
+    //     subject.stageViewModel.updateFeedQuality(FeedQuality.BAD)
+    //     assertTrue(subject.binding.badConnectionContainer.isVisible)
+    // }
 
     @Test
-    fun `the poor connection overlay should be gone when feedQuality is POOR`() {
+    fun `the bad connection overlay should be gone when feedQuality is POOR`() {
         subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)
         assertTrue(!subject.binding.badConnectionContainer.isVisible)
     }
 
     @Test
-    fun `the poor connection overlay should be gone when feedQuality is GOOD`() {
+    fun `the bad connection overlay should be gone when feedQuality is GOOD`() {
         subject.stageViewModel.updateFeedQuality(FeedQuality.GOOD)
         assertTrue(!subject.binding.badConnectionContainer.isVisible)
     }
