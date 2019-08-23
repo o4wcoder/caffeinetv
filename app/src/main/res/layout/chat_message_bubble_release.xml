@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.stage.MessageViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stage_release_chat_cell_height"
+        android:padding="4dp"
+        tools:background="#000000">
+
+        <TextView
+            style="@style/StageChatText"
+            android:id="@+id/speech_bubble_text_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="4dp"
+            android:text="@{viewModel.messageText}"
+            android:textColor="@{viewModel.messageTextColor}"
+            android:background="@drawable/chat_bubble_release"
+            android:backgroundTint="@{viewModel.messageBackgroundColor}"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:maxLines="4"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:onClick="@{() -> viewModel.onMessageClicked()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/avatar_image_view"
+            tools:text="Hi! How are you?" />
+
+        <TextView
+            style="@style/StageChatUpvote"
+            android:id="@+id/upvote_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.upvoteText}"
+            android:background="@drawable/message_upvote_bg"
+            android:backgroundTint="@{viewModel.upvoteBackground}"
+            android:gravity="center"
+            android:elevation="3dp"
+            android:contentDescription="@string/upvote_button_content_description"
+            android:onClick="@{() -> viewModel.onUpvoteClicked()}"
+            android:visibility="@{viewModel.upvoteTextViewVisbility}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"
+            tools:text="2"/>
+
+        <ImageView
+            android:id="@+id/upvote_placeholder_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/message_upvote_selected"
+            android:contentDescription="@string/upvote_button_content_description"
+            android:elevation="2dp"
+            android:onClick="@{() -> viewModel.onUpvoteClicked()}"
+            android:visibility="@{viewModel.upvotePlaceholderVisbility}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/avatar_image_view"
+            android:layout_width="@dimen/chat_avatar_release"
+            android:layout_height="@dimen/chat_avatar_release"
+            android:contentDescription="@string/user_avatar_content_description"
+            android:visibility="@{viewModel.avatarImageViewVisibility}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:roundedImageUrl="@{viewModel.avatarImageUrl}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/reply_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/message_reply"
+            android:contentDescription="@string/reply_button_content_description"
+            android:onClick="@{() -> viewModel.onReplyClicked()}"
+            android:visibility="@{viewModel.replyImageViewVisibility}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            style="@style/StageChatUsername"
+            android:id="@+id/username_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@{viewModel.username}"
+            android:textColor="@{viewModel.usernameTextColor}"
+            app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+            app:layout_constraintTop_toTopOf="@id/avatar_image_view"
+            app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
+            tools:text="@sample/usernames"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/message_triangle_cut"
+            android:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/speech_bubble_text_view"
+            tools:ignore="ContentDescription"/>
+
+        <ImageView
+            android:id="@+id/speech_bubble_bottom_pointer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/message_bottom_pointer"
+            android:tint="@{viewModel.messageBackgroundColor}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/speech_bubble_text_view"
+            tools:ignore="ContentDescription"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

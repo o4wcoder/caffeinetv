@@ -40,10 +40,18 @@ fun String.mentionsUsername(username: String): Boolean {
 }
 
 @ColorRes
+fun messageUsernameTextColor(isSelf: Boolean, isFollowing: Boolean) =
+    when {
+        isSelf -> R.color.chat_username_you
+        isFollowing -> R.color.chat_username_follow
+        else -> R.color.chat_username_not_follow
+    }
+
+@ColorRes
 fun messageBackground(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Boolean, isRelease: Boolean) =
     if (isRelease) {
         when {
-            isFollowing || mentionsSelf -> R.color.chat_bubble_purple_gray_follow
+            isFollowing -> R.color.chat_bubble_purple_gray_follow
             isSelf -> R.color.chat_bubble_cyan
             else -> R.color.chat_bubble_dark_gray_not_follow
         }
@@ -59,9 +67,9 @@ fun messageBackground(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Boole
 fun userReferenceStyle(isSelf: Boolean, mentionsSelf: Boolean, isFollowing: Boolean, isRelease: Boolean) =
     if (isRelease) {
         when {
-            isSelf -> R.style.ChatMessageText_UserReferenceCurrentUser
-            isFollowing -> R.style.ChatMessageText_UserReferenceFollow
-            else -> R.style.ChatMessageText_UserReferenceNotFollow
+            isSelf -> R.style.StageChatText_UserReference_FromSelf
+            mentionsSelf -> R.style.StageChatText_UserReference_MentionSelf
+            else -> R.style.StageChatText_UserReference
         }
     } else {
         when {
@@ -109,6 +117,12 @@ fun Message.classify(followManager: FollowManager): MessageContent {
     val isSelf = followManager.isSelf(publisher.caid)
     val isFollowing = followManager.isFollowing(publisher.caid)
     return MessageContent(isSelf, mentionsSelf, isFollowing)
+}
+
+@ColorRes
+fun Message.usernameTextColor(followManager: FollowManager): Int {
+    val (isSelf, _, isFollowing) = classify(followManager)
+    return messageUsernameTextColor(isSelf, isFollowing)
 }
 
 @ColorRes

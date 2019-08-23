@@ -53,6 +53,13 @@
     <color name="chat_bubble_cyan">@color/cyan</color>
     <color name="chat_bubble_purple_gray_follow">#505064</color>
     <color name="chat_bubble_dark_gray_not_follow">#28283c</color>
+    <color name="chat_bubble_upvote_0_to_9">#ff00ff</color>
+    <color name="chat_bubble_upvote_10_to_99">#00ff00</color>
+    <color name="chat_bubble_upvote_100_to_999">#ffff00</color>
+    <color name="chat_bubble_upvote_1000_and_above">@color/white</color>
+    <color name="chat_username_not_follow">#9696be</color>
+    <color name="chat_username_follow">@color/cyan</color>
+    <color name="chat_username_you">@color/white</color>
 
     <!-- Endorsement -->
     <color name="endorsement_4_bg">#009FE0</color>

@@ -13,37 +13,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/stage_broadcast_details_view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/stage_container_height"
-        android:background="@color/black"
-        app:layout_constraintBottom_toTopOf="@id/bottom_stage_broadcast_details_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    <com.google.android.material.tabs.TabLayout
-        style="@style/StageBroadcastTabLayout"
-        android:id="@+id/tab_layout"
-        android:background="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:tabIndicator="@drawable/tab_indicator"
-        app:tabGravity="fill">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/stage_broadcast_details_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stage_release_profile_container_height"
+            android:background="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/bottom_stage_broadcast_details_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <com.google.android.material.tabs.TabLayout
+                style="@style/StageBroadcastTabLayout"
+                android:id="@+id/tab_layout"
+                android:background="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:tabIndicator="@drawable/tab_indicator"
+                app:tabGravity="fill">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stage_broadcast_biography_tab"/>
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stage_broadcast_following_tab"/>
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stage_broadcast_followers_tab"/>
-    </com.google.android.material.tabs.TabLayout>
-    </androidx.viewpager.widget.ViewPager>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stage_broadcast_biography_tab"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stage_broadcast_following_tab"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stage_broadcast_followers_tab"/>
+            </com.google.android.material.tabs.TabLayout>
+        </androidx.viewpager.widget.ViewPager>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_stage_broadcast_details_toolbar"

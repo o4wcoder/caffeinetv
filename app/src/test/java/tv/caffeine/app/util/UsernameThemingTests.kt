@@ -86,21 +86,21 @@ class HighlightUsernamesTests {
 class ReleaseHighlightUsernamesTests {
 
     @Test
-    fun `messages from self use followed user style`() {
+    fun `messages from self use from self style`() {
         val style = userReferenceStyle(true, false, false, true)
-        assertEquals(style, R.style.ChatMessageText_UserReferenceCurrentUser)
+        assertEquals(style, R.style.StageChatText_UserReference_FromSelf)
     }
 
     @Test
-    fun `messages from followed users use followed user style`() {
-        val style = userReferenceStyle(false, false, true, true)
-        assertEquals(style, R.style.ChatMessageText_UserReferenceFollow)
+    fun `messages that mention self use mention self style`() {
+        val style = userReferenceStyle(false, true, false, true)
+        assertEquals(style, R.style.StageChatText_UserReference_MentionSelf)
     }
 
     @Test
     fun `messages from non-followed users use default user style`() {
         val style = userReferenceStyle(false, false, false, true)
-        assertEquals(style, R.style.ChatMessageText_UserReferenceNotFollow)
+        assertEquals(style, R.style.StageChatText_UserReference)
     }
 }
 

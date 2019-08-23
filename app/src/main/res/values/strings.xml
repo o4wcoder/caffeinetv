@@ -338,6 +338,8 @@
 
     <!-- Chat -->
     <string name="chat_react_button">react</string>
+    <string name="upvote_button_content_description">upvote</string>
+    <string name="reply_button_content_description">reply</string>
 
     <!-- Dev options -->
     <string name="dev_options_fragment_title" translatable="false">Dev Options</string>

@@ -22,6 +22,7 @@ import tv.caffeine.app.chat.endorsementTextColorResId
 import tv.caffeine.app.chat.highlightUsernames
 import tv.caffeine.app.chat.userReferenceStyle
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
+import tv.caffeine.app.databinding.ChatMessageBubbleReleaseBinding
 import tv.caffeine.app.databinding.ChatMessageDigitalItemBinding
 import tv.caffeine.app.databinding.ChatMessageDummyBinding
 import tv.caffeine.app.session.FollowManager
@@ -61,7 +62,15 @@ class ChatMessageAdapter @Inject constructor(
         return when (type) {
             Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(layoutInflater, parent, false))
             Message.Type.digital_item -> ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false), picasso, callback, releaseDesignConfig)
-            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false), picasso, callback, releaseDesignConfig)
+            else -> {
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    ReleaseMessageViewHolder(ChatMessageBubbleReleaseBinding.inflate(layoutInflater, parent, false),
+                        followManager, callback)
+                } else {
+                    MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false),
+                        picasso, callback, releaseDesignConfig)
+                }
+            }
         }
     }
 
@@ -78,7 +87,12 @@ private fun View.toggleVisibility() {
     isVisible = !isVisible
 }
 
-class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Picasso, val callback: ChatMessageAdapter.Callback?, val releaseDesignConfig: ReleaseDesignConfig) : ChatMessageViewHolder(binding.root) {
+class MessageViewHolder(
+    val binding: ChatMessageBubbleBinding,
+    val picasso: Picasso,
+    val callback: ChatMessageAdapter.Callback?,
+    val releaseDesignConfig: ReleaseDesignConfig
+) : ChatMessageViewHolder(binding.root) {
 
     private val numberFormat = NumberFormat.getInstance()
 
@@ -140,6 +154,25 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Pica
     private fun viewProfile(caid: CAID) {
         val action = MainNavDirections.actionGlobalProfileFragment(caid)
         itemView.findNavController().safeNavigate(action)
+    }
+}
+
+class ReleaseMessageViewHolder(
+    val binding: ChatMessageBubbleReleaseBinding,
+    val followManager: FollowManager,
+    val callback: ChatMessageAdapter.Callback?
+) : ChatMessageViewHolder(binding.root) {
+
+    private val viewModel = MessageViewModel(itemView.context, followManager, callback)
+
+    init {
+        binding.viewModel = viewModel
+    }
+
+    // TODO (david): Remove the FollowManager param.
+    override fun bind(message: Message, followManager: FollowManager) {
+        viewModel.updateMessage(message)
+        binding.executePendingBindings()
     }
 }
 

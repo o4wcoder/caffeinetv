@@ -44,6 +44,7 @@
     <dimen name="caster_width">15dp</dimen>
     <dimen name="caster_height">12dp</dimen>
     <dimen name="chat_avatar_size">16dp</dimen>
+    <dimen name="chat_avatar_release">24dp</dimen>
     <dimen name="tx_history_digital_item_size">16dp</dimen>
     <dimen name="digital_item_size">72dp</dimen>
     <dimen name="chat_bubble_triangle_size">8dp</dimen>
@@ -78,7 +79,12 @@
 
     <dimen name="stage_follow_star_size">32dp</dimen>
     <dimen name="stage_more_button_appbar_margin_right">26dp</dimen>
-    <dimen name="stage_container_height">256dp</dimen>
+    <dimen name="stage_classic_chat_container_height">256dp</dimen>
+    <dimen name="stage_release_chat_container_height">288dp</dimen>
+    <dimen name="stage_release_chat_cell_height">144dp</dimen>
+    <dimen name="stage_release_profile_container_height">296dp</dimen>
+    <dimen name="stage_classic_chat_container_margin_bottom">0dp</dimen>
+    <dimen name="stage_release_chat_container_margin_bottom">8dp</dimen>
     <dimen name="stage_profile_button_margin">32dp</dimen>
 
     <dimen name="broadcast_username">14sp</dimen>
