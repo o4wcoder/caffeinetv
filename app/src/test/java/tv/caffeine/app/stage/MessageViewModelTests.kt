@@ -39,7 +39,7 @@ class MessageViewModelTests {
         every { message.publisher } returns user
         every { message.body } returns Message.Body("text")
         every { message.endorsementCount } returns 0
-        every { followManager.currentUserDetails() } returns null
+        every { followManager.currentUserDetails() } returns user
         every { followManager.isSelf(any()) } returns false
         every { followManager.isFollowing(any()) } returns false
     }
@@ -130,6 +130,22 @@ class MessageViewModelTests {
         assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
         assertEquals("1,000", subject.upvoteText)
         assertEquals(getColor(R.color.chat_bubble_upvote_1000_and_above), subject.upvoteBackground)
+    }
+
+    @Test
+    fun `message mentions me from a friend shows the mention self decoration`() {
+        every { message.body.text } returns "@username123 hi!"
+        every { followManager.isFollowing(any()) } returns true
+        subject.updateMessage(message)
+        assertEquals(View.VISIBLE, subject.mentionSelfDecorationImageViewVisibility)
+    }
+
+    @Test
+    fun `message mentions me from a stranger does not show the mention self decoration`() {
+        every { message.body.text } returns "@username123 hi!"
+        every { followManager.isFollowing(any()) } returns false
+        subject.updateMessage(message)
+        assertEquals(View.GONE, subject.mentionSelfDecorationImageViewVisibility)
     }
 
     private fun getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(context, colorRes)

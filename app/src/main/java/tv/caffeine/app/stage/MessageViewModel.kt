@@ -6,11 +6,11 @@ import android.text.style.TextAppearanceSpan
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.databinding.Bindable
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.chat.chatBubbleBackground
 import tv.caffeine.app.chat.chatMessageTextColor
+import tv.caffeine.app.chat.classify
 import tv.caffeine.app.chat.highlightUsernames
 import tv.caffeine.app.chat.userReferenceStyle
 import tv.caffeine.app.chat.usernameTextColor
@@ -24,66 +24,19 @@ class MessageViewModel(
     val callback: ChatMessageAdapter.Callback?
 ) : CaffeineViewModel() {
 
-    @Bindable var messageText: Spannable? = null
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var messageTextColor = getColor(R.color.white)
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var messageBackgroundColor = getColor(R.color.chat_bubble_dark_gray_not_follow)
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var username = ""
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var usernameTextColor = getColor(R.color.chat_username_not_follow)
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var avatarImageUrl = ""
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var upvoteText = ""
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var upvoteTextViewVisbility = View.GONE
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var upvoteBackground = getColor(R.color.chat_bubble_upvote_0_to_9)
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var upvotePlaceholderVisbility = View.GONE
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var avatarImageViewVisibility = View.VISIBLE
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    @Bindable var replyImageViewVisibility = View.GONE
-        set(value) {
-            field = value
-            notifyChange()
-        }
+    var messageText: Spannable? = null; private set
+    var messageTextColor = getColor(R.color.white); private set
+    var messageBackgroundColor = getColor(R.color.chat_bubble_dark_gray_not_follow); private set
+    var username = ""; private set
+    var usernameTextColor = getColor(R.color.chat_username_not_follow); private set
+    var avatarImageUrl = ""; private set
+    var upvoteText = ""; private set
+    var upvoteTextViewVisbility = View.GONE; private set
+    var upvoteBackground = getColor(R.color.chat_bubble_upvote_0_to_9); private set
+    var upvotePlaceholderVisbility = View.GONE; private set
+    var avatarImageViewVisibility = View.VISIBLE; private set
+    var replyImageViewVisibility = View.GONE; private set
+    var mentionSelfDecorationImageViewVisibility = View.GONE; private set
 
     private var isHighlightMode = false
     private var message: Message? = null
@@ -100,7 +53,13 @@ class MessageViewModel(
         messageTextColor = getColor(message.chatMessageTextColor(followManager, true))
         messageBackgroundColor = getColor(message.chatBubbleBackground(followManager, true))
         usernameTextColor = getColor(message.usernameTextColor(followManager))
+        mentionSelfDecorationImageViewVisibility = getVisibility(
+            message.classify(followManager).let {
+                it.mentionsSelf && it.isFollowing
+            })
+
         updateUpvoteUi(message.endorsementCount)
+        notifyChange()
     }
 
     fun onMessageClicked() {
