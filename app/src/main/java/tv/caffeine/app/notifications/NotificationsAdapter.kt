@@ -8,10 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -24,9 +22,6 @@ import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.digitalItemStaticImageUrl
-import tv.caffeine.app.api.isMustVerifyEmailError
-import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.NotificationNewFollowerBinding
@@ -34,29 +29,28 @@ import tv.caffeine.app.databinding.NotificationReceivedDigitalItemBinding
 import tv.caffeine.app.repository.ProfileRepository
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
-import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
+import tv.caffeine.app.ui.FollowListAdapter
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.ui.configureUserIcon
 import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.FollowStarColor
 import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
-import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class NotificationsAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
-    private val followManager: FollowManager,
     isReleaseDesignConfig: ReleaseDesignConfig,
     private val profileRepository: ProfileRepository,
     private val picasso: Picasso
-) : ListAdapter<CaffeineNotification, NotificationViewHolder>(
-        object : DiffUtil.ItemCallback<CaffeineNotification?>() {
+) : FollowListAdapter<CaffeineNotification, NotificationViewHolder>(
+        object : DiffUtil.ItemCallback<CaffeineNotification>() {
             override fun areItemsTheSame(oldItem: CaffeineNotification, newItem: CaffeineNotification) = oldItem === newItem
             override fun areContentsTheSame(oldItem: CaffeineNotification, newItem: CaffeineNotification) = when {
                 oldItem is FollowNotification && newItem is FollowNotification -> oldItem.caid == newItem.caid
@@ -73,43 +67,6 @@ class NotificationsAdapter @Inject constructor(
         get() = dispatchConfig.main + job + exceptionHandler
 
     var isReleaseDesign = isReleaseDesignConfig.isReleaseDesignActive()
-
-    var fragmentManager: FragmentManager? = null
-    val callback = object : FollowManager.Callback() {
-        override fun follow(caid: CAID) {
-            launch {
-                val result = followManager.followUser(caid)
-                when (result) {
-                    is CaffeineEmptyResult.Success -> updateItem(caid)
-                    is CaffeineEmptyResult.Error -> {
-                        if (result.error.isMustVerifyEmailError()) {
-                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.maybeShow(fragmentManager, "verifyEmail")
-                        } else {
-                            Timber.e("Couldn't follow user ${result.error}")
-                        }
-                    }
-                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                }
-            }
-        }
-        override fun unfollow(caid: CAID) {
-            launch {
-                if (followManager.unfollowUser(caid) is CaffeineEmptyResult.Success) {
-                    updateItem(caid)
-                }
-            }
-        }
-
-        private fun updateItem(caid: CAID) {
-            for (i in 0 until itemCount) {
-                val notification = getItem(i) as CaffeineNotification
-                if (notification is FollowNotification && notification.caid.caid == caid) {
-                    notifyItemChanged(i)
-                }
-            }
-        }
-    }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -154,17 +111,6 @@ class NotificationsAdapter @Inject constructor(
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         job.cancelChildren()
-    }
-
-    private fun onFollowStarClick(user: User, isFollowing: Boolean) {
-        if (followManager.followersLoaded()) {
-            val handler = FollowManager.FollowHandler(fragmentManager, callback)
-            if (isFollowing) {
-                handler.callback.unfollow(user.caid)
-            } else {
-                handler.callback.follow(user.caid)
-            }
-        }
     }
 
     enum class CellType {
@@ -228,7 +174,7 @@ class FollowNotificationViewHolder(
     var job: Job? = null
 
     init {
-        binding.followStarViewModel = FollowStarViewModel(onFollowStarClick)
+        binding.followStarViewModel = FollowStarViewModel(itemView.context, FollowStarColor.BLACK, onFollowStarClick)
         binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 

@@ -146,8 +146,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/stageBroadcasterDetailsPagerFragment"
-        android:name="tv.caffeine.app.stage.StageBroadcastDetailsPagerFragment">
+        android:id="@+id/stageBroadcasterProfilePagerFragment"
+        android:name="tv.caffeine.app.stage.StageBroadcastProfilePagerFragment">
         <argument
             android:name="broadcastUsername"
             app:argType="string" />

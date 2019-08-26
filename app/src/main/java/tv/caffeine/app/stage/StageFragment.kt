@@ -54,9 +54,9 @@ class StageFragment @Inject constructor(
     private val picasso: Picasso,
     @VisibleForTesting
     val releaseDesignConfig: ReleaseDesignConfig
-) : CaffeineFragment(R.layout.fragment_stage), StageBroadcastDetailsPagerFragment.Callback {
+) : CaffeineFragment(R.layout.fragment_stage), StageBroadcastProfilePagerFragment.Callback {
 
-    @Inject lateinit var stageBroadcastDetailsPagerFragmentProvider: Provider<StageBroadcastDetailsPagerFragment>
+    @Inject lateinit var stageBroadcastDetailsPagerFragmentProvider: Provider<StageBroadcastProfilePagerFragment>
 
     @VisibleForTesting
     lateinit var binding: FragmentStageBinding
@@ -231,7 +231,7 @@ class StageFragment @Inject constructor(
                 }
                 BottomContainerType.PROFILE -> {
                     stageBroadcastDetailsPagerFragmentProvider.get().apply {
-                        arguments = StageBroadcastDetailsPagerFragmentArgs(broadcasterUsername, caid).toBundle()
+                        arguments = StageBroadcastProfilePagerFragmentArgs(broadcasterUsername, caid).toBundle()
                     }
                 }
             }

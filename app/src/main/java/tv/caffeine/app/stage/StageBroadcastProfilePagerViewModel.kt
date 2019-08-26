@@ -10,7 +10,7 @@ import tv.caffeine.app.repository.ProfileRepository
 import tv.caffeine.app.ui.CaffeineViewModel
 import javax.inject.Inject
 
-class StageBroadcastDetailsPagerViewModel @Inject constructor(
+class StageBroadcastProfilePagerViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : CaffeineViewModel() {
 

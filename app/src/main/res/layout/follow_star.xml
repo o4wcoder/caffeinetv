@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.onFollowClick()}"
         android:src="@{viewModel.following ? @drawable/star_filled : @drawable/star_outline}"
-        android:tint="@color/black"
+        android:tint="@{viewModel.tint}"
         android:contentDescription="@{viewModel.following ? @string/unfollow_button : @string/follow_button}"
         android:visibility="@{viewModel.starVisibility}"
         tools:src="@drawable/star_outline"/>

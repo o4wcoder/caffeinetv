@@ -13,7 +13,7 @@ import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import org.threeten.bp.Clock
 import tv.caffeine.app.R
-import tv.caffeine.app.databinding.FragmentStageBroadcastDetailsPagerBinding
+import tv.caffeine.app.databinding.FragmentStageBroadcastProfilePagerBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.stage.biography.BiographyFragment
 import tv.caffeine.app.stage.biography.BiographyFragmentArgs
@@ -27,15 +27,15 @@ import javax.inject.Provider
 
 private const val NUM_DETAILS_TABS = 3
 
-class StageBroadcastDetailsPagerFragment @Inject constructor(
-    private val adapterFactory: StageBroadcastDetailsPagerAdapter.Factory,
+class StageBroadcastProfilePagerFragment @Inject constructor(
+    private val adapterFactory: StageBroadcastProfilePagerAdapter.Factory,
     private val followManager: FollowManager,
     private val clock: Clock
-) : CaffeineFragment(R.layout.fragment_stage_broadcast_details_pager) {
+) : CaffeineFragment(R.layout.fragment_stage_broadcast_profile_pager) {
 
-    private lateinit var binding: FragmentStageBroadcastDetailsPagerBinding
-    private val viewModel: StageBroadcastDetailsPagerViewModel by viewModels { viewModelFactory }
-    private val args by navArgs<StageBroadcastDetailsPagerFragmentArgs>()
+    private lateinit var binding: FragmentStageBroadcastProfilePagerBinding
+    private val viewModel: StageBroadcastProfilePagerViewModel by viewModels { viewModelFactory }
+    private val args by navArgs<StageBroadcastProfilePagerFragmentArgs>()
 
     interface Callback {
         fun returnToChat()
@@ -43,7 +43,7 @@ class StageBroadcastDetailsPagerFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentStageBroadcastDetailsPagerBinding.bind(view)
+        binding = FragmentStageBroadcastProfilePagerBinding.bind(view)
         binding.viewModel = viewModel
 
         viewModel.loadUserProfile(args.broadcastUsername)
@@ -68,7 +68,7 @@ class StageBroadcastDetailsPagerFragment @Inject constructor(
     }
 }
 
-class StageBroadcastDetailsPagerAdapter @AssistedInject constructor(
+class StageBroadcastProfilePagerAdapter @AssistedInject constructor(
     @Assisted fm: FragmentManager,
     @Assisted private val caid: String,
     private val resources: Resources,
@@ -79,13 +79,14 @@ class StageBroadcastDetailsPagerAdapter @AssistedInject constructor(
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(fm: FragmentManager, caid: String): StageBroadcastDetailsPagerAdapter
+        fun create(fm: FragmentManager, caid: String): StageBroadcastProfilePagerAdapter
     }
     override fun getItem(position: Int): Fragment =
         when (position) {
             0 -> { biographyFragmentProvider.get().apply { arguments = BiographyFragmentArgs(caid).toBundle() } }
-            1 -> { followingFragmentProvider.get().apply { arguments = FollowingFragmentArgs(caid).toBundle() } }
-            2 -> { followersFragmentProvider.get().apply { arguments = FollowersFragmentArgs(caid).toBundle() } }
+            1 -> { followersFragmentProvider.get().apply { arguments = FollowersFragmentArgs(caid).toBundle() } }
+            2 -> { followingFragmentProvider.get().apply { arguments = FollowingFragmentArgs(caid).toBundle() } }
+
             else -> throw IllegalStateException("Unknown exception")
         }
 
@@ -94,8 +95,8 @@ class StageBroadcastDetailsPagerAdapter @AssistedInject constructor(
     override fun getPageTitle(position: Int): CharSequence? {
         return when (position) {
             0 -> resources.getString(R.string.stage_broadcast_biography_tab)
-            1 -> resources.getString(R.string.stage_broadcast_following_tab)
-            else -> resources.getString(R.string.stage_broadcast_followers_tab)
+            1 -> resources.getString(R.string.stage_broadcast_followers_tab)
+            else -> resources.getString(R.string.stage_broadcast_following_tab)
         }
     }
 }

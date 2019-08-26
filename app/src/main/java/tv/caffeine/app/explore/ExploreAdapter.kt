@@ -10,44 +10,37 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
-import tv.caffeine.app.api.isMustVerifyEmailError
-import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.UserItemSearchReleaseBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
-import tv.caffeine.app.ui.AlertDialogFragment
+import tv.caffeine.app.ui.FollowListAdapter
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.util.DispatchConfig
+import tv.caffeine.app.util.FollowStarColor
 import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.compactNumberFormat
 import tv.caffeine.app.util.configure
-import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 abstract class UsersAdapter(
     private val dispatchConfig: DispatchConfig,
-    private val followManager: FollowManager,
     protected val releaseDesignConfig: ReleaseDesignConfig
-) : ListAdapter<SearchUserItem, UserViewHolder>(
-        object : DiffUtil.ItemCallback<SearchUserItem?>() {
+) : FollowListAdapter<SearchUserItem, UserViewHolder>(
+        object : DiffUtil.ItemCallback<SearchUserItem>() {
             override fun areItemsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem === newItem
             override fun areContentsTheSame(oldItem: SearchUserItem, newItem: SearchUserItem) = oldItem.id == newItem.id
         }
@@ -60,42 +53,6 @@ abstract class UsersAdapter(
     }
     override val coroutineContext: CoroutineContext
         get() = dispatchConfig.main + job + exceptionHandler
-
-    var fragmentManager: FragmentManager? = null
-    val callback = object : FollowManager.Callback() {
-        override fun follow(caid: CAID) {
-            launch {
-                val result = followManager.followUser(caid)
-                when (result) {
-                    is CaffeineEmptyResult.Success -> updateItem(caid)
-                    is CaffeineEmptyResult.Error -> {
-                        if (result.error.isMustVerifyEmailError()) {
-                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.maybeShow(fragmentManager, "verifyEmail")
-                        } else {
-                            Timber.e("Couldn't follow user ${result.error}")
-                        }
-                    }
-                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                }
-            }
-        }
-        override fun unfollow(caid: CAID) {
-            launch {
-                if (followManager.unfollowUser(caid) is CaffeineEmptyResult.Success) {
-                    updateItem(caid)
-                }
-            }
-        }
-
-        private fun updateItem(caid: CAID) {
-            for (i in 0 until itemCount) {
-                if ((getItem(i) as SearchUserItem).user.caid == caid) {
-                    notifyItemChanged(i)
-                }
-            }
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder =
         if (releaseDesignConfig.isReleaseDesignActive()) {
@@ -112,34 +69,21 @@ abstract class UsersAdapter(
         val item = getItem(position)
         holder.bind(item, followManager)
     }
-
-    private fun onFollowStarClick(user: User, isFollowing: Boolean) {
-        if (followManager.followersLoaded()) {
-            val handler = FollowManager.FollowHandler(fragmentManager, callback)
-            if (isFollowing) {
-                handler.callback.unfollow(user.caid)
-            } else {
-                handler.callback.follow(user.caid)
-            }
-        }
-    }
 }
 
 class SearchUsersAdapter @Inject constructor(
     dispatchConfig: DispatchConfig,
-    followManager: FollowManager,
     releaseDesignConfig: ReleaseDesignConfig
 ) :
-    UsersAdapter(dispatchConfig, followManager, releaseDesignConfig) {
+    UsersAdapter(dispatchConfig, releaseDesignConfig) {
     override val userItemLayout = R.layout.user_item_search
 }
 
 class ExploreAdapter @Inject constructor(
     dispatchConfig: DispatchConfig,
-    followManager: FollowManager,
     releaseDesignConfig: ReleaseDesignConfig
 ) :
-    UsersAdapter(dispatchConfig, followManager, releaseDesignConfig) {
+    UsersAdapter(dispatchConfig, releaseDesignConfig) {
     override val userItemLayout = R.layout.user_item_explore
 }
 
@@ -192,7 +136,7 @@ class ReleaseUserViewHolder(
     var followButton: Button? = null
 
     init {
-        binding.followStarViewModel = FollowStarViewModel(onFollowStarClick)
+        binding.followStarViewModel = FollowStarViewModel(itemView.context, FollowStarColor.BLACK, onFollowStarClick)
         binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 

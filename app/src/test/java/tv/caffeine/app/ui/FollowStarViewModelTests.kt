@@ -19,7 +19,7 @@ class FollowStarViewModelTests {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        subject = FollowStarViewModel(mockk())
+        subject = FollowStarViewModel(mockk(), mockk(), mockk())
     }
 
     @Test
@@ -33,6 +33,12 @@ class FollowStarViewModelTests {
     fun `follow star is invisible if self`() {
         val isSelf = true
         subject.bind(mockUser, isFollowing, isSelf)
+        assertEquals(subject.getStarVisibility(), View.INVISIBLE)
+    }
+
+    @Test
+    fun `follow star is invisible if hidden`() {
+        subject.hide()
         assertEquals(subject.getStarVisibility(), View.INVISIBLE)
     }
 }

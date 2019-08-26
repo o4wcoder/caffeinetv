@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="tv.caffeine.app.stage.StageBroadcastDetailsPagerViewModel" />
+            type="tv.caffeine.app.stage.StageBroadcastProfilePagerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
