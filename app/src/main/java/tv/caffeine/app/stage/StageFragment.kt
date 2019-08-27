@@ -309,6 +309,13 @@ class StageFragment @Inject constructor(
     @VisibleForTesting
     fun setOverlayVisible(visible: Boolean, shouldIncludeAppBar: Boolean = true) {
         stageViewModel.updateOverlayIsVisible(visible, shouldIncludeAppBar)
+
+        binding.stageAppbar.isVisible = stageViewModel.getAppBarVisibility()
+        binding.avatarUsernameContainer.isVisible = stageViewModel.getAvatarUsernameContainerVisibility()
+        binding.liveIndicatorAndAvatarContainer.isVisible = stageViewModel.getLiveIndicatorAndAvatarContainerVisibility()
+        binding.gameLogoImageView.isVisible = stageViewModel.getGameLogoVisibility()
+        binding.liveIndicatorTextView.isVisible = stageViewModel.getLiveIndicatorTextViewVisibility()
+        binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
     }
 
     @VisibleForTesting // TODO: view model
@@ -358,6 +365,7 @@ class StageFragment @Inject constructor(
     private fun manageFeedQuality(controller: NewReyesController) = launch {
         controller.feedQualityChannel.consumeEach {
             stageViewModel.updateFeedQuality(it)
+            binding.badConnectionContainer.isVisible = stageViewModel.getBadConnectionOverlayVisibility()
         }
     }
 

@@ -1,7 +1,5 @@
 package tv.caffeine.app.stage
 
-import android.view.View
-import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
@@ -24,60 +22,37 @@ class StageViewModel @Inject constructor(
     var _showPoorConnectionAnimation = MutableLiveData(false)
     var showPoorConnectionAnimation = _showPoorConnectionAnimation.map { it }
 
-    @Bindable
-    fun getGameLogoVisibility() =
-        if (overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD) View.VISIBLE else View.GONE
+    fun getGameLogoVisibility() = overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
 
-    @Bindable
-    fun getLiveIndicatorTextViewVisibility() =
-        if (overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD) View.VISIBLE else View.GONE
+    fun getLiveIndicatorTextViewVisibility() = overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
 
-    @Bindable
-    fun getLiveIndicatorAndAvatarContainerVisibility() =
-        if (overlayIsVisible) View.VISIBLE else View.GONE
+    fun getLiveIndicatorAndAvatarContainerVisibility() = overlayIsVisible
 
-    @Bindable
-    fun getAppBarVisibility() =
-        if (overlayIsVisible && appbarIsVisible) View.VISIBLE else View.GONE
+    fun getAppBarVisibility() = overlayIsVisible && appbarIsVisible
 
-    @Bindable
-    fun getAvatarUsernameContainerVisibility() =
-        if (!isMe && overlayIsVisible && feedQuality != FeedQuality.BAD) View.VISIBLE else View.GONE
+    fun getAvatarUsernameContainerVisibility() = !isMe && overlayIsVisible && feedQuality != FeedQuality.BAD
 
-    @Bindable
-    fun getWeakConnnectionContainerVisibility() =
-        if (feedQuality == FeedQuality.POOR) View.VISIBLE else View.GONE
+    fun getWeakConnnectionContainerVisibility() = feedQuality == FeedQuality.POOR
 
-    /*
-    TODO: using this to manage the visibility of bad_connection_container causes the stage pager to show the first stage
-    when tapping the 2nd stage from the lobby FEAT1-322
-    When FeedQuality.BAD becomes relevant we need to address this - for now we're not ever showing this overlay
-     */
-    @Bindable
-    fun getBadConnectionOverlayVisibility() =
-        if (feedQuality == FeedQuality.BAD) View.VISIBLE else View.GONE
+    fun getBadConnectionOverlayVisibility() = feedQuality == FeedQuality.BAD
 
     fun updateFeedQuality(quality: FeedQuality) {
         feedQuality = quality
         updatePoorConnectionAnimation()
-        notifyChange()
     }
 
     fun updateIsMe(isMe: Boolean) {
         this.isMe = isMe
-        notifyChange()
     }
 
     fun updateStageIsLive(isLive: Boolean) {
         stageIsLive = isLive
-        notifyChange()
     }
 
     fun updateOverlayIsVisible(isVisible: Boolean, shouldIncludeAppBar: Boolean) {
         overlayIsVisible = isVisible
         appbarIsVisible = shouldIncludeAppBar
         updatePoorConnectionAnimation()
-        notifyChange()
     }
 
     private fun updatePoorConnectionAnimation() {
