@@ -48,6 +48,7 @@ class ChatMessageAdapter @Inject constructor(
     interface Callback {
         fun replyClicked(message: Message)
         fun upvoteClicked(message: Message)
+        fun usernameClicked(userHandle: String)
     }
 
     var callback: Callback? = null
@@ -205,8 +206,8 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
                 R.dimen.avatar_size, userNameTheme)
         val caid = message.publisher.caid
-        binding.avatarImageView.setOnClickListener { viewProfile(caid) }
-        binding.usernameTextView.setOnClickListener { viewProfile(caid) }
+        binding.avatarImageView.setOnClickListener { callback?.usernameClicked(caid) }
+        binding.usernameTextView.setOnClickListener { callback?.usernameClicked(caid) }
         val userReferenceStyle = message.userReferenceStyle(followManager, isRelease)
         binding.speechBubbleTextView.text = highlightUsernames(message.body.text) {
             TextAppearanceSpan(itemView.context, userReferenceStyle)
@@ -241,11 +242,6 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
             hideInteractionOverlay()
             callback?.upvoteClicked(message)
         }
-    }
-
-    private fun viewProfile(caid: CAID) {
-        val action = MainNavDirections.actionGlobalProfileFragment(caid)
-        itemView.findNavController().safeNavigate(action)
     }
 }
 

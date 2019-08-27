@@ -12,6 +12,7 @@ import tv.caffeine.app.chat.chatBubbleBackground
 import tv.caffeine.app.chat.chatMessageTextColor
 import tv.caffeine.app.chat.classify
 import tv.caffeine.app.chat.highlightUsernames
+import tv.caffeine.app.chat.insertLineBreakAfterFirstMention
 import tv.caffeine.app.chat.userReferenceStyle
 import tv.caffeine.app.chat.usernameTextColor
 import tv.caffeine.app.session.FollowManager
@@ -47,7 +48,7 @@ class MessageViewModel(
             username = it.username
             avatarImageUrl = it.avatarImageUrl
         }
-        messageText = highlightUsernames(message.body.text) {
+        messageText = highlightUsernames(message.body.text.insertLineBreakAfterFirstMention()) {
             TextAppearanceSpan(context, message.userReferenceStyle(followManager, true))
         }
         messageTextColor = getColor(message.chatMessageTextColor(followManager, true))
@@ -76,6 +77,10 @@ class MessageViewModel(
             toggleHighlightMode()
         }
         message?.let { callback?.upvoteClicked(it) }
+    }
+
+    fun onUsernameClicked() {
+        message?.publisher?.username?.let { callback?.usernameClicked(it) }
     }
 
     private fun updateUpvoteUi(upvoteCount: Int) {

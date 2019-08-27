@@ -10,9 +10,11 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.api.model.isCAID
 import tv.caffeine.app.databinding.FragmentChatBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.stage.classic.ClassicChatFragment
@@ -89,6 +91,14 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
 
             override fun upvoteClicked(message: Message) {
                 chatViewModel.endorseMessage(message)
+            }
+
+            override fun usernameClicked(userHandle: String) {
+                if (userHandle.isCAID()) {
+                    findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userHandle))
+                } else {
+                    findNavController().safeNavigate(MainNavDirections.actionGlobalStagePagerFragment(userHandle))
+                }
             }
         }
 

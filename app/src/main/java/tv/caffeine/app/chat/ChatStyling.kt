@@ -34,6 +34,16 @@ fun highlightUsernames(
     return spannable
 }
 
+fun String.insertLineBreakAfterFirstMention(): String {
+    val regex = Regex("(?<=\\s|^)(@([\\w_-]{3,40}))")
+    val match = regex.find(this)
+    return if (match != null && match.range.first == 0) {
+        substring(0, match.range.last + 1) + "\n" + substring(match.range.last + 1).trim()
+    } else {
+        this
+    }
+}
+
 fun String.mentionsUsername(username: String): Boolean {
     val regex = Regex("(?<=\\s|^)@$username")
     return regex.containsMatchIn(this)

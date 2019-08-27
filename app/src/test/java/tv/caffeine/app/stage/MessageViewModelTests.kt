@@ -69,6 +69,13 @@ class MessageViewModelTests {
     }
 
     @Test
+    fun `clicking on the username triggers the callback`() {
+        subject.updateMessage(message)
+        subject.onUsernameClicked()
+        verify(exactly = 1) { callback.usernameClicked("username123") }
+    }
+
+    @Test
     fun `clicking on the upvote image exits the highlight mode and triggers the callback`() {
         subject.updateMessage(message)
         subject.onMessageClicked()
@@ -146,6 +153,35 @@ class MessageViewModelTests {
         every { followManager.isFollowing(any()) } returns false
         subject.updateMessage(message)
         assertEquals(View.GONE, subject.mentionSelfDecorationImageViewVisibility)
+    }
+
+    @Test
+    fun `a line break is inserted after a username is mentioned at the beginning`() {
+        every { message.body.text } returns "@username123,hi!"
+        subject.updateMessage(message)
+        assertEquals("@username123\n,hi!", subject.messageText.toString())
+    }
+
+    @Test
+    fun `a line break is inserted after a username is mentioned at the beginning and the whitespaces are removed`() {
+        every { message.body.text } returns "@username123   hi!"
+        subject.updateMessage(message)
+        assertEquals("@username123\nhi!", subject.messageText.toString())
+    }
+
+    @Test
+    fun `a line break is not inserted after a username fewer than 3 characters is mentioned at the beginning`() {
+        // the caffeine username is at least 3 characters
+        every { message.body.text } returns "@us hi!"
+        subject.updateMessage(message)
+        assertEquals("@us hi!", subject.messageText.toString())
+    }
+
+    @Test
+    fun `a line break is not inserted after a username is mentioned in the middle`() {
+        every { message.body.text } returns "Hi @us!"
+        subject.updateMessage(message)
+        assertEquals("Hi @us!", subject.messageText.toString())
     }
 
     private fun getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(context, colorRes)
