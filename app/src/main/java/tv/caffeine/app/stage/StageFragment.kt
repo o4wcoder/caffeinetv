@@ -137,6 +137,7 @@ class StageFragment @Inject constructor(
 
         if (!isReleaseDesign) {
             binding.avatarUsernameContainer.transformToClassicUI()
+            binding.liveSwipeContainer.transformToClassicUI()
         }
 
         view.setOnClickListener { toggleOverlayVisibility() }
@@ -314,8 +315,9 @@ class StageFragment @Inject constructor(
         binding.avatarUsernameContainer.isVisible = stageViewModel.getAvatarUsernameContainerVisibility()
         binding.liveIndicatorAndAvatarContainer.isVisible = stageViewModel.getLiveIndicatorAndAvatarContainerVisibility()
         binding.gameLogoImageView.isVisible = stageViewModel.getGameLogoVisibility()
-        binding.liveIndicatorTextView.isVisible = stageViewModel.getLiveIndicatorTextViewVisibility()
+        binding.classicLiveIndicatorTextView.isVisible = stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
+        binding.liveIndicator.isVisible = stageViewModel.getLiveIndicatorVisibility()
     }
 
     @VisibleForTesting // TODO: view model

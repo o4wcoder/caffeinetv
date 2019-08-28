@@ -90,29 +90,6 @@ class StageFragmentVisibilityTests {
     }
 
     @Test
-    fun `showing overlays on an offline stage does not show live indicator`() {
-        subject.stageViewModel.updateStageIsLive(false)
-        subject.showOverlays()
-        assertFalse(subject.binding.liveIndicatorTextView.isVisible)
-    }
-
-    @Test
-    fun `showing overlays on a live stage with good quality shows live indicator`() {
-        subject.stageViewModel.updateStageIsLive(true)
-        subject.stageViewModel.updateFeedQuality(FeedQuality.GOOD)
-        subject.showOverlays()
-        assertTrue(subject.binding.liveIndicatorTextView.isVisible)
-    }
-
-    @Test
-    fun `showing overlays on a live stage with poor quality shows live indicator`() {
-        subject.stageViewModel.updateStageIsLive(true)
-        subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)
-        subject.showOverlays()
-        assertTrue(subject.binding.liveIndicatorTextView.isVisible)
-    }
-
-    @Test
     fun `showing overlays on a live stage with poor quality shows weak connection container`() {
         subject.stageViewModel.updateStageIsLive(true)
         subject.stageViewModel.updateFeedQuality(FeedQuality.POOR)

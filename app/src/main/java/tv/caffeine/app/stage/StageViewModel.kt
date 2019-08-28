@@ -8,7 +8,7 @@ import tv.caffeine.app.ui.CaffeineViewModel
 import javax.inject.Inject
 
 class StageViewModel @Inject constructor(
-    releaseDesignConfig: ReleaseDesignConfig
+    val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineViewModel() {
 
     private var feedQuality = FeedQuality.GOOD
@@ -19,12 +19,14 @@ class StageViewModel @Inject constructor(
 
     val isReleaseDesign = ObservableBoolean(releaseDesignConfig.isReleaseDesignActive())
 
-    var _showPoorConnectionAnimation = MutableLiveData(false)
+    private var _showPoorConnectionAnimation = MutableLiveData(false)
     var showPoorConnectionAnimation = _showPoorConnectionAnimation.map { it }
 
     fun getGameLogoVisibility() = overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
 
-    fun getLiveIndicatorTextViewVisibility() = overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
+    fun getClassicLiveIndicatorTextViewVisibility() = !isReleaseDesign.get() && overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
+
+    fun getLiveIndicatorVisibility() = isReleaseDesign.get() && overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
 
     fun getLiveIndicatorAndAvatarContainerVisibility() = overlayIsVisible
 

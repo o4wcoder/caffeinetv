@@ -141,7 +141,6 @@
             android:id="@+id/live_indicator_and_avatar_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@+id/stage_appbar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -202,13 +201,24 @@
 
                 <TextView
                     style="@style/LiveIndicator"
-                    android:id="@+id/live_indicator_text_view"
+                    android:id="@+id/classic_live_indicator_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/live_indicator"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/live_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/pure_blue"
+                    android:src="@drawable/ic_live_indicator"
+                    android:contentDescription="@string/live_indicator_lowercase"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/swipe_button"
