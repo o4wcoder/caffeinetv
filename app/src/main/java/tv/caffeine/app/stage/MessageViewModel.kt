@@ -34,9 +34,8 @@ class MessageViewModel(
     var upvoteText = ""; private set
     var upvoteTextViewVisbility = View.GONE; private set
     var upvoteBackground = getColor(R.color.chat_bubble_upvote_0_to_9); private set
-    var upvotePlaceholderVisbility = View.GONE; private set
     var avatarImageViewVisibility = View.VISIBLE; private set
-    var replyImageViewVisibility = View.GONE; private set
+    var highlightVisibility = View.GONE; private set
     var mentionSelfDecorationImageViewVisibility = View.GONE; private set
 
     private var isHighlightMode = false
@@ -44,6 +43,7 @@ class MessageViewModel(
 
     fun updateMessage(message: Message) {
         this.message = message
+        isHighlightMode = false
         message.publisher.let {
             username = it.username
             avatarImageUrl = it.avatarImageUrl
@@ -80,10 +80,15 @@ class MessageViewModel(
     }
 
     fun onUsernameClicked() {
-        message?.publisher?.username?.let { callback?.usernameClicked(it) }
+        message?.publisher?.let {
+            if (!followManager.isSelf(it.caid)) {
+                callback?.usernameClicked(it.username)
+            }
+        }
     }
 
     private fun updateUpvoteUi(upvoteCount: Int) {
+        updateHighlightMode()
         upvoteTextViewVisbility = getVisibility(upvoteCount > 0)
         upvoteText = NumberFormat.getInstance().format(upvoteCount)
         upvoteBackground = getColor(
@@ -98,9 +103,12 @@ class MessageViewModel(
 
     private fun toggleHighlightMode() {
         isHighlightMode = !isHighlightMode
+        updateHighlightMode()
+    }
+
+    private fun updateHighlightMode() {
         avatarImageViewVisibility = getVisibility(!isHighlightMode, View.INVISIBLE)
-        replyImageViewVisibility = getVisibility(isHighlightMode)
-        upvotePlaceholderVisbility = getVisibility(isHighlightMode)
+        highlightVisibility = getVisibility(isHighlightMode)
         notifyChange()
     }
 

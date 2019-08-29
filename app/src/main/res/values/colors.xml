@@ -57,8 +57,8 @@
     <color name="chat_bubble_upvote_10_to_99">#00ff00</color>
     <color name="chat_bubble_upvote_100_to_999">#ffff00</color>
     <color name="chat_bubble_upvote_1000_and_above">@color/white</color>
-    <color name="chat_username_not_follow">#9696be</color>
-    <color name="chat_username_follow">@color/cyan</color>
+    <color name="chat_username_not_follow">#b4b4dc</color>
+    <color name="chat_username_follow">@color/white</color>
     <color name="chat_username_you">@color/white</color>
 
     <!-- Endorsement -->

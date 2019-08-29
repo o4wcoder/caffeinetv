@@ -49,12 +49,10 @@ class MessageViewModelTests {
         subject.updateMessage(message)
         subject.onMessageClicked()
         assertEquals(View.INVISIBLE, subject.avatarImageViewVisibility)
-        assertEquals(View.VISIBLE, subject.replyImageViewVisibility)
-        assertEquals(View.VISIBLE, subject.upvotePlaceholderVisbility)
+        assertEquals(View.VISIBLE, subject.highlightVisibility)
         subject.onMessageClicked()
         assertEquals(View.VISIBLE, subject.avatarImageViewVisibility)
-        assertEquals(View.GONE, subject.replyImageViewVisibility)
-        assertEquals(View.GONE, subject.upvotePlaceholderVisbility)
+        assertEquals(View.GONE, subject.highlightVisibility)
     }
 
     @Test
@@ -63,16 +61,23 @@ class MessageViewModelTests {
         subject.onMessageClicked()
         subject.onReplyClicked()
         assertEquals(View.VISIBLE, subject.avatarImageViewVisibility)
-        assertEquals(View.GONE, subject.replyImageViewVisibility)
-        assertEquals(View.GONE, subject.upvotePlaceholderVisbility)
+        assertEquals(View.GONE, subject.highlightVisibility)
         verify(exactly = 1) { callback.replyClicked(any()) }
     }
 
     @Test
-    fun `clicking on the username triggers the callback`() {
+    fun `clicking on other's username triggers the callback`() {
         subject.updateMessage(message)
         subject.onUsernameClicked()
         verify(exactly = 1) { callback.usernameClicked("username123") }
+    }
+
+    @Test
+    fun `clicking on my username does not trigger the callback`() {
+        every { followManager.isSelf(any()) } returns true
+        subject.updateMessage(message)
+        subject.onUsernameClicked()
+        verify(exactly = 0) { callback.usernameClicked("username123") }
     }
 
     @Test
@@ -81,8 +86,7 @@ class MessageViewModelTests {
         subject.onMessageClicked()
         subject.onUpvoteClicked()
         assertEquals(View.VISIBLE, subject.avatarImageViewVisibility)
-        assertEquals(View.GONE, subject.replyImageViewVisibility)
-        assertEquals(View.GONE, subject.upvotePlaceholderVisbility)
+        assertEquals(View.GONE, subject.highlightVisibility)
         verify(exactly = 1) { callback.upvoteClicked(any()) }
     }
 
@@ -91,8 +95,7 @@ class MessageViewModelTests {
         subject.updateMessage(message)
         subject.onUpvoteClicked()
         assertEquals(View.VISIBLE, subject.avatarImageViewVisibility)
-        assertEquals(View.GONE, subject.replyImageViewVisibility)
-        assertEquals(View.GONE, subject.upvotePlaceholderVisbility)
+        assertEquals(View.GONE, subject.highlightVisibility)
         verify(exactly = 1) { callback.upvoteClicked(any()) }
     }
 
@@ -153,6 +156,15 @@ class MessageViewModelTests {
         every { followManager.isFollowing(any()) } returns false
         subject.updateMessage(message)
         assertEquals(View.GONE, subject.mentionSelfDecorationImageViewVisibility)
+    }
+
+    @Test
+    fun `message is not highlighted even if the previous message in the same bubble was highlighted`() {
+        subject.updateMessage(message)
+        subject.onMessageClicked()
+        assertEquals(View.VISIBLE, subject.highlightVisibility)
+        subject.updateMessage(message)
+        assertEquals(View.GONE, subject.highlightVisibility)
     }
 
     @Test

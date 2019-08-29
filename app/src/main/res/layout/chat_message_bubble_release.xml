@@ -20,7 +20,7 @@
             android:id="@+id/speech_bubble_text_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="19dp"
             android:layout_marginBottom="4dp"
             android:text="@{viewModel.messageText}"
             android:textColor="@{viewModel.messageTextColor}"
@@ -60,11 +60,11 @@
             android:id="@+id/upvote_placeholder_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/message_upvote_selected"
+            android:src="@drawable/message_upvote_highlight"
             android:contentDescription="@string/upvote_button_content_description"
             android:elevation="2dp"
             android:onClick="@{() -> viewModel.onUpvoteClicked()}"
-            android:visibility="@{viewModel.upvotePlaceholderVisbility}"
+            android:visibility="@{viewModel.highlightVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -87,7 +87,7 @@
             android:src="@drawable/message_reply"
             android:contentDescription="@string/reply_button_content_description"
             android:onClick="@{() -> viewModel.onReplyClicked()}"
-            android:visibility="@{viewModel.replyImageViewVisibility}"
+            android:visibility="@{viewModel.highlightVisibility}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -137,5 +137,52 @@
             app:layout_constraintBottom_toBottomOf="@+id/bottom_pointer_image_view"
             tools:ignore="ContentDescription"/>
 
+        <!-- Views below are for the highlight mode -->
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:src="@drawable/black_top_divider"
+            android:tint="@color/white"
+            android:visibility="@{viewModel.highlightVisibility}"
+            app:layout_constraintStart_toStartOf="@+id/speech_bubble_text_view"
+            app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
+            app:layout_constraintTop_toTopOf="@+id/speech_bubble_text_view"
+            tools:ignore="ContentDescription"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:elevation="1dp"
+            android:src="@drawable/message_highlight_side_borders"
+            android:visibility="@{viewModel.highlightVisibility}"
+            app:layout_constraintStart_toStartOf="@+id/speech_bubble_text_view"
+            app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
+            app:layout_constraintTop_toTopOf="@+id/speech_bubble_text_view"
+            app:layout_constraintBottom_toBottomOf="@+id/speech_bubble_text_view"
+            tools:ignore="ContentDescription"/>
+
+        <ImageView
+            android:id="@+id/bottom_pointer_highlight_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:src="@drawable/message_bottom_pointer_highlight"
+            android:visibility="@{viewModel.highlightVisibility}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/speech_bubble_text_view"
+            tools:ignore="ContentDescription"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:src="@drawable/black_top_divider"
+            android:tint="@color/white"
+            android:visibility="@{viewModel.highlightVisibility}"
+            app:layout_constraintStart_toEndOf="@+id/bottom_pointer_highlight_image_view"
+            app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/speech_bubble_text_view"
+            tools:ignore="ContentDescription"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
