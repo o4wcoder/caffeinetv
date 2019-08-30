@@ -205,9 +205,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/live_indicator"
-                    android:visibility="gone"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
 
                 <ImageView
                     android:id="@+id/live_indicator"
@@ -216,7 +217,7 @@
                     android:background="@color/pure_blue"
                     android:src="@drawable/ic_live_indicator"
                     android:contentDescription="@string/live_indicator_lowercase"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -227,7 +228,8 @@
                     android:src="@drawable/ic_swipe_stage"
                     android:contentDescription="@string/stage_swipe_image_content_description"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

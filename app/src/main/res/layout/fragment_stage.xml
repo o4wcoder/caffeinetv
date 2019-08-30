@@ -281,9 +281,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/live_indicator"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/live_indicator"/>
 
                 <ImageView
                     android:id="@+id/live_indicator"
@@ -292,7 +293,7 @@
                     android:background="@color/pure_blue"
                     android:src="@drawable/ic_live_indicator"
                     android:contentDescription="@string/live_indicator_lowercase"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -303,7 +304,7 @@
                     android:src="@drawable/ic_swipe_stage"
                     android:contentDescription="@string/stage_swipe_image_content_description"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/live_indicator"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="@id/live_indicator"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -342,7 +343,7 @@
                     android:src="@drawable/default_avatar_round"
                     android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                     android:padding="2dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:roundedImageUrl="@{userProfile.avatarImageUrl}"
@@ -387,7 +388,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/avatar_image_view"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:background="@drawable/ic_star_border_24dp"/>
+                    tools:background="@drawable/star_outline"/>
 
                 <TextView
                     style="@style/BroadcastTitle.Night"

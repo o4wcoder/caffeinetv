@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -315,9 +316,9 @@ class StageFragment @Inject constructor(
         binding.avatarUsernameContainer.isVisible = stageViewModel.getAvatarUsernameContainerVisibility()
         binding.liveIndicatorAndAvatarContainer.isVisible = stageViewModel.getLiveIndicatorAndAvatarContainerVisibility()
         binding.gameLogoImageView.isVisible = stageViewModel.getGameLogoVisibility()
-        binding.classicLiveIndicatorTextView.isVisible = stageViewModel.getClassicLiveIndicatorTextViewVisibility()
+        binding.liveIndicator.isInvisible = !stageViewModel.getLiveIndicatorVisibility()
+        binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
-        binding.liveIndicator.isVisible = stageViewModel.getLiveIndicatorVisibility()
     }
 
     @VisibleForTesting // TODO: view model
