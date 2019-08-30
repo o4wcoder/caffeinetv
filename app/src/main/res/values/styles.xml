@@ -190,22 +190,22 @@
     <style name="CaffeineText.Medium">
         <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
-    <style name="LightText" parent="CaffeineText">
+    <style name="CaffeineText.Light" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
-    <style name="UnauthScreenTitle" parent="LightText">
+    <style name="UnauthScreenTitle" parent="CaffeineText.Light">
         <item name="android:textSize">24sp</item>
         <item name="android:textAlignment">center</item>
     </style>
-    <style name="LinkText" parent="LightText">
+    <style name="LinkText" parent="CaffeineText.Light">
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
-    <style name="FormErrorText" parent="LightText">
+    <style name="FormErrorText" parent="CaffeineText.Light">
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/medium_gray</item>
     </style>
 
-    <style name="BigEditText" parent="LightText">
+    <style name="BigEditText" parent="CaffeineText.Light">
         <item name="android:background">@drawable/big_edit_text_background</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/black</item>
@@ -222,12 +222,12 @@
         <item name="fontFamily">@font/poppins</item>
     </style>
 
-    <style name="NoNetworkTitle" parent="LightText">
+    <style name="NoNetworkTitle" parent="CaffeineText.Light">
         <item name="android:textSize">30sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="NoNetworkBody" parent="LightText">
+    <style name="NoNetworkBody" parent="CaffeineText.Light">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/dark_gray</item>
     </style>

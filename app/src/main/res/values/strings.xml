@@ -293,6 +293,7 @@
     <string name="browse_more_broadcasts">See what\'s LIVE</string>
     <string name="broadcaster_show_is_over"><xliff:g example="Caffeine" id="broadcaster">%s</xliff:g> isn\'t live right now</string>
     <string name="say_something_to_user">Say something to<![CDATA[<br><br><b><font color=\"%2$s\">]]><xliff:g example="Caffeine" id="username">%1$s</xliff:g><![CDATA[</font></b><br><br>]]>↓</string>
+    <string name="say_something_to">say something to</string>
     <string name="messages_will_appear_here">Messages will appear here.</string>
 
     <!-- Notifications -->

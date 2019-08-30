@@ -74,7 +74,7 @@
                 android:text="@string/sign_up_button"/>
 
             <TextView
-                style="@style/LightText"
+                style="@style/CaffeineText.Light"
                 android:id="@+id/agree_to_legal_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

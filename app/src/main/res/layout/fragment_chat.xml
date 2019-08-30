@@ -1,6 +1,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="viewModel"
                   type="tv.caffeine.app.stage.ChatViewModel">
@@ -30,14 +30,50 @@
             android:id="@+id/say_something_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.saySomethingTextVisibility}"
-            app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="@{viewModel.classicSaySomethingTextVisibility}"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/messages_recycler_view"
+            app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view"
             app:broadcasterUserName="@{viewModel.broadcasterUserName}"
             app:userProfile="@{viewModel.userProfile}"
             tools:text="Say something to\n\nCaffeine\n ↓"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:visibility="@{viewModel.releaseSaySomethingTextVisibility}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/messages_recycler_view"
+            app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view">
+
+            <TextView
+                style="@style/CaffeineText.Light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/say_something_to"
+                android:textColor="@color/white"/>
+
+            <TextView
+                style="@style/CaffeineText.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{viewModel.broadcasterUserName}"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                tools:text="caffeine"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/ic_arrow_down"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chat_button_layout"
@@ -57,7 +93,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/gift_button_content_description"
-                android:tint="@color/white"
+                android:tint="@{viewModel.bottomButtonTint}"
                 android:visibility="@{viewModel.giftButtonVisibility}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/react_button"
@@ -74,7 +110,6 @@
                 android:gravity="center"
                 android:background="@drawable/ic_btn_react"
                 android:text="@string/chat_react_button"
-                android:tint="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/share_button"
                 app:layout_constraintStart_toEndOf="@+id/gift_button"
@@ -89,7 +124,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/share_button_content_description"
                 android:paddingBottom="4dp"
-                android:tint="@color/white"
+                android:tint="@{viewModel.bottomButtonTint}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/react_button"
