@@ -17,15 +17,16 @@ import tv.caffeine.app.databinding.DiCatalogItemBinding
 import tv.caffeine.app.databinding.FragmentDiCatalogBinding
 import tv.caffeine.app.settings.BuyGoldOption
 import tv.caffeine.app.settings.GoldBundlesFragment
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.wallet.WalletViewModel
 import java.text.NumberFormat
 import javax.inject.Inject
 
 class DICatalogFragment @Inject constructor(
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineBottomSheetDialogFragment() {
 
     interface Callback {
@@ -48,7 +49,11 @@ class DICatalogFragment @Inject constructor(
     private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
     private lateinit var binding: FragmentDiCatalogBinding
 
-    override fun getTheme() = R.style.DarkBottomSheetDialog
+    override fun getTheme() = if (releaseDesignConfig.isReleaseDesignActive()) {
+        R.style.DarkBottomSheetDialog_Release
+    } else {
+        R.style.DarkBottomSheetDialog
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDiCatalogBinding.inflate(inflater, container, false)
@@ -58,7 +63,7 @@ class DICatalogFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             val numberFormat = NumberFormat.getIntegerInstance()
-            binding.walletBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.wallet_balance, numberFormat.format(wallet.gold)))
+            binding.walletBalanceTextView.text = numberFormat.format(wallet.gold)
         })
         binding.username = args.broadcasterUsername
         binding.list.adapter = adapter
@@ -71,6 +76,12 @@ class DICatalogFragment @Inject constructor(
             val fragment = GoldBundlesFragment(picasso)
             fragment.arguments = action.arguments
             fragment.maybeShow(fragmentManager, "buyGold")
+        }
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            binding.buyGoldButton.text = getString(R.string.buy_gold_lowercase)
+            binding.diCatalogTitle.text = getString(R.string.send_gold_to_user_lowercase, binding.username)
+        } else {
+            binding.diCatalogTitle.text = getString(R.string.send_gold_to_user, binding.username)
         }
     }
 }

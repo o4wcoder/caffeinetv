@@ -17,6 +17,7 @@ import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.api.model.isCAID
 import tv.caffeine.app.databinding.FragmentChatBinding
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stage.classic.ClassicChatFragment
 import tv.caffeine.app.stage.release.ReleaseChatFragment
 import tv.caffeine.app.ui.CaffeineFragment
@@ -34,6 +35,7 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var picasso: Picasso
     @Inject lateinit var clock: Clock
+    @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
 
     protected lateinit var binding: FragmentChatBinding
     protected var isMe = false
@@ -151,7 +153,8 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
             this@ChatFragment,
             picasso,
             broadcasterUsername,
-            message
+            message,
+            releaseDesignConfig
         )
     }
 

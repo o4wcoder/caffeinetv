@@ -17,6 +17,7 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.lobby.SendingVerificationEmailDialogFragment
 import tv.caffeine.app.profile.UnfollowUserDialogFragment
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.SendMessageFragment
 import tv.caffeine.app.stage.StagePagerFragmentDirections
@@ -134,9 +135,10 @@ fun FragmentManager.navigateToDigitalItemWithMessage(
     callingFragment: Fragment,
     picasso: Picasso,
     broadcasterUsername: String,
-    message: String? = null
+    message: String? = null,
+    releaseDesignConfig: ReleaseDesignConfig
 ) {
-    DICatalogFragment(picasso).apply {
+    DICatalogFragment(picasso, releaseDesignConfig).apply {
         val action = StagePagerFragmentDirections.actionStagePagerFragmentToDigitalItemListDialogFragment(
             broadcasterUsername,
             message
