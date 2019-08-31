@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.isInvisible
+import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -163,6 +165,10 @@ class StageFragment @Inject constructor(
                 findNavController().navigateToReportOrIgnoreDialog(userProfile.caid, userProfile.username, true)
             }
 
+            stageViewModel.updateIsFollowed(userProfile.isFollowed)
+            updateAvatarImageViewBackground()
+            binding.usernameTextView.setTextColor(ContextCompat.getColor(binding.usernameTextView.context, stageViewModel.usernameTextColor))
+
             if (isReleaseDesign) {
                 binding.stageToolbar.apply {
                     if (menu.findItem(R.id.overflow_menu_item) != null) return@apply
@@ -224,6 +230,8 @@ class StageFragment @Inject constructor(
 
     @VisibleForTesting
     fun updateBottomFragment(bottomContainerType: BottomContainerType, caid: String = "") {
+        stageViewModel.updateIsViewProfile(bottomContainerType == BottomContainerType.PROFILE)
+        updateAvatarImageViewBackground()
         binding.bottomFragmentContainer?.let {
             // TODO: Add Bio section fragment here
             val fragment = when (bottomContainerType) {
@@ -312,6 +320,8 @@ class StageFragment @Inject constructor(
     fun setOverlayVisible(visible: Boolean, shouldIncludeAppBar: Boolean = true) {
         stageViewModel.updateOverlayIsVisible(visible, shouldIncludeAppBar)
 
+        updateAvatarImageViewBackground()
+
         binding.stageAppbar.isVisible = stageViewModel.getAppBarVisibility()
         binding.avatarUsernameContainer.isVisible = stageViewModel.getAvatarUsernameContainerVisibility()
         binding.liveIndicatorAndAvatarContainer.isVisible = stageViewModel.getLiveIndicatorAndAvatarContainerVisibility()
@@ -319,6 +329,10 @@ class StageFragment @Inject constructor(
         binding.liveIndicator.isInvisible = !stageViewModel.getLiveIndicatorVisibility()
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
+    }
+
+    fun updateAvatarImageViewBackground() {
+        binding.avatarImageView.background = ContextCompat.getDrawable(binding.avatarImageView.context, stageViewModel.avatarImageBackground)
     }
 
     @VisibleForTesting // TODO: view model
