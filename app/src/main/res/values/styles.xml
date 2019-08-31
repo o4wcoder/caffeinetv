@@ -41,6 +41,10 @@
     <style name="DarkBottomSheetDialog" parent="BaseDarkBottomSheetDialog">
         <item name="android:windowLightStatusBar">false</item>
     </style>
+    <style name="DarkBottomSheetDialog.Release">
+        <item name="colorAccent">@color/cyan</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
 
     <style name="FullscreenDialogTheme" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
         <item name="colorAccent">@color/color_accent</item>
