@@ -56,6 +56,36 @@ class StageViewModelTests {
     }
 
     @Test
+    fun `showing overlays with no friends watching on shows the live indicator`() {
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(true)
+        subject.updateHasFriendsWatching(false)
+        subject.updateIsMe(false)
+        assertTrue(subject.getLiveIndicatorVisibility())
+    }
+
+    @Test
+    fun `showing overlays with friends watching on live stage does not show live indicator`() {
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(true)
+        subject.updateHasFriendsWatching(true)
+        subject.updateIsMe(false)
+        assertFalse(subject.getLiveIndicatorVisibility())
+    }
+
+    @Test
+    fun `showing overlays with friends watching on shows the friends watching indicator`() {
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(true)
+        subject.updateHasFriendsWatching(true)
+        subject.updateIsMe(false)
+        assertTrue(subject.getFriendsWatchingIndicatorVisiblility())
+    }
+
+    @Test
     fun `showing overlays on a live release stage with good quality hides classic live indicator`() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)

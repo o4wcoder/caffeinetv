@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
-import androidx.core.view.isInvisible
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -32,11 +31,13 @@ import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentStageBinding
+import tv.caffeine.app.lobby.formatFriendsWatchingShortString
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.formatHtmlText
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.inTransaction
@@ -72,6 +73,7 @@ class StageFragment @Inject constructor(
     private var newReyesController: NewReyesController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
+    private lateinit var stageId: String
 
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
@@ -96,7 +98,9 @@ class StageFragment @Inject constructor(
             loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = true
             connectStageJob = launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
+                stageId = userDetails.stageId
                 connectStreams(userDetails.username)
+                friendsWatchingViewModel.load(stageId)
             }
         }
         if (viewJob == null) {
@@ -135,6 +139,8 @@ class StageFragment @Inject constructor(
         stageViewModel.showPoorConnectionAnimation.observe(viewLifecycleOwner, Observer {
             if (it) poorConnectionPulseAnimator.startPulse() else poorConnectionPulseAnimator.stopPulse()
         })
+
+        configureFriendsWatchingIndicator()
 
         binding.viewModel = stageViewModel
 
@@ -329,6 +335,7 @@ class StageFragment @Inject constructor(
         binding.liveIndicator.isInvisible = !stageViewModel.getLiveIndicatorVisibility()
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
+        binding.friendsWatchingIndicator.isVisible = stageViewModel.getFriendsWatchingIndicatorVisiblility()
     }
 
     fun updateAvatarImageViewBackground() {
@@ -343,6 +350,26 @@ class StageFragment @Inject constructor(
         }
         binding.showIsOverTextView.isVisible = !broadcastIsOnline
         binding.backToLobbyButton.isVisible = !broadcastIsOnline
+    }
+
+    private fun configureFriendsWatchingIndicator() {
+        friendsWatchingViewModel.friendsWatching.observe(viewLifecycleOwner, Observer {
+            if (it.isNotEmpty()) stageViewModel.updateHasFriendsWatching(true) else stageViewModel.updateHasFriendsWatching(false)
+            val friendsWatchingString = context?.let { context -> formatFriendsWatchingShortString(context, it) }
+            if (friendsWatchingString != null) {
+                binding.friendsWatchingIndicator.formatHtmlText(friendsWatchingString)
+            } else {
+                stageViewModel.updateHasFriendsWatching(false)
+            }
+        })
+
+        binding.friendsWatchingIndicator.setOnClickListener {
+            val action =
+                StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(
+                    stageId
+                )
+            findNavController().safeNavigate(action)
+        }
     }
 
     private fun configureRenderer(renderer: SurfaceViewRenderer, feed: NewReyes.Feed?, videoTrack: VideoTrack?) {

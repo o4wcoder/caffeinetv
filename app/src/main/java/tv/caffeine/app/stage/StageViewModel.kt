@@ -19,6 +19,7 @@ class StageViewModel @Inject constructor(
     private var appbarIsVisible = false
     private var isFollowed = false
     private var isViewingProfile = false
+    private var hasFriendsWatching = false
 
     val isReleaseDesign = ObservableBoolean(releaseDesignConfig.isReleaseDesignActive())
     var usernameTextColor = R.color.white
@@ -29,9 +30,25 @@ class StageViewModel @Inject constructor(
 
     fun getGameLogoVisibility() = overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
 
-    fun getClassicLiveIndicatorTextViewVisibility() = !isReleaseDesign.get() && overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
+    fun getClassicLiveIndicatorTextViewVisibility() =
+        !isReleaseDesign.get() &&
+            overlayIsVisible &&
+            stageIsLive &&
+            feedQuality != FeedQuality.BAD
 
-    fun getLiveIndicatorVisibility() = isReleaseDesign.get() && overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
+    fun getLiveIndicatorVisibility() =
+        isReleaseDesign.get() &&
+            !hasFriendsWatching &&
+            overlayIsVisible &&
+            stageIsLive &&
+            feedQuality != FeedQuality.BAD
+
+    fun getFriendsWatchingIndicatorVisiblility() =
+        isReleaseDesign.get() &&
+            hasFriendsWatching &&
+            overlayIsVisible &&
+            stageIsLive &&
+            feedQuality != FeedQuality.BAD
 
     fun getLiveIndicatorAndAvatarContainerVisibility() = overlayIsVisible
 
@@ -71,6 +88,10 @@ class StageViewModel @Inject constructor(
     fun updateIsViewProfile(isViewingProfile: Boolean) {
         this.isViewingProfile = isViewingProfile
         updateAvatarImageBackground()
+    }
+
+    fun updateHasFriendsWatching(hasFriendsWatching: Boolean) {
+        this.hasFriendsWatching = hasFriendsWatching
     }
 
     private fun updatePoorConnectionAnimation() {
