@@ -333,6 +333,9 @@
         <argument
             android:name="caid"
             app:argType="string"/>
+        <argument
+            android:name="isDarkMode"
+            app:argType="boolean"/>
     </fragment>
     <fragment
         android:id="@+id/followingFragment"
@@ -341,6 +344,9 @@
         <argument
             android:name="caid"
             app:argType="string"/>
+        <argument
+            android:name="isDarkMode"
+            app:argType="boolean"/>
     </fragment>
     <fragment
         android:id="@+id/editBioFragment"

@@ -420,6 +420,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="StageFriendsWatchingFragmentTitle" parent="CaffeineText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="LiveIndicator" parent="CaffeineText">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>

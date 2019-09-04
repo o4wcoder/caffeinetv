@@ -86,12 +86,12 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
     }
 
     private fun showFollowingList() {
-        val action = ProfileFragmentDirections.actionProfileFragmentToFollowingFragment(caid)
+        val action = ProfileFragmentDirections.actionProfileFragmentToFollowingFragment(caid, false)
         findNavController().safeNavigate(action)
     }
 
     private fun showFollowersList() {
-        val action = ProfileFragmentDirections.actionProfileFragmentToFollowersFragment(caid)
+        val action = ProfileFragmentDirections.actionProfileFragmentToFollowersFragment(caid, false)
         findNavController().safeNavigate(action)
     }
 

@@ -84,8 +84,8 @@ class StageBroadcastProfilePagerAdapter @AssistedInject constructor(
     override fun getItem(position: Int): Fragment =
         when (position) {
             0 -> { biographyFragmentProvider.get().apply { arguments = BiographyFragmentArgs(caid).toBundle() } }
-            1 -> { followersFragmentProvider.get().apply { arguments = FollowersFragmentArgs(caid).toBundle() } }
-            2 -> { followingFragmentProvider.get().apply { arguments = FollowingFragmentArgs(caid).toBundle() } }
+            1 -> { followersFragmentProvider.get().apply { arguments = FollowersFragmentArgs(caid, true).toBundle() } }
+            2 -> { followingFragmentProvider.get().apply { arguments = FollowingFragmentArgs(caid, true).toBundle() } }
 
             else -> throw IllegalStateException("Unknown exception")
         }

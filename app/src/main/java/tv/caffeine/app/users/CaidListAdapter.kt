@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,8 @@ import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.FollowListAdapter
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
+import tv.caffeine.app.ui.configureUserIcon
+import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.FollowStarColor
 import tv.caffeine.app.util.UsernameTheming
@@ -55,12 +58,15 @@ class CaidListAdapter @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = dispatchConfig.main + job + exceptionHandler
 
+    private var navController: NavController? = null
+    private var usernameFollowStarColor: FollowStarColor = FollowStarColor.WHITE
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         if (releaseDesignConfig.isReleaseDesignActive()) {
             val context = parent.context
             val inflater = LayoutInflater.from(context)
             val binding = DataBindingUtil.inflate<CaidItemBinding>(inflater, R.layout.caid_item, parent, false)
-            ReleaseCaidViewHolder(binding, FollowManager.FollowHandler(fragmentManager, callback), this, ::onFollowStarClick)
+            ReleaseCaidViewHolder(binding, FollowManager.FollowHandler(fragmentManager, callback), this, usernameFollowStarColor, ::onFollowStarClick)
         } else {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
             ClassicCaidViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this)
@@ -71,13 +77,21 @@ class CaidListAdapter @Inject constructor(
         if (holder is ClassicCaidViewHolder) {
             holder.bind(item, followManager)
         } else {
-            (holder as ReleaseCaidViewHolder).bind(item, followManager, profileRepository)
+            (holder as ReleaseCaidViewHolder).bind(item, followManager, profileRepository, navController)
         }
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         job.cancel()
+    }
+
+    fun setNavController(navController: NavController?) {
+        this.navController = navController
+    }
+
+    fun setUsernameFollowStarColor(color: FollowStarColor) {
+        this.usernameFollowStarColor = color
     }
 }
 
@@ -121,6 +135,7 @@ class ReleaseCaidViewHolder(
     private val binding: CaidItemBinding,
     private val followHandler: FollowManager.FollowHandler,
     private val scope: CoroutineScope,
+    private val usernameFollowStarColor: FollowStarColor,
     onFollowStarClick: (user: User, isFollowing: Boolean) -> Unit
 ) :
     RecyclerView.ViewHolder(binding.root) {
@@ -128,20 +143,32 @@ class ReleaseCaidViewHolder(
     var followButton: Button? = null
 
     init {
-        binding.followStarViewModel = FollowStarViewModel(itemView.context, FollowStarColor.WHITE, onFollowStarClick)
+        binding.followStarViewModel = FollowStarViewModel(itemView.context, usernameFollowStarColor, onFollowStarClick)
         binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 
     var job: Job? = null
 
-    fun bind(item: CaidRecord, followManager: FollowManager, profileRepository: ProfileRepository) {
+    /*
+    If this adapter is being used in a BottomSheetDialogFragment, then it wont have a navController and the navController from the dialog's
+    activity will have to be passed to this bind function.
+     */
+    fun bind(item: CaidRecord, followManager: FollowManager, profileRepository: ProfileRepository, navController: NavController? = null) {
         job?.cancel()
         clear()
         job = scope.launch {
             val user = followManager.userDetails(item.caid) ?: return@launch
             val userProfile = profileRepository.getUserProfile(user.username)
-            user.configure(binding.avatarImageView, binding.usernameTextView, followButton, followManager, true, followHandler, R.dimen.avatar_size,
-                UsernameTheming.STANDARD_DARK)
+            binding.avatarImageView.loadAvatar(user.avatarImageUrl, false, R.dimen.avatar_size, true)
+            binding.usernameTextView.apply {
+                text = user.username
+                setTextColor(resources.getColor(usernameFollowStarColor.color, null))
+                configureUserIcon(when {
+                    user.isVerified -> R.drawable.verified
+                    user.isCaster -> R.drawable.caster
+                    else -> 0
+                })
+            }
 
             userProfile?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it.isLive }
 
@@ -154,7 +181,7 @@ class ReleaseCaidViewHolder(
         }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalProfileFragment(item.caid)
-            itemView.findNavController().safeNavigate(action)
+            navController?.let { it.safeNavigate(action) } ?: itemView.findNavController().safeNavigate(action)
         }
     }
 
