@@ -8,11 +8,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
+import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.User
+import tv.caffeine.app.notifications.FollowNotification
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.maybeShow
 import javax.inject.Inject
@@ -51,7 +53,11 @@ abstract class FollowListAdapter<T, VH : RecyclerView.ViewHolder> (diffCallback:
 
         private fun updateItem(caid: CAID) {
             for (i in 0 until itemCount) {
-                if ((getItem(i) as CaidRecord).caid == caid) {
+                if ((getItem(i) as? CaidRecord)?.caid == caid) {
+                    notifyItemChanged(i)
+                } else if ((getItem(i) as? SearchUserItem)?.user?.caid == caid) {
+                    notifyItemChanged(i)
+                } else if ((getItem(i) as? FollowNotification)?.caid?.caid == caid) {
                     notifyItemChanged(i)
                 }
             }
