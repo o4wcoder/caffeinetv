@@ -29,6 +29,13 @@
 
     <style name="AppTheme" parent="BaseAppTheme"/>
 
+    <style name="AppTheme.Release">
+        <item name="colorAccent">@color/pure_blue</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item> <!-- the back arrow in the toolbar -->
+    </style>
+
     <!-- Dialog -->
     <style name="AlertDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
         <item name="android:textAllCaps">false</item>
@@ -131,7 +138,9 @@
         <item name="android:backgroundTint">@color/black</item>
     </style>
 
-    <style name="MenuTextView" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+    <style name="MenuTextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/menu_text_view_background</item>
         <item name="android:gravity">start</item>
         <item name="android:paddingStart">@dimen/margin</item>

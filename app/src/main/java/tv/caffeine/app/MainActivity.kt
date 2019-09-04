@@ -118,6 +118,9 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         navController = findNavController(R.id.activity_main)
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            setTheme(R.style.AppTheme_Release)
+        }
         setAppBar(binding, navController)
         setBottomNavigation(binding)
         setShakeDetector()
