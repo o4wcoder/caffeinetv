@@ -34,9 +34,9 @@ class GoldAndCreditsFragment @Inject constructor(
         binding.walletViewModel = walletViewModel
         val numberFormat = NumberFormat.getIntegerInstance()
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
-            binding.goldBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.gold_formatted, numberFormat.format(wallet.gold)))
-            binding.creditBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.credits_formatted, numberFormat.format(wallet.credits)))
-            binding.cumulativeCreditBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.credits_formatted, numberFormat.format(wallet.cumulativeCredits)))
+            binding.goldBalanceTextView.text = numberFormat.format(wallet.gold)
+            binding.creditBalanceTextView.text = numberFormat.format(wallet.credits)
+            binding.cumulativeCreditBalanceTextView.text = numberFormat.format(wallet.cumulativeCredits)
         })
         binding.transactionHistoryButton.setOnClickListener {
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToTransactionHistoryFragment()
