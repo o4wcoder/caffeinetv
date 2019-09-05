@@ -25,6 +25,7 @@ class MessageViewModel(
     val callback: ChatMessageAdapter.Callback?
 ) : CaffeineViewModel() {
 
+    var rawMessageText: String? = null; private set
     var messageText: Spannable? = null; private set
     var messageTextColor = getColor(R.color.white); private set
     var messageBackgroundColor = getColor(R.color.chat_bubble_dark_gray_not_follow); private set
@@ -37,6 +38,7 @@ class MessageViewModel(
     var avatarImageViewVisibility = View.VISIBLE; private set
     var highlightVisibility = View.GONE; private set
     var mentionSelfDecorationImageViewVisibility = View.GONE; private set
+    var digitalItemImageUrl = ""; private set
 
     private var isHighlightMode = false
     private var message: Message? = null
@@ -48,6 +50,10 @@ class MessageViewModel(
             username = it.username
             avatarImageUrl = it.avatarImageUrl
         }
+        message.body.digitalItem?.let {
+            digitalItemImageUrl = it.previewImageUrl
+        }
+        rawMessageText = message.body.text
         messageText = highlightUsernames(message.body.text.insertLineBreakAfterFirstMention()) {
             TextAppearanceSpan(context, message.userReferenceStyle(followManager, true))
         }
@@ -109,6 +115,7 @@ class MessageViewModel(
     private fun updateHighlightMode() {
         avatarImageViewVisibility = getVisibility(!isHighlightMode, View.INVISIBLE)
         highlightVisibility = getVisibility(isHighlightMode)
+        upvoteTextViewVisbility = getVisibility(!isHighlightMode && message?.endorsementCount ?: 0 > 0)
         notifyChange()
     }
 

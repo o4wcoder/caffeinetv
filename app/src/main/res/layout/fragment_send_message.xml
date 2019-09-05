@@ -61,7 +61,7 @@
             style="@style/CaffeineText.Medium"
             android:id="@+id/send_text"
             android:layout_width="wrap_content"
-            android:layout_height="24sp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:background="@drawable/ic_btn_send"
             android:gravity="center"

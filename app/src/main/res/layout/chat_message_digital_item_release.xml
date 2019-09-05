@@ -17,6 +17,20 @@
         tools:background="#000000"
         tools:ignore="RtlSymmetry">
 
+        <ImageView
+            android:id="@+id/digital_item_image_view"
+            android:layout_width="@dimen/digital_item_size_release"
+            android:layout_height="@dimen/digital_item_size_release"
+            android:layout_marginBottom="20dp"
+            android:elevation="3dp"
+            android:contentDescription="@string/digital_item"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/speech_bubble_text_view"
+            app:rawImageUrl="@{viewModel.digitalItemImageUrl}"
+            tools:srcCompat="@drawable/ic_digital_items"
+            tools:tint="@color/cyan"/>
+
         <TextView
             style="@style/StageChatText"
             android:id="@+id/speech_bubble_text_view"
@@ -24,15 +38,15 @@
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="19dp"
-            android:text="@{viewModel.messageText}"
-            android:textColor="@{viewModel.messageTextColor}"
+            android:text="@{viewModel.rawMessageText}"
             android:background="@drawable/chat_bubble_release"
-            android:backgroundTint="@{viewModel.messageBackgroundColor}"
+            android:backgroundTint="@color/black"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:maxLines="4"
+            android:paddingBottom="4dp"
+            android:maxLines="1"
             android:ellipsize="end"
-            android:gravity="center_vertical"
+            android:gravity="bottom|center_horizontal"
             android:onClick="@{() -> viewModel.onMessageClicked()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{viewModel.upvoteText}"
-            android:background="@drawable/message_upvote_bg"
+            android:background="@drawable/polygon_6_sides"
             android:backgroundTint="@{viewModel.upvoteBackground}"
             android:gravity="center"
             android:elevation="3dp"
@@ -118,29 +132,6 @@
             android:elevation="1dp"
             app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
             app:layout_constraintTop_toTopOf="@+id/speech_bubble_text_view"
-            tools:ignore="ContentDescription"/>
-
-        <ImageView
-            android:id="@+id/bottom_pointer_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/message_bottom_pointer"
-            android:tint="@{viewModel.messageBackgroundColor}"
-            app:layout_constraintStart_toStartOf="@+id/speech_bubble_text_view"
-            app:layout_constraintTop_toBottomOf="@+id/speech_bubble_text_view"
-            tools:ignore="ContentDescription"/>
-
-        <ImageView
-            android:id="@+id/mention_self_decoration_image_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/message_mention_self_decoration"
-            android:background="@drawable/message_mention_self_decoration_background"
-            android:scaleType="fitStart"
-            android:visibility="@{viewModel.mentionSelfDecorationImageViewVisibility}"
-            app:layout_constraintStart_toStartOf="@+id/speech_bubble_text_view"
-            app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
-            app:layout_constraintBottom_toBottomOf="@+id/bottom_pointer_image_view"
             tools:ignore="ContentDescription"/>
 
         <!-- Views below are for the highlight mode -->

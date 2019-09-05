@@ -37,7 +37,8 @@ class MessageViewModelTests {
         every { user.username } returns "username123"
         every { user.avatarImageUrl } returns "https://avatar.com/image.jpg"
         every { message.publisher } returns user
-        every { message.body } returns Message.Body("text")
+        every { message.body.text } returns "text"
+        every { message.body.digitalItem } returns null
         every { message.endorsementCount } returns 0
         every { followManager.currentUserDetails() } returns user
         every { followManager.isSelf(any()) } returns false
@@ -165,6 +166,28 @@ class MessageViewModelTests {
         assertEquals(View.VISIBLE, subject.highlightVisibility)
         subject.updateMessage(message)
         assertEquals(View.GONE, subject.highlightVisibility)
+    }
+
+    @Test
+    fun `the upvote text hides in the highlighted mode and shows otherwise`() {
+        every { message.endorsementCount } returns 1
+        subject.updateMessage(message)
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+        subject.onMessageClicked()
+        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        subject.onMessageClicked()
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+    }
+
+    @Test
+    fun `the upvote text never shows if the count is 0`() {
+        every { message.endorsementCount } returns 0
+        subject.updateMessage(message)
+        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        subject.onMessageClicked()
+        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        subject.onMessageClicked()
+        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
     }
 
     @Test

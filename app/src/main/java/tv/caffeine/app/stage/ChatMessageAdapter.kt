@@ -24,6 +24,7 @@ import tv.caffeine.app.chat.userReferenceStyle
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
 import tv.caffeine.app.databinding.ChatMessageBubbleReleaseBinding
 import tv.caffeine.app.databinding.ChatMessageDigitalItemBinding
+import tv.caffeine.app.databinding.ChatMessageDigitalItemReleaseBinding
 import tv.caffeine.app.databinding.ChatMessageDummyBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
@@ -62,7 +63,16 @@ class ChatMessageAdapter @Inject constructor(
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (type) {
             Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(layoutInflater, parent, false))
-            Message.Type.digital_item -> ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false), picasso, callback, releaseDesignConfig)
+            Message.Type.digital_item -> {
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    ReleaseDigitalItemViewHolder(
+                        ChatMessageDigitalItemReleaseBinding.inflate(layoutInflater, parent, false),
+                        followManager, callback)
+                } else {
+                    ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false),
+                        picasso, callback, releaseDesignConfig)
+                }
+            }
             else -> {
                 if (releaseDesignConfig.isReleaseDesignActive()) {
                     ReleaseMessageViewHolder(ChatMessageBubbleReleaseBinding.inflate(layoutInflater, parent, false),
@@ -164,6 +174,24 @@ class ReleaseMessageViewHolder(
     val callback: ChatMessageAdapter.Callback?
 ) : ChatMessageViewHolder(binding.root) {
 
+    private val viewModel = MessageViewModel(itemView.context, followManager, callback)
+
+    init {
+        binding.viewModel = viewModel
+    }
+
+    // TODO (david): Remove the FollowManager param.
+    override fun bind(message: Message, followManager: FollowManager) {
+        viewModel.updateMessage(message)
+        binding.executePendingBindings()
+    }
+}
+
+class ReleaseDigitalItemViewHolder(
+    val binding: ChatMessageDigitalItemReleaseBinding,
+    val followManager: FollowManager,
+    val callback: ChatMessageAdapter.Callback?
+) : ChatMessageViewHolder(binding.root) {
     private val viewModel = MessageViewModel(itemView.context, followManager, callback)
 
     init {
