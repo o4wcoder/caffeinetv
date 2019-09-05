@@ -44,6 +44,7 @@ class LobbyCardsOfflineBroadcasterTests {
         MockKAnnotations.init(this)
         context = InstrumentationRegistry.getInstrumentation().context
         previousBroadcast = makePreviousBroadcast()
+        every { followManager.isSelf(any()) } returns false
         coEvery { lobbyImpressionAnalytics.sendImpressionEventData(any()) } just Runs
     }
 

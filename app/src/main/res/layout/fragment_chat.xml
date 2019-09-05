@@ -1,6 +1,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="viewModel"
                   type="tv.caffeine.app.stage.ChatViewModel">
@@ -13,127 +13,159 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messages_recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="256dp"
+            android:layout_width="match_parent"
+            android:layout_height="@{viewModel.releaseDesignConfig.releaseDesignActive ? @dimen/stage_release_chat_container_height : @dimen/stage_classic_chat_container_height, default=@dimen/stage_release_chat_container_height}"
+            android:layout_marginBottom="@{viewModel.releaseDesignConfig.releaseDesignActive ? @dimen/stage_release_chat_container_margin_bottom : @dimen/stage_classic_chat_container_margin_bottom, default=@dimen/stage_release_chat_container_margin_bottom}"
             app:layoutManager="tv.caffeine.app.ui.ChatLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/bottom_stage_toolbar"
+            app:layout_constraintBottom_toTopOf="@id/chat_button_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:spanCount="@integer/chat_column_count"
             tools:itemCount="4"
             tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            tools:listitem="@layout/chat_message_bubble"/>
+            tools:listitem="@layout/chat_message_bubble_release"/>
 
         <TextView
             style="@style/SaySomethingText"
             android:id="@+id/say_something_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.saySomethingTextVisibility}"
-            app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="@{viewModel.classicSaySomethingTextVisibility}"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/messages_recycler_view"
+            app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view"
             app:broadcasterUserName="@{viewModel.broadcasterUserName}"
             app:userProfile="@{viewModel.userProfile}"
             tools:text="Say something to\n\nCaffeine\n ↓"/>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/bottom_stage_toolbar"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:visibility="@{viewModel.releaseSaySomethingTextVisibility}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/messages_recycler_view"
+            app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view">
+
+            <TextView
+                style="@style/CaffeineText.Light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/say_something_to"
+                android:textColor="@color/white"/>
+
+            <TextView
+                style="@style/CaffeineText.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{viewModel.broadcasterUserName}"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                tools:text="caffeine"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/ic_arrow_down"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chat_button_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingStart="0dp"
+            android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/chat_button_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <ImageButton
+                style="@android:style/Widget.Material.ActionButton"
+                android:id="@+id/gift_button"
+                android:layout_width="@dimen/stage_bottom_icon"
+                android:layout_height="@dimen/stage_bottom_icon"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/gift_button_content_description"
+                android:tint="@{viewModel.bottomButtonTint}"
+                android:visibility="@{viewModel.giftButtonVisibility}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/react_button"
+                app:layout_constraintStart_toEndOf="@+id/chat_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_digital_items" />
 
-                <ImageButton
-                    style="@android:style/Widget.Material.ActionButton"
-                    android:id="@+id/gift_button"
-                    android:layout_width="@dimen/stage_bottom_icon"
-                    android:layout_height="@dimen/stage_bottom_icon"
-                    android:layout_marginEnd="16dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/gift_button_content_description"
-                    android:tint="@color/white"
-                    android:visibility="@{viewModel.giftButtonVisibility}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/react_button"
-                    app:layout_constraintStart_toEndOf="@+id/chat_button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_digital_items" />
+            <TextView
+                style="@style/ChatReactButtonText"
+                android:id="@+id/react_button"
+                android:layout_width="@dimen/chat_react_button_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@drawable/ic_btn_react"
+                android:text="@string/chat_react_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/share_button"
+                app:layout_constraintStart_toEndOf="@+id/gift_button"
+                app:layout_constraintTop_toTopOf="parent" />
 
-
-                <Button
-                    android:id="@+id/react_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/chat_react_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/share_button"
-                    app:layout_constraintStart_toEndOf="@+id/gift_button" />
-
-                <ImageButton
-                    style="@android:style/Widget.Material.ActionButton"
-                    android:id="@+id/share_button"
-                    android:layout_width="@dimen/stage_bottom_icon"
-                    android:layout_height="@dimen/stage_bottom_icon"
-                    android:layout_marginStart="16dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/share_button_content_description"
-                    android:paddingBottom="6dp"
-                    android:tint="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/react_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_share_dark" />
+            <ImageButton
+                style="@android:style/Widget.Material.ActionButton"
+                android:id="@+id/share_button"
+                android:layout_width="@dimen/stage_bottom_icon"
+                android:layout_height="@dimen/stage_bottom_icon"
+                android:layout_marginStart="16dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/share_button_content_description"
+                android:paddingBottom="4dp"
+                android:tint="@{viewModel.bottomButtonTint}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/react_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_share_dark" />
 
 
-                <ImageButton
-                    style="@android:style/Widget.Material.ActionButton"
-                    android:id="@+id/chat_button"
-                    android:layout_width="@dimen/stage_bottom_icon"
-                    android:layout_height="@dimen/stage_bottom_icon"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/chat_button_content_description"
-                    android:paddingTop="4dp"
-                    android:tint="@color/white"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/gift_button"
-                    app:layout_constraintStart_toEndOf="@+id/share_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_messages" />
+            <ImageButton
+                style="@android:style/Widget.Material.ActionButton"
+                android:id="@+id/chat_button"
+                android:layout_width="@dimen/stage_bottom_icon"
+                android:layout_height="@dimen/stage_bottom_icon"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/chat_button_content_description"
+                android:paddingTop="4dp"
+                android:tint="@color/white"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/gift_button"
+                app:layout_constraintStart_toEndOf="@+id/share_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_messages" />
 
 
-                <ImageButton
-                    style="@android:style/Widget.Material.ActionButton"
-                    android:id="@+id/friends_watching_button"
-                    android:layout_width="@dimen/stage_bottom_icon"
-                    android:layout_height="@dimen/stage_bottom_icon"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/friends_watching_button_content_description"
-                    android:padding="@dimen/avatar_toolbar_padding"
-                    android:scaleType="centerCrop"
-                    android:tint="@color/white"
-                    android:visibility="@{viewModel.friendsWatchingButtonVisibility}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/gift_button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_profile" />
+            <ImageButton
+                style="@android:style/Widget.Material.ActionButton"
+                android:id="@+id/friends_watching_button"
+                android:layout_width="@dimen/stage_bottom_icon"
+                android:layout_height="@dimen/stage_bottom_icon"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/friends_watching_button_content_description"
+                android:padding="@dimen/avatar_toolbar_padding"
+                android:scaleType="centerCrop"
+                android:tint="@color/white"
+                android:visibility="@{viewModel.friendsWatchingButtonVisibility}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/gift_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_profile" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.appcompat.widget.Toolbar>
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

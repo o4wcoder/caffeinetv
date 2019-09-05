@@ -16,17 +16,19 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Message
 import tv.caffeine.app.chat.chatBubbleBackground
+import tv.caffeine.app.chat.chatMessageTextColor
 import tv.caffeine.app.chat.endorsementCountBackgroundResId
 import tv.caffeine.app.chat.endorsementTextColorResId
 import tv.caffeine.app.chat.highlightUsernames
 import tv.caffeine.app.chat.userReferenceStyle
 import tv.caffeine.app.databinding.ChatMessageBubbleBinding
+import tv.caffeine.app.databinding.ChatMessageBubbleReleaseBinding
 import tv.caffeine.app.databinding.ChatMessageDigitalItemBinding
+import tv.caffeine.app.databinding.ChatMessageDigitalItemReleaseBinding
 import tv.caffeine.app.databinding.ChatMessageDummyBinding
-import tv.caffeine.app.di.ThemeFollowedChat
-import tv.caffeine.app.di.ThemeNotFollowedChat
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.safeNavigate
 import java.text.NumberFormat
@@ -34,9 +36,8 @@ import javax.inject.Inject
 
 class ChatMessageAdapter @Inject constructor(
     private val followManager: FollowManager,
-    @ThemeFollowedChat private val followedTheme: UserTheme,
-    @ThemeNotFollowedChat private val notFollowedTheme: UserTheme,
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : ListAdapter<Message, ChatMessageViewHolder>(
         object : DiffUtil.ItemCallback<Message>() {
             override fun areItemsTheSame(oldItem: Message, newItem: Message) = oldItem.type == newItem.type && oldItem.id == newItem.id
@@ -48,6 +49,7 @@ class ChatMessageAdapter @Inject constructor(
     interface Callback {
         fun replyClicked(message: Message)
         fun upvoteClicked(message: Message)
+        fun usernameClicked(userHandle: String)
     }
 
     var callback: Callback? = null
@@ -61,25 +63,47 @@ class ChatMessageAdapter @Inject constructor(
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (type) {
             Message.Type.dummy -> DummyMessageViewHolder(ChatMessageDummyBinding.inflate(layoutInflater, parent, false))
-            Message.Type.digital_item -> ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false), picasso, callback)
-            else -> MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false), picasso, callback)
+            Message.Type.digital_item -> {
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    ReleaseDigitalItemViewHolder(
+                        ChatMessageDigitalItemReleaseBinding.inflate(layoutInflater, parent, false),
+                        followManager, callback)
+                } else {
+                    ChatDigitalItemViewHolder(ChatMessageDigitalItemBinding.inflate(layoutInflater, parent, false),
+                        picasso, callback, releaseDesignConfig)
+                }
+            }
+            else -> {
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    ReleaseMessageViewHolder(ChatMessageBubbleReleaseBinding.inflate(layoutInflater, parent, false),
+                        followManager, callback)
+                } else {
+                    MessageViewHolder(ChatMessageBubbleBinding.inflate(layoutInflater, parent, false),
+                        picasso, callback, releaseDesignConfig)
+                }
+            }
         }
     }
 
     override fun onBindViewHolder(holder: ChatMessageViewHolder, position: Int) {
-        holder.bind(getItem(position), followManager, followedTheme, notFollowedTheme)
+        holder.bind(getItem(position), followManager)
     }
 }
 
 sealed class ChatMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    abstract fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme)
+    abstract fun bind(message: Message, followManager: FollowManager)
 }
 
 private fun View.toggleVisibility() {
     isVisible = !isVisible
 }
 
-class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Picasso, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
+class MessageViewHolder(
+    val binding: ChatMessageBubbleBinding,
+    val picasso: Picasso,
+    val callback: ChatMessageAdapter.Callback?,
+    val releaseDesignConfig: ReleaseDesignConfig
+) : ChatMessageViewHolder(binding.root) {
 
     private val numberFormat = NumberFormat.getInstance()
 
@@ -95,23 +119,31 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Pica
         binding.upvoteTextView.isVisible = false
     }
 
-    override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    override fun bind(message: Message, followManager: FollowManager) {
+        val isRelease = releaseDesignConfig.isReleaseDesignActive()
+
         if (followManager.isSelf(message.publisher.caid)) {
             itemView.setOnClickListener(null)
         } else {
             itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
         }
         hideInteractionOverlay()
+
+        val userNameTheme = UsernameTheming.getChatTheme(isRelease)
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
-                R.dimen.avatar_size, followedTheme, notFollowedTheme)
+                R.dimen.avatar_size, userNameTheme)
         val caid = message.publisher.caid
         binding.avatarImageView.setOnClickListener { viewProfile(caid) }
         binding.usernameTextView.setOnClickListener { viewProfile(caid) }
-        val userReferenceStyle = message.userReferenceStyle(followManager)
+
+        val chatMessageTextColor = ContextCompat.getColor(itemView.context, message.chatMessageTextColor(followManager, isRelease))
+        binding.speechBubbleTextView.setTextColor(chatMessageTextColor)
+        val userReferenceStyle = message.userReferenceStyle(followManager, isRelease)
         binding.speechBubbleTextView.text = highlightUsernames(message.body.text) {
             TextAppearanceSpan(itemView.context, userReferenceStyle)
         }
-        val background = message.chatBubbleBackground(followManager)
+
+        val background = message.chatBubbleBackground(followManager, isRelease)
         val tintList = ContextCompat.getColorStateList(itemView.context, background)
         binding.speechBubbleTextView.backgroundTintList = tintList
         binding.speechBubbleTriangle.imageTintList = tintList
@@ -136,7 +168,44 @@ class MessageViewHolder(val binding: ChatMessageBubbleBinding, val picasso: Pica
     }
 }
 
-class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val picasso: Picasso, val callback: ChatMessageAdapter.Callback?) : ChatMessageViewHolder(binding.root) {
+class ReleaseMessageViewHolder(
+    val binding: ChatMessageBubbleReleaseBinding,
+    val followManager: FollowManager,
+    val callback: ChatMessageAdapter.Callback?
+) : ChatMessageViewHolder(binding.root) {
+
+    private val viewModel = MessageViewModel(itemView.context, followManager, callback)
+
+    init {
+        binding.viewModel = viewModel
+    }
+
+    // TODO (david): Remove the FollowManager param.
+    override fun bind(message: Message, followManager: FollowManager) {
+        viewModel.updateMessage(message)
+        binding.executePendingBindings()
+    }
+}
+
+class ReleaseDigitalItemViewHolder(
+    val binding: ChatMessageDigitalItemReleaseBinding,
+    val followManager: FollowManager,
+    val callback: ChatMessageAdapter.Callback?
+) : ChatMessageViewHolder(binding.root) {
+    private val viewModel = MessageViewModel(itemView.context, followManager, callback)
+
+    init {
+        binding.viewModel = viewModel
+    }
+
+    // TODO (david): Remove the FollowManager param.
+    override fun bind(message: Message, followManager: FollowManager) {
+        viewModel.updateMessage(message)
+        binding.executePendingBindings()
+    }
+}
+
+class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val picasso: Picasso, val callback: ChatMessageAdapter.Callback?, val releaseDesignConfig: ReleaseDesignConfig) : ChatMessageViewHolder(binding.root) {
 
     private val numberFormat = NumberFormat.getInstance()
 
@@ -152,19 +221,22 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
         binding.upvoteTextView.isVisible = false
     }
 
-    override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    override fun bind(message: Message, followManager: FollowManager) {
+        val isRelease = releaseDesignConfig.isReleaseDesignActive()
+
         if (followManager.isSelf(message.publisher.caid)) {
             itemView.setOnClickListener(null)
         } else {
             itemView.setOnClickListener { toggleInteractionOverlayVisibility() }
         }
         hideInteractionOverlay()
+        val userNameTheme = UsernameTheming.getChatTheme(isRelease)
         message.publisher.configure(binding.avatarImageView, binding.usernameTextView, null, followManager, false, null,
-                R.dimen.avatar_size, followedTheme, notFollowedTheme)
+                R.dimen.avatar_size, userNameTheme)
         val caid = message.publisher.caid
-        binding.avatarImageView.setOnClickListener { viewProfile(caid) }
-        binding.usernameTextView.setOnClickListener { viewProfile(caid) }
-        val userReferenceStyle = message.userReferenceStyle(followManager)
+        binding.avatarImageView.setOnClickListener { callback?.usernameClicked(caid) }
+        binding.usernameTextView.setOnClickListener { callback?.usernameClicked(caid) }
+        val userReferenceStyle = message.userReferenceStyle(followManager, isRelease)
         binding.speechBubbleTextView.text = highlightUsernames(message.body.text) {
             TextAppearanceSpan(itemView.context, userReferenceStyle)
         }
@@ -199,14 +271,9 @@ class ChatDigitalItemViewHolder(val binding: ChatMessageDigitalItemBinding, val 
             callback?.upvoteClicked(message)
         }
     }
-
-    private fun viewProfile(caid: CAID) {
-        val action = MainNavDirections.actionGlobalProfileFragment(caid)
-        itemView.findNavController().safeNavigate(action)
-    }
 }
 
 class DummyMessageViewHolder(binding: ChatMessageDummyBinding) : ChatMessageViewHolder(binding.root) {
-    override fun bind(message: Message, followManager: FollowManager, followedTheme: UserTheme, notFollowedTheme: UserTheme) {
+    override fun bind(message: Message, followManager: FollowManager) {
     }
 }

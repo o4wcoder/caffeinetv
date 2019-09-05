@@ -30,6 +30,7 @@ import tv.caffeine.app.social.TwitterAuthForSettings
 import tv.caffeine.app.stage.DICatalogFragment
 import tv.caffeine.app.stage.FriendsWatchingFragment
 import tv.caffeine.app.stage.SendDigitalItemFragment
+import tv.caffeine.app.stage.StageBroadcastProfilePagerFragment
 import tv.caffeine.app.stage.StageFragment
 import tv.caffeine.app.stage.StagePagerFragment
 import tv.caffeine.app.users.FollowersFragment
@@ -191,4 +192,9 @@ abstract class FragmentBindingModule {
     @IntoMap
     @FragmentKey(ArkoseFragment::class)
     abstract fun bindArkoseFragment(fragment: ArkoseFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(StageBroadcastProfilePagerFragment::class)
+    abstract fun bindStageBroadcastProfilePagerFragment(fragment: StageBroadcastProfilePagerFragment): Fragment
 }

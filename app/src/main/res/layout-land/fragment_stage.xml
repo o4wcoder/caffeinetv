@@ -9,8 +9,8 @@
             name="userProfile"
             type="tv.caffeine.app.profile.UserProfile"/>
         <variable
-            name="isReleaseDesign"
-            type="Boolean"/>
+            name="viewModel"
+            type="tv.caffeine.app.stage.StageViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -141,7 +141,6 @@
             android:id="@+id/live_indicator_and_avatar_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/stage_appbar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -202,12 +201,34 @@
 
                 <TextView
                     style="@style/LiveIndicator"
-                    android:id="@+id/live_indicator_text_view"
+                    android:id="@+id/classic_live_indicator_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/live_indicator"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
+
+                <ImageView
+                    android:id="@+id/live_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/pure_blue"
+                    android:src="@drawable/ic_live_indicator"
+                    android:contentDescription="@string/live_indicator_lowercase"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    style="@style/LobbyCardLiveBadge"
+                    android:id="@+id/friends_watching_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/swipe_button"
@@ -216,7 +237,8 @@
                     android:src="@drawable/ic_swipe_stage"
                     android:contentDescription="@string/stage_swipe_image_content_description"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -242,6 +264,7 @@
                 android:paddingTop="24dp"
                 android:paddingBottom="12dp"
                 android:background="@drawable/gradient_overlay_stage_bottom"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
@@ -251,7 +274,6 @@
                     android:layout_width="@dimen/avatar_size"
                     android:layout_height="@dimen/avatar_size"
                     android:src="@drawable/default_avatar_round"
-                    android:background="@{userProfile.isFollowed ? @drawable/circle_white_with_blue_rim : @drawable/circle_white}"
                     android:padding="2dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -268,7 +290,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="@{userProfile.username}"
-                    android:textColor="@{userProfile.isFollowed ? @color/caffeine_blue : @color/white}"
+                    android:textColor="@color/white"
                     app:userIcon="@{userProfile.userIcon}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/broadcast_title_text_view"
@@ -282,7 +304,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/follow_button"
-                    android:visibility="@{userProfile.shouldShowFollow &amp;&amp; !isReleaseDesign ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{userProfile.shouldShowFollow &amp;&amp; !viewModel.isReleaseDesign ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toTopOf="@+id/username_text_view"
                     app:layout_constraintBottom_toBottomOf="@+id/username_text_view"
                     app:layout_constraintStart_toEndOf="@+id/username_text_view"/>

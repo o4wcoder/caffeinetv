@@ -2,9 +2,11 @@ package tv.caffeine.app.lobby.release
 
 import android.graphics.Rect
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +32,11 @@ import tv.caffeine.app.stage.NewReyesController
 import tv.caffeine.app.util.fadeOut
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 
-sealed class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+sealed class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    fun setItemViewType(item: LobbyItem) {
+        itemView.tag = item.itemType
+    }
+}
 
 class ReleaseHeaderCard(
     private val viewBinding: ReleaseUiHeaderBinding
@@ -53,6 +59,7 @@ class ReleaseSubtitleCard(
 class LargeOnlineBroadcasterCard @AssistedInject constructor(
     @Assisted private val binding: ReleaseUiOnlineBroadcasterCardBinding,
     @Assisted private val scope: CoroutineScope,
+    @Assisted private val lifecycleOwner: LifecycleOwner,
     private val stageControllerFactory: NewReyesController.Factory,
     private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val autoPlayConfig: AutoPlayConfig
@@ -62,7 +69,8 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
     interface Factory {
         fun create(
             binding: ReleaseUiOnlineBroadcasterCardBinding,
-            scope: CoroutineScope
+            scope: CoroutineScope,
+            lifecycleOwner: LifecycleOwner
         ): LargeOnlineBroadcasterCard
     }
 
@@ -70,6 +78,12 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
         turnOffLiveVideo()
         binding.viewModel = onlineBroadcaster
         turnOnLiveVideo(onlineBroadcaster.broadcaster)
+        onlineBroadcaster.isFollowing.observe(lifecycleOwner, Observer {
+            binding.followButtonLayout.followButton.apply {
+                val drawableId = if (it == true) R.drawable.star_filled else R.drawable.star_outline
+                setImageDrawable(ContextCompat.getDrawable(context, drawableId))
+            }
+        })
     }
 
     override var frameListener: EglRenderer.FrameListener? = null
@@ -95,16 +109,24 @@ class LargeOnlineBroadcasterCard @AssistedInject constructor(
                 startLiveVideo(renderer, controller) {
                     binding.previewImageView.fadeOut()
                     binding.pipImageView.fadeOut()
-                    binding.gameLogoImageView.fadeOut()
                 }
             }
         }
     }
 }
 
-class OfflineBroadcasterCard(val binding: ReleaseUiOfflineBroadcasterCardBinding) : CardViewHolder(binding.root) {
+class OfflineBroadcasterCard(
+    val binding: ReleaseUiOfflineBroadcasterCardBinding,
+    val lifecycleOwner: LifecycleOwner
+) : CardViewHolder(binding.root) {
     fun bind(offlineBroadcaster: OfflineBroadcaster) {
         binding.viewModel = offlineBroadcaster
+        offlineBroadcaster.isFollowing.observe(lifecycleOwner, Observer {
+            binding.followButtonLayout.followButton.apply {
+                val drawableId = if (it == true) R.drawable.star_filled else R.drawable.star_outline
+                setImageDrawable(ContextCompat.getDrawable(context, drawableId))
+            }
+        })
     }
 }
 
@@ -132,11 +154,14 @@ class HorizontalScrollCard @AssistedInject constructor(
     }
 
     private val snapHelper = LinearSnapHelper()
-    private val edgeOffset = binding.root.resources.getDimension(R.dimen.lobby_card_side_margin).toInt()
+    private val edgeOffset = binding.root.resources.getDimension(R.dimen.release_lobby_card_side_margin).toInt()
     private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
-    private val lobbyAdapter = lobbyAdapterFactory.create(lifecycleOwner, navController)
+    private val lobbyAdapter = lobbyAdapterFactory.create(lifecycleOwner, navController).apply { isMiniStyle = true }
 
     init {
+        // TODO (David) Remove the bottom padding from the xml so we don't need to set to 0 here.
+        // The XML is used in the classic UI and the bottom padding was added for the shadow.
+        binding.cardListRecyclerView.setPadding(0, 0, 0, 0)
         binding.cardListRecyclerView.adapter = lobbyAdapter
         binding.cardListRecyclerView.run {
             addItemDecoration(object : RecyclerView.ItemDecoration() {

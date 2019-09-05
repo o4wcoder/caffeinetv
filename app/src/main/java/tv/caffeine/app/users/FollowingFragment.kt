@@ -22,6 +22,7 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.FollowStarColor
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
@@ -35,6 +36,8 @@ class FollowingFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = UserListFragmentBinding.bind(view)
         caidListAdapter.fragmentManager = fragmentManager
+        val usernameFollowstarColor = if (args.isDarkMode) FollowStarColor.WHITE else FollowStarColor.BLACK
+        caidListAdapter.setUsernameFollowStarColor(usernameFollowstarColor)
         binding.userListRecyclerView.apply {
             adapter = caidListAdapter
             setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))

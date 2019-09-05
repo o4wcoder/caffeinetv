@@ -40,7 +40,8 @@ enum class Feature(private val featureName: String) {
     REYES_V5("reyes_v5"),
     LIVE_IN_THE_LOBBY("f316ship"),
     LIVE_IN_THE_LOBBY_DEBUG("f316"),
-    RELEASE_DESIGN("design_v0");
+    RELEASE_DESIGN("design_v0"),
+    DEV_OPTIONS("dev_options");
 
     override fun toString(): String {
         return featureName

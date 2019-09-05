@@ -18,6 +18,7 @@
     <dimen name="avatar_toolbar_padding">12dp</dimen>
     <dimen name="avatar_rim_size_large">4dp</dimen>
     <dimen name="avatar_rim_size_regular">2dp</dimen>
+    <dimen name="avatar_no_rim">0dp</dimen>
     <dimen name="avatar_rim_size_not_following">1dp</dimen>
     <dimen name="avatar_rim_size_threshold_on_avatar_size">150dp</dimen>
     <dimen name="avatar_featured_guide">60dp</dimen>
@@ -33,6 +34,8 @@
     <dimen name="big_button_height">60dp</dimen>
     <dimen name="very_big_button_width">280dp</dimen>
     <dimen name="very_big_button_height">80dp</dimen>
+    <dimen name="action_button_height">36dp</dimen>
+    <dimen name="action_button_radius">18dp</dimen>
     <dimen name="info_screen_icon">96dp</dimen>
     <dimen name="verified_icon_padding">4dp</dimen>
     <dimen name="list_item_spacing">8dp</dimen>
@@ -42,8 +45,10 @@
     <dimen name="caster_width">15dp</dimen>
     <dimen name="caster_height">12dp</dimen>
     <dimen name="chat_avatar_size">16dp</dimen>
+    <dimen name="chat_avatar_release">32dp</dimen>
     <dimen name="tx_history_digital_item_size">16dp</dimen>
     <dimen name="digital_item_size">72dp</dimen>
+    <dimen name="digital_item_size_release">88dp</dimen>
     <dimen name="chat_bubble_triangle_size">8dp</dimen>
     <dimen name="stage_bottom_icon">48dp</dimen>
     <dimen name="lobby_toolbar_icon">48dp</dimen>
@@ -51,12 +56,19 @@
     <dimen name="lobby_card_pip_radius">4dp</dimen>
     <dimen name="lobby_card_side_margin">12dp</dimen>
     <dimen name="release_lobby_card_side_margin">0dp</dimen>
+    <dimen name="lobby_card_side_padding_release">16dp</dimen>
     <dimen name="lobby_card_side_padding">12dp</dimen>
     <dimen name="lobby_card_side_padding_mini">8dp</dimen>
     <dimen name="lobby_card_narrow_margin">4dp</dimen>
     <dimen name="lobby_list_top_bottom_margin">0dp</dimen>
     <dimen name="lobby_card_vertical_spacing">10dp</dimen>
-    <dimen name="lobby_card_badge_height">40dp</dimen>
+    <dimen name="release_lobby_card_vertical_spacing">8dp</dimen>
+    <dimen name="release_lobby_card_badge_height">40dp</dimen>
+    <dimen name="release_lobby_card_badge_height_mini">32dp</dimen>
+    <dimen name="release_lobby_card_more_button_width">36dp</dimen>
+    <dimen name="release_lobby_card_more_button_width_mini">32dp</dimen>
+    <dimen name="release_lobby_card_title">30sp</dimen>
+    <dimen name="release_lobby_card_title_mini">20sp</dimen>
     <dimen name="lobby_header_top_margin">20dp</dimen>
     <dimen name="lobby_header_bottom_margin">0dp</dimen>
     <dimen name="lobby_subtitle_top_margin">0dp</dimen>
@@ -69,6 +81,14 @@
 
     <dimen name="stage_follow_star_size">32dp</dimen>
     <dimen name="stage_more_button_appbar_margin_right">26dp</dimen>
+    <dimen name="stage_classic_chat_container_height">256dp</dimen>
+    <dimen name="stage_release_chat_container_height">288dp</dimen>
+    <dimen name="stage_release_chat_cell_height">144dp</dimen>
+    <dimen name="stage_release_profile_container_height">296dp</dimen>
+    <dimen name="stage_classic_chat_container_margin_bottom">0dp</dimen>
+    <dimen name="stage_release_chat_container_margin_bottom">8dp</dimen>
+    <dimen name="stage_profile_button_margin">32dp</dimen>
+    <dimen name="stage_profile_avatar_size">128dp</dimen>
 
     <dimen name="broadcast_username">14sp</dimen>
     <dimen name="broadcast_username_mini">13sp</dimen>
@@ -91,5 +111,9 @@
     <dimen name="notifications_follow_star_size">24dp</dimen>
 
     <dimen name="live_round_indicator_size">12dp</dimen>
-    
+
+    <dimen name="chat_react_button_width">135dp</dimen>
+
+    <dimen name="search_drawable_margin">18dp</dimen>
+    <dimen name="margin_search">16dp</dimen>
 </resources>

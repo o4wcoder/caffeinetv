@@ -45,10 +45,6 @@ import tv.caffeine.app.databinding.LobbyHeaderBinding
 import tv.caffeine.app.databinding.LobbySubtitleBinding
 import tv.caffeine.app.databinding.PreviousBroadcastCardBinding
 import tv.caffeine.app.databinding.UpcomingButtonCardBinding
-import tv.caffeine.app.di.ThemeFollowedLobby
-import tv.caffeine.app.di.ThemeFollowedLobbyLight
-import tv.caffeine.app.di.ThemeNotFollowedLobby
-import tv.caffeine.app.di.ThemeNotFollowedLobbyLight
 import tv.caffeine.app.ext.seconds
 import tv.caffeine.app.lobby.CardList
 import tv.caffeine.app.lobby.FollowPeople
@@ -67,7 +63,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.AutoPlayConfig
 import tv.caffeine.app.stage.NewReyesController
 import tv.caffeine.app.ui.formatUsernameAsHtml
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.fadeOut
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
@@ -133,10 +129,6 @@ abstract class BroadcasterCard(
     protected val tags: Map<String, Lobby.Tag>,
     protected val content: Map<String, Lobby.Content>,
     val followManager: FollowManager,
-    @ThemeFollowedLobby private val followedTheme: UserTheme,
-    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
-    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     protected val picasso: Picasso,
     private val payloadId: String?,
     private val scope: CoroutineScope? = null,
@@ -230,9 +222,7 @@ abstract class BroadcasterCard(
             false,
             followHandler,
             R.dimen.avatar_size,
-            if (isLight) followedThemeLight else followedTheme,
-            if (isLight) notFollowedThemeLight else notFollowedTheme
-        )
+            UsernameTheming.getLobbyTheme(isLight))
     }
 
     open fun viewProfile(caid: CAID) {
@@ -271,10 +261,6 @@ open class LiveBroadcastCard @AssistedInject constructor(
     @Assisted tags: Map<String, Lobby.Tag>,
     @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    @ThemeFollowedLobby private val followedTheme: UserTheme,
-    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
-    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
     @Assisted payloadId: String?,
     @Assisted private val scope: CoroutineScope? = null,
@@ -283,7 +269,7 @@ open class LiveBroadcastCard @AssistedInject constructor(
     private val autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+) : BroadcasterCard(binding.root, tags, content, followManager, picasso, payloadId, scope, clock, eventManager) {
 
     @AssistedInject.Factory
     interface Factory {
@@ -357,10 +343,6 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
     @Assisted tags: Map<String, Lobby.Tag>,
     @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    @ThemeFollowedLobby private val followedTheme: UserTheme,
-    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
-    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
     @Assisted payloadId: String?,
     @Assisted private val scope: CoroutineScope?,
@@ -369,7 +351,7 @@ class LiveBroadcastWithFriendsCard @AssistedInject constructor(
     private val autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+) : BroadcasterCard(binding.root, tags, content, followManager, picasso, payloadId, scope, clock, eventManager) {
 
     @AssistedInject.Factory
     interface Factory {
@@ -455,16 +437,12 @@ class PreviousBroadcastCard @AssistedInject constructor(
     @Assisted tags: Map<String, Lobby.Tag>,
     @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    @ThemeFollowedLobby private val followedTheme: UserTheme,
-    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
-    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
     @Assisted payloadId: String?,
     @Assisted scope: CoroutineScope,
     clock: Clock,
     eventManager: EventManager
-) : BroadcasterCard(binding.root, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, payloadId, scope, clock, eventManager) {
+) : BroadcasterCard(binding.root, tags, content, followManager, picasso, payloadId, scope, clock, eventManager) {
 
     @AssistedInject.Factory
     interface Factory {
@@ -551,10 +529,6 @@ class LiveBroadcastPickerCard @AssistedInject constructor(
     @Assisted tags: Map<String, Lobby.Tag>,
     @Assisted content: Map<String, Lobby.Content>,
     followManager: FollowManager,
-    @ThemeFollowedLobby private val followedTheme: UserTheme,
-    @ThemeNotFollowedLobby private val notFollowedTheme: UserTheme,
-    @ThemeFollowedLobbyLight private val followedThemeLight: UserTheme,
-    @ThemeNotFollowedLobbyLight private val notFollowedThemeLight: UserTheme,
     picasso: Picasso,
     @Assisted scope: CoroutineScope,
     stageControllerFactory: NewReyesController.Factory,
@@ -562,7 +536,7 @@ class LiveBroadcastPickerCard @AssistedInject constructor(
     autoPlayConfig: AutoPlayConfig,
     clock: Clock,
     eventManager: EventManager
-) : LiveBroadcastCard(binding, tags, content, followManager, followedTheme, notFollowedTheme, followedThemeLight, notFollowedThemeLight, picasso, null, scope, stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager) {
+) : LiveBroadcastCard(binding, tags, content, followManager, picasso, null, scope, stageControllerFactory, surfaceViewRendererTuner, autoPlayConfig, clock, eventManager) {
 
     @AssistedInject.Factory
     interface Factory {

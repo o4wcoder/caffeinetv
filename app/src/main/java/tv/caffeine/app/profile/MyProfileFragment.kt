@@ -185,13 +185,13 @@ class MyProfileFragment @Inject constructor(
 
     private fun showFollowingList() {
         val caid = tokenStore.caid ?: return
-        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment(caid)
+        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment(caid, false)
         findNavController().safeNavigate(action)
     }
 
     private fun showFollowersList() {
         val caid = tokenStore.caid ?: return
-        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment(caid)
+        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment(caid, false)
         findNavController().safeNavigate(action)
     }
 

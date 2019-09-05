@@ -21,6 +21,7 @@ interface GoldBundleClickListener {
 class GoldBundlesAdapter @Inject constructor(
     private val buyGoldOption: BuyGoldOption,
     private val picasso: Picasso,
+    private val isReleaseDesignConfig: ReleaseDesignConfig,
     private val itemClickListener: GoldBundleClickListener
 ) : ListAdapter<GoldBundle, GoldBundleViewHolder>(object : DiffUtil.ItemCallback<GoldBundle?>() {
     override fun areItemsTheSame(oldItem: GoldBundle, newItem: GoldBundle) = oldItem.id == newItem.id
@@ -29,6 +30,7 @@ class GoldBundlesAdapter @Inject constructor(
 }) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoldBundleViewHolder {
         val binding = GoldBundleItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding.isReleaseDesign = isReleaseDesignConfig.isReleaseDesignActive()
         return GoldBundleViewHolder(binding, buyGoldOption, itemClickListener, picasso)
     }
 

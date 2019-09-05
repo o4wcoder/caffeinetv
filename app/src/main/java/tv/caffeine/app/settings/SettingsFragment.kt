@@ -93,12 +93,6 @@ class SettingsFragment @Inject constructor(
         configureIgnoredUsers()
         configureSocialAccounts()
         configureDeleteAccount()
-        if (rootKey == null && featureConfig.isFeatureEnabled(Feature.LIVE_IN_THE_LOBBY_DEBUG)) {
-            addPreferencesFromResource(R.xml.f316_debug)
-        }
-        if (rootKey == null && featureConfig.isFeatureEnabled(Feature.RELEASE_DESIGN)) {
-            addPreferencesFromResource(R.xml.design_v0)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

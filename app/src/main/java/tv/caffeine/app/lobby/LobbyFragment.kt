@@ -24,6 +24,7 @@ import tv.caffeine.app.lobby.release.LargeOnlineBroadcasterCard
 import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.navigateToSendingVerificationEmailDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
@@ -57,12 +58,13 @@ class LobbyFragment @Inject constructor(
     }
 
     private fun configure(binding: FragmentLobbyBinding) {
-        lobbyAdapter = if (releaseDesignConfig.isReleaseDesignActive()) {
+        val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
+        lobbyAdapter = if (isReleaseDesign) {
             releaseLobbyAdapterFactoryProvider.get().create(viewLifecycleOwner, findNavController())
         } else {
             classicLobbyAdapterProvider.get()
         }
-        val itemDecorator = if (releaseDesignConfig.isReleaseDesignActive()) {
+        val itemDecorator = if (isReleaseDesign) {
             ReleaseLobbyItemDecoration(resources)
         } else {
             ClassicLobbyItemDecoration(resources, lobbyAdapter)
@@ -79,7 +81,7 @@ class LobbyFragment @Inject constructor(
                 is LargeOnlineBroadcasterCard -> viewHolder.turnOffLiveVideo()
             }
         }
-        val separateOffline = releaseDesignConfig.isReleaseDesignActive()
+        val separateOffline = isReleaseDesign
         viewModel.lobby.observe(viewLifecycleOwner, Observer { result ->
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { lobby ->
@@ -88,6 +90,16 @@ class LobbyFragment @Inject constructor(
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })
+        if (isReleaseDesign) {
+            viewModel.emailVerificationUser.observe(viewLifecycleOwner, Observer { user ->
+                val email = user.email ?: return@Observer
+                binding.verifyEmailContainer.isVisible = (user.emailVerified == false)
+                binding.resendEmailButton.setOnClickListener {
+                    viewModel.sendVerificationEmail()
+                    fragmentManager?.navigateToSendingVerificationEmailDialog(email)
+                }
+            })
+        }
     }
 
     override fun onDestroyView() {
@@ -150,8 +162,15 @@ class ClassicLobbyItemDecoration(
 class ReleaseLobbyItemDecoration(
     private val resources: Resources
 ) : RecyclerView.ItemDecoration() {
-    private val bottomMargin by lazy { resources.getDimensionPixelSize(R.dimen.lobby_card_vertical_spacing) }
+    private val cardMargin by lazy { resources.getDimensionPixelSize(R.dimen.release_lobby_card_vertical_spacing) }
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        outRect.set(0, 0, 0, bottomMargin)
+        val itemType = view.tag as? LobbyItem.Type ?: return
+        val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
+        val cardTopMargin = if (itemPosition == 0) 0 else cardMargin / 2
+        val cardBottomMargin = cardMargin / 2
+        when (itemType) {
+            LobbyItem.Type.LIVE_BROADCAST_CARD, LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD, LobbyItem.Type.CARD_LIST -> outRect.set(0, cardTopMargin, 0, cardBottomMargin)
+            else -> outRect.set(0, 0, 0, 0)
+        }
     }
 }

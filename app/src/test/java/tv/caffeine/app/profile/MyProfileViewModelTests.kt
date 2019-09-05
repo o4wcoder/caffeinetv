@@ -93,6 +93,13 @@ class MyProfileViewModelTests {
     }
 
     @Test
+    fun `bio is loaded correctly`() {
+        subject.userProfile.observeForTesting { userProfile ->
+            assertEquals("bio", userProfile.bio)
+        }
+    }
+
+    @Test
     fun `auth watcher sign out is called on sign out`() {
         subject.signOut()
         coVerify(exactly = 1) { fakeAuthWatcher.onSignOut("123") }

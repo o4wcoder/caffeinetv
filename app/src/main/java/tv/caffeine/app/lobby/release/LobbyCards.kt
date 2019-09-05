@@ -37,6 +37,7 @@ abstract class AbstractBroadcaster(
     val navigationCommands = _navigationCommands.map { it }
 
     val isFollowing = MutableLiveData(followManager.isFollowing(caid))
+    val isSelf = followManager.isSelf(caid)
     val userIcon = when {
         user.isVerified -> R.drawable.verified
         user.isCaster -> R.drawable.caster
@@ -131,7 +132,8 @@ class OnlineBroadcaster @AssistedInject constructor (
     val broadcastTitle = broadcast?.name
     val mainPreviewImageUrl = broadcast?.mainPreviewImageUrl
     val pictureInPictureImageUrl = broadcast?.pictureInPictureImageUrl
-    val friendsWatchingText = formatFriendsWatchingShortString(context, broadcaster) ?: context.getString(R.string.live_indicator)
+    val friendsWatchingText = formatFriendsWatchingShortString(context, broadcaster)
+        ?: context.getString(R.string.live_indicator_lowercase)
 
     val contentRating = if (broadcast?.name?.startsWith("[17+]") == true) "17+" else null
     fun kebabClicked() {

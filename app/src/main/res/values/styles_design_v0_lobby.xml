@@ -1,41 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="LobbyCardText" parent="CaffeineText">
+    <style name="LobbyCardText" parent="CaffeineText.Bold">
         <item name="android:textColor">@color/white</item>
-        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
-    <style name="OnlineBroadcast_Large_Title" parent="LobbyCardText">
-        <item name="android:textSize">24sp</item>
-        <item name="android:fontFamily">@font/poppins_bold</item>
-    </style>
-
-    <style name="OnlineBroadcast_Large_Friends" parent="LobbyCardText">
-        <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@font/poppins_bold</item>
-    </style>
-
-    <style name="OnlineBroadcast_Large_Username" parent="LobbyCardText">
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="OfflineBroadcast_Large_Username" parent="LobbyCardText">
-        <item name="android:textSize">20sp</item>
+    <style name="LobbyHeaderRelease" parent="LobbyCardText">
         <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="ReleaseUI_Lobby_Header" parent="LobbyCardText">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">27sp</item>
-        <item name="android:fontFamily">@font/poppins_black</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:paddingStart">@dimen/lobby_card_side_padding_release</item>
+        <item name="android:paddingEnd">@dimen/lobby_card_side_padding_release</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
     </style>
-
-    <style name="ReleaseUI_Lobby_Subtitle" parent="LobbyCardText">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">27sp</item>
+    <style name="LobbySubtitleRelease" parent="LobbyHeaderRelease">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
 
+    <style name="LobbyCardLiveBadge" parent="LobbyCardText">
+        <item name="android:layout_height">@dimen/release_lobby_card_badge_height</item>
+        <item name="android:background">@color/pure_blue</item>
+        <item name="android:paddingStart">@dimen/lobby_card_side_padding_release</item>
+        <item name="android:paddingEnd">@dimen/lobby_card_side_padding_release</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="LobbyCardContentRating" parent="LobbyCardLiveBadge">
+        <item name="android:background">@color/black</item>
+        <item name="android:paddingStart">@dimen/lobby_card_side_padding_mini</item>
+        <item name="android:paddingEnd">@dimen/lobby_card_side_padding_mini</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="LobbyCardTitle" parent="LobbyCardText">
+        <item name="android:textSize">@dimen/release_lobby_card_title</item>
+        <item name="android:maxLines">3</item>
+    </style>
+
+    <style name="LobbyCardUsername" parent="LobbyCardText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+    <style name="LobbyCardUsername.Dark">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="VerifyEmailContainer">
+        <item name="android:background">@color/black</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="VerifyEmailText" parent="LobbyCardText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingStart">@dimen/lobby_card_side_padding_release</item>
+        <item name="android:paddingEnd">@dimen/lobby_card_side_padding_release</item>
+    </style>
 </resources>

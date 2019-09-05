@@ -1,7 +1,8 @@
 package tv.caffeine.app.util
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -14,43 +15,65 @@ class MessageBackgroundTests {
 
     @Test
     fun `messages from self are blue`() {
-        val background = messageBackground(true, false, false)
-        assertThat(background, equalTo(R.color.chat_bubble_blue))
+        val background = messageBackground(true, false, false, false)
+        assertEquals(background, R.color.chat_bubble_blue)
     }
 
     @Test
     fun `messages from self talking about self are blue`() {
-        val background = messageBackground(true, true, false)
-        assertThat(background, equalTo(R.color.chat_bubble_blue))
+        val background = messageBackground(true, true, false, false)
+        assertEquals(background, R.color.chat_bubble_blue)
     }
 
     @Test
     fun `messages from others talking about self are orange`() {
-        val background = messageBackground(false, true, false)
-        assertThat(background, equalTo(R.color.chat_bubble_orange))
+        val background = messageBackground(false, true, false, false)
+        assertEquals(background, R.color.chat_bubble_orange)
     }
 
     @Test
     fun `messages from followed users are blue`() {
-        val background = messageBackground(false, false, true)
-        assertThat(background, equalTo(R.color.chat_bubble_blue))
+        val background = messageBackground(false, false, true, false)
+        assertEquals(background, R.color.chat_bubble_blue)
     }
 
     @Test
     fun `messages from non-followed users are blue`() {
-        val background = messageBackground(false, false, false)
-        assertThat(background, equalTo(R.color.chat_bubble_gray))
+        val background = messageBackground(false, false, false, false)
+        assertEquals(background, R.color.chat_bubble_gray)
     }
 
     @Test
     fun `mentions detected`() {
         val mentions = "@caffeine you're cool".mentionsUsername("caffeine")
-        assertThat(mentions, equalTo(true))
+        assertTrue(mentions)
     }
 
     @Test
     fun `lack of mentions`() {
         val mentions = "caffeine you're cool".mentionsUsername("caffeine")
-        assertThat(mentions, equalTo(false))
+        assertFalse(mentions)
+    }
+}
+
+@RunWith(RobolectricTestRunner::class)
+class ReleaseMessageBackgroundTests {
+
+    @Test
+    fun `messages from self are cyan`() {
+        val background = messageBackground(true, false, false, true)
+        assertEquals(background, R.color.chat_bubble_cyan)
+    }
+
+    @Test
+    fun `messages from followed users are purple gray`() {
+        val background = messageBackground(false, false, true, true)
+        assertEquals(background, R.color.chat_bubble_purple_gray_follow)
+    }
+
+    @Test
+    fun `messages from non-followed users are dark gray`() {
+        val background = messageBackground(false, false, false, true)
+        assertEquals(background, R.color.chat_bubble_dark_gray_not_follow)
     }
 }

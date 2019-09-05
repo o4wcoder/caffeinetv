@@ -5,6 +5,7 @@ import android.text.Spannable
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.VisibleForTesting
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
@@ -62,7 +63,7 @@ fun setSaySomethingText(textView: TextView, broadcasterUserName: String?, userPr
 }
 
 class ChatViewModel @Inject constructor(
-    context: Context,
+    private val context: Context,
     private val tokenStore: TokenStore,
     private val getSignedUserDetailsUseCase: GetSignedUserDetailsUseCase,
     private val followManager: FollowManager,
@@ -88,6 +89,10 @@ class ChatViewModel @Inject constructor(
     val messages: LiveData<List<Message>> = _messages.map { it }
 
     @Bindable
+    fun getBottomButtonTint() = ContextCompat.getColor(context,
+        if (releaseDesignConfig.isReleaseDesignActive()) R.color.medium_gray else R.color.white)
+
+    @Bindable
     fun getGiftButtonVisibility() = getButtonVisibility()
 
     @Bindable
@@ -99,7 +104,24 @@ class ChatViewModel @Inject constructor(
         }
 
     @Bindable
-    fun getSaySomethingTextVisibility() =
+    fun getClassicSaySomethingTextVisibility(): Int {
+        return if (releaseDesignConfig.isReleaseDesignActive()) {
+            View.GONE
+        } else {
+            getSaySomethingTextVisibility()
+        }
+    }
+
+    @Bindable
+    fun getReleaseSaySomethingTextVisibility(): Int {
+        return if (releaseDesignConfig.isReleaseDesignActive()) {
+            getSaySomethingTextVisibility()
+        } else {
+            View.GONE
+        }
+    }
+
+    private fun getSaySomethingTextVisibility() =
         if (messages.value?.all { it.type == Message.Type.dummy } ?: true) View.VISIBLE else View.GONE
 
     @Bindable
@@ -212,7 +234,8 @@ class ChatViewModel @Inject constructor(
             nonStaleMessages.find { it.position == position }?.message ?: dummyMessage.copy(id = "$position")
         }
         _messages.value = messagesToShow
-        notifyPropertyChanged(BR.saySomethingTextVisibility)
+        notifyPropertyChanged(BR.classicSaySomethingTextVisibility)
+        notifyPropertyChanged(BR.releaseSaySomethingTextVisibility)
         Timber.d("Chat Messages [$currentTime] - to display $messagesToShow")
     }
 

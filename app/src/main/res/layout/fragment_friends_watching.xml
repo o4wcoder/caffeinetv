@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="isReleaseActive"
+            type="Boolean"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +14,7 @@
         android:layout_height="match_parent"
         android:minHeight="300dp"
         tools:context=".stage.FriendsWatchingFragment"
-        tools:background="@color/very_dark_gray">
+        tools:background="@{isReleaseActive ? @color/almost_black : @color/very_dark_gray}">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/friends_watching_toolbar"
@@ -28,6 +30,7 @@
                 android:layout_height="wrap_content" >
 
                 <TextView
+                    style="@style/StageFriendsWatchingFragmentTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/friends_watching_title"

@@ -15,6 +15,41 @@ import tv.caffeine.app.ui.FollowButtonDecorator.Style
 import tv.caffeine.app.ui.configureUserIcon
 import tv.caffeine.app.ui.loadAvatar
 
+enum class UsernameTheming(
+    val followedTheme: UserTheme,
+    val notFollowedTheme: UserTheme,
+    val currentUserTheme: UserTheme
+) {
+    STANDARD(UserTheme(R.style.ExploreUsername_Following), UserTheme(R.style.ExploreUsername_NotFollowing), UserTheme(R.style.ExploreUsername_NotFollowing)),
+    STANDARD_DARK(UserTheme(R.style.ExploreUsername_Following), UserTheme(R.style.ExploreUsername_NotFollowingDark), UserTheme(R.style.ExploreUsername_NotFollowingDark)),
+    CHAT(UserTheme(R.style.ChatMessageUsername_Following), UserTheme(R.style.ChatMessageUsername_NotFollowing), UserTheme(R.style.ChatMessageUsername_NotFollowing)),
+    CHAT_RELEASE(UserTheme(R.style.ChatMessageUsername_Release_Following), UserTheme(R.style.ChatMessageUsername_Release_NotFollowing), UserTheme(R.style.ChatMessageUsername_Release_CurrentUser)),
+    LOBBY(UserTheme(R.style.BroadcastCardUsername_Following), UserTheme(R.style.BroadcastCardUsername_NotFollowing), UserTheme(R.style.BroadcastCardUsername_NotFollowing)),
+    LOBBY_LIGHT(UserTheme(R.style.BroadcastCardUsername_Following_Previous), UserTheme(R.style.BroadcastCardUsername_NotFollowing_Previous), UserTheme(R.style.BroadcastCardUsername_NotFollowing_Previous));
+
+    companion object {
+        fun getChatTheme(isRelease: Boolean) =
+            if (isRelease) {
+                CHAT_RELEASE
+            } else {
+                CHAT
+            }
+
+        fun getLobbyTheme(isLight: Boolean) =
+            if (isLight) {
+                LOBBY_LIGHT
+            } else {
+                LOBBY
+            }
+    }
+}
+
+
+enum class FollowStarColor(val color: Int) {
+    WHITE(R.color.white),
+    BLACK(R.color.black)
+}
+
 class UserTheme(@StyleRes val usernameTextAppearance: Int)
 
 fun User.configure(
@@ -25,11 +60,16 @@ fun User.configure(
     allowUnfollowing: Boolean = false,
     followHandler: FollowManager.FollowHandler? = null,
     @DimenRes avatarImageSize: Int = R.dimen.avatar_size,
-    followedTheme: UserTheme,
-    notFollowedTheme: UserTheme
+    theme: UsernameTheming
 ) {
     val isFollowing = followManager.isFollowing(caid)
-    val theme = if (isFollowing) followedTheme else notFollowedTheme
+    val isSelf = followManager.isSelf(caid)
+    val theme = when {
+        isSelf -> theme.currentUserTheme
+        isFollowing -> theme.followedTheme
+        else -> theme.notFollowedTheme
+    }
+
     if (followButton != null) {
         if (followManager.followersLoaded() && !isFollowing) {
             FollowButtonDecorator(Style.FOLLOW).decorate(followButton)

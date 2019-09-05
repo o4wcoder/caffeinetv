@@ -40,8 +40,8 @@ class UserAvatarImageGetter(
     }
     override fun getDrawable(source: String?): Drawable? {
         inlineImages[source]?.let {
-            return ContextCompat.getDrawable(textView.context, it.drawable).apply {
-                this?.setBounds(0, 0, textView.resources.getDimensionPixelSize(it.width), textView.resources.getDimensionPixelSize(it.height))
+            return ContextCompat.getDrawable(textView.context, it.drawable)?.apply {
+                setBounds(0, 0, textView.resources.getDimensionPixelSize(it.width), textView.resources.getDimensionPixelSize(it.height))
             }
         }
         return BitmapDrawablePlaceholder(textView).apply {

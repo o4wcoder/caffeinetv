@@ -187,21 +187,31 @@ class ChatViewModelTests {
 
     @Test
     fun `do not show say something text if there are real messages`() {
-        testMessageTypeVisibility(Message.Type.reaction, View.GONE)
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
+        testMessageTypeVisibility(Message.Type.reaction, View.GONE, false)
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        testMessageTypeVisibility(Message.Type.reaction, View.GONE, true)
     }
 
     @Test
     fun `show say something text if there are dummy messages`() {
-        testMessageTypeVisibility(Message.Type.dummy, View.VISIBLE)
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
+        testMessageTypeVisibility(Message.Type.dummy, View.VISIBLE, false)
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        testMessageTypeVisibility(Message.Type.dummy, View.VISIBLE, true)
     }
 
-    private fun testMessageTypeVisibility(messageType: Message.Type, viewType: Int) {
+    private fun testMessageTypeVisibility(messageType: Message.Type, viewType: Int, isReleaseDesign: Boolean) {
         val user = getMockUser()
         val message = MessageWrapper(Message(user, "1", messageType, Message.Body("body1"), 0), 1, 0)
         coEvery { messageController.connect(any()) } returns flowOf(message)
         subject.load("stageId")
         subject.messages.observeForTesting {
-            assertEquals(subject.getSaySomethingTextVisibility(), viewType)
+            if (isReleaseDesign) {
+                assertEquals(subject.getReleaseSaySomethingTextVisibility(), viewType)
+            } else {
+                assertEquals(subject.getClassicSaySomethingTextVisibility(), viewType)
+            }
         }
     }
 

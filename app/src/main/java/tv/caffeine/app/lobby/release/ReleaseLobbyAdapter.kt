@@ -1,8 +1,8 @@
 package tv.caffeine.app.lobby.release
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -43,6 +43,8 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     @Assisted private val lifecycleOwner: LifecycleOwner,
     @Assisted private val navController: NavController
 ) : GenericLobbyAdapter<CardViewHolder>(DiffCallback()), CoroutineScope {
+
+    var isMiniStyle = false
 
     class DiffCallback : DiffUtil.ItemCallback<LobbyItem>() {
         override fun areItemsTheSame(oldItem: LobbyItem, newItem: LobbyItem) =
@@ -99,7 +101,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> offlineBroadcasterCard(inflater, parent)
             LobbyItem.Type.CARD_LIST -> listCard(inflater, parent)
             // LobbyItem.Type.UPCOMING_BUTTON_CARD -> upcomingButtonCard(inflater, parent)
-            else -> TextCard(TextView(parent.context))
+            else -> TextCard(View(parent.context))
         }
     }
 
@@ -115,13 +117,17 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
 
     private fun largeOnlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup) =
             largeOnlineBroadcasterCardFactory.create(
-                ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false),
-                this
+                ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false).apply {
+                    isMiniStyle = this@ReleaseLobbyAdapter.isMiniStyle
+                },
+                this,
+                lifecycleOwner
             )
 
     private fun offlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup) =
             OfflineBroadcasterCard(
-                ReleaseUiOfflineBroadcasterCardBinding.inflate(inflater, parent, false)
+                ReleaseUiOfflineBroadcasterCardBinding.inflate(inflater, parent, false),
+                lifecycleOwner
             )
 
     private fun listCard(inflater: LayoutInflater, parent: ViewGroup) =
@@ -136,6 +142,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         val item = getItem(position)
+        holder.setItemViewType(item)
         when (holder) {
             is ReleaseHeaderCard -> bind(holder, item)
             is ReleaseSubtitleCard -> bind(holder, item)

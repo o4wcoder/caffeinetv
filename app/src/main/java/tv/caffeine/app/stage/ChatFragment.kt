@@ -10,11 +10,14 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.DigitalItem
 import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.api.model.isCAID
 import tv.caffeine.app.databinding.FragmentChatBinding
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stage.classic.ClassicChatFragment
 import tv.caffeine.app.stage.release.ReleaseChatFragment
 import tv.caffeine.app.ui.CaffeineFragment
@@ -32,6 +35,7 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     @Inject lateinit var followManager: FollowManager
     @Inject lateinit var picasso: Picasso
     @Inject lateinit var clock: Clock
+    @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
 
     protected lateinit var binding: FragmentChatBinding
     protected var isMe = false
@@ -90,6 +94,14 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
             override fun upvoteClicked(message: Message) {
                 chatViewModel.endorseMessage(message)
             }
+
+            override fun usernameClicked(userHandle: String) {
+                if (userHandle.isCAID()) {
+                    findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userHandle))
+                } else {
+                    findNavController().safeNavigate(MainNavDirections.actionGlobalStagePagerFragment(userHandle))
+                }
+            }
         }
 
         binding.giftButton?.setOnClickListener {
@@ -141,7 +153,8 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
             this@ChatFragment,
             picasso,
             broadcasterUsername,
-            message
+            message,
+            releaseDesignConfig
         )
     }
 

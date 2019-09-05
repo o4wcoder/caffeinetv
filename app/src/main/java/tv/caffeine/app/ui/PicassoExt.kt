@@ -61,13 +61,15 @@ fun RequestCreator.maybeRoundedCorners(cornerRadius: Float?): RequestCreator {
     return transform(RoundedCornersTransformation(cornerRadius.toInt(), 0))
 }
 
-fun ImageView.loadAvatar(avatarImageUrl: String, isFollowing: Boolean, @DimenRes avatarImageSizeRes: Int) {
+fun ImageView.loadAvatar(avatarImageUrl: String, isFollowing: Boolean, @DimenRes avatarImageSizeRes: Int, hasRim: Boolean = false) {
     val resources = context.resources
     val isAvatarLarge = resources.getDimension(avatarImageSizeRes) >
             resources.getDimension(R.dimen.avatar_rim_size_threshold_on_avatar_size)
     val rimSize = resources.getDimensionPixelSize(
             if (isFollowing) {
                 if (isAvatarLarge) R.dimen.avatar_rim_size_large else R.dimen.avatar_rim_size_regular
+            } else if (hasRim) {
+                R.dimen.avatar_no_rim
             } else {
                 R.dimen.avatar_rim_size_not_following
             })

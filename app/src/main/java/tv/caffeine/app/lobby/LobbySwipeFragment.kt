@@ -17,6 +17,9 @@ import com.squareup.inject.assisted.AssistedInject
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.logScreen
 import tv.caffeine.app.databinding.FragmentLobbySwipeBinding
+import tv.caffeine.app.feature.DevOptionsDialog
+import tv.caffeine.app.feature.Feature
+import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.settings.ReleaseDesignConfig
@@ -29,7 +32,8 @@ import javax.inject.Provider
 class LobbySwipeFragment @Inject constructor(
     private val firebaseAnalytics: FirebaseAnalytics,
     private val adapterFactory: LobbyPagerAdapter.Factory,
-    private val releaseDesignConfig: ReleaseDesignConfig
+    private val releaseDesignConfig: ReleaseDesignConfig,
+    private val featureConfig: FeatureConfig
 ) : CaffeineFragment(R.layout.fragment_lobby_swipe) {
 
     private lateinit var binding: FragmentLobbySwipeBinding
@@ -77,13 +81,21 @@ class LobbySwipeFragment @Inject constructor(
 
         myProfileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.profileButton.loadRoundedImage(userProfile.avatarImageUrl, imageSizeRes = R.dimen.avatar_toolbar)
-            binding.unverifiedMessageTextView.isVisible = userProfile.emailVerified == false
+            if (!releaseDesignConfig.isReleaseDesignActive()) {
+                binding.unverifiedMessageTextView.isVisible = userProfile.emailVerified == false
+            }
         })
 
         // Release UI
         val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
         binding.lobbyAppbar.isVisible = !isReleaseDesign
         binding.tabLayout.isVisible = !isReleaseDesign
+        if (featureConfig.isFeatureEnabled(Feature.DEV_OPTIONS)) {
+            binding.caffeineWordmark.setOnLongClickListener {
+                DevOptionsDialog(it.context).show()
+                true
+            }
+        }
     }
 }
 

@@ -33,12 +33,10 @@ import tv.caffeine.app.api.Guide
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentUpcomingBroadcastBinding
-import tv.caffeine.app.di.ThemeFollowedExplore
-import tv.caffeine.app.di.ThemeNotFollowedExploreDark
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.UserTheme
+import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -138,8 +136,6 @@ class GuideViewModel @Inject constructor(
 class GuideAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
-    @ThemeFollowedExplore private val followedTheme: UserTheme,
-    @ThemeNotFollowedExploreDark private val notFollowedTheme: UserTheme,
     private val picasso: Picasso
 ) : ListAdapter<Guide, GuideViewHolder>(
         object : DiffUtil.ItemCallback<Guide>() {
@@ -157,7 +153,7 @@ class GuideAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuideViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.content_guide_item, parent, false)
-        return GuideViewHolder(view, this, followManager, followedTheme, notFollowedTheme, picasso)
+        return GuideViewHolder(view, this, followManager)
     }
 
     override fun onBindViewHolder(holder: GuideViewHolder, position: Int) {
@@ -173,10 +169,7 @@ class GuideAdapter @Inject constructor(
 class GuideViewHolder(
     itemView: View,
     private val scope: CoroutineScope,
-    private val followManager: FollowManager,
-    private val followedTheme: UserTheme,
-    private val notFollowedTheme: UserTheme,
-    private val picasso: Picasso
+    private val followManager: FollowManager
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
@@ -192,7 +185,8 @@ class GuideViewHolder(
         clear()
         job = scope.launch {
             val user = followManager.userDetails(guide.caid) ?: return@launch
-            user.configure(avatarImageView, usernameTextView, null, followManager, followedTheme = followedTheme, notFollowedTheme = notFollowedTheme)
+            user.configure(avatarImageView, usernameTextView, null, followManager,
+                theme = UsernameTheming.STANDARD_DARK)
         }
         dateTextView.isVisible = guide.shouldShowTimestamp
         dateTextView.text = getDateText(guide)

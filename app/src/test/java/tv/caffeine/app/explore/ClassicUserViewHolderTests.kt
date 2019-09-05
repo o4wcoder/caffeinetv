@@ -18,18 +18,15 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.util.UserTheme
 import tv.caffeine.app.util.configure
 
 @RunWith(RobolectricTestRunner::class)
 class ClassicUserViewHolderTests {
 
     private val caid = "123"
-    private val followingTheme = UserTheme(R.style.ExploreUsername_Following)
-    private val notFollowingTheme = UserTheme(R.style.ExploreUsername_NotFollowing)
     private lateinit var userViewHolder: ClassicUserViewHolder
 
-    @MockK lateinit var user: User
+    @MockK(relaxed = true) lateinit var user: User
     @MockK lateinit var followManager: FollowManager
     @MockK lateinit var followHandler: FollowManager.FollowHandler
 
@@ -42,7 +39,7 @@ class ClassicUserViewHolderTests {
 
         mockkStatic("tv.caffeine.app.util.UsernameThemingKt")
         every {
-            user.configure(any(), any(), any(), any(), any(), any(), any(), any(), any())
+            user.configure(any(), any(), any(), any(), any(), any(), any(), any())
         } returns Unit
         every { followManager.isFollowing(any()) } returns false
         every { followManager.followersLoaded() } returns true
@@ -52,7 +49,7 @@ class ClassicUserViewHolderTests {
     fun `show the follow button if the user is not me`() {
         every { followManager.isSelf(any()) } returns false
         val searchUserItem = SearchUserItem(user, 0f, caid)
-        userViewHolder.bind(searchUserItem, followManager, followingTheme, notFollowingTheme)
+        userViewHolder.bind(searchUserItem, followManager)
         assertTrue(userViewHolder.followButton.isVisible)
     }
 
@@ -60,7 +57,7 @@ class ClassicUserViewHolderTests {
     fun `do not show the follow button if the user is me`() {
         every { followManager.isSelf(any()) } returns true
         val searchUserItem = SearchUserItem(user, 0f, caid)
-        userViewHolder.bind(searchUserItem, followManager, followingTheme, notFollowingTheme)
+        userViewHolder.bind(searchUserItem, followManager)
         assertFalse(userViewHolder.followButton.isVisible)
     }
 }

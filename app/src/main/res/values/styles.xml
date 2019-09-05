@@ -29,6 +29,14 @@
 
     <style name="AppTheme" parent="BaseAppTheme"/>
 
+    <style name="AppTheme.Release">
+        <item name="colorAccent">@color/pure_blue</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item> <!-- the back arrow in the toolbar -->
+    </style>
+
     <!-- Dialog -->
     <style name="AlertDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
         <item name="android:textAllCaps">false</item>
@@ -40,6 +48,10 @@
     </style>
     <style name="DarkBottomSheetDialog" parent="BaseDarkBottomSheetDialog">
         <item name="android:windowLightStatusBar">false</item>
+    </style>
+    <style name="DarkBottomSheetDialog.Release">
+        <item name="colorAccent">@color/cyan</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
     <style name="FullscreenDialogTheme" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
@@ -127,7 +139,9 @@
         <item name="android:backgroundTint">@color/black</item>
     </style>
 
-    <style name="MenuTextView" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+    <style name="MenuTextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/menu_text_view_background</item>
         <item name="android:gravity">start</item>
         <item name="android:paddingStart">@dimen/margin</item>
@@ -159,6 +173,21 @@
         <item name="android:height">@dimen/avatar_size</item>
     </style>
 
+    <style name="Button.Action">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:height">@dimen/action_button_height</item>
+        <item name="android:inset">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">@dimen/action_button_radius</item>
+    </style>
+    <style name="Button.Action.Light">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+
     <!-- Text -->
     <!-- Start of the new text design from Apr. 2019 (Landing page) -->
     <style name="CaffeineText">
@@ -166,22 +195,31 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">14sp</item> <!-- 14sp is the Android default -->
     </style>
-    <style name="LightText" parent="CaffeineText">
+    <style name="CaffeineText.Release">
+        <item name="android:fontFamily">@font/poppins</item>
+    </style>
+    <style name="CaffeineText.Bold">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+    </style>
+    <style name="CaffeineText.Medium">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+    <style name="CaffeineText.Light" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
-    <style name="UnauthScreenTitle" parent="LightText">
+    <style name="UnauthScreenTitle" parent="CaffeineText.Light">
         <item name="android:textSize">24sp</item>
         <item name="android:textAlignment">center</item>
     </style>
-    <style name="LinkText" parent="LightText">
+    <style name="LinkText" parent="CaffeineText.Light">
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
-    <style name="FormErrorText" parent="LightText">
+    <style name="FormErrorText" parent="CaffeineText.Light">
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/medium_gray</item>
     </style>
 
-    <style name="BigEditText" parent="LightText">
+    <style name="BigEditText" parent="CaffeineText.Light">
         <item name="android:background">@drawable/big_edit_text_background</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/black</item>
@@ -198,12 +236,12 @@
         <item name="fontFamily">@font/poppins</item>
     </style>
 
-    <style name="NoNetworkTitle" parent="LightText">
+    <style name="NoNetworkTitle" parent="CaffeineText.Light">
         <item name="android:textSize">30sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="NoNetworkBody" parent="LightText">
+    <style name="NoNetworkBody" parent="CaffeineText.Light">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/dark_gray</item>
     </style>
@@ -292,8 +330,13 @@
         <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
-    <style name="SearchUsername" parent="@style/ListTitle">
-        <item name="android:fontFamily">@font/poppins_medium</item>
+    <style name="SearchEditText" parent="CaffeineText.Medium">
+        <item name="android:padding">6dp</item>
+        <item name="android:drawableStart">@drawable/ic_search_light_gray</item>
+        <item name="android:drawablePadding">@dimen/search_drawable_margin</item>
+        <item name="android:textColorHint">@color/medium_gray</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/gray_rounded_rect_filled</item>
     </style>
 
     <!-- Tab -->
@@ -308,6 +351,19 @@
         <item name="android:fontFamily">sans-serif-black</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="StageBroadcastTabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabIndicatorColor">@color/cyan</item>
+        <item name="tabSelectedTextColor">@color/cyan</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabTextAppearance">@style/StageBroadcastTabTextAppearance</item>
+    </style>
+
+    <style name="StageBroadcastTabTextAppearance">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <!-- Design approved - End -->
@@ -362,6 +418,12 @@
 
     <style name="LobbyFriendsWatchingText" parent="@style/TextAppearance.MaterialComponents.Caption">
         <item name="android:letterSpacing">-0.01</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="StageFriendsWatchingFragmentTitle" parent="CaffeineText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="LiveIndicator" parent="CaffeineText">
@@ -429,17 +491,34 @@
     <style name="BroadcastCardUsername.Following.Previous">
     </style>
 
+    <!-- Chat Message -->
     <style name="ChatMessageUsername" parent="@style/TextAppearance.MaterialComponents.Caption">
         <item name="android:textSize">10sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:drawablePadding">4dp</item>
     </style>
 
+    <style name="ChatMessageUsername.Release" parent="@style/TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/chat_bubble_text_username_not_follow</item>
+        <item name="android:drawablePadding">4dp</item>
+    </style>
     <style name="ChatMessageUsername.Following">
         <item name="android:textColor">@color/caffeine_blue</item>
     </style>
 
     <style name="ChatMessageUsername.NotFollowing">
+    </style>
+
+    <style name="ChatMessageUsername.Release.Following">
+        <item name="android:textColor">@color/chat_bubble_text_username_follow</item>
+    </style>
+
+    <style name="ChatMessageUsername.Release.NotFollowing">
+    </style>
+
+    <style name="ChatMessageUsername.Release.CurrentUser">
+        <item name="android:textColor">@color/chat_bubble_text_username_current_user</item>
     </style>
 
     <style name="ReactionInteraction" parent="@style/TextAppearance.MaterialComponents.Headline3">
@@ -466,6 +545,30 @@
         <item name="android:textStyle">italic</item>
     </style>
 
+    <style name="ChatMessageText.UserReferenceFollow">
+        <item name="android:textColor">@color/chat_bubble_text_user_reference_follow</item>
+    </style>
+
+    <style name="ChatMessageText.UserReferenceNotFollow">
+        <item name="android:textColor">@color/chat_bubble_text_user_reference_not_follow</item>
+    </style>
+
+    <style name="ChatMessageText.UserReferenceCurrentUser">
+        <item name="android:textColor">@color/chat_bubble_text_user_reference_current_user</item>
+    </style>
+
+    <style name="ChatMessageText.Dark">
+        <item name="android:textColor">@color/chat_bubble_text_dark</item>
+    </style>
+
+    <style name="ChatMessageText.Light">
+        <item name="android:textColor">@color/chat_bubble_text_light</item>
+    </style>
+
+    <style name="ChatReactButtonText" parent="@style/CaffeineText.Release">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
     <style name="StageToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActionBarOverlay">true</item>
         <!-- Support library compatibility -->
@@ -486,4 +589,21 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <!-- Dev options -->
+    <style name="CaffeineSwitch">
+        <item name="android:switchPadding">8dp</item>
+    </style>
+
+    <style name="Profile" parent="CaffeineText.Release">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Profile.Username">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Profile.Name">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/poppins_light</item>
+    </style>
 </resources>
