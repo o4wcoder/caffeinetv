@@ -23,13 +23,14 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class GoldBundlesFragment @Inject constructor(
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val isReleaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineBottomSheetDialogFragment(), BuyGoldUsingCreditsDialogFragment.Callback {
 
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel: GoldBundlesViewModel by activityViewModels { viewModelFactory }
     private val goldBundlesAdapter by lazy {
-        GoldBundlesAdapter(buyGoldOption, picasso, object : GoldBundleClickListener {
+        GoldBundlesAdapter(buyGoldOption, picasso, isReleaseDesignConfig, object : GoldBundleClickListener {
             override fun onClick(goldBundle: GoldBundle) {
                 purchaseGoldBundle(goldBundle)
             }
@@ -46,7 +47,11 @@ class GoldBundlesFragment @Inject constructor(
         binding = FragmentGoldBundlesBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             goldBundlesRecyclerView.adapter = goldBundlesAdapter
+            if (isReleaseDesignConfig.isReleaseDesignActive()) {
+                goldBundleScrollView.setBackgroundColor(resources.getColor(R.color.almost_black, null))
+            }
         }
+
         return binding.root
     }
 
