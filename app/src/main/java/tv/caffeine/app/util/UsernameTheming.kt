@@ -44,6 +44,7 @@ enum class UsernameTheming(
     }
 }
 
+
 enum class FollowStarColor(val color: Int) {
     WHITE(R.color.white),
     BLACK(R.color.black)

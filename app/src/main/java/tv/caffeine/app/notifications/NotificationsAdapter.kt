@@ -22,8 +22,8 @@ import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.digitalItemStaticImageUrl
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.NotificationNewFollowerBinding
 import tv.caffeine.app.databinding.NotificationReceivedDigitalItemBinding
 import tv.caffeine.app.repository.ProfileRepository
@@ -169,7 +169,7 @@ class ClassicFollowNotificationViewHolder(
 class FollowNotificationViewHolder(
     private val binding: NotificationNewFollowerBinding,
     private val scope: CoroutineScope,
-    onFollowStarClick: (user: User, isFollowing: Boolean) -> Unit
+    onFollowStarClick: (caid: CAID, isFollowing: Boolean) -> Unit
 ) : NotificationViewHolder(binding.root) {
     var job: Job? = null
 
@@ -203,7 +203,7 @@ class FollowNotificationViewHolder(
 
             if (caidRecord !is CaidRecord.IgnoreRecord) {
                 val isFollowing = followManager.isFollowing(user.caid)
-                binding.followStarViewModel!!.bind(user, isFollowing, false)
+                binding.followStarViewModel!!.bind(user.caid, isFollowing, false)
                 binding.executePendingBindings()
             }
         }

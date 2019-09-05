@@ -235,7 +235,7 @@ class StageFragmentVisibilityTests {
     @Test
     fun `when release config is not set show classic chat fragment`() {
         every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
-        subject.updateBottomFragment(BottomContainerType.CHAT)
+            subject.updateBottomFragment(BottomContainerType.CHAT)
         val chatFragment =
             subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ClassicChatFragment
         assertNotNull(chatFragment)

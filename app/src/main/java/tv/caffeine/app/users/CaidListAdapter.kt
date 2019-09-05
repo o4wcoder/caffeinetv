@@ -21,8 +21,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.api.model.User
 import tv.caffeine.app.databinding.CaidItemBinding
 import tv.caffeine.app.repository.ProfileRepository
 import tv.caffeine.app.session.FollowManager
@@ -66,7 +66,7 @@ class CaidListAdapter @Inject constructor(
             val context = parent.context
             val inflater = LayoutInflater.from(context)
             val binding = DataBindingUtil.inflate<CaidItemBinding>(inflater, R.layout.caid_item, parent, false)
-            ReleaseCaidViewHolder(binding, FollowManager.FollowHandler(fragmentManager, callback), this, usernameFollowStarColor, ::onFollowStarClick)
+            ReleaseCaidViewHolder(binding, this, usernameFollowStarColor, ::onFollowStarClick)
         } else {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
             ClassicCaidViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this)
@@ -133,10 +133,9 @@ class ClassicCaidViewHolder(itemView: View, private val followHandler: FollowMan
 
 class ReleaseCaidViewHolder(
     private val binding: CaidItemBinding,
-    private val followHandler: FollowManager.FollowHandler,
     private val scope: CoroutineScope,
     private val usernameFollowStarColor: FollowStarColor,
-    onFollowStarClick: (user: User, isFollowing: Boolean) -> Unit
+    onFollowStarClick: (caid: CAID, isFollowing: Boolean) -> Unit
 ) :
     RecyclerView.ViewHolder(binding.root) {
     @VisibleForTesting
@@ -159,15 +158,22 @@ class ReleaseCaidViewHolder(
         job = scope.launch {
             val user = followManager.userDetails(item.caid) ?: return@launch
             val userProfile = profileRepository.getUserProfile(user.username)
-            binding.avatarImageView.loadAvatar(user.avatarImageUrl, false, R.dimen.avatar_size, true)
+            binding.avatarImageView.loadAvatar(
+                user.avatarImageUrl,
+                false,
+                R.dimen.avatar_size,
+                true
+            )
             binding.usernameTextView.apply {
                 text = user.username
                 setTextColor(resources.getColor(usernameFollowStarColor.color, null))
-                configureUserIcon(when {
-                    user.isVerified -> R.drawable.verified
-                    user.isCaster -> R.drawable.caster
-                    else -> 0
-                })
+                configureUserIcon(
+                    when {
+                        user.isVerified -> R.drawable.verified
+                        user.isCaster -> R.drawable.caster
+                        else -> 0
+                    }
+                )
             }
 
             userProfile?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it.isLive }
@@ -175,13 +181,16 @@ class ReleaseCaidViewHolder(
             if (item !is CaidRecord.IgnoreRecord) {
                 val isSelf = followManager.isSelf(user.caid)
                 val isFollowing = followManager.isFollowing(user.caid)
-                binding.followStarViewModel!!.bind(user, isFollowing, isSelf)
+                binding.followStarViewModel!!.bind(user.caid, isFollowing, isSelf)
                 binding.executePendingBindings()
             }
-        }
-        itemView.setOnClickListener {
-            val action = MainNavDirections.actionGlobalProfileFragment(item.caid)
-            navController?.let { it.safeNavigate(action) } ?: itemView.findNavController().safeNavigate(action)
+            itemView.setOnClickListener {
+                userProfile?.username?.let {
+                    val action = MainNavDirections.actionGlobalStagePagerFragment(item.caid)
+                    navController?.let { it.safeNavigate(action) }
+                        ?: itemView.findNavController().safeNavigate(action)
+                }
+            }
         }
     }
 

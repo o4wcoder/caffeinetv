@@ -61,6 +61,6 @@
             app:layout_constraintStart_toStartOf="@id/avatar_image_view"
             app:layout_constraintTop_toTopOf="@+id/avatar_image_view"
             bind:viewModel="@{liveStatusIndicatorViewModel}" />
-        
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

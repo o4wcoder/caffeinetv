@@ -20,7 +20,7 @@ import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
-import tv.caffeine.app.api.model.User
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.databinding.UserItemSearchReleaseBinding
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
@@ -130,7 +130,7 @@ class ClassicUserViewHolder(
 class ReleaseUserViewHolder(
     private val binding: UserItemSearchReleaseBinding,
     private val followHandler: FollowManager.FollowHandler,
-    onFollowStarClick: (user: User, isFollowing: Boolean) -> Unit
+    onFollowStarClick: (caid: CAID, isFollowing: Boolean) -> Unit
 ) : UserViewHolder(binding.root) {
     @VisibleForTesting
     var followButton: Button? = null
@@ -144,7 +144,7 @@ class ReleaseUserViewHolder(
 
         val isFollowing = followManager.isFollowing(item.user.caid)
         val isSelf = followManager.isSelf(item.id)
-        binding.followStarViewModel!!.bind(item.user, isFollowing, isSelf)
+        binding.followStarViewModel!!.bind(item.user.caid, isFollowing, isSelf)
         binding.executePendingBindings()
 
         item.user.configure(

@@ -29,16 +29,20 @@ import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.isMustVerifyEmailError
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.lobby.formatFriendsWatchingShortString
 import tv.caffeine.app.profile.ProfileViewModel
+import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatHtmlText
+import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.formatUsernameAsHtml
+import tv.caffeine.app.util.FollowStarColor
 import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.inTransaction
 import tv.caffeine.app.util.maybeShow
@@ -60,7 +64,7 @@ class StageFragment @Inject constructor(
     val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_stage), StageBroadcastProfilePagerFragment.Callback {
 
-    @Inject lateinit var stageBroadcastDetailsPagerFragmentProvider: Provider<StageBroadcastProfilePagerFragment>
+    @Inject lateinit var stageBroadcastProfilePagerFragmentProvider: Provider<StageBroadcastProfilePagerFragment>
 
     @VisibleForTesting
     lateinit var binding: FragmentStageBinding
@@ -82,6 +86,8 @@ class StageFragment @Inject constructor(
 
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
+    private var isCurrentlyLive: Boolean? = null
+
     @VisibleForTesting
     var swipeButtonOnClickListener: View.OnClickListener? = null
 
@@ -134,8 +140,6 @@ class StageFragment @Inject constructor(
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        var isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
-
         stageViewModel.showPoorConnectionAnimation.observe(viewLifecycleOwner, Observer {
             if (it) poorConnectionPulseAnimator.startPulse() else poorConnectionPulseAnimator.stopPulse()
         })
@@ -144,24 +148,27 @@ class StageFragment @Inject constructor(
 
         binding.viewModel = stageViewModel
 
-        if (!isReleaseDesign) {
+        if (!releaseDesignConfig.isReleaseDesignActive()) {
             binding.avatarUsernameContainer.transformToClassicUI()
             binding.liveSwipeContainer.transformToClassicUI()
         }
 
-        view.setOnClickListener { toggleOverlayVisibility() }
         (view as ViewGroup).apply {
             layoutTransition = LayoutTransition()
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
+
+            binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, FollowStarColor.WHITE, ::onFollowButtonClick)
+            val isSelf = followManager.isSelf(userProfile.caid)
+            binding.stageProfileOverlay?.followStarViewModel?.bind(userProfile.caid, userProfile.isFollowed, isSelf)
             binding.showIsOverTextView.formatUsernameAsHtml(
                 picasso,
                 getString(R.string.broadcaster_show_is_over, userProfile.username)
             )
             binding.avatarImageView.setOnClickListener {
-                if (isReleaseDesign) {
+                if (releaseDesignConfig.isReleaseDesignActive()) {
                     updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
                 } else {
                     findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
@@ -175,7 +182,7 @@ class StageFragment @Inject constructor(
             updateAvatarImageViewBackground()
             binding.usernameTextView.setTextColor(ContextCompat.getColor(binding.usernameTextView.context, stageViewModel.usernameTextColor))
 
-            if (isReleaseDesign) {
+            if (releaseDesignConfig.isReleaseDesignActive()) {
                 binding.stageToolbar.apply {
                     if (menu.findItem(R.id.overflow_menu_item) != null) return@apply
                     inflateMenu(R.menu.overflow_menu)
@@ -188,6 +195,13 @@ class StageFragment @Inject constructor(
                         true
                     }
                 }
+            }
+
+            // TODO: Clean this up. Getting some unnecessary click events
+            if (releaseDesignConfig.isReleaseDesignActive() && userProfile.isLive) {
+                view.setOnClickListener { toggleOverlayVisibility() }
+            } else {
+                view.setOnClickListener { toggleOverlayVisibility() }
             }
 
             // TODO: extract to VM
@@ -216,12 +230,18 @@ class StageFragment @Inject constructor(
             binding.followButtonImage.setOnClickListener(followListener)
 
             stageViewModel.updateIsMe(userProfile.isMe)
+
+            updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
+
             if (shouldShowOverlayOnProfileLoaded) {
                 shouldShowOverlayOnProfileLoaded = false
+
+                val shouldAutoHideAfterTimeout = if (releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive) false else !userProfile.isLive
+                val shouldIncludeAppBar = releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive
                 toggleOverlayVisibility(
-                    !userProfile.isLive,
-                    false
+                    shouldAutoHideAfterTimeout,
+                    shouldIncludeAppBar
                 ) // hide on the first frame instead of a timeout if live
             }
         })
@@ -230,8 +250,6 @@ class StageFragment @Inject constructor(
         poorConnectionPulseAnimator = PulseAnimator(binding.poorConnectionPulseImageView)
         initSurfaceViewRenderer()
         configureButtons()
-
-        updateBottomFragment(BottomContainerType.CHAT)
     }
 
     @VisibleForTesting
@@ -239,20 +257,31 @@ class StageFragment @Inject constructor(
         stageViewModel.updateIsViewProfile(bottomContainerType == BottomContainerType.PROFILE)
         updateAvatarImageViewBackground()
         binding.bottomFragmentContainer?.let {
-            // TODO: Add Bio section fragment here
             val fragment = when (bottomContainerType) {
                 BottomContainerType.CHAT -> {
-                    val isRelease = releaseDesignConfig.isReleaseDesignActive()
-                    ChatFragment.newInstance(broadcasterUsername, isRelease)
+                    ChatFragment.newInstance(broadcasterUsername, releaseDesignConfig.isReleaseDesignActive())
                 }
                 BottomContainerType.PROFILE -> {
-                    stageBroadcastDetailsPagerFragmentProvider.get().apply {
+                    stageBroadcastProfilePagerFragmentProvider.get().apply {
                         arguments = StageBroadcastProfilePagerFragmentArgs(broadcasterUsername, caid).toBundle()
                     }
                 }
             }
             childFragmentManager.inTransaction {
                 replace(R.id.bottom_fragment_container, fragment)
+            }
+        }
+    }
+
+    @VisibleForTesting
+    fun updateBottomFragmentForOnlineStatus(userProfile: UserProfile) {
+        // If the user is offline, start with the profile section on the bottom, otherwise show chat
+        if (isCurrentlyLive != userProfile.isLive) {
+            isCurrentlyLive = userProfile.isLive
+            if (releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive) {
+                updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
+            } else {
+                updateBottomFragment(BottomContainerType.CHAT)
             }
         }
     }
@@ -348,7 +377,13 @@ class StageFragment @Inject constructor(
         if (!broadcastIsOnline) {
             loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = false
         }
-        binding.showIsOverTextView.isVisible = !broadcastIsOnline
+
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            binding.stageProfileOverlay?.profileOverlayLayout?.isVisible = !broadcastIsOnline
+        } else {
+            binding.showIsOverTextView.isVisible = !broadcastIsOnline
+        }
+
         binding.backToLobbyButton.isVisible = !broadcastIsOnline
     }
 
@@ -498,6 +533,27 @@ class StageFragment @Inject constructor(
             renderer.release()
         }
         renderers.clear()
+    }
+
+    fun onFollowButtonClick(caid: CAID, isFollowing: Boolean) {
+        if (isFollowing) {
+            profileViewModel.unfollow(caid)
+        } else {
+            profileViewModel.follow(caid).observe(this, Observer { result ->
+                when (result) {
+                    is CaffeineEmptyResult.Error -> {
+                        if (result.error.isMustVerifyEmailError()) {
+                            val fragment =
+                                AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                            fragment.maybeShow(fragmentManager, "verifyEmail")
+                        } else {
+                            Timber.e("Couldn't follow user ${result.error}")
+                        }
+                    }
+                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+                }
+            })
+        }
     }
 }
 

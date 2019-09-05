@@ -13,7 +13,6 @@ import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.api.model.User
 import tv.caffeine.app.notifications.FollowNotification
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.maybeShow
@@ -64,13 +63,13 @@ abstract class FollowListAdapter<T, VH : RecyclerView.ViewHolder> (diffCallback:
         }
     }
 
-    fun onFollowStarClick(user: User, isFollowing: Boolean) {
+    fun onFollowStarClick(caid: CAID, isFollowing: Boolean) {
         if (followManager.followersLoaded()) {
             val handler = FollowManager.FollowHandler(fragmentManager, callback)
             if (isFollowing) {
-                handler.callback.unfollow(user.caid)
+                handler.callback.unfollow(caid)
             } else {
-                handler.callback.follow(user.caid)
+                handler.callback.follow(caid)
             }
         }
     }
