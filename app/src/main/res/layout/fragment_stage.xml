@@ -8,10 +8,15 @@
 
         <variable
             name="userProfile"
-            type="tv.caffeine.app.profile.UserProfile"/>
+            type="tv.caffeine.app.profile.UserProfile" />
+
         <variable
             name="viewModel"
-              type="tv.caffeine.app.stage.StageViewModel"/>
+            type="tv.caffeine.app.stage.StageViewModel" />
+
+        <variable
+            name="stageProfileOverlayViewModel"
+            type="tv.caffeine.app.stage.StageProfileOverlayViewModel" />
 
     </data>
 
@@ -389,8 +394,8 @@
 
                 <ImageView
                     android:id="@+id/follow_button_image"
-                    android:layout_width="@dimen/stage_follow_star_size"
-                    android:layout_height="@dimen/stage_follow_star_size"
+                    android:layout_width="@dimen/stage_offline_icon_size"
+                    android:layout_height="@dimen/stage_offline_icon_size"
                     android:layout_marginEnd="16dp"
                     android:background="@{userProfile.shouldShowFollow ? @drawable/star_outline : @drawable/star_filled}"
                     android:text="@string/follow_button"
@@ -438,6 +443,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottom_fragment_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            bind:userProfile="@{userProfile}"/>
+            bind:userProfile="@{userProfile}"
+            bind:viewModel="@{stageProfileOverlayViewModel}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

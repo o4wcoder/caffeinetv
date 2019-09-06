@@ -311,8 +311,8 @@
 
                 <ImageView
                     android:id="@+id/follow_button_image"
-                    android:layout_width="@dimen/stage_follow_star_size"
-                    android:layout_height="@dimen/stage_follow_star_size"
+                    android:layout_width="@dimen/stage_offline_icon_size"
+                    android:layout_height="@dimen/stage_offline_icon_size"
                     android:layout_marginEnd="16dp"
                     android:background="@{userProfile.shouldShowFollow ? @drawable/star_outline : @drawable/star_filled}"
                     android:text="@string/follow_button"

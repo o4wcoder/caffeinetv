@@ -79,7 +79,7 @@
     <dimen name="no_network_screen_icon_size">56dp</dimen>
     <dimen name="no_network_indicator_size">65dp</dimen>
 
-    <dimen name="stage_follow_star_size">32dp</dimen>
+    <dimen name="stage_offline_icon_size">32dp</dimen>
     <dimen name="stage_more_button_appbar_margin_right">26dp</dimen>
     <dimen name="stage_classic_chat_container_height">256dp</dimen>
     <dimen name="stage_release_chat_container_height">288dp</dimen>

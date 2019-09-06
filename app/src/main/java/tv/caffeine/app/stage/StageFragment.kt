@@ -87,6 +87,7 @@ class StageFragment @Inject constructor(
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
     private var isCurrentlyLive: Boolean? = null
+    private lateinit var stageProfileOverlayViewModel: StageProfileOverlayViewModel
 
     @VisibleForTesting
     var swipeButtonOnClickListener: View.OnClickListener? = null
@@ -136,7 +137,6 @@ class StageFragment @Inject constructor(
     private var viewJob: Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // Inflate the layout for this fragment
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -147,6 +147,7 @@ class StageFragment @Inject constructor(
         configureFriendsWatchingIndicator()
 
         binding.viewModel = stageViewModel
+        stageProfileOverlayViewModel = StageProfileOverlayViewModel(context!!, ::onProfileToggleButtonClick)
 
         if (!releaseDesignConfig.isReleaseDesignActive()) {
             binding.avatarUsernameContainer.transformToClassicUI()
@@ -157,12 +158,15 @@ class StageFragment @Inject constructor(
             layoutTransition = LayoutTransition()
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
+
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
 
             binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, FollowStarColor.WHITE, ::onFollowButtonClick)
             val isSelf = followManager.isSelf(userProfile.caid)
             binding.stageProfileOverlay?.followStarViewModel?.bind(userProfile.caid, userProfile.isFollowed, isSelf)
+            stageProfileOverlayViewModel.bind(userProfile.caid)
+            binding.stageProfileOverlay?.viewModel = stageProfileOverlayViewModel
             binding.showIsOverTextView.formatUsernameAsHtml(
                 picasso,
                 getString(R.string.broadcaster_show_is_over, userProfile.username)
@@ -252,6 +256,14 @@ class StageFragment @Inject constructor(
         configureButtons()
     }
 
+    private fun onProfileToggleButtonClick(isProfileShowing: Boolean, caid: CAID) {
+        if (isProfileShowing) {
+            updateBottomFragment(BottomContainerType.PROFILE, caid)
+        } else {
+            updateBottomFragment(BottomContainerType.CHAT, caid)
+        }
+    }
+
     @VisibleForTesting
     fun updateBottomFragment(bottomContainerType: BottomContainerType, caid: String = "") {
         stageViewModel.updateIsViewProfile(bottomContainerType == BottomContainerType.PROFILE)
@@ -287,6 +299,8 @@ class StageFragment @Inject constructor(
     }
 
     override fun returnToChat() {
+        // Need to click the profile toggle button so it switches to the correct state/color
+        stageProfileOverlayViewModel.onProfileToggleClick()
         updateBottomFragment(BottomContainerType.CHAT)
     }
 
