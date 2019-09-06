@@ -23,7 +23,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="19dp"
+            android:layout_marginTop="20dp"
             android:text="@{viewModel.messageText}"
             android:textColor="@{viewModel.messageTextColor}"
             android:background="@drawable/chat_bubble_release"
@@ -52,7 +52,7 @@
             android:elevation="3dp"
             android:contentDescription="@string/upvote_button_content_description"
             android:onClick="@{() -> viewModel.onUpvoteClicked()}"
-            android:visibility="@{viewModel.upvoteTextViewVisbility}"
+            android:visibility="@{viewModel.upvoteTextViewVisibility}"
             app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible"
@@ -67,7 +67,7 @@
             android:contentDescription="@string/upvote_button_content_description"
             android:elevation="2dp"
             android:onClick="@{() -> viewModel.onUpvoteClicked()}"
-            android:visibility="@{viewModel.highlightVisibility}"
+            android:visibility="@{viewModel.upvoteHighlightVisibility}"
             app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -144,6 +144,16 @@
             tools:ignore="ContentDescription"/>
 
         <!-- Views below are for the highlight mode -->
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:src="@drawable/message_triangle_cut_outline"
+            android:visibility="@{viewModel.highlightVisibility}"
+            app:layout_constraintEnd_toEndOf="@+id/speech_bubble_text_view"
+            app:layout_constraintTop_toTopOf="@+id/speech_bubble_text_view"
+            tools:ignore="ContentDescription"/>
+
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"

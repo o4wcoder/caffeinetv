@@ -104,14 +104,14 @@ class MessageViewModelTests {
     fun `do not show the upvote text if the count is 0`() {
         every { message.endorsementCount } returns 0
         subject.updateMessage(message)
-        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        assertEquals(View.GONE, subject.upvoteTextViewVisibility)
     }
 
     @Test
     fun `show the upvote text in the correct color if the count is 9`() {
         every { message.endorsementCount } returns 9
         subject.updateMessage(message)
-        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
         assertEquals("9", subject.upvoteText)
         assertEquals(getColor(R.color.chat_bubble_upvote_0_to_9), subject.upvoteBackground)
     }
@@ -120,7 +120,7 @@ class MessageViewModelTests {
     fun `show the upvote text in the correct color if the count is 99`() {
         every { message.endorsementCount } returns 99
         subject.updateMessage(message)
-        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
         assertEquals("99", subject.upvoteText)
         assertEquals(getColor(R.color.chat_bubble_upvote_10_to_99), subject.upvoteBackground)
     }
@@ -129,7 +129,7 @@ class MessageViewModelTests {
     fun `show the upvote text in the correct color if the count is 999`() {
         every { message.endorsementCount } returns 999
         subject.updateMessage(message)
-        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
         assertEquals("999", subject.upvoteText)
         assertEquals(getColor(R.color.chat_bubble_upvote_100_to_999), subject.upvoteBackground)
     }
@@ -138,7 +138,7 @@ class MessageViewModelTests {
     fun `show the upvote text in the correct color if the count is 1000`() {
         every { message.endorsementCount } returns 1000
         subject.updateMessage(message)
-        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
         assertEquals("1,000", subject.upvoteText)
         assertEquals(getColor(R.color.chat_bubble_upvote_1000_and_above), subject.upvoteBackground)
     }
@@ -169,25 +169,39 @@ class MessageViewModelTests {
     }
 
     @Test
-    fun `the upvote text hides in the highlighted mode and shows otherwise`() {
+    fun `the upvote text hides and the upvote highlight image shows in the highlighted mode if I did not upvote it`() {
         every { message.endorsementCount } returns 1
         subject.updateMessage(message)
-        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
         subject.onMessageClicked()
-        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        assertEquals(View.GONE, subject.upvoteTextViewVisibility)
+        assertEquals(View.VISIBLE, subject.upvoteHighlightVisibility)
         subject.onMessageClicked()
-        assertEquals(View.VISIBLE, subject.upvoteTextViewVisbility)
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
+    }
+
+    @Test
+    fun `the upvote text shows and the upvote highlight image hides in the highlighted mode if I upvoted it`() {
+        every { message.endorsementCount } returns 1
+        subject.updateMessage(message)
+        subject.onUpvoteClicked()
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
+        subject.onMessageClicked()
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
+        assertEquals(View.GONE, subject.upvoteHighlightVisibility)
+        subject.onMessageClicked()
+        assertEquals(View.VISIBLE, subject.upvoteTextViewVisibility)
     }
 
     @Test
     fun `the upvote text never shows if the count is 0`() {
         every { message.endorsementCount } returns 0
         subject.updateMessage(message)
-        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        assertEquals(View.GONE, subject.upvoteTextViewVisibility)
         subject.onMessageClicked()
-        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        assertEquals(View.GONE, subject.upvoteTextViewVisibility)
         subject.onMessageClicked()
-        assertEquals(View.GONE, subject.upvoteTextViewVisbility)
+        assertEquals(View.GONE, subject.upvoteTextViewVisibility)
     }
 
     @Test

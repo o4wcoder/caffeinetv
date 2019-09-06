@@ -33,12 +33,14 @@ class MessageViewModel(
     var usernameTextColor = getColor(R.color.chat_username_not_follow); private set
     var avatarImageUrl = ""; private set
     var upvoteText = ""; private set
-    var upvoteTextViewVisbility = View.GONE; private set
+    var upvoteTextViewVisibility = View.GONE; private set
+    var upvoteHighlightVisibility = View.GONE; private set
     var upvoteBackground = getColor(R.color.chat_bubble_upvote_0_to_9); private set
     var avatarImageViewVisibility = View.VISIBLE; private set
     var highlightVisibility = View.GONE; private set
     var mentionSelfDecorationImageViewVisibility = View.GONE; private set
     var digitalItemImageUrl = ""; private set
+    private var isUpvotedByMe = false
 
     private var isHighlightMode = false
     private var message: Message? = null
@@ -46,6 +48,7 @@ class MessageViewModel(
     fun updateMessage(message: Message) {
         this.message = message
         isHighlightMode = false
+        isUpvotedByMe = false
         message.publisher.let {
             username = it.username
             avatarImageUrl = it.avatarImageUrl
@@ -82,7 +85,10 @@ class MessageViewModel(
         if (isHighlightMode) {
             toggleHighlightMode()
         }
-        message?.let { callback?.upvoteClicked(it) }
+        message?.let {
+            callback?.upvoteClicked(it)
+            isUpvotedByMe = true
+        }
     }
 
     fun onUsernameClicked() {
@@ -95,7 +101,7 @@ class MessageViewModel(
 
     private fun updateUpvoteUi(upvoteCount: Int) {
         updateHighlightMode()
-        upvoteTextViewVisbility = getVisibility(upvoteCount > 0)
+        upvoteTextViewVisibility = getVisibility(upvoteCount > 0)
         upvoteText = NumberFormat.getInstance().format(upvoteCount)
         upvoteBackground = getColor(
             when (upvoteCount) {
@@ -115,7 +121,19 @@ class MessageViewModel(
     private fun updateHighlightMode() {
         avatarImageViewVisibility = getVisibility(!isHighlightMode, View.INVISIBLE)
         highlightVisibility = getVisibility(isHighlightMode)
-        upvoteTextViewVisbility = getVisibility(!isHighlightMode && message?.endorsementCount ?: 0 > 0)
+
+        /*
+        TODO:
+        We can't afford to call v2/reaper/messages/:messageIdentifier/endorsements for each message
+        to check if the message is upvoted by me. We keep a temporary variable locally as a workaround
+        so the user doesn't have an option to upvote the second time during a single session that the
+        bubble is visible. We should remove this workaround once the new chat system includes this
+        boolean via web socket.
+         */
+        val shouldShowUpvoteTextView = message?.endorsementCount ?: 0 > 0 &&
+            (isHighlightMode && isUpvotedByMe || !isHighlightMode)
+        upvoteTextViewVisibility = getVisibility(shouldShowUpvoteTextView)
+        upvoteHighlightVisibility = getVisibility(isHighlightMode && !shouldShowUpvoteTextView)
         notifyChange()
     }
 
