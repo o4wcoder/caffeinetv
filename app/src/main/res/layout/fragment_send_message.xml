@@ -16,6 +16,7 @@
             android:id="@+id/digital_item_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:text="@string/send"
             android:tint="@color/caffeine_blue"
             android:backgroundTint="@color/transparent"
@@ -32,10 +33,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:textSize="14sp"
+            android:maxLength="@integer/max_message_length"
             android:hint="@string/message"
             android:inputType="textCapSentences"
             android:imeOptions="actionSend"
-            android:maxLength="@integer/max_message_length"
+            android:importantForAutofill="no"
             app:layout_constraintStart_toEndOf="@id/digital_item_button"
             app:layout_constraintEnd_toStartOf="@+id/send_button_start"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,25 +48,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="start"
-            app:constraint_referenced_ids="send_button,send_text"/>
+            app:constraint_referenced_ids="send_button,send_text_view"/>
 
         <Button
             android:id="@+id/send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/send"
             app:layout_constraintBaseline_toBaselineOf="@+id/message_edit_text"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
-            style="@style/CaffeineText.Medium"
-            android:id="@+id/send_text"
+            style="@style/StageButton"
+            android:id="@+id/send_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/ic_btn_send"
-            android:gravity="center"
+            android:layout_marginEnd="16dp"
             android:text="@string/send_lowercase"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

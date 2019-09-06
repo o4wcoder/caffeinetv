@@ -13,57 +13,80 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:minHeight="@dimen/stage_bottom_sheet_min_height">
 
-
-        <ImageView
-            android:id="@+id/di_image_view"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="@string/digital_item"
+        <TextView
+            android:id="@+id/wallet_balance_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/gold_coin"
+            android:drawablePadding="4dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/di_quantity_number_picker"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_digital_items"
-            tools:tint="@color/caffeine_blue"/>
+            tools:text="700" />
 
         <NumberPicker
             android:id="@+id/di_quantity_number_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="68dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/di_image_view"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/message_edit_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/barrier"/>
+            app:layout_constraintEnd_toStartOf="@+id/di_container"
+            app:layout_constraintTop_toBottomOf="@id/wallet_balance_text_view"
+            app:layout_constraintBottom_toTopOf="@id/message_edit_text"/>
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
+        <LinearLayout
+            android:id="@+id/di_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:barrierDirection="bottom" />
+            android:orientation="vertical"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@id/di_quantity_number_picker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wallet_balance_text_view"
+            app:layout_constraintBottom_toTopOf="@id/message_edit_text">
+
+            <ImageView
+                android:id="@+id/di_image_view"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:contentDescription="@string/digital_item"
+                tools:src="@drawable/ic_digital_items"
+                tools:tint="@color/caffeine_blue"/>
+
+            <TextView
+                android:id="@+id/gold_cost_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{Integer.toString(digitalItem.goldCost)}"
+                android:drawableStart="@drawable/gold_coin"
+                android:drawablePadding="4dp"
+                tools:text="700" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/message_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:layout_marginEnd="10dp"
+            android:textSize="14sp"
+            android:maxLength="@integer/max_message_length"
             android:hint="@string/message"
             android:inputType="textCapSentences"
             android:imeOptions="actionSend"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintEnd_toStartOf="@+id/send_button"
+            android:importantForAutofill="no"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/barrier"/>
+            app:layout_constraintEnd_toStartOf="@+id/send_button_start"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/send_button_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="send_button,send_text_view"/>
 
         <Button
             android:id="@+id/send_button"
@@ -72,43 +95,18 @@
             android:text="@string/send"
             app:layout_constraintBaseline_toBaselineOf="@+id/message_edit_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/message_edit_text" />
+            app:layout_constraintTop_toTopOf="@+id/message_edit_text"
+            app:layout_constraintBottom_toBottomOf="@+id/message_edit_text"/>
 
         <TextView
-            android:id="@+id/wallet_balance_text_view"
+            style="@style/StageButton"
+            android:id="@+id/send_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="700" />
-
-        <TextView
-            android:id="@+id/gold_cost_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@{Integer.toString(digitalItem.goldCost)}"
-            app:layout_constraintEnd_toEndOf="@+id/di_image_view"
-            app:layout_constraintStart_toEndOf="@+id/gold_coin_image_view"
-            app:layout_constraintTop_toBottomOf="@+id/di_image_view"
-            tools:text="700" />
-
-        <ImageView
-            android:id="@+id/gold_coin_image_view"
-            android:layout_width="@dimen/coin_size"
-            android:layout_height="@dimen/coin_size"
-            android:layout_marginStart="8dp"
-            android:contentDescription="@string/gold_coin_content_description"
-            app:layout_constraintBottom_toBottomOf="@+id/gold_cost_text_view"
-            app:layout_constraintEnd_toStartOf="@+id/gold_cost_text_view"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/di_image_view"
-            app:layout_constraintTop_toTopOf="@+id/gold_cost_text_view"
-            app:srcCompat="@drawable/gold_coin" />
+            android:text="@string/send_lowercase"
+            app:layout_constraintTop_toTopOf="@id/message_edit_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
