@@ -394,11 +394,13 @@ class StageFragment @Inject constructor(
 
         if (releaseDesignConfig.isReleaseDesignActive()) {
             binding.stageProfileOverlay?.profileOverlayLayout?.isVisible = !broadcastIsOnline
+            binding.showIsOverTextView.isVisible = false
+            binding.backToLobbyButton.isVisible = false
         } else {
+            binding.stageProfileOverlay?.profileOverlayLayout?.isVisible = false
             binding.showIsOverTextView.isVisible = !broadcastIsOnline
+            binding.backToLobbyButton.isVisible = !broadcastIsOnline
         }
-
-        binding.backToLobbyButton.isVisible = !broadcastIsOnline
     }
 
     private fun configureFriendsWatchingIndicator() {

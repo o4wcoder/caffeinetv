@@ -21,36 +21,52 @@ class ReleaseDesignConfigTests {
 
     @Test
     fun `does not allow release design if settings are turned off`() {
-        mockSettings(featureEnabled = true, releaseDesignSettingEnabled = false)
+        mockSettings(devOptionsEnabled = false, featureEnabled = true, releaseDesignSettingEnabled = false)
         val subject = ReleaseDesignConfig(featureConfig, sharedPrefs)
         Assert.assertFalse(subject.isReleaseDesignActive())
     }
 
     @Test
     fun `does not allow release design if not in the test group`() {
-        mockSettings(featureEnabled = false, releaseDesignSettingEnabled = false)
+        mockSettings(devOptionsEnabled = false, featureEnabled = false, releaseDesignSettingEnabled = false)
         val subject = ReleaseDesignConfig(featureConfig, sharedPrefs)
         Assert.assertFalse(subject.isReleaseDesignActive())
     }
 
     @Test
     fun `does not allow release design if not in the test group even if setting is enabled`() {
-        mockSettings(featureEnabled = false, releaseDesignSettingEnabled = true)
+        mockSettings(devOptionsEnabled = false, featureEnabled = false, releaseDesignSettingEnabled = true)
         val subject = ReleaseDesignConfig(featureConfig, sharedPrefs)
         Assert.assertFalse(subject.isReleaseDesignActive())
     }
 
     @Test
     fun `allows release design if feature is enabled and setting is toggled on`() {
-        mockSettings(featureEnabled = true, releaseDesignSettingEnabled = true)
+        mockSettings(devOptionsEnabled = false, featureEnabled = true, releaseDesignSettingEnabled = true)
         val subject = ReleaseDesignConfig(featureConfig, sharedPrefs)
         Assert.assertTrue(subject.isReleaseDesignActive())
     }
 
+    @Test
+    fun `allows release design if dev options is enabled and setting is enabled`() {
+        mockSettings(devOptionsEnabled = true, featureEnabled = false, releaseDesignSettingEnabled = true)
+        val subject = ReleaseDesignConfig(featureConfig, sharedPrefs)
+        Assert.assertTrue(subject.isReleaseDesignActive())
+    }
+
+    @Test
+    fun `does not allow release design if dev options is enabled and setting is disabled`() {
+        mockSettings(devOptionsEnabled = true, featureEnabled = false, releaseDesignSettingEnabled = false)
+        val subject = ReleaseDesignConfig(featureConfig, sharedPrefs)
+        Assert.assertFalse(subject.isReleaseDesignActive())
+    }
+
     private fun mockSettings(
+        devOptionsEnabled: Boolean,
         featureEnabled: Boolean,
         releaseDesignSettingEnabled: Boolean
     ) {
+        every { featureConfig.isFeatureEnabled(Feature.DEV_OPTIONS) } returns devOptionsEnabled
         every { featureConfig.isFeatureEnabled(Feature.RELEASE_DESIGN) } returns featureEnabled
         every { sharedPrefs.getBoolean("release_design", any()) } returns releaseDesignSettingEnabled
     }
