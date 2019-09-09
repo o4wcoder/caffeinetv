@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -25,8 +26,8 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.databinding.FragmentSendDigitalItemBinding
+import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
-import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.ui.prepopulateText
 import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.wallet.DigitalItemRepository
@@ -35,7 +36,8 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 class SendDigitalItemFragment @Inject constructor(
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentSendDigitalItemBinding
@@ -47,7 +49,11 @@ class SendDigitalItemFragment @Inject constructor(
     private val sendDigitalItemViewModel: SendDigitalItemViewModel by viewModels { viewModelFactory }
     private val args by navArgs<SendDigitalItemFragmentArgs>()
 
-    override fun getTheme() = R.style.DarkBottomSheetDialog
+    override fun getTheme() = if (releaseDesignConfig.isReleaseDesignActive()) {
+        R.style.DarkBottomSheetDialog_Release
+    } else {
+        R.style.DarkBottomSheetDialog
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,20 +75,28 @@ class SendDigitalItemFragment @Inject constructor(
     private val total get() = itemGoldCost * quantity
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.messageEditText.prepopulateText(message)
+        binding.messageEditText.apply {
+            prepopulateText(message)
+            if (releaseDesignConfig.isReleaseDesignActive()) {
+                hint = getString(R.string.message_lowercase)
+            }
+        }
         sendDigitalItemViewModel.load(digitalItemId).observe(viewLifecycleOwner, Observer { digitalItem ->
             itemGoldCost = digitalItem.goldCost
             binding.goldCostTextView.text = numberFormat.format(total)
             picasso.load(digitalItem.staticImageUrl).into(binding.diImageView)
             binding.messageEditText.setOnAction(EditorInfo.IME_ACTION_SEND) { sendDigitalItem(digitalItem) }
+            binding.sendButton.isVisible = !releaseDesignConfig.isReleaseDesignActive()
             binding.sendButton.setOnClickListener { sendDigitalItem(digitalItem) }
+            binding.sendTextView.isVisible = releaseDesignConfig.isReleaseDesignActive()
+            binding.sendTextView.setOnClickListener { sendDigitalItem(digitalItem) }
             binding.diImageView.contentDescription = digitalItem.name
             checkAbilityToPurchase()
         })
         walletViewModel.wallet.observe(viewLifecycleOwner, Observer { wallet ->
             walletBalance = wallet.gold
             val numberFormat = NumberFormat.getIntegerInstance()
-            binding.walletBalanceTextView.formatUsernameAsHtml(picasso, getString(R.string.wallet_balance, numberFormat.format(wallet.gold)))
+            binding.walletBalanceTextView.text = numberFormat.format(wallet.gold)
             checkAbilityToPurchase()
         })
         binding.diQuantityNumberPicker.apply {

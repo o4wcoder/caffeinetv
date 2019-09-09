@@ -25,7 +25,6 @@ class FollowStarViewModel(
     fun getStarVisibility() = if (isSelf || isHidden) View.INVISIBLE else View.VISIBLE
 
     @Bindable
-
     fun getTint() = ContextCompat.getColor(context, followStarColor.color)
 
     fun bind(caid: CAID, isFollowing: Boolean, isSelf: Boolean) {

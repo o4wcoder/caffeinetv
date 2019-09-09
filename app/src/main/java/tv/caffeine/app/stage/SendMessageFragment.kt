@@ -58,7 +58,7 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
             isVisible = !releaseDesignConfig.isReleaseDesignActive()
             setOnClickListener { sendMessage() }
         }
-        binding.sendText.apply {
+        binding.sendTextView.apply {
             isVisible = releaseDesignConfig.isReleaseDesignActive()
             setOnClickListener { sendMessage() }
         }

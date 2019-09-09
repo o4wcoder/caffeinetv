@@ -45,6 +45,7 @@
     <style name="BaseDarkBottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="colorAccent">@color/color_accent</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:colorBackground">@color/almost_black</item>
     </style>
     <style name="DarkBottomSheetDialog" parent="BaseDarkBottomSheetDialog">
         <item name="android:windowLightStatusBar">false</item>

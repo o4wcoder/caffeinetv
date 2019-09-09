@@ -24,4 +24,9 @@
     <style name="StageChatText.UserReference.MentionSelf">
         <item name="android:textColor">@color/cyan</item>
     </style>
+    <style name="StageButton" parent="CaffeineText.Medium">
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">@drawable/ic_btn_send</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>
