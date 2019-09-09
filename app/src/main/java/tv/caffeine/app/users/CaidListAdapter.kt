@@ -186,7 +186,7 @@ class ReleaseCaidViewHolder(
             }
             itemView.setOnClickListener {
                 userProfile?.username?.let {
-                    val action = MainNavDirections.actionGlobalStagePagerFragment(item.caid)
+                    val action = MainNavDirections.actionGlobalStagePagerFragment(userProfile.username)
                     navController?.let { it.safeNavigate(action) }
                         ?: itemView.findNavController().safeNavigate(action)
                 }
