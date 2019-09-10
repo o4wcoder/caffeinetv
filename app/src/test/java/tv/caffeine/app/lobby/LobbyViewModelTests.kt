@@ -7,6 +7,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -67,6 +68,7 @@ class LobbyViewModelTests {
     fun `refreshing lobby repeatedly loads user info every time if it is release UI`() {
         coEvery { isVersionSupportedUseCase() } returns CaffeineEmptyResult.Success
         every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        coEvery { followManager.loadMyUserDetails() } returns mockk()
         subject.refresh()
         subject.refresh()
         coVerify(exactly = 2) { followManager.loadMyUserDetails() }
