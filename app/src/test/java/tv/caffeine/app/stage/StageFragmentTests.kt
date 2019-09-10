@@ -249,6 +249,26 @@ class StageFragmentVisibilityTests {
             subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as StageBroadcastProfilePagerFragment
         assertNotNull(stageBroadcastDetailsPagerFragment)
     }
+
+    @Test
+    fun `when profile is showing switch to chat section when profile toggle is clicked`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        val isProfileShowing = true
+        subject.onProfileToggleButtonClick(isProfileShowing, "CAID123")
+        val profileFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as StageBroadcastProfilePagerFragment
+        assertNotNull(profileFragment)
+    }
+
+    @Test
+    fun `when profile is not showing switch to profile section when profile toggle is clicked`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        val isProfileShowing = false
+        subject.onProfileToggleButtonClick(isProfileShowing, "CAID123")
+        val chatFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
+        assertNotNull(chatFragment)
+    }
 }
 
 @RunWith(RobolectricTestRunner::class)
