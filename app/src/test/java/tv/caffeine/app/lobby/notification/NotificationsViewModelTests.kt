@@ -1,6 +1,7 @@
 package tv.caffeine.app.lobby.notification
 
 import android.app.Application
+import android.os.Build.VERSION_CODES.O_MR1
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -177,7 +178,7 @@ class NotificationsViewModelTests {
 }
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [23], application = TestApp::class)
+@Config(sdk = [O_MR1], application = TestApp::class)
 class CaffeineNotificationTests {
 
     @Test
