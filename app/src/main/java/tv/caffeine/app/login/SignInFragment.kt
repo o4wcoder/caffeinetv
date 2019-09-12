@@ -10,6 +10,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
+import tv.caffeine.app.MainActivity
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.FirebaseEvent
 import tv.caffeine.app.analytics.logEvent
@@ -65,6 +66,7 @@ class SignInFragment @Inject constructor(
     @UiThread
     private fun onSuccess() {
         firebaseAnalytics.logEvent(FirebaseEvent.SignInSuccess)
+        (activity as MainActivity).reloadMyProfileViewModelOnSign()
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
         navController.safeNavigate(R.id.lobbySwipeFragment)
