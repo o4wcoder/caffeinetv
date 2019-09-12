@@ -356,6 +356,7 @@
 
     <style name="StageBroadcastTabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabIndicatorColor">@color/cyan</item>
+        <item name="tabIndicatorFullWidth">false</item>
         <item name="tabSelectedTextColor">@color/cyan</item>
         <item name="tabTextColor">@color/white</item>
         <item name="tabTextAppearance">@style/StageBroadcastTabTextAppearance</item>
