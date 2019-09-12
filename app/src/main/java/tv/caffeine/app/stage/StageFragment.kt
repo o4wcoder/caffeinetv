@@ -88,6 +88,7 @@ class StageFragment @Inject constructor(
     private var shouldShowOverlayOnProfileLoaded = true
     private var isCurrentlyLive: Boolean? = null
     private lateinit var stageProfileOverlayViewModel: StageProfileOverlayViewModel
+    private var isProfileShowing = false
 
     @VisibleForTesting
     var swipeButtonOnClickListener: View.OnClickListener? = null
@@ -173,7 +174,8 @@ class StageFragment @Inject constructor(
             )
             binding.avatarImageView.setOnClickListener {
                 if (releaseDesignConfig.isReleaseDesignActive()) {
-                    updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
+                    isProfileShowing = !isProfileShowing
+                    onProfileToggleButtonClick(isProfileShowing, userProfile.caid)
                 } else {
                     findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
                 }
@@ -256,7 +258,8 @@ class StageFragment @Inject constructor(
         configureButtons()
     }
 
-    private fun onProfileToggleButtonClick(isProfileShowing: Boolean, caid: CAID) {
+    @VisibleForTesting
+    fun onProfileToggleButtonClick(isProfileShowing: Boolean, caid: CAID) {
         if (isProfileShowing) {
             updateBottomFragment(BottomContainerType.PROFILE, caid)
         } else {
@@ -302,6 +305,7 @@ class StageFragment @Inject constructor(
         // Need to click the profile toggle button so it switches to the correct state/color
         stageProfileOverlayViewModel.onProfileToggleClick()
         updateBottomFragment(BottomContainerType.CHAT)
+        isProfileShowing = false
     }
 
     override fun onDestroyView() {

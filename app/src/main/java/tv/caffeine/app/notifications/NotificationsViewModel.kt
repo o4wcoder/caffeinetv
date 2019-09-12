@@ -7,8 +7,6 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import tv.caffeine.app.api.TransactionHistoryItem
@@ -20,6 +18,7 @@ import tv.caffeine.app.repository.TransactionHistoryRepository
 import tv.caffeine.app.repository.UsersRepository
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.util.toZonedDateTime
 import javax.inject.Inject
 
 class NotificationsViewModel @Inject constructor(
@@ -59,19 +58,17 @@ class NotificationsViewModel @Inject constructor(
                         val receivedDigitalsItems = receivedDigitalItemsResult.value.payload.transactions.state.map {
                             it.convert() }.filterIsInstance<TransactionHistoryItem.ReceiveDigitalItem>()
                         allNotifications?.addAll(receivedDigitalsItems.map {
-                            ReceivedDigitalItemNotification(it, isNewer(zonedDateTime(it.createdAt), referenceTimestamp)) }) // TODO: is this how to determine isNew?
+                            ReceivedDigitalItemNotification(it, isNewer(it.createdAt.toZonedDateTime(), referenceTimestamp)) })
                     }
                     is CaffeineResult.Error -> Timber.e("Error loading followers ${receivedDigitalItemsResult.error}")
                     is CaffeineResult.Failure -> Timber.e("${receivedDigitalItemsResult.throwable}")
                 }
             }
 
+            allNotifications?.sortByDescending { it.dateToCompare }
+
             _notifications.value = allNotifications
         }
-    }
-
-    private fun zonedDateTime(from: Int): ZonedDateTime {
-        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(from.toLong()), ZoneId.systemDefault())
     }
 
     private fun isNewer(timestamp: ZonedDateTime?, referenceTimestamp: ZonedDateTime?): Boolean {
@@ -90,6 +87,16 @@ class NotificationsViewModel @Inject constructor(
     }
 }
 
-sealed class CaffeineNotification
+sealed class CaffeineNotification {
+    val dateToCompare: ZonedDateTime?
+        get() = when (this) {
+            is FollowNotification -> {
+                if (this.caid is CaidRecord.FollowRecord && this.caid.followedAt !== null) this.caid.followedAt else null
+            }
+            is ReceivedDigitalItemNotification -> {
+                this.digitalItem.createdAt.toZonedDateTime()
+            }
+        }
+}
 data class FollowNotification(val caid: CaidRecord, val isNew: Boolean) : CaffeineNotification()
 data class ReceivedDigitalItemNotification(val digitalItem: TransactionHistoryItem.ReceiveDigitalItem, val isNew: Boolean) : CaffeineNotification()
