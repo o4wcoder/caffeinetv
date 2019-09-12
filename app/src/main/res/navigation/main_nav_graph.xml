@@ -386,6 +386,8 @@
         tools:layout="@layout/fragment_gold_bundles">
         <argument android:name="buyGoldOption"
             app:argType="tv.caffeine.app.settings.BuyGoldOption"/>
+        <argument android:name="isDarkMode"
+            app:argType="boolean"/>
         <action
             android:id="@+id/action_goldBundlesFragment_to_buyGoldUsingCreditsDialogFragment"
             app:destination="@id/buyGoldUsingCreditsDialogFragment" />

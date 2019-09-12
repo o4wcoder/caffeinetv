@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -30,7 +31,7 @@ class GoldBundlesFragment @Inject constructor(
     private lateinit var binding: FragmentGoldBundlesBinding
     private val viewModel: GoldBundlesViewModel by activityViewModels { viewModelFactory }
     private val goldBundlesAdapter by lazy {
-        GoldBundlesAdapter(buyGoldOption, picasso, isReleaseDesignConfig, object : GoldBundleClickListener {
+        GoldBundlesAdapter(buyGoldOption, picasso, isReleaseDesignConfig, args.isDarkMode, object : GoldBundleClickListener {
             override fun onClick(goldBundle: GoldBundle) {
                 purchaseGoldBundle(goldBundle)
             }
@@ -47,12 +48,15 @@ class GoldBundlesFragment @Inject constructor(
         binding = FragmentGoldBundlesBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             goldBundlesRecyclerView.adapter = goldBundlesAdapter
-            if (isReleaseDesignConfig.isReleaseDesignActive()) {
-                goldBundleScrollView.setBackgroundColor(resources.getColor(R.color.almost_black, null))
-            }
+            goldBundleScrollView.setBackgroundColor(resources.getColor(getScrollviewBackground(isReleaseDesignConfig.isReleaseDesignActive(), args.isDarkMode), null))
         }
 
         return binding.root
+    }
+
+    @ColorRes
+    fun getScrollviewBackground(isReleaseDesign: Boolean, isDarkMode: Boolean): Int {
+        return if (isReleaseDesign && isDarkMode) R.color.almost_black else R.color.transparent
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
