@@ -60,6 +60,8 @@ class StageViewModel @Inject constructor(
 
     fun getBadConnectionOverlayVisibility() = feedQuality == FeedQuality.BAD
 
+    fun getSwipeButtonVisibility() = stageIsLive
+
     fun updateFeedQuality(quality: FeedQuality) {
         feedQuality = quality
         updatePoorConnectionAnimation()

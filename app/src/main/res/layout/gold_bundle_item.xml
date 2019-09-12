@@ -5,17 +5,13 @@
 
     <data>
 
-        <variable
-            name="isReleaseDesign"
-            type="boolean"/>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/goldBundleContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@{isReleaseDesign ? @drawable/very_dark_gray_rounded_rect : @drawable/gray_rounded_rect}"
         android:paddingTop="10dp"
         android:paddingBottom="10dp">
 

@@ -172,14 +172,6 @@ class StageFragment @Inject constructor(
                 picasso,
                 getString(R.string.broadcaster_show_is_over, userProfile.username)
             )
-            binding.avatarImageView.setOnClickListener {
-                if (releaseDesignConfig.isReleaseDesignActive()) {
-                    isProfileShowing = !isProfileShowing
-                    onProfileToggleButtonClick(isProfileShowing, userProfile.caid)
-                } else {
-                    findNavController().safeNavigate(MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
-                }
-            }
             binding.moreButton.setOnClickListener {
                 findNavController().navigateToReportOrIgnoreDialog(userProfile.caid, userProfile.username, true)
             }
@@ -203,52 +195,18 @@ class StageFragment @Inject constructor(
                 }
             }
 
-            // TODO: Clean this up. Getting some unnecessary click events
-            if (releaseDesignConfig.isReleaseDesignActive() && userProfile.isLive) {
-                view.setOnClickListener { toggleOverlayVisibility() }
-            } else {
-                view.setOnClickListener { toggleOverlayVisibility() }
-            }
-
-            // TODO: extract to VM
-            val followListener = View.OnClickListener {
-                if (userProfile.isFollowed) {
-                    profileViewModel.unfollow(userProfile.caid)
-                } else {
-                    profileViewModel.follow(userProfile.caid).observe(this, Observer { result ->
-                        when (result) {
-                            is CaffeineEmptyResult.Error -> {
-                                if (result.error.isMustVerifyEmailError()) {
-                                    val fragment =
-                                        AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                                    fragment.maybeShow(fragmentManager, "verifyEmail")
-                                } else {
-                                    Timber.e("Couldn't follow user ${result.error}")
-                                }
-                            }
-                            is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                        }
-                    })
-                }
-            }
-
-            binding.followButtonText.setOnClickListener(followListener)
-            binding.followButtonImage.setOnClickListener(followListener)
-
             stageViewModel.updateIsMe(userProfile.isMe)
-
+            binding.root.setOnClickListener { toggleOverlayVisibility() }
+            setupLanscapeFollowClickListener(userProfile)
+            setupAvatarClickListener(userProfile)
             updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
 
             if (shouldShowOverlayOnProfileLoaded) {
                 shouldShowOverlayOnProfileLoaded = false
-
-                val shouldAutoHideAfterTimeout = if (releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive) false else !userProfile.isLive
-                val shouldIncludeAppBar = releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive
                 toggleOverlayVisibility(
-                    shouldAutoHideAfterTimeout,
-                    shouldIncludeAppBar
-                ) // hide on the first frame instead of a timeout if live
+                    !userProfile.isLive,
+                    false) // hide on the first frame instead of a timeout if live
             }
         })
         val navController = findNavController()
@@ -256,6 +214,54 @@ class StageFragment @Inject constructor(
         poorConnectionPulseAnimator = PulseAnimator(binding.poorConnectionPulseImageView)
         initSurfaceViewRenderer()
         configureButtons()
+    }
+
+    private fun setupLanscapeFollowClickListener(userProfile: UserProfile) {
+        // TODO: extract to VM
+        val followListener = View.OnClickListener {
+            if (userProfile.isFollowed) {
+                profileViewModel.unfollow(userProfile.caid)
+            } else {
+                profileViewModel.follow(userProfile.caid).observe(this, Observer { result ->
+                    when (result) {
+                        is CaffeineEmptyResult.Error -> {
+                            if (result.error.isMustVerifyEmailError()) {
+                                val fragment =
+                                    AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
+                                fragment.maybeShow(fragmentManager, "verifyEmail")
+                            } else {
+                                Timber.e("Couldn't follow user ${result.error}")
+                            }
+                        }
+                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+                    }
+                })
+            }
+        }
+        binding.followButtonText.setOnClickListener(followListener)
+        binding.followButtonImage.setOnClickListener(followListener)
+    }
+
+    private fun setupAvatarClickListener(userProfile: UserProfile) {
+        val avatarClickListener = View.OnClickListener {
+            if (releaseDesignConfig.isReleaseDesignActive()) {
+                isProfileShowing = !isProfileShowing
+                onProfileToggleButtonClick(isProfileShowing, userProfile.caid)
+            } else {
+                findNavController().safeNavigate(
+                    MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
+            }
+        }
+
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            if (userProfile.isLive) {
+                binding.avatarImageView.setOnClickListener(avatarClickListener)
+            } else {
+                binding.avatarImageView.setOnClickListener(null)
+            }
+        } else {
+            binding.avatarImageView.setOnClickListener(avatarClickListener)
+        }
     }
 
     @VisibleForTesting
@@ -383,6 +389,7 @@ class StageFragment @Inject constructor(
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
         binding.friendsWatchingIndicator.isVisible = stageViewModel.getFriendsWatchingIndicatorVisiblility()
+        binding.swipeButton.isVisible = stageViewModel.getSwipeButtonVisibility()
     }
 
     fun updateAvatarImageViewBackground() {

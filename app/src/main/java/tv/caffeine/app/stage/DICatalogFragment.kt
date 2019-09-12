@@ -72,7 +72,7 @@ class DICatalogFragment @Inject constructor(
             adapter.submitList(it.digitalItems.state)
         })
         binding.buyGoldButton.setOnClickListener {
-            val action = DICatalogFragmentDirections.actionDigitalItemListDialogFragmentToGoldBundlesFragment(BuyGoldOption.UsingPlayStore)
+            val action = DICatalogFragmentDirections.actionDigitalItemListDialogFragmentToGoldBundlesFragment(BuyGoldOption.UsingPlayStore, true)
             val fragment = GoldBundlesFragment(picasso, releaseDesignConfig)
             fragment.arguments = action.arguments
             fragment.maybeShow(fragmentManager, "buyGold")

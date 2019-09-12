@@ -2,6 +2,7 @@ package tv.caffeine.app.settings
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ class GoldBundlesAdapter @Inject constructor(
     private val buyGoldOption: BuyGoldOption,
     private val picasso: Picasso,
     private val isReleaseDesignConfig: ReleaseDesignConfig,
+    private val isDarkMode: Boolean,
     private val itemClickListener: GoldBundleClickListener
 ) : ListAdapter<GoldBundle, GoldBundleViewHolder>(object : DiffUtil.ItemCallback<GoldBundle?>() {
     override fun areItemsTheSame(oldItem: GoldBundle, newItem: GoldBundle) = oldItem.id == newItem.id
@@ -30,8 +32,14 @@ class GoldBundlesAdapter @Inject constructor(
 }) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoldBundleViewHolder {
         val binding = GoldBundleItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        binding.isReleaseDesign = isReleaseDesignConfig.isReleaseDesignActive()
+        binding.goldBundleContainer.setBackgroundResource(getGoldBundleContainerBackgroundResource(isReleaseDesignConfig.isReleaseDesignActive(), isDarkMode))
+
         return GoldBundleViewHolder(binding, buyGoldOption, itemClickListener, picasso)
+    }
+
+    @DrawableRes
+    fun getGoldBundleContainerBackgroundResource(isReleaseDesign: Boolean, isDarkMode: Boolean): Int {
+        return if (isReleaseDesign && isDarkMode) R.drawable.very_dark_gray_rounded_rect else R.drawable.gray_rounded_rect
     }
 
     override fun onBindViewHolder(holder: GoldBundleViewHolder, position: Int) {

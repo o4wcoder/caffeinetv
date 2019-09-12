@@ -122,6 +122,15 @@ class StageViewModelTests {
     }
 
     @Test
+    fun `showing overlays on an offline stage does not show swipe button`() {
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(false)
+        subject.updateIsMe(false)
+        assertFalse(subject.getSwipeButtonVisibility())
+    }
+
+    @Test
     fun `hiding overlays hides the live indicator and avatar container`() {
         subject.updateOverlayIsVisible(false, false)
         subject.updateFeedQuality(FeedQuality.GOOD)

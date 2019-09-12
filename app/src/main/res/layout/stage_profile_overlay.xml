@@ -24,74 +24,82 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_overlay_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/black"
-        android:paddingStart="@dimen/margin"
-        android:paddingTop="@dimen/margin"
-        android:paddingEnd="@dimen/margin">
+        android:layout_height="match_parent"
+        android:background="@color/black">
 
-        <ImageView
-            android:id="@+id/avatar_image_view"
-            android:layout_width="@dimen/stage_profile_avatar_size"
-            android:layout_height="@dimen/stage_profile_avatar_size"
-            android:contentDescription="@string/user_avatar_content_description"
-            android:padding="@dimen/avatar_rim_size_large"
-            android:src="@drawable/default_avatar_round"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/margin"
+            android:paddingTop="@dimen/margin"
+            android:paddingEnd="@dimen/margin"
             app:layout_constraintTop_toTopOf="parent"
-            app:placeholder="@{@drawable/default_avatar_round}"
-            app:roundedImageUrl="@{userProfile.avatarImageUrl}"
-            tools:background="@drawable/circle_white_with_blue_rim"
-            tools:src="@drawable/default_avatar_round" />
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            style="@style/Profile.Username"
-            android:id="@+id/username_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:drawablePadding="@dimen/verified_icon_padding"
-            android:text="@{userProfile.username}"
-            android:textAppearance="@style/ExploreUsername"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
-            app:userIcon="@{userProfile.userIcon}"
-            tools:text="@sample/usernames" />
 
-        <TextView
-            style="@style/Profile.Name"
-            android:id="@+id/name_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_line_spacing"
-            android:text="@{userProfile.name}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username_text_view"
-            tools:text="Winnie the Pooh" />
+            <ImageView
+                android:id="@+id/avatar_image_view"
+                android:layout_width="@dimen/stage_profile_avatar_size"
+                android:layout_height="@dimen/stage_profile_avatar_size"
+                android:contentDescription="@string/user_avatar_content_description"
+                android:padding="@dimen/avatar_rim_size_large"
+                android:src="@drawable/default_avatar_round"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:placeholder="@{@drawable/default_avatar_round}"
+                app:roundedImageUrl="@{userProfile.avatarImageUrl}"
+                tools:background="@drawable/circle_white_with_blue_rim"
+                tools:src="@drawable/default_avatar_round" />
 
-        <include
-            layout="@layout/follow_star"
-            android:id="@+id/follow_star"
-            android:layout_width="@dimen/stage_offline_icon_size"
-            android:layout_height="@dimen/stage_offline_icon_size"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/name_text_view"
-            app:layout_constraintStart_toStartOf="@id/name_text_view"
-            app:layout_constraintTop_toBottomOf="@+id/name_text_view"
-            bind:viewModel="@{followStarViewModel}" />
+            <TextView
+                style="@style/Profile.Username"
+                android:id="@+id/username_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawablePadding="@dimen/verified_icon_padding"
+                android:text="@{userProfile.username}"
+                android:textAppearance="@style/ExploreUsername"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
+                app:userIcon="@{userProfile.userIcon}"
+                tools:text="@sample/usernames" />
 
-        <ImageView
-            android:id="@+id/profile_toggle_image_view"
-            android:layout_width="@dimen/stage_offline_icon_size"
-            android:layout_height="@dimen/stage_offline_icon_size"
-            android:onClick="@{() -> viewModel.onProfileToggleClick()}"
-            android:tint="@{viewModel.tint}"
-            app:layout_constraintBottom_toBottomOf="@id/follow_star"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/follow_star"
-            app:srcCompat="@drawable/ic_profile" />
+            <TextView
+                style="@style/Profile.Name"
+                android:id="@+id/name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_line_spacing"
+                android:text="@{userProfile.name}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/username_text_view"
+                tools:text="Winnie the Pooh" />
+
+            <include
+                layout="@layout/follow_star"
+                android:id="@+id/follow_star"
+                android:layout_width="@dimen/stage_offline_icon_size"
+                android:layout_height="@dimen/stage_offline_icon_size"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/name_text_view"
+                app:layout_constraintStart_toStartOf="@id/name_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/name_text_view"
+                bind:viewModel="@{followStarViewModel}" />
+
+            <ImageView
+                android:id="@+id/profile_toggle_image_view"
+                android:layout_width="@dimen/stage_offline_icon_size"
+                android:layout_height="@dimen/stage_offline_icon_size"
+                android:onClick="@{() -> viewModel.onProfileToggleClick()}"
+                android:tint="@{viewModel.tint}"
+                app:layout_constraintBottom_toBottomOf="@id/follow_star"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/follow_star"
+                app:srcCompat="@drawable/ic_profile" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
