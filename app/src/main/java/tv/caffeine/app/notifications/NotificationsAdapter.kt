@@ -206,10 +206,13 @@ class FollowNotificationViewHolder(
                 binding.followStarViewModel!!.bind(user.caid, isFollowing, false)
                 binding.executePendingBindings()
             }
-        }
-        itemView.setOnClickListener {
-            val action = MainNavDirections.actionGlobalProfileFragment(caidRecord.caid)
-            itemView.findNavController().safeNavigate(action)
+            itemView.setOnClickListener {
+                userProfile?.username?.let {
+                    val action =
+                        MainNavDirections.actionGlobalStagePagerFragment(userProfile.username)
+                    itemView.findNavController().safeNavigate(action)
+                }
+            }
         }
     }
 
@@ -260,8 +263,10 @@ class ReceivedDigitalItemNotificationViewHolder(
             binding.creditsAvailableTextView.text = "${item.digitalItem.value}"
 
             itemView.setOnClickListener {
-                val action = MainNavDirections.actionGlobalProfileFragment(caid)
-                itemView.findNavController().safeNavigate(action)
+                userProfile?.username?.let {
+                    val action = MainNavDirections.actionGlobalStagePagerFragment(userProfile.username)
+                    itemView.findNavController().safeNavigate(action)
+                }
             }
         }
     }

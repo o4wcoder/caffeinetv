@@ -77,7 +77,7 @@ class FPGBroadcaster(
 ) : AbstractBroadcaster(followManager, user, coroutineScope) {
 
     override fun userClicked() {
-        val action = MainNavDirections.actionGlobalProfileFragment(caid)
+        val action = MainNavDirections.actionGlobalStagePagerFragment(user.username)
         navigate(action)
     }
 }

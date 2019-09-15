@@ -32,7 +32,8 @@ import kotlin.coroutines.CoroutineContext
 class TransactionHistoryAdapter @Inject constructor(
     private val dispatchConfig: DispatchConfig,
     private val followManager: FollowManager,
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : ListAdapter<TransactionHistoryItem, TransactionHistoryViewHolder>(
         object : DiffUtil.ItemCallback<TransactionHistoryItem?>() {
             override fun areItemsTheSame(oldItem: TransactionHistoryItem, newItem: TransactionHistoryItem) =
@@ -48,7 +49,7 @@ class TransactionHistoryAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionHistoryViewHolder {
         val binding = TransactionHistoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TransactionHistoryViewHolder(binding, followManager, this, picasso)
+        return TransactionHistoryViewHolder(binding, followManager, this, picasso, releaseDesignConfig)
     }
 
     override fun onBindViewHolder(holder: TransactionHistoryViewHolder, position: Int) {
@@ -65,7 +66,8 @@ class TransactionHistoryViewHolder(
     private val binding: TransactionHistoryItemBinding,
     private val followManager: FollowManager,
     private val scope: CoroutineScope,
-    private val picasso: Picasso
+    private val picasso: Picasso,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var job: Job? = null
@@ -95,8 +97,14 @@ class TransactionHistoryViewHolder(
                 }
                 if (user != null) {
                     itemView.setOnClickListener {
-                        val action = MainNavDirections.actionGlobalProfileFragment(userCaid)
-                        itemView.findNavController().safeNavigate(action)
+                        user?.username?.let {
+                            val action = if (releaseDesignConfig.isReleaseDesignActive()) {
+                                MainNavDirections.actionGlobalStagePagerFragment(user.username)
+                            } else {
+                                MainNavDirections.actionGlobalProfileFragment(userCaid)
+                            }
+                            itemView.findNavController().safeNavigate(action)
+                        }
                     }
                 }
                 val fontColor = itemView.context.getHexColor(colorRes)
