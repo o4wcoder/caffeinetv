@@ -323,9 +323,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         })
     }
 
-    fun reloadMyProfileViewModelOnSign() {
-        myProfileViewModel.load()
-    }
+    fun reloadMyProfileViewModelOnSign() = myProfileViewModel.load()
 
     override fun hearShake() {
         if (!isDevOptionsOpen) {
