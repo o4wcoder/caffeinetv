@@ -48,6 +48,7 @@ import tv.caffeine.app.util.notificationId
 import tv.caffeine.app.util.notificationTag
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.safeUnregisterNetworkCallback
+import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.setNavigationBarDarkMode
 import tv.caffeine.app.util.unsetImmersiveSticky
@@ -92,6 +93,8 @@ private val destinationsAsDialog = arrayOf(
 )
 
 private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)
+
+private val destinationInImmersiveMode = arrayOf(R.id.stagePagerFragment)
 
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
 
@@ -183,12 +186,14 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         }
     }
 
-    @VisibleForTesting fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding) {
+    @VisibleForTesting
+    fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding) {
         dismissKeyboard()
         val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
         if (destinationId !in destinationsAsDialog) {
             // Keep both bars as they are if we are navigating to a dialog.
-            binding.releaseAppBar.isVisible = isReleaseDesign && destinationId in destinationWithReleaseToolbar
+            binding.releaseAppBar.isVisible =
+                isReleaseDesign && destinationId in destinationWithReleaseToolbar
             binding.classicAppBar.isVisible = destinationId !in destinationsWithCustomToolbar &&
                 !binding.releaseAppBar.isVisible
             binding.bottomNavigation.isVisible = isReleaseDesign &&
@@ -201,6 +206,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         } else {
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
+        updateImmersiveMode(destinationId)
     }
 
     private fun createNotificationChannel() {
@@ -317,6 +323,16 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         bottomNavigationAvatar.updateSelectedState()
     }
 
+    @VisibleForTesting
+    fun updateImmersiveMode(destinationId: Int) {
+
+        if (destinationId in destinationInImmersiveMode) {
+            setImmersiveMode()
+        } else if (destinationId !in destinationsAsDialog) {
+            unsetImmersiveMode()
+        }
+    }
+
     private fun loadBottomNavigationAvatar() {
         myProfileViewModel.userProfile.observe(this, Observer { userProfile ->
             bottomNavigationAvatar.loadAvatar(userProfile.avatarImageUrl)
@@ -338,5 +354,28 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         dialog.setOnDismissListener {
             isDevOptionsOpen = false
         }
+    }
+
+    @VisibleForTesting
+    fun unsetImmersiveMode() {
+        unsetImmersiveSticky()
+        setDarkMode(false)
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            setNavigationBarDarkMode(true)
+        }
+
+        getPreferences(Context.MODE_PRIVATE)?.let {
+            val key = getString(R.string.is_first_time_on_stage)
+            if (it.getBoolean(key, true)) {
+                // This will re-enable the immersive mode function in MainActivity.onWindowFocusChanged().
+                it.edit().putBoolean(key, false).apply()
+            }
+        }
+    }
+
+    @VisibleForTesting
+    fun setImmersiveMode() {
+        setDarkMode(true)
+        setImmersiveSticky()
     }
 }

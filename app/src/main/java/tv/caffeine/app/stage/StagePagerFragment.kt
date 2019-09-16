@@ -1,6 +1,5 @@
 package tv.caffeine.app.stage
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -34,10 +33,6 @@ import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.broadcasterUsername
 import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.safeUnregisterNetworkCallback
-import tv.caffeine.app.util.setDarkMode
-import tv.caffeine.app.util.setImmersiveSticky
-import tv.caffeine.app.util.setNavigationBarDarkMode
-import tv.caffeine.app.util.unsetImmersiveSticky
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
 
@@ -46,8 +41,7 @@ private const val BUNDLE_KEY_BROADCASTERS = "broadcasters"
 class StagePagerFragment @Inject constructor(
     private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
     private val adapterFactory: StagePagerAdapter.Factory,
-    private val followManager: FollowManager,
-    private val releaseDesignConfig: ReleaseDesignConfig
+    private val followManager: FollowManager
 ) : CaffeineFragment(R.layout.fragment_stage_pager) {
 
     private var binding: FragmentStagePagerBinding? = null
@@ -76,10 +70,6 @@ class StagePagerFragment @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activity?.apply {
-            setDarkMode(true)
-            setImmersiveSticky()
-        }
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStagePagerBinding.bind(view)
         val swipeButtonOnClickListener = View.OnClickListener {
@@ -146,26 +136,6 @@ class StagePagerFragment @Inject constructor(
         }
         val index = if (initialBroadcasterIndex == -1) 0 else initialBroadcasterIndex
         return Pair(broadcasters, index)
-    }
-
-    override fun onDestroyView() {
-        activity?.apply {
-            unsetImmersiveSticky()
-            setDarkMode(false)
-            if (releaseDesignConfig.isReleaseDesignActive()) {
-                setNavigationBarDarkMode(true)
-            }
-
-            getPreferences(Context.MODE_PRIVATE)?.let {
-                val key = getString(R.string.is_first_time_on_stage)
-                if (it.getBoolean(key, true)) {
-                    // This will re-enable the immersive mode function in MainActivity.onWindowFocusChanged().
-                    it.edit().putBoolean(key, false).apply()
-                }
-            }
-        }
-        binding = null
-        super.onDestroyView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
