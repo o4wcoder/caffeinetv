@@ -153,7 +153,7 @@ class ReleaseUserViewHolder(
 
         item.user.isBroadcasting?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it }
         itemView.setOnClickListener {
-            val action = MainNavDirections.actionGlobalProfileFragment(item.user.caid)
+            val action = MainNavDirections.actionGlobalStagePagerFragment(item.user.username)
             Navigation.findNavController(itemView).safeNavigate(action)
         }
     }

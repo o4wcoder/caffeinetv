@@ -9,7 +9,7 @@ fun ApiErrorResult.isIdentityRateLimitExceeded() = errors?._identity?.contains("
 fun ApiErrorResult.isMustVerifyEmailError() = errors?._unverifiedEmail?.isNullOrEmpty() == false
 fun ApiErrorResult.isRecordNotFoundError() = errors?._record?.contains("could not be found") == true
 fun ApiErrorResult.isVerificationFailedError() = errors?.code?.contains("Verification failed.") == true
-fun ApiErrorResult.isOutOfCapacityError() = type == "OutOfCapacity"
+fun ApiErrorResult.isOutOfCapacityError() = type == "OutOfCapacityError"
 fun RefreshTokenMissingError() = ApiErrorResult(ApiError(_token = listOf("Refresh token missing")))
 
 data class ApiError(

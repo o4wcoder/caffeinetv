@@ -14,6 +14,11 @@ subscription Stage(
     username: $username
     viewerStreams: $viewerStreams
   ) {
+    error {
+      __typename
+      title
+      message
+    }
     stage {
       id
       username

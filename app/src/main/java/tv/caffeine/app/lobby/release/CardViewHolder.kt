@@ -154,7 +154,7 @@ class HorizontalScrollCard @AssistedInject constructor(
     }
 
     private val snapHelper = LinearSnapHelper()
-    private val edgeOffset = binding.root.resources.getDimension(R.dimen.release_lobby_card_side_margin).toInt()
+    private val edgeOffset = 0
     private val insetOffset = binding.root.resources.getDimension(R.dimen.lobby_card_narrow_margin).toInt()
     private val lobbyAdapter = lobbyAdapterFactory.create(lifecycleOwner, navController).apply { isMiniStyle = true }
 

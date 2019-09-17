@@ -17,7 +17,7 @@ class AutoPlayConfig @Inject constructor(
             (displayOrder == 0 || isPlayAllVideosEnabled())
     }
 
-    private fun isAutoPlaySettingEnabled() = sharedPreferences.getBoolean("autoplay", false)
+    private fun isAutoPlaySettingEnabled() = sharedPreferences.getBoolean("autoplay", true)
 
     private fun isPlayAllVideosEnabled() = sharedPreferences.getBoolean("play_all", false)
 }

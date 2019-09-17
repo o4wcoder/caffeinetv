@@ -16,7 +16,7 @@ class StagePagerFragmentTests {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        fragment = StagePagerFragment(mockk(), mockk(), mockk(), mockk())
+        fragment = StagePagerFragment(mockk(), mockk(), mockk())
     }
 
     @Test
