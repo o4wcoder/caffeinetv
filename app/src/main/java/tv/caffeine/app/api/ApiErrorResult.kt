@@ -1,5 +1,7 @@
 package tv.caffeine.app.api
 
+import tv.caffeine.app.stage.OUT_OF_CAPACITY_REYES_V4
+
 data class ApiErrorResult(val errors: ApiError?, val uuid: String? = null, val type: String? = null, val reason: String? = null)
 
 fun ApiErrorResult.isTokenExpirationError() = errors?._token?.isNullOrEmpty() == false
@@ -9,7 +11,7 @@ fun ApiErrorResult.isIdentityRateLimitExceeded() = errors?._identity?.contains("
 fun ApiErrorResult.isMustVerifyEmailError() = errors?._unverifiedEmail?.isNullOrEmpty() == false
 fun ApiErrorResult.isRecordNotFoundError() = errors?._record?.contains("could not be found") == true
 fun ApiErrorResult.isVerificationFailedError() = errors?.code?.contains("Verification failed.") == true
-fun ApiErrorResult.isOutOfCapacityError() = type == "OutOfCapacityError"
+fun ApiErrorResult.isOutOfCapacityError() = type == OUT_OF_CAPACITY_REYES_V4
 fun RefreshTokenMissingError() = ApiErrorResult(ApiError(_token = listOf("Refresh token missing")))
 
 data class ApiError(

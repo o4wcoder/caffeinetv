@@ -54,16 +54,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/stage_profile_overlay_details"
                 bind:viewModel="@{followStarViewModel}" />
 
-            <ImageView
-                android:id="@+id/profile_toggle_image_view"
-                android:layout_width="@dimen/stage_offline_icon_size"
-                android:layout_height="@dimen/stage_offline_icon_size"
-                android:onClick="@{() -> viewModel.onProfileToggleClick()}"
-                android:tint="@{viewModel.tint}"
-                app:layout_constraintBottom_toBottomOf="@id/follow_star"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/follow_star"
-                app:srcCompat="@drawable/ic_profile" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

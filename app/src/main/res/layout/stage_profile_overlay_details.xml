@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="userProfile"
+            type="tv.caffeine.app.profile.UserProfile" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/avatar_image_view"
+            android:layout_width="@dimen/stage_profile_avatar_size"
+            android:layout_height="@dimen/stage_profile_avatar_size"
+            android:contentDescription="@string/user_avatar_content_description"
+            android:padding="@dimen/avatar_rim_size_large"
+            android:src="@drawable/default_avatar_round"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:placeholder="@{@drawable/default_avatar_round}"
+            app:roundedImageUrl="@{userProfile.avatarImageUrl}"
+            tools:background="@drawable/circle_white_with_blue_rim"
+            tools:src="@drawable/default_avatar_round" />
+
+        <TextView
+            style="@style/Profile.Username"
+            android:id="@+id/username_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawablePadding="@dimen/verified_icon_padding"
+            android:text="@{userProfile.username}"
+            android:textAppearance="@style/ExploreUsername"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_image_view"
+            app:userIcon="@{userProfile.userIcon}"
+            tools:text="@sample/usernames" />
+
+        <TextView
+            style="@style/Profile.Name"
+            android:id="@+id/name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_line_spacing"
+            android:text="@{userProfile.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/username_text_view"
+            tools:text="Winnie the Pooh" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
