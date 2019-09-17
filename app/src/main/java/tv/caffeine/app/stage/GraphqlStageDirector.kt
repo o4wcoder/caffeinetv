@@ -25,6 +25,9 @@ import tv.caffeine.app.stream.type.Role
 import tv.caffeine.app.stream.type.SourceConnectionQuality
 import javax.inject.Inject
 
+const val OUT_OF_CAPACITY_REYES_V4 = "OutOfCapacity"
+const val OUT_OF_CAPACITY_REYES_V5 = "OutOfCapacityError"
+
 class GraphqlStageDirector @Inject constructor(
     private val serverConfig: ServerConfig,
     private val tokenStore: TokenStore
@@ -66,10 +69,15 @@ class GraphqlStageDirector @Inject constructor(
 
 fun <T> Response<T>.asCaffeineResult(): CaffeineResult<T> {
     val data = data()
+    val errorType = if ((data as? StageSubscription.Data)?.stage?.error?.__typename == OUT_OF_CAPACITY_REYES_V5) {
+        OUT_OF_CAPACITY_REYES_V4
+    } else {
+        null
+    }
     return when {
-        data != null -> CaffeineResult.Success(data)
+        data != null && errorType == null -> CaffeineResult.Success(data)
         else -> {
-            val error = ApiErrorResult(ApiError(_error = errors().map { it.toString() }))
+            val error = ApiErrorResult(ApiError(_error = errors().map { it.toString() }), type = errorType)
             CaffeineResult.Error(error)
         }
     }
