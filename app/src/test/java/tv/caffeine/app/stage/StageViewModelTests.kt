@@ -122,12 +122,13 @@ class StageViewModelTests {
     }
 
     @Test
-    fun `showing overlays on an offline stage does not show swipe button`() {
+    fun `showing overlays on an offline stage shows swipe button`() {
+        subject.isReleaseDesign.set(false)
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
         subject.updateIsMe(false)
-        assertFalse(subject.getSwipeButtonVisibility())
+        assertTrue(subject.getSwipeButtonVisibility())
     }
 
     @Test
@@ -186,15 +187,6 @@ class StageViewModelTests {
     }
 
     @Test
-    fun `showing overlays on an offline stage shows avatar username container when user is not me`() {
-        subject.updateOverlayIsVisible(true, false)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
-        assertTrue(subject.getAvatarUsernameContainerVisibility())
-    }
-
-    @Test
     fun `showing overlays on a live stage hides avatar username container when user is me`() {
         subject.updateOverlayIsVisible(true, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
@@ -204,11 +196,31 @@ class StageViewModelTests {
     }
 
     @Test
-    fun `showing overlays on an offline stage hids avatar username container when user is me`() {
+    fun `showing overlays on an offline stage hides avatar username container when user is me`() {
         subject.updateOverlayIsVisible(true, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
         subject.updateIsMe(true)
+        assertFalse(subject.getAvatarUsernameContainerVisibility())
+    }
+
+    @Test
+    fun `showing overlays on an classic offline stage shows avatar username container`() {
+        subject.isReleaseDesign.set(false)
+        subject.updateOverlayIsVisible(true, false)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(false)
+        subject.updateIsMe(false)
+        assertTrue(subject.getAvatarUsernameContainerVisibility())
+    }
+
+    @Test
+    fun `showing overlays on an offline stage does not show avatar username container`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateOverlayIsVisible(true, false)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(false)
+        subject.updateIsMe(false)
         assertFalse(subject.getAvatarUsernameContainerVisibility())
     }
 

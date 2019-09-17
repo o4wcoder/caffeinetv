@@ -156,10 +156,19 @@ class StageFragmentVisibilityTests {
     }
 
     @Test
-    fun `showing overlays on an offline stage shows avatar username container`() {
+    fun `showing overlays on an classic offline stage shows avatar username container`() {
         subject.stageViewModel.updateStageIsLive(false)
+        subject.stageViewModel.isReleaseDesign.set(false)
         subject.showOverlays()
         assertTrue(subject.binding.avatarUsernameContainer.isVisible)
+    }
+
+    @Test
+    fun `showing overlays on an offline stage does not show avatar username container`() {
+        subject.stageViewModel.updateStageIsLive(false)
+        subject.stageViewModel.isReleaseDesign.set(true)
+        subject.showOverlays()
+        assertFalse(subject.binding.avatarUsernameContainer.isVisible)
     }
 
     @Test
