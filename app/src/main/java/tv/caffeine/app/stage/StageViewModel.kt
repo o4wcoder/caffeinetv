@@ -54,13 +54,13 @@ class StageViewModel @Inject constructor(
 
     fun getAppBarVisibility() = overlayIsVisible && appbarIsVisible
 
-    fun getAvatarUsernameContainerVisibility() = !isMe && overlayIsVisible && feedQuality != FeedQuality.BAD
+    fun getAvatarUsernameContainerVisibility() = getOfflineAvatarUsernameContainerVisibility() && !isMe && overlayIsVisible && feedQuality != FeedQuality.BAD
 
     fun getWeakConnnectionContainerVisibility() = feedQuality == FeedQuality.POOR
 
     fun getBadConnectionOverlayVisibility() = feedQuality == FeedQuality.BAD
 
-    fun getSwipeButtonVisibility() = stageIsLive
+    fun getSwipeButtonVisibility() = overlayIsVisible
 
     fun updateFeedQuality(quality: FeedQuality) {
         feedQuality = quality
@@ -99,6 +99,13 @@ class StageViewModel @Inject constructor(
     private fun updatePoorConnectionAnimation() {
         _showPoorConnectionAnimation.value = !overlayIsVisible && feedQuality == FeedQuality.POOR
     }
+
+    private fun getOfflineAvatarUsernameContainerVisibility() =
+        if (isReleaseDesign.get()) {
+            stageIsLive
+        } else {
+            true
+        }
 
     private fun updateAvatarImageBackground() {
         val background: Int = if (isReleaseDesign.get()) {

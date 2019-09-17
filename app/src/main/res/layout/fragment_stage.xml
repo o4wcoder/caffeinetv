@@ -218,6 +218,18 @@
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
+        <include
+            layout="@layout/stage_profile_overlay"
+            android:id="@+id/stage_profile_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_fragment_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            bind:userProfile="@{userProfile}"
+            bind:viewModel="@{stageProfileOverlayViewModel}"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/live_indicator_and_avatar_container"
             android:layout_width="0dp"
@@ -434,16 +446,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <include
-            layout="@layout/stage_profile_overlay"
-            android:id="@+id/stage_profile_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/bottom_fragment_container"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            bind:userProfile="@{userProfile}"
-            bind:viewModel="@{stageProfileOverlayViewModel}"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
