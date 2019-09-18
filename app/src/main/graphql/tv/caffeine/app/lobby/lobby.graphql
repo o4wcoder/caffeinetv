@@ -32,7 +32,6 @@ query Lobby($page: Page!) {
                         }
                     }
                     ... on CategoryCard {
-                        previewImagePath
                         name
                     }
                 }

@@ -65,7 +65,6 @@ class AuthorizationInterceptorTests {
                 .protocol(Protocol.HTTP_1_0)
                 .code(0)
                 .message("message")
-                .headers(request.headers())
                 .build()
         }
 
