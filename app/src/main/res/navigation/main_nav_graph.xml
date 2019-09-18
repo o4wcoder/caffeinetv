@@ -73,6 +73,12 @@
         tools:layout="@layout/fragment_lobby">
     </fragment>
     <fragment
+        android:id="@+id/trendingLobbyFragment"
+        android:name="tv.caffeine.app.lobby.TrendingLobbyFragment"
+        android:label="@string/trending_lobby"
+        tools:layout="@layout/fragment_lobby">
+    </fragment>
+    <fragment
         android:id="@+id/featuredProgramGuideFragment"
         android:name="tv.caffeine.app.lobby.FeaturedProgramGuideFragment"
         android:label="@string/featured_program_guide"

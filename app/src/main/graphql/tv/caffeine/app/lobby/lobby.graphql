@@ -1,0 +1,51 @@
+query Lobby($page: Page!) {
+    pagePayLoad: lobby(page: $page) {
+        name
+        clusters {
+            name
+            cardLists{
+                name
+                id
+                cards{
+                    id
+                    ... on LiveBroadcastCard {
+                        user {
+                            ...userFragment
+                        }
+                        broadcast {
+                            id
+                            name
+                            description
+                            previewImagePath
+                            gameImagePath
+                            ageRestriction
+                            contentId
+                            friendViewers {
+                                ...userFragment
+                            }
+                            totalFriendViewers
+                        }
+                    }
+                    ... on CreatorCard {
+                        user {
+                            ...userFragment
+                        }
+                    }
+                    ... on CategoryCard {
+                        previewImagePath
+                        name
+                    }
+                }
+            }
+        }
+    }
+}
+
+fragment userFragment on User {
+    caid
+    username
+    avatarImagePath
+    isFollowing
+    isCaster
+    isVerified
+}

@@ -16,7 +16,6 @@ import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.lobby.LobbySwipeFragmentDirections
 import tv.caffeine.app.lobby.formatFriendsWatchingShortString
 import tv.caffeine.app.session.FollowManager
 
@@ -93,7 +92,7 @@ abstract class AbstractLobbyBroadcaster(
         coroutineScope.launch {
             lobbyImpressionAnalytics.cardClicked(broadcaster)
         }
-        val action = LobbySwipeFragmentDirections.actionLobbySwipeFragmentToStagePagerFragment(username)
+        val action = MainNavDirections.actionGlobalStagePagerFragment(username)
         navigate(action)
     }
 

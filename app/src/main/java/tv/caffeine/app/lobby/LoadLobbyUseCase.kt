@@ -11,6 +11,10 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.awaitAndParseErrors
 import javax.inject.Inject
 
+/**
+ * @deprecated This is used for the lobby v4 API, which will be removed in Oct 2019.
+ * @see [LobbyRepository] for working with the lobby v5 API.
+ */
 class LoadLobbyUseCase @Inject constructor(
     private val lobbyService: LobbyService,
     private val eventsService: EventsService,

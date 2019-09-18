@@ -45,11 +45,33 @@ interface LobbyItem {
         }
 
         private fun convert(broadcaster: Lobby.Broadcaster): SingleCard =
-                when {
-                    broadcaster.broadcast == null -> PreviousBroadcast(broadcaster.id, broadcaster)
-                    broadcaster.followingViewersCount == 0 -> LiveBroadcast(broadcaster.id, broadcaster)
-                    else -> LiveBroadcastWithFriends(broadcaster.id, broadcaster)
+            when {
+                broadcaster.broadcast == null -> PreviousBroadcast(broadcaster.id, broadcaster)
+                broadcaster.followingViewersCount == 0 -> LiveBroadcast(broadcaster.id, broadcaster)
+                else -> LiveBroadcastWithFriends(broadcaster.id, broadcaster)
+            }
+
+        fun parse(result: LobbyQuery.Data): List<LobbyItem> {
+            val lobbyItems = mutableListOf<LobbyItem>()
+            for (cluster in result.pagePayLoad.clusters) {
+                if (cluster.name != null) {
+                    lobbyItems.add(Header(cluster.name, cluster.name))
                 }
+                cluster.cardLists.forEach { cardList ->
+                    cardList.cards.forEachIndexed { index, card ->
+                        (card.inlineFragment as? LobbyQuery.AsLiveBroadcastCard)?.let {
+                            // TODO: update the fake display order with the global display order from the API
+                            val fakeDisplayOrder = if (cluster.name == null) index else index + 1
+                            lobbyItems.add(it.toLiveCard(fakeDisplayOrder))
+                        }
+                        (card.inlineFragment as? LobbyQuery.AsCreatorCard)?.let {
+                            lobbyItems.add(it.toOfflineCard(index))
+                        }
+                    }
+                }
+            }
+            return lobbyItems
+        }
     }
 }
 

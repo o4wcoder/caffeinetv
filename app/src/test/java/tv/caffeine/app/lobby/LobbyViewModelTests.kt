@@ -31,13 +31,14 @@ class LobbyViewModelTests {
     @MockK(relaxed = true) lateinit var loadFeatureConfigUseCase: LoadFeatureConfigUseCase
     @MockK(relaxed = true) lateinit var isVersionSupportedUseCase: IsVersionSupportedCheckUseCase
     @MockK(relaxed = true) lateinit var accountRepository: AccountRepository
+    @MockK(relaxed = true) lateinit var lobbyRepository: LobbyRepository
     @MockK(relaxed = true) lateinit var releaseDesignConfig: ReleaseDesignConfig
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         subject = LobbyViewModel(followManager, loadLobbyUseCase, loadFeatureConfigUseCase, isVersionSupportedUseCase,
-            accountRepository, releaseDesignConfig)
+            accountRepository, lobbyRepository, releaseDesignConfig)
         subject.viewModelScope
     }
 
