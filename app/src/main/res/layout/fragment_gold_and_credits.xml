@@ -21,10 +21,11 @@
             android:layout_height="wrap_content">
 
             <Button
+                style="@style/Button.Medium.FixedSize"
                 android:id="@+id/transaction_history_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin"
                 android:layout_marginStart="@dimen/margin"
                 android:layout_marginEnd="@dimen/margin"
                 android:text="@string/transaction_history"
@@ -47,6 +48,7 @@
                 tools:text="42" />
 
             <Button
+                style="@style/Button.Medium.FixedSize"
                 android:id="@+id/buy_gold_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -107,6 +109,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cumulative_credit_balance_text_view" />
 
             <Button
+                style="@style/Button.Medium.FixedSize"
                 android:id="@+id/buy_gold_with_credits_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
