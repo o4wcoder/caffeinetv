@@ -14,6 +14,7 @@ import tv.caffeine.app.api.convert
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.ext.isNewer
 import tv.caffeine.app.repository.TransactionHistoryRepository
 import tv.caffeine.app.repository.UsersRepository
 import tv.caffeine.app.session.FollowManager
@@ -46,7 +47,7 @@ class NotificationsViewModel @Inject constructor(
             val followersResult = usersRepository.getFollowersList(caid)
             when (followersResult) {
                 is CaffeineResult.Success -> allNotifications = followersResult.value.followers.map {
-                    FollowNotification(it, isNewer(it.followedAt, referenceTimestamp)) }.toMutableList()
+                    FollowNotification(it, it.followedAt.isNewer(referenceTimestamp)) }.toMutableList()
                 is CaffeineResult.Error -> Timber.e("Error loading followers ${followersResult.error}")
                 is CaffeineResult.Failure -> Timber.e(followersResult.throwable)
             }
@@ -58,9 +59,9 @@ class NotificationsViewModel @Inject constructor(
                         val receivedDigitalsItems = receivedDigitalItemsResult.value.payload.transactions.state.map {
                             it.convert() }.filterIsInstance<TransactionHistoryItem.ReceiveDigitalItem>()
                         allNotifications?.addAll(receivedDigitalsItems.map {
-                            ReceivedDigitalItemNotification(it, isNewer(it.createdAt.toZonedDateTime(), referenceTimestamp)) })
+                            ReceivedDigitalItemNotification(it, it.createdAt.toZonedDateTime().isNewer(referenceTimestamp)) })
                     }
-                    is CaffeineResult.Error -> Timber.e("Error loading followers ${receivedDigitalItemsResult.error}")
+                    is CaffeineResult.Error -> Timber.e("Error loading received digital items for count ${receivedDigitalItemsResult.error}")
                     is CaffeineResult.Failure -> Timber.e("${receivedDigitalItemsResult.throwable}")
                 }
             }
@@ -69,11 +70,6 @@ class NotificationsViewModel @Inject constructor(
 
             _notifications.value = allNotifications
         }
-    }
-
-    private fun isNewer(timestamp: ZonedDateTime?, referenceTimestamp: ZonedDateTime?): Boolean {
-        if (timestamp == null || referenceTimestamp == null) return true
-        return timestamp.isAfter(referenceTimestamp)
     }
 
     fun markNotificationsViewed() = viewModelScope.launch {
