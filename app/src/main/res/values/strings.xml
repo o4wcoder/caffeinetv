@@ -55,7 +55,7 @@
     <string name="mfa_status_off">Off</string>
     <string name="mfa_failure">Could not verify the code. Please try again later.</string>
     <string name="manage_mfa_coming_soon">Please manage two factor authentication on the web</string>
-    <string name="sign_out_button">Sign Out</string>
+    <string name="sign_out_button">sign out</string>
     <string name="sign_out_question">Sign out of account?</string>
     <string name="cancel">Cancel</string>
     <string name="delete_account_question">Delete Caffeine Account?</string>
@@ -198,8 +198,8 @@
     <string name="out_of_capacity_title">Caffeine servers are full</string>
 
     <!-- Gold and Credits -->
-    <string name="gold_and_credits_button">Gold &amp; Credits</string>
-    <string name="gold_and_credits_title">Gold &amp; Credits</string>
+    <string name="gold_and_credits_button">Gold and credits</string>
+    <string name="gold_and_credits_title">Gold and Credits</string>
     <string name="gold_buy_purpose">Gold buys items to give to broadcasters</string>
     <string name="wallet_balance"><![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
     <string name="you_have_gold_balance">You have \u00A0<![CDATA[<img src=\"goldcoin\">]]>\u00A0 <xliff:g example="10" id="gold_count">%s</xliff:g></string>

@@ -77,7 +77,6 @@
         <item name="android:paddingEnd">@dimen/margin</item>
         <item name="android:paddingTop">6dp</item>
         <item name="android:paddingBottom">@dimen/margin_line_spacing</item>
-        <item name="android:background">@drawable/gray_rounded_rect</item>
     </style>
 
     <!-- Button -->
@@ -153,7 +152,7 @@
     </style>
 
     <style name="MenuTextView">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/menu_text_view_background</item>
         <item name="android:gravity">start</item>
@@ -161,6 +160,21 @@
         <item name="android:paddingEnd">@dimen/margin</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
+    </style>
+
+    <style name="MenuTextView.Info">
+        <item name="android:background">@drawable/menu_text_view_no_divider_background</item>
+    </style>
+
+    <style name="MenuTextView.SignOut">
+        <item name="android:background">@drawable/menu_text_view_no_divider_background</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ProfileFollowText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Button.Follow" parent="Button.Outline">

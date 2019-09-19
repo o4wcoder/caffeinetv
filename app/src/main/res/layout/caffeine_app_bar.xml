@@ -39,7 +39,7 @@
                 android:background="@android:color/transparent"
                 android:tint="@color/medium_gray"
                 android:contentDescription="@string/search_button_content_description"
-                app:srcCompat="@drawable/ic_search_light"
+                app:srcCompat="@drawable/ic_search_light_gray"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -50,9 +50,8 @@
                 android:layout_width="@dimen/lobby_toolbar_icon"
                 android:layout_height="@dimen/lobby_toolbar_icon"
                 android:background="@android:color/transparent"
-                android:tint="@color/medium_gray"
                 android:contentDescription="@string/activity_button_content_description"
-                app:srcCompat="@drawable/ic_alert_light"
+                app:srcCompat="@drawable/ic_no_activity"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
