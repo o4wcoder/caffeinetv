@@ -6,7 +6,7 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.lobby.fragment.UserFragment
 
-fun LobbyQuery.AsLiveBroadcastCard.toLiveCard(displayOrder: Int): SingleCard {
+fun LobbyQuery.AsLiveBroadcastCard.toLiveCard(): SingleCard {
     val graphqlBroadcast = broadcast
     val graphqlUser = user.fragments.userFragment
     val broadcast = Broadcast(
@@ -36,7 +36,7 @@ fun LobbyQuery.AsLiveBroadcastCard.toLiveCard(displayOrder: Int): SingleCard {
     return LiveBroadcast(broadcaster.id, broadcaster)
 }
 
-fun LobbyQuery.AsCreatorCard.toOfflineCard(displayOrder: Int): SingleCard {
+fun LobbyQuery.AsCreatorCard.toOfflineCard(): SingleCard {
     val graphqlUser = user.fragments.userFragment
     val broadcaster = Lobby.Broadcaster(
         graphqlUser.caid,

@@ -60,12 +60,10 @@ interface LobbyItem {
                 cluster.cardLists.forEach { cardList ->
                     cardList.cards.forEachIndexed { index, card ->
                         (card.inlineFragment as? LobbyQuery.AsLiveBroadcastCard)?.let {
-                            // TODO: update the fake display order with the global display order from the API
-                            val fakeDisplayOrder = if (cluster.name == null) index else index + 1
-                            lobbyItems.add(it.toLiveCard(fakeDisplayOrder))
+                            lobbyItems.add(it.toLiveCard())
                         }
                         (card.inlineFragment as? LobbyQuery.AsCreatorCard)?.let {
-                            lobbyItems.add(it.toOfflineCard(index))
+                            lobbyItems.add(it.toOfflineCard())
                         }
                     }
                 }

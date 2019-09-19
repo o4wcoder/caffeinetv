@@ -33,10 +33,11 @@ class GraphqlLobbyExtTests {
             "_typename",
             "cluster_id",
             graphqlUser,
-            graphqlBroadcast
+            graphqlBroadcast,
+            2
         )
 
-        val liveCard = graphqlLiveBroadcastCard.toLiveCard(2)
+        val liveCard = graphqlLiveBroadcastCard.toLiveCard()
         val broadcaster = liveCard.broadcaster
         assertEquals("caid1", liveCard.id)
         assertEquals("user1", broadcaster.user.username)
@@ -59,10 +60,11 @@ class GraphqlLobbyExtTests {
         val graphqlCreatorCard = LobbyQuery.AsCreatorCard(
             "_typename",
             "cluster_id",
-            graphqlUser
+            graphqlUser,
+            2
         )
 
-        val offlineCard = graphqlCreatorCard.toOfflineCard(2)
+        val offlineCard = graphqlCreatorCard.toOfflineCard()
         val broadcaster = offlineCard.broadcaster
         assertEquals("caid1", offlineCard.id)
         assertEquals("user1", broadcaster.user.username)
