@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -25,7 +26,7 @@ class StageViewModelTests {
         MockKAnnotations.init(this)
         every { fakeReleaseDesignConfig.isReleaseDesignActive() } returns true
 
-        subject = StageViewModel(fakeReleaseDesignConfig)
+        subject = StageViewModel(fakeReleaseDesignConfig, mockk())
     }
 
     @Test

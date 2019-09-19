@@ -32,7 +32,6 @@ import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.FriendsWatchingViewModel
 import tv.caffeine.app.stage.SendDigitalItemViewModel
 import tv.caffeine.app.stage.StageBroadcastProfilePagerViewModel
-import tv.caffeine.app.stage.StageViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
@@ -197,11 +196,6 @@ abstract class ViewModelBinds {
 
     @Binds
     @IntoMap
-    @ViewModelKey(StageViewModel::class)
-    abstract fun bindStageViewModel(viewModel: StageViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(NotificationCountViewModel::class)
-    abstract fun bindNotificationCountViewModel(viewModel: StageViewModel): ViewModel
+    abstract fun bindNotificationCountViewModel(viewModel: NotificationCountViewModel): ViewModel
 }

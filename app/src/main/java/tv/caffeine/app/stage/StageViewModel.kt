@@ -6,10 +6,11 @@ import androidx.lifecycle.map
 import tv.caffeine.app.R
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineViewModel
-import javax.inject.Inject
 
-class StageViewModel @Inject constructor(
-    val releaseDesignConfig: ReleaseDesignConfig
+class StageViewModel(
+    val releaseDesignConfig: ReleaseDesignConfig,
+    val onAvatarButtonClick: () -> Unit
+
 ) : CaffeineViewModel() {
 
     private var feedQuality = FeedQuality.GOOD
@@ -94,6 +95,16 @@ class StageViewModel @Inject constructor(
 
     fun updateHasFriendsWatching(hasFriendsWatching: Boolean) {
         this.hasFriendsWatching = hasFriendsWatching
+    }
+
+    fun onAvatarClick() = onAvatarButtonClick()
+
+    // TODO: Remove this when move to full release design
+    // We only want to have the avatar button be clickable in classic mode while in landscape
+    fun onLandscapeAvatarClick() {
+        if (!isReleaseDesign.get()) {
+            onAvatarButtonClick()
+        }
     }
 
     private fun updatePoorConnectionAnimation() {
