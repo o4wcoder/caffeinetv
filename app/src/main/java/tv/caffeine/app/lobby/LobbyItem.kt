@@ -57,12 +57,22 @@ interface LobbyItem {
                 if (cluster.name != null) {
                     lobbyItems.add(Header(cluster.name, cluster.name))
                 }
-                cluster.cardLists.forEach { cardList ->
-                    cardList.cards.forEachIndexed { index, card ->
-                        (card.inlineFragment as? LobbyQuery.AsLiveBroadcastCard)?.let {
+                cluster.cardLists.forEach { genericCardList ->
+                    (genericCardList.inlineFragment as? LobbyQuery.AsLiveBroadcastCardList)?.let { cardList ->
+                        val totalCount = cardList.cards.size
+                        val maxLargeCardDisplayCount = cardList.maxLargeCardDisplayCount ?: totalCount
+                        cardList.cards.take(maxLargeCardDisplayCount).forEach {
                             lobbyItems.add(it.toLiveCard())
                         }
-                        (card.inlineFragment as? LobbyQuery.AsCreatorCard)?.let {
+                        if (totalCount > maxLargeCardDisplayCount) {
+                            lobbyItems.add(CardList(
+                                cardList.id,
+                                cardList.cards.subList(maxLargeCardDisplayCount, totalCount).map { it.toLiveCard() }
+                            ))
+                        }
+                    }
+                    (genericCardList.inlineFragment as? LobbyQuery.AsCreatorCardList)?.let { cardList ->
+                        cardList.cards.forEach {
                             lobbyItems.add(it.toOfflineCard())
                         }
                     }

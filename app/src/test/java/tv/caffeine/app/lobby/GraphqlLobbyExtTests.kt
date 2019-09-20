@@ -29,12 +29,12 @@ class GraphqlLobbyExtTests {
             listOf(friendViewers),
             1
         )
-        val graphqlLiveBroadcastCard = LobbyQuery.AsLiveBroadcastCard(
+        val graphqlLiveBroadcastCard = LobbyQuery.Card(
             "_typename",
             "cluster_id",
+            2,
             graphqlUser,
-            graphqlBroadcast,
-            2
+            graphqlBroadcast
         )
 
         val liveCard = graphqlLiveBroadcastCard.toLiveCard()
@@ -57,11 +57,11 @@ class GraphqlLobbyExtTests {
             "_typename",
             LobbyQuery.User1.Fragments(getUserFragment("caid1", "user1"))
         )
-        val graphqlCreatorCard = LobbyQuery.AsCreatorCard(
+        val graphqlCreatorCard = LobbyQuery.Card1(
             "_typename",
             "cluster_id",
-            graphqlUser,
-            2
+            2,
+            graphqlUser
         )
 
         val offlineCard = graphqlCreatorCard.toOfflineCard()

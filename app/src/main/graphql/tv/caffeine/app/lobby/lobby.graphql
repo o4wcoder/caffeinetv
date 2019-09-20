@@ -4,11 +4,12 @@ query Lobby($page: Page!) {
         clusters {
             name
             cardLists{
-                name
-                id
-                cards{
+                ... on LiveBroadcastCardList {
                     id
-                    ... on LiveBroadcastCard {
+                    maxLargeCardDisplayCount
+                    cards {
+                        id
+                        displayOrder
                         user {
                             ...userFragment
                         }
@@ -25,16 +26,20 @@ query Lobby($page: Page!) {
                             }
                             totalFriendViewers
                         }
-                        displayOrder
                     }
-                    ... on CreatorCard {
+                }
+                ... on CreatorCardList {
+                    cards {
+                        id
+                        displayOrder
                         user {
                             ...userFragment
                         }
-                        displayOrder
                     }
-                    ... on CategoryCard {
-                        name
+                }
+                ... on CategoryCardList {
+                    cards {
+                        id
                         displayOrder
                     }
                 }
