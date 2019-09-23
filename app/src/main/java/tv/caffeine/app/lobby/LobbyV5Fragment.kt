@@ -10,12 +10,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import tv.caffeine.app.MainActivity
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentLobbyBinding
 import tv.caffeine.app.lobby.classic.LobbyViewHolder
 import tv.caffeine.app.lobby.release.LargeOnlineBroadcasterCard
 import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
 import tv.caffeine.app.lobby.type.Page
+import tv.caffeine.app.notifications.NotificationCountViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.navigateToSendingVerificationEmailDialog
 import java.util.concurrent.TimeUnit
@@ -26,6 +28,7 @@ abstract class LobbyV5Fragment constructor(
 ) : CaffeineFragment(R.layout.fragment_lobby) {
 
     private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels { viewModelFactory }
     private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
     private lateinit var lobbyAdapter: ReleaseLobbyAdapter
@@ -34,9 +37,12 @@ abstract class LobbyV5Fragment constructor(
         val binding = FragmentLobbyBinding.bind(view)
         configure(binding)
         this.binding = binding
+        observeNotificationsCount()
     }
 
     abstract fun getPage(): Page
+
+    abstract fun shouldObserveNotificationCount(): Boolean
 
     private fun configure(binding: FragmentLobbyBinding) {
         lobbyAdapter = releaseLobbyAdapterFactoryProvider.get().create(viewLifecycleOwner, findNavController())
@@ -81,10 +87,22 @@ abstract class LobbyV5Fragment constructor(
         refreshJob?.cancel()
         refreshJob = launch {
             while (isActive) {
-                viewModel.refreshV5(getPage())
+                viewModel.refreshV5(getPage(), ::manageNotificationCount)
                 delay(TimeUnit.SECONDS.toMillis(30))
             }
         }
+    }
+
+    private fun manageNotificationCount() {
+        if (shouldObserveNotificationCount()) {
+            notificationCountViewModel.checkNewNotifications()
+        }
+    }
+
+    private fun observeNotificationsCount() {
+        notificationCountViewModel.hasNewNotifications.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let { hasNewNotifications -> (activity as MainActivity).binding.releaseAppBar.showNewActivityIcon(hasNewNotifications) }
+        })
     }
 
     override fun onStart() {

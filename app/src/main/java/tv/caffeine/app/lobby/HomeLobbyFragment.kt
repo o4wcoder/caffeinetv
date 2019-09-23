@@ -10,4 +10,6 @@ class HomeLobbyFragment @Inject constructor(
 ) : LobbyV5Fragment(releaseLobbyAdapterFactoryProvider) {
 
     override fun getPage() = Page.HOME
+
+    override fun shouldObserveNotificationCount() = true
 }

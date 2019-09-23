@@ -4,9 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import org.junit.Before
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,7 +21,6 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.PaginatedFollowers
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.repository.TransactionHistoryRepository
 import tv.caffeine.app.repository.UsersRepository
 import tv.caffeine.app.session.FollowManager
@@ -38,7 +37,6 @@ class NotificationCountViewModelTest {
     @MockK private lateinit var fakeUsersRepository: UsersRepository
     @MockK private lateinit var fakeTransactionHistoryRepository: TransactionHistoryRepository
     @MockK private lateinit var fakeFollowManager: FollowManager
-    @MockK private lateinit var fakeTokenStore: TokenStore
     @MockK private lateinit var fakeReleaseDesignConfig: ReleaseDesignConfig
 
     private val notificationLastViewed = ZonedDateTime.now()
@@ -50,8 +48,7 @@ class NotificationCountViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        coEvery { fakeFollowManager.loadUserDetails(any()) } returns justUser
-        coEvery { fakeTokenStore.caid } returns "123"
+        coEvery { fakeFollowManager.loadMyUserDetails() } returns justUser
         coEvery { fakeReleaseDesignConfig.isReleaseDesignActive() } returns true
     }
 
@@ -65,8 +62,9 @@ class NotificationCountViewModelTest {
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
 
-        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeTokenStore, fakeReleaseDesignConfig)
+        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeReleaseDesignConfig)
 
+        subject.checkNewNotifications()
         subject.hasNewNotifications.observeForTesting { event ->
             event.getContentIfNotHandled()?.let { assertTrue(it) }
         }
@@ -82,8 +80,9 @@ class NotificationCountViewModelTest {
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
 
-        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeTokenStore, fakeReleaseDesignConfig)
+        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeReleaseDesignConfig)
 
+        subject.checkNewNotifications()
         subject.hasNewNotifications.observeForTesting { event ->
             event.getContentIfNotHandled()?.let { assertTrue(it) }
         }
@@ -99,8 +98,9 @@ class NotificationCountViewModelTest {
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
 
-        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeTokenStore, fakeReleaseDesignConfig)
+        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeReleaseDesignConfig)
 
+        subject.checkNewNotifications()
         subject.hasNewNotifications.observeForTesting { event ->
             event.getContentIfNotHandled()?.let { assertTrue(it) }
         }
@@ -116,8 +116,9 @@ class NotificationCountViewModelTest {
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
 
-        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeTokenStore, fakeReleaseDesignConfig)
+        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeReleaseDesignConfig)
 
+        subject.checkNewNotifications()
         subject.hasNewNotifications.observeForTesting { event ->
             event.getContentIfNotHandled()?.let { assertTrue(it) }
         }
@@ -133,8 +134,9 @@ class NotificationCountViewModelTest {
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
 
-        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeTokenStore, fakeReleaseDesignConfig)
+        subject = NotificationCountViewModel(fakeUsersRepository, fakeTransactionHistoryRepository, fakeFollowManager, fakeReleaseDesignConfig)
 
+        subject.checkNewNotifications()
         subject.hasNewNotifications.observeForTesting { event ->
             event.getContentIfNotHandled()?.let { assertFalse(it) }
         }

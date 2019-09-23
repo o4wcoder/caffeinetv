@@ -11,7 +11,6 @@ import tv.caffeine.app.api.TransactionHistoryItem
 import tv.caffeine.app.api.convert
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Event
-import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.ext.isNewer
 import tv.caffeine.app.repository.TransactionHistoryRepository
 import tv.caffeine.app.repository.UsersRepository
@@ -24,24 +23,18 @@ class NotificationCountViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val transactionHistoryRepository: TransactionHistoryRepository,
     private val followManager: FollowManager,
-    private val tokenStore: TokenStore,
     private val releaseDesignConfig: ReleaseDesignConfig
 ) : ViewModel() {
     private val _hasNewNotifications = MutableLiveData<Event<Boolean>>()
     val hasNewNotifications: LiveData<Event<Boolean>> = _hasNewNotifications.map { it }
 
-    init {
-        checkNewNotifications()
-    }
-
-    private fun checkNewNotifications() {
-        val caid = tokenStore.caid ?: return
+    fun checkNewNotifications() {
         viewModelScope.launch {
-            val currentUser = followManager.loadUserDetails(caid) ?: return@launch
+            val currentUser = followManager.loadMyUserDetails() ?: return@launch
             val referenceTimestamp = currentUser.notificationsLastViewedAt
             var hasNewNotifications = false
 
-            val followersResult = usersRepository.getFollowersList(caid)
+            val followersResult = usersRepository.getFollowersList(currentUser.caid)
             when (followersResult) {
                 is CaffeineResult.Success -> {
                     hasNewNotifications = followersResult.value.followers.count {
