@@ -22,6 +22,7 @@ import tv.caffeine.app.CaffeineApplication
 import tv.caffeine.app.R
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
+import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stage.classic.ClassicChatFragment
 import tv.caffeine.app.stage.release.ReleaseChatFragment
@@ -56,6 +57,7 @@ class StageFragmentVisibilityTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK private lateinit var releaseDesignConfig: ReleaseDesignConfig
+    @MockK lateinit var userProfile: UserProfile
 
     lateinit var subject: StageFragment
 
@@ -63,6 +65,7 @@ class StageFragmentVisibilityTests {
     fun setup() {
         MockKAnnotations.init(this)
         every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        every { userProfile.caid } returns "CAID123"
         launchStageFragmentWithArgs("username", true) {
             subject = it
         }
@@ -274,6 +277,50 @@ class StageFragmentVisibilityTests {
         every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
         val isProfileShowing = false
         subject.onProfileToggleButtonClick(isProfileShowing, "CAID123")
+        val chatFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
+        assertNotNull(chatFragment)
+    }
+
+    @Test
+    fun `when first launching online stage set the bottom section to chat`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        every { userProfile.isLive } returns true
+        subject.haveSetupBottomSection = false
+        subject.updateBottomFragmentForOnlineStatus(userProfile)
+        val chatFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
+        assertNotNull(chatFragment)
+    }
+
+    @Test
+    fun `when first launching offline stage set the bottom section to profile`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        every { userProfile.isLive } returns false
+        subject.haveSetupBottomSection = false
+        subject.updateBottomFragmentForOnlineStatus(userProfile)
+        val profileFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as StageBroadcastProfilePagerFragment
+        assertNotNull(profileFragment)
+    }
+
+    @Test
+    fun `when first launching online classic stage set the bottom section to chat`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
+        every { userProfile.isLive } returns true
+        subject.haveSetupBottomSection = false
+        subject.updateBottomFragmentForOnlineStatus(userProfile)
+        val chatFragment =
+            subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
+        assertNotNull(chatFragment)
+    }
+
+    @Test
+    fun `when first launching offline classic stage set the bottom section to chat`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
+        every { userProfile.isLive } returns false
+        subject.haveSetupBottomSection = false
+        subject.updateBottomFragmentForOnlineStatus(userProfile)
         val chatFragment =
             subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
         assertNotNull(chatFragment)

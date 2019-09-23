@@ -86,7 +86,8 @@ class StageFragment @Inject constructor(
 
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
-    private var isCurrentlyLive: Boolean? = null
+    @VisibleForTesting
+    var haveSetupBottomSection = false
     private lateinit var stageProfileOverlayViewModel: StageProfileOverlayViewModel
     private var isProfileShowing = false
 
@@ -128,6 +129,13 @@ class StageFragment @Inject constructor(
         viewJob = null
         disconnectStreams()
         friendsWatchingViewModel.disconnect()
+    }
+
+    override fun onDetach() {
+        // Since we are retaining the instance of the fragment, need to reset this flag to setup
+        // the bottom section on configuration change
+        haveSetupBottomSection = false
+        super.onDetach()
     }
 
     override fun onDestroy() {
@@ -285,9 +293,9 @@ class StageFragment @Inject constructor(
 
     @VisibleForTesting
     fun updateBottomFragmentForOnlineStatus(userProfile: UserProfile) {
-        // If the user is offline, start with the profile section on the bottom, otherwise show chat
-        if (isCurrentlyLive != userProfile.isLive) {
-            isCurrentlyLive = userProfile.isLive
+        // If the user is offline, start with the profile section on the bottom, otherwise show chat. Only do this once
+        if (!haveSetupBottomSection) {
+            haveSetupBottomSection = true
             if (releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive) {
                 updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
             } else {
