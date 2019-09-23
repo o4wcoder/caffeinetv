@@ -12,7 +12,8 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.GlobalScope
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,9 +59,9 @@ class LobbyCardsOfflineBroadcasterTests {
 
         offlineBroadcaster.navigationCommands.observeForTesting {
             val navigationCommand = it.peekContent()
-            Assert.assertTrue(navigationCommand is NavigationCommand.To)
+            assertTrue(navigationCommand is NavigationCommand.To)
             val directions = (navigationCommand as NavigationCommand.To).directions
-            Assert.assertEquals(R.id.action_lobbySwipeFragment_to_stagePagerFragment, directions.actionId)
+            assertEquals(R.id.action_global_stagePagerFragment, directions.actionId)
         }
     }
 

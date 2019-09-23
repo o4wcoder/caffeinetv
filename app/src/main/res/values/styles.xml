@@ -77,7 +77,6 @@
         <item name="android:paddingEnd">@dimen/margin</item>
         <item name="android:paddingTop">6dp</item>
         <item name="android:paddingBottom">@dimen/margin_line_spacing</item>
-        <item name="android:background">@drawable/gray_rounded_rect</item>
     </style>
 
     <!-- Button -->
@@ -95,6 +94,18 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="Button.Medium">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:backgroundTint">@color/black</item>
+        <item name="cornerRadius">20dp</item>
+    </style>
+    <style name="Button.Medium.FixedSize">
+        <item name="android:layout_width">@dimen/big_button_width</item>
+        <item name="android:layout_height">@dimen/medium_button_height</item>
+        <item name="android:minHeight">@dimen/medium_button_height</item>
+    </style>
     <style name="Button.Big">
         <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:includeFontPadding">false</item>
@@ -141,7 +152,7 @@
     </style>
 
     <style name="MenuTextView">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/menu_text_view_background</item>
         <item name="android:gravity">start</item>
@@ -149,6 +160,21 @@
         <item name="android:paddingEnd">@dimen/margin</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
+    </style>
+
+    <style name="MenuTextView.Info">
+        <item name="android:background">@drawable/menu_text_view_no_divider_background</item>
+    </style>
+
+    <style name="MenuTextView.SignOut">
+        <item name="android:background">@drawable/menu_text_view_no_divider_background</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ProfileFollowText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Button.Follow" parent="Button.Outline">

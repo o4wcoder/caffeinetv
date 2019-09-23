@@ -104,7 +104,9 @@ class LobbyPagerAdapter @AssistedInject constructor(
     @Assisted private val pageCount: Int,
     private val resources: Resources,
     private val lobbyFragmentProvider: Provider<LobbyFragment>,
-    private val featuredProgramGuideFragmentProvider: Provider<FeaturedProgramGuideFragment>
+    private val homeLobbyFragmentProvider: Provider<HomeLobbyFragment>,
+    private val featuredProgramGuideFragmentProvider: Provider<FeaturedProgramGuideFragment>,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : FragmentStatePagerAdapter(fm) {
 
     @AssistedInject.Factory
@@ -115,7 +117,13 @@ class LobbyPagerAdapter @AssistedInject constructor(
     override fun getCount() = pageCount
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> lobbyFragmentProvider.get()
+            0 -> {
+                if (releaseDesignConfig.isReleaseDesignActive()) {
+                    homeLobbyFragmentProvider.get()
+                } else {
+                    lobbyFragmentProvider.get()
+                }
+            }
             else -> featuredProgramGuideFragmentProvider.get()
         }
     }

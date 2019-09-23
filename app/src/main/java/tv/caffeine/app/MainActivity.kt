@@ -70,6 +70,7 @@ private val destinationsWithCustomToolbar = arrayOf(
 
 private val destinationWithReleaseToolbar = arrayOf(
     R.id.lobbySwipeFragment,
+    R.id.trendingLobbyFragment,
     R.id.featuredProgramGuideFragment,
     R.id.myProfileFragment
 )
@@ -297,7 +298,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
         val destinationId = when (menuItem.itemId) {
             R.id.bottom_nav_star_menu_item -> R.id.lobbySwipeFragment
-            // TODO: flame menu item
+            R.id.bottom_nav_flame_menu_item -> R.id.trendingLobbyFragment
             R.id.bottom_nav_clock_menu_item -> R.id.featuredProgramGuideFragment
             R.id.bottom_nav_profile_menu_item -> R.id.myProfileFragment
             else -> -1
@@ -311,7 +312,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
     @VisibleForTesting fun updateBottomNavigationStatus(bottomNavigationView: BottomNavigationView, destinationId: Int) {
         val menuItemId = when (destinationId) {
             R.id.lobbySwipeFragment -> R.id.bottom_nav_star_menu_item
-            // TODO: flame menu item
+            R.id.trendingLobbyFragment -> R.id.bottom_nav_flame_menu_item
             R.id.featuredProgramGuideFragment -> R.id.bottom_nav_clock_menu_item
             R.id.myProfileFragment -> R.id.bottom_nav_profile_menu_item
             else -> -1

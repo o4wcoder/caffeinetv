@@ -104,9 +104,13 @@ brew install jq
 ```
 CREDENTIAL=$(curl "https://api.caffeine.tv/v1/credentials/anonymous" | jq -j .credential)
 ```
-3. Download `graphql.schema`:
+3. Download the stage `schema.json`:
 ```
 apollo schema:download --endpoint="https://realtime.caffeine.tv/public/graphql/query" --header="X-Credential: ${CREDENTIAL}"
+```
+4. Download the lobby `schema.json`:
+```
+apollo schema:download --endpoint="https://api.caffeine.tv/public/v5/lobby" --header="X-Credential: ${CREDENTIAL}" --header="X-Client-Type: android"
 ```
 
 ### Release UI

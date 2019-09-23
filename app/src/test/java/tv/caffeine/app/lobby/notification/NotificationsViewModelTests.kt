@@ -62,7 +62,9 @@ class NotificationsViewModelTests {
     }
 
     private val notificationLastViewed = ZonedDateTime.now()
-    private val justUser = User("caid", "username", "name", "email", "avatarImagePath", FOLLOWING_COUNT, FOLLOWERS_COUNT, false, false, "broadcastId", "stageId", mapOf(), mapOf(), AGE, "bio", "countryCode", "countryName", "gender", false, false, notificationLastViewed, null, false, false)
+    private val justUser = User("caid", "username", "name", "email", "avatarImagePath", FOLLOWING_COUNT, FOLLOWERS_COUNT,
+        false, false, "broadcastId", "stageId", mapOf(), mapOf(), AGE, "bio", "countryCode", "countryName", "gender", false,
+        false, notificationLastViewed, null, false, false)
     private val followRecordsNew = listOf(CaidRecord.FollowRecord("123", notificationLastViewed.plusHours(1L)))
     private val followRecordsOld = listOf(CaidRecord.FollowRecord("123", notificationLastViewed.minusHours(1L)))
     private val paginatedFollowersNew = PaginatedFollowers(0, 100, followRecordsNew)
@@ -70,8 +72,10 @@ class NotificationsViewModelTests {
 
     private val digItemCreatedAtNew = 2080085367
     private val digItemCreatedAtOld = 1565320568
-    private val receivedDigitalItemNew = HugeTransactionHistoryItem("", "ReceiveDigitalItem", digItemCreatedAtNew, 1, 1, null, null, 1, null, "", "", "", DigitalItemAssets("", "", ""), null, null)
-    private val receivedDigitalItemOld = HugeTransactionHistoryItem("", "ReceiveDigitalItem", digItemCreatedAtOld, 1, 1, null, null, 1, null, "", "", "", DigitalItemAssets("", "", ""), null, null)
+    private val receivedDigitalItemNew = HugeTransactionHistoryItem("", "ReceiveDigitalItem", digItemCreatedAtNew, 1, 1,
+        null, null, 1, null, "", "", "", DigitalItemAssets("", "", ""), null, null)
+    private val receivedDigitalItemOld = HugeTransactionHistoryItem("", "ReceiveDigitalItem", digItemCreatedAtOld, 1, 1,
+        null, null, 1, null, "", "", "", DigitalItemAssets("", "", ""), null, null)
     private val transHistoryPayloadNew = TransactionHistoryPayload(PaymentsCollection(listOf(receivedDigitalItemNew)))
     private val transHistoryPayloadOld = TransactionHistoryPayload(PaymentsCollection(listOf(receivedDigitalItemOld)))
 

@@ -9,7 +9,7 @@
     <dimen name="empty_state_width_percent">0.8</dimen>
 
     <dimen name="avatar_size">40dp</dimen> <!-- on a lobby card -->
-    <dimen name="avatar_size_large">175dp</dimen> <!-- profile -->
+    <dimen name="avatar_size_large">128dp</dimen> <!-- profile -->
     <dimen name="avatar_explore">85dp</dimen>
     <dimen name="avatar_lobby_mini">32dp</dimen>
     <dimen name="avatar_lobby_previous_broadcast">80dp</dimen>
@@ -30,6 +30,7 @@
     <dimen name="game_logo_width">120dp</dimen>
     <dimen name="game_logo_height">90dp</dimen>
 
+    <dimen name="medium_button_height">40dp</dimen>
     <dimen name="big_button_width">280dp</dimen>
     <dimen name="big_button_height">60dp</dimen>
     <dimen name="very_big_button_width">280dp</dimen>
@@ -117,4 +118,8 @@
 
     <dimen name="search_drawable_margin">18dp</dimen>
     <dimen name="margin_search">16dp</dimen>
+
+    <dimen name="my_profile_signout_top_margin">32dp</dimen>
+    <dimen name="my_profile_signout_bottom_margin">80dp</dimen>
+    <dimen name="my_profile_divider_top_margin">26dp</dimen>
 </resources>

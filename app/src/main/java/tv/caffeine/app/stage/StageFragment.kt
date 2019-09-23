@@ -82,7 +82,7 @@ class StageFragment @Inject constructor(
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
     @VisibleForTesting
-    val stageViewModel: StageViewModel by viewModels { viewModelFactory }
+    lateinit var stageViewModel: StageViewModel
 
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
@@ -140,15 +140,15 @@ class StageFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
-
+        stageViewModel = StageViewModel(releaseDesignConfig, ::onAvatarButtonClick)
+        binding.viewModel = stageViewModel
         stageViewModel.showPoorConnectionAnimation.observe(viewLifecycleOwner, Observer {
             if (it) poorConnectionPulseAnimator.startPulse() else poorConnectionPulseAnimator.stopPulse()
         })
 
-        configureFriendsWatchingIndicator()
-
-        binding.viewModel = stageViewModel
         stageProfileOverlayViewModel = StageProfileOverlayViewModel(context!!, ::onProfileToggleButtonClick)
+
+        configureFriendsWatchingIndicator()
 
         if (!releaseDesignConfig.isReleaseDesignActive()) {
             binding.avatarUsernameContainer.transformToClassicUI()
@@ -162,7 +162,6 @@ class StageFragment @Inject constructor(
 
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
-
             binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, FollowStarColor.WHITE, ::onFollowButtonClick)
             val isSelf = followManager.isSelf(userProfile.caid)
             binding.stageProfileOverlay?.followStarViewModel?.bind(userProfile.caid, userProfile.isFollowed, isSelf)
@@ -197,8 +196,7 @@ class StageFragment @Inject constructor(
 
             stageViewModel.updateIsMe(userProfile.isMe)
             binding.root.setOnClickListener { toggleOverlayVisibility() }
-            setupLanscapeFollowClickListener(userProfile)
-            setupAvatarClickListener(userProfile)
+            setupClassicFollowClickListener(userProfile)
             updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
 
@@ -216,7 +214,7 @@ class StageFragment @Inject constructor(
         configureButtons()
     }
 
-    private fun setupLanscapeFollowClickListener(userProfile: UserProfile) {
+    private fun setupClassicFollowClickListener(userProfile: UserProfile) {
         // TODO: extract to VM
         val followListener = View.OnClickListener {
             if (userProfile.isFollowed) {
@@ -242,25 +240,16 @@ class StageFragment @Inject constructor(
         binding.followButtonImage.setOnClickListener(followListener)
     }
 
-    private fun setupAvatarClickListener(userProfile: UserProfile) {
-        val avatarClickListener = View.OnClickListener {
+    private fun onAvatarButtonClick() {
+        binding.userProfile?.let {
             if (releaseDesignConfig.isReleaseDesignActive()) {
                 isProfileShowing = !isProfileShowing
-                onProfileToggleButtonClick(isProfileShowing, userProfile.caid)
+                onProfileToggleButtonClick(isProfileShowing, it.caid)
             } else {
                 findNavController().safeNavigate(
-                    MainNavDirections.actionGlobalProfileFragment(userProfile.caid))
+                    MainNavDirections.actionGlobalProfileFragment(it.caid)
+                )
             }
-        }
-
-        if (releaseDesignConfig.isReleaseDesignActive()) {
-            if (userProfile.isLive) {
-                binding.avatarImageView.setOnClickListener(avatarClickListener)
-            } else {
-                binding.avatarImageView.setOnClickListener(null)
-            }
-        } else {
-            binding.avatarImageView.setOnClickListener(avatarClickListener)
         }
     }
 

@@ -45,11 +45,41 @@ interface LobbyItem {
         }
 
         private fun convert(broadcaster: Lobby.Broadcaster): SingleCard =
-                when {
-                    broadcaster.broadcast == null -> PreviousBroadcast(broadcaster.id, broadcaster)
-                    broadcaster.followingViewersCount == 0 -> LiveBroadcast(broadcaster.id, broadcaster)
-                    else -> LiveBroadcastWithFriends(broadcaster.id, broadcaster)
+            when {
+                broadcaster.broadcast == null -> PreviousBroadcast(broadcaster.id, broadcaster)
+                broadcaster.followingViewersCount == 0 -> LiveBroadcast(broadcaster.id, broadcaster)
+                else -> LiveBroadcastWithFriends(broadcaster.id, broadcaster)
+            }
+
+        fun parse(result: LobbyQuery.Data): List<LobbyItem> {
+            val lobbyItems = mutableListOf<LobbyItem>()
+            for (cluster in result.pagePayLoad.clusters) {
+                if (cluster.name != null) {
+                    lobbyItems.add(Header(cluster.name, cluster.name))
                 }
+                cluster.cardLists.forEach { genericCardList ->
+                    (genericCardList.inlineFragment as? LobbyQuery.AsLiveBroadcastCardList)?.let { cardList ->
+                        val totalCount = cardList.cards.size
+                        val maxLargeCardDisplayCount = cardList.maxLargeCardDisplayCount ?: totalCount
+                        cardList.cards.take(maxLargeCardDisplayCount).forEach {
+                            lobbyItems.add(it.toLiveCard())
+                        }
+                        if (totalCount > maxLargeCardDisplayCount) {
+                            lobbyItems.add(CardList(
+                                cardList.id,
+                                cardList.cards.subList(maxLargeCardDisplayCount, totalCount).map { it.toLiveCard() }
+                            ))
+                        }
+                    }
+                    (genericCardList.inlineFragment as? LobbyQuery.AsCreatorCardList)?.let { cardList ->
+                        cardList.cards.forEach {
+                            lobbyItems.add(it.toOfflineCard())
+                        }
+                    }
+                }
+            }
+            return lobbyItems
+        }
     }
 }
 

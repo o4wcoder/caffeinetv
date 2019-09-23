@@ -12,6 +12,7 @@ import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.login.ArkoseViewModel
 import tv.caffeine.app.login.LegalAgreementViewModel
 import tv.caffeine.app.login.SignInViewModel
+import tv.caffeine.app.notifications.NotificationCountViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.DeleteAccountViewModel
 import tv.caffeine.app.profile.IgnoreUserViewModel
@@ -31,7 +32,6 @@ import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.FriendsWatchingViewModel
 import tv.caffeine.app.stage.SendDigitalItemViewModel
 import tv.caffeine.app.stage.StageBroadcastProfilePagerViewModel
-import tv.caffeine.app.stage.StageViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
@@ -196,6 +196,6 @@ abstract class ViewModelBinds {
 
     @Binds
     @IntoMap
-    @ViewModelKey(StageViewModel::class)
-    abstract fun bindStageViewModel(viewModel: StageViewModel): ViewModel
+    @ViewModelKey(NotificationCountViewModel::class)
+    abstract fun bindNotificationCountViewModel(viewModel: NotificationCountViewModel): ViewModel
 }

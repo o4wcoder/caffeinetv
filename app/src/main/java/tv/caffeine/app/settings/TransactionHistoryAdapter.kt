@@ -92,7 +92,9 @@ class TransactionHistoryViewHolder(
                 val username = user?.username ?: itemView.resources.getString(R.string.transaction_history_deleted_account)
                 val colorRes = when {
                     user == null -> R.color.medium_gray
-                    followManager.isFollowing(userCaid) -> R.color.caffeine_blue
+                    followManager.isFollowing(userCaid) -> {
+                        if (releaseDesignConfig.isReleaseDesignActive()) R.color.black else R.color.caffeine_blue
+                    }
                     else -> R.color.black
                 }
                 if (user != null) {

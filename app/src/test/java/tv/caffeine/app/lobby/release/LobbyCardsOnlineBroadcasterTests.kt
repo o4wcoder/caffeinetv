@@ -61,7 +61,7 @@ class LobbyCardsOnlineBroadcasterTests {
             val navigationCommand = it.peekContent()
             assertTrue(navigationCommand is NavigationCommand.To)
             val directions = (navigationCommand as NavigationCommand.To).directions
-            assertEquals(R.id.action_lobbySwipeFragment_to_stagePagerFragment, directions.actionId)
+            assertEquals(R.id.action_global_stagePagerFragment, directions.actionId)
         }
     }
 

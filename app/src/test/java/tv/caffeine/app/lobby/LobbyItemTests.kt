@@ -9,6 +9,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.model.Lobby
+import tv.caffeine.app.lobby.fragment.UserFragment
+import tv.caffeine.app.lobby.type.AgeRestriction
 
 @RunWith(RobolectricTestRunner::class)
 class LobbyItemTests {
@@ -82,5 +84,90 @@ class LobbyItemTests {
                 welcomeCardIndex != errorIndex && followPeopleCardIndex != errorIndex)
         assertTrue("The welcome avatar card should show before the follow people card",
                 welcomeCardIndex < followPeopleCardIndex)
+    }
+
+    @Test
+    fun `do not show the card list if maxLargeCountDisplayCount is null`() {
+        val cards = (1..3).map { buildCard(it) }
+        val data = buildLobbyV5WithLiveCards(cards, null)
+        val lobbyItems = LobbyItem.parse(data)
+        assertTrue(lobbyItems[0] is Header)
+        assertTrue(lobbyItems[1] is SingleCard)
+        assertTrue(lobbyItems[2] is SingleCard)
+        assertTrue(lobbyItems[3] is SingleCard)
+    }
+
+    @Test
+    fun `do not show the card list if maxLargeCountDisplayCount is larger than the card count`() {
+        val cards = (1..3).map { buildCard(it) }
+        val data = buildLobbyV5WithLiveCards(cards, 5)
+        val lobbyItems = LobbyItem.parse(data)
+        assertTrue(lobbyItems[0] is Header)
+        assertTrue(lobbyItems[1] is SingleCard)
+        assertTrue(lobbyItems[2] is SingleCard)
+        assertTrue(lobbyItems[3] is SingleCard)
+    }
+
+    @Test
+    fun `show large cards and then the card list if maxLargeCountDisplayCount is smaller than the card count`() {
+        val cards = (1..3).map { buildCard(it) }
+        val data = buildLobbyV5WithLiveCards(cards, 2)
+        val lobbyItems = LobbyItem.parse(data)
+        assertTrue(lobbyItems[0] is Header)
+        assertTrue(lobbyItems[1] is SingleCard)
+        assertTrue(lobbyItems[2] is SingleCard)
+        assertTrue(lobbyItems[3] is CardList)
+        assertEquals(1, (lobbyItems[3] as CardList).cards.size)
+    }
+
+    private fun buildLobbyV5WithLiveCards(
+        cards: List<LobbyQuery.Card>,
+        maxLargeCardDisplayCount: Int?
+    ): LobbyQuery.Data {
+        return LobbyQuery.Data(
+            LobbyQuery.PagePayLoad(
+                "", "name", listOf(
+                    LobbyQuery.Cluster(
+                        "", "name", listOf(
+                            LobbyQuery.CardList("", LobbyQuery.AsLiveBroadcastCardList(
+                                "", "cardListId", maxLargeCardDisplayCount, cards
+                                ))
+                        )
+                    )
+
+                )
+            )
+        )
+    }
+
+    private fun buildCard(index: Int): LobbyQuery.Card {
+        val userFragment = UserFragment(
+            "",
+            "caid$index",
+            "username$index",
+            "",
+            false,
+            false,
+            false
+        )
+        val broadcast = LobbyQuery.Broadcast(
+            "",
+            "id$index",
+            "name$index",
+            "description$index",
+            "/previewImage.jpg",
+            "/gameImage.jpg",
+            AgeRestriction.SEVENTEEN_PLUS,
+            "contentId$index",
+            listOf(),
+            0
+        )
+        return LobbyQuery.Card(
+            "",
+            index.toString(),
+            index,
+            LobbyQuery.User("", LobbyQuery.User.Fragments(userFragment)),
+            broadcast
+        )
     }
 }

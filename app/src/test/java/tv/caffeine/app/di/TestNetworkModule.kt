@@ -30,7 +30,8 @@ import javax.inject.Singleton
     FakeApiModule::class,
     FakeWebRtcModule::class,
     FakeImageLoadingModule::class,
-    ServerConfigModule::class
+    ServerConfigModule::class,
+    GraphqlModule::class
 ])
 class TestNetworkModule
 

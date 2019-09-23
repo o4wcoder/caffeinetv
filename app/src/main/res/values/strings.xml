@@ -2,6 +2,8 @@
     <!-- screen labels -->
     <string name="landing">Landing</string>
     <string name="lobby">Lobby</string>
+    <string name="for_you_lobby">For You</string>
+    <string name="trending_lobby">Trending</string>
     <string name="featured_program_guide">Featured Program Guide</string>
     <string name="stage">Stage</string>
     <string name="confirm_email">Confirm Email</string>
@@ -53,7 +55,7 @@
     <string name="mfa_status_off">Off</string>
     <string name="mfa_failure">Could not verify the code. Please try again later.</string>
     <string name="manage_mfa_coming_soon">Please manage two factor authentication on the web</string>
-    <string name="sign_out_button">Sign Out</string>
+    <string name="sign_out_button">sign out</string>
     <string name="sign_out_question">Sign out of account?</string>
     <string name="cancel">Cancel</string>
     <string name="delete_account_question">Delete Caffeine Account?</string>
@@ -132,19 +134,9 @@
         <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/> and %3$s others are watching]]></item>
     </plurals>
     <string name="user_watching_short"><![CDATA[<img src=\"%2$s\"> %1$s]]></string>
-    <string name="verified_user_watching_short"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"verified_white\"/>]]></string>
-    <string name="caster_watching_short"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/>]]></string>
     <plurals name="user_and_friends_watching_short">
         <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s + 1]]></item>
         <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s + %3$s]]></item>
-    </plurals>
-    <plurals name="verified_user_and_friends_watching_short">
-        <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"verified_white\"/> + 1]]></item>
-        <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"verified_white\"/> + %3$s]]></item>
-    </plurals>
-    <plurals name="caster_and_friends_watching_short">
-        <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/> + 1]]></item>
-        <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/> + %3$s]]></item>
     </plurals>
     <plurals name="number_of_followers">
         <item quantity="one"><![CDATA[<b>1</b>]]> follower</item>
@@ -196,8 +188,8 @@
     <string name="out_of_capacity_title">Caffeine servers are full</string>
 
     <!-- Gold and Credits -->
-    <string name="gold_and_credits_button">Gold &amp; Credits</string>
-    <string name="gold_and_credits_title">Gold &amp; Credits</string>
+    <string name="gold_and_credits_button">Gold and credits</string>
+    <string name="gold_and_credits_title">Gold and Credits</string>
     <string name="gold_buy_purpose">Gold buys items to give to broadcasters</string>
     <string name="wallet_balance"><![CDATA[<img src=\"goldcoin\">]]> <xliff:g example="10" id="gold_count">%s</xliff:g></string>
     <string name="you_have_gold_balance">You have \u00A0<![CDATA[<img src=\"goldcoin\">]]>\u00A0 <xliff:g example="10" id="gold_count">%s</xliff:g></string>

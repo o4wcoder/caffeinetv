@@ -1,5 +1,6 @@
 package tv.caffeine.app.auth
 
+import androidx.annotation.VisibleForTesting
 import com.crashlytics.android.Crashlytics
 import okhttp3.Request
 import tv.caffeine.app.api.CaffeineCredentials
@@ -18,8 +19,8 @@ class TokenStore @Inject constructor(
     private val settingsStorage: SettingsStorage,
     private val secureSettingsStorage: SecureSettingsStorage
 ) {
-    private var accessToken: String? = null
-    private var credential: String? = null
+    @VisibleForTesting var accessToken: String? = null
+    @VisibleForTesting var credential: String? = null
     private var _caid: CAID? = null
     var caid: CAID?
         get() = _caid ?: settingsStorage.caid?.apply { _caid = this }
@@ -88,6 +89,7 @@ class TokenStore @Inject constructor(
         requestBuilder.apply {
             accessToken?.let { header("Authorization", "Bearer $it") }
             credential?.let { header("X-Credential", it) }
+            header("X-Client-Type", "android")
         }
     }
 }

@@ -14,6 +14,7 @@ import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.feature.LoadFeatureConfigUseCase
+import tv.caffeine.app.lobby.type.Page
 import tv.caffeine.app.repository.AccountRepository
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
@@ -26,12 +27,15 @@ class LobbyViewModel @Inject constructor(
     private val loadFeatureConfigUseCase: LoadFeatureConfigUseCase,
     private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
     private val accountRepository: AccountRepository,
+    private val lobbyRepository: LobbyRepository,
     private val releaseDesignConfig: ReleaseDesignConfig
 ) : ViewModel() {
     private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
+    private val _lobbyV5 = MutableLiveData<CaffeineResult<LobbyQuery.Data>>()
     private val _emailVerificationUser = MutableLiveData<User>()
 
     val lobby: LiveData<CaffeineResult<Lobby>> = _lobby.map { it }
+    val lobbyV5: LiveData<CaffeineResult<LobbyQuery.Data>> = _lobbyV5.map { it }
     val emailVerificationUser = _emailVerificationUser.map { it }
 
     private var refreshJob: Job? = null
@@ -61,8 +65,31 @@ class LobbyViewModel @Inject constructor(
         }
     }
 
+    fun refreshV5(page: Page) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            val isVersionSupported = isVersionSupportedCheckUseCase()
+            if (isVersionSupported is CaffeineEmptyResult.Error) {
+                _lobbyV5.value = CaffeineResult.Error(VersionCheckError())
+                return@launch
+            }
+            followManager.refreshFollowedUsers()
+            loadLobbyV5(page)
+            loadEmailVerificationUser()
+        }
+    }
+
     private suspend fun loadLobby() = coroutineScope {
         _lobby.value = loadLobbyUseCase()
+        if (isFirstLoad) {
+            isFirstLoad = false
+            // load the feature config after the lobby is loaded for better cold start perf
+            loadFeatureConfigUseCase()
+        }
+    }
+
+    private suspend fun loadLobbyV5(page: Page) = coroutineScope {
+        _lobbyV5.value = lobbyRepository.loadLobbyV5(page)
         if (isFirstLoad) {
             isFirstLoad = false
             // load the feature config after the lobby is loaded for better cold start perf

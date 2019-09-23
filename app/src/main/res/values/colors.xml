@@ -23,6 +23,7 @@
     <color name="poor_connection_dim">#bf000000</color>
 
     <color name="very_very_light_gray">#f2f2f2</color>
+    <color name="very_light_gray_blue">#efeff4</color>
     <color name="very_light_gray">#dcdcdc</color>
     <color name="light_gray">#c4c4c4</color>
     <color name="medium_gray">#8b8b8b</color>

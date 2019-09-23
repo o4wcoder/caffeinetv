@@ -1,6 +1,7 @@
 package tv.caffeine.app.di
 
 import android.content.Context
+import com.apollographql.apollo.ApolloClient
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -67,7 +68,8 @@ enum class AuthorizationType {
     ApiModule::class,
     WebRtcModule::class,
     ImageLoadingModule::class,
-    ServerConfigModule::class
+    ServerConfigModule::class,
+    GraphqlModule::class
 ])
 class NetworkModule
 
@@ -268,5 +270,19 @@ class ImageLoadingModule {
     fun providesPicasso(context: Context, serverConfig: ServerConfig): Picasso = Picasso.Builder(context)
             .downloader(OkHttp3Downloader(OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build()))
             .requestTransformer(ImageServerRequestTransformer(serverConfig))
+            .build()
+}
+
+@Module
+class GraphqlModule {
+    @Provides
+    @Singleton
+    fun providesLobbyApolloAgent(
+        serverConfig: ServerConfig,
+        @ClientType(AuthorizationType.Required) client: OkHttpClient
+    ): ApolloClient =
+        ApolloClient.builder()
+            .serverUrl("${serverConfig.api}/public/v5/lobby")
+            .okHttpClient(client)
             .build()
 }

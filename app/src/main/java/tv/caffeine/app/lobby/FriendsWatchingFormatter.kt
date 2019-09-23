@@ -44,22 +44,18 @@ fun formatFriendsWatchingString(context: Context, broadcaster: Lobby.Broadcaster
 }
 
 fun formatFriendsWatchingShortString(context: Context, broadcaster: Lobby.Broadcaster): String? =
-    broadcaster.followingViewers?.let { formatFriendsWatchingShortString(context, it) }
+    broadcaster.followingViewers?.let {
+        formatFriendsWatchingShortString(context, it, broadcaster.followingViewersCount)
+    }
 
-fun formatFriendsWatchingShortString(context: Context, followingViewers: List<User>): String? {
-    val firstFriendVerified = followingViewers.firstOrNull()?.isVerified == true
-    val firstFriendIsCaster = followingViewers.firstOrNull()?.isCaster == true
-    val singleFriendWatchingResId = when {
-        firstFriendVerified -> R.string.verified_user_watching_short
-        firstFriendIsCaster -> R.string.caster_watching_short
-        else -> R.string.user_watching_short
-    }
-    val multipleFriendsWatchingResId = when {
-        firstFriendVerified -> R.plurals.verified_user_and_friends_watching_short
-        firstFriendIsCaster -> R.plurals.caster_and_friends_watching_short
-        else -> R.plurals.user_and_friends_watching_short
-    }
-    return when (val followingViewersCount = followingViewers.count()) {
+fun formatFriendsWatchingShortString(
+    context: Context,
+    followingViewers: List<User>,
+    followingViewersCount: Int = followingViewers.size
+): String? {
+    val singleFriendWatchingResId = R.string.user_watching_short
+    val multipleFriendsWatchingResId = R.plurals.user_and_friends_watching_short
+    return when (followingViewersCount) {
         0 -> null
         1 -> {
             followingViewers.let {
