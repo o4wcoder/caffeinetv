@@ -20,7 +20,7 @@ import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 import javax.inject.Inject
 
 class IgnoredUsersFragment @Inject constructor(
@@ -32,7 +32,7 @@ class IgnoredUsersFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = UserListFragmentBinding.bind(view)
-        caidListAdapter.setUsernameFollowStarColor(FollowStarColor.BLACK)
+        caidListAdapter.setUsernameFollowStarColor(ThemeColor.LIGHT)
         binding.userListRecyclerView.adapter = caidListAdapter
         viewModel.ignoredUsers.observe(viewLifecycleOwner, Observer {
             caidListAdapter.submitList(it)

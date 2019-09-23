@@ -37,7 +37,7 @@ import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.ui.configureUserIcon
 import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.safeNavigate
@@ -174,7 +174,7 @@ class FollowNotificationViewHolder(
     var job: Job? = null
 
     init {
-        binding.followStarViewModel = FollowStarViewModel(itemView.context, FollowStarColor.BLACK, onFollowStarClick)
+        binding.followStarViewModel = FollowStarViewModel(itemView.context, ThemeColor.LIGHT, onFollowStarClick)
         binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 

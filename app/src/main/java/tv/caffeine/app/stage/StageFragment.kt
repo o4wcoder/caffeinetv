@@ -42,7 +42,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatHtmlText
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.formatUsernameAsHtml
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.inTransaction
 import tv.caffeine.app.util.maybeShow
@@ -162,7 +162,7 @@ class StageFragment @Inject constructor(
 
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
-            binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, FollowStarColor.WHITE, ::onFollowButtonClick)
+            binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, ThemeColor.DARK, ::onFollowButtonClick)
             val isSelf = followManager.isSelf(userProfile.caid)
             binding.stageProfileOverlay?.followStarViewModel?.bind(userProfile.caid, userProfile.isFollowed, isSelf)
             stageProfileOverlayViewModel.bind(userProfile.caid)

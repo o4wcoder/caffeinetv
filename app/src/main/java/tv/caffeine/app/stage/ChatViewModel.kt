@@ -63,7 +63,7 @@ fun setSaySomethingText(textView: TextView, broadcasterUserName: String?, userPr
 }
 
 class ChatViewModel @Inject constructor(
-    private val context: Context,
+    val context: Context,
     private val tokenStore: TokenStore,
     private val getSignedUserDetailsUseCase: GetSignedUserDetailsUseCase,
     private val followManager: FollowManager,

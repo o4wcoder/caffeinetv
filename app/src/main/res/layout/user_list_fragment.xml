@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.users.FollowListViewModel" />
     </data>
 
     <FrameLayout
@@ -17,6 +19,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <TextView
+            style="@style/Profile"
+            android:id="@+id/user_list_empty_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:textColor="@{viewModel.emptyMessageTextColor}"
+            android:visibility="@{viewModel.emptyMessageVisibility}"/>
 
     </FrameLayout>
 </layout>

@@ -14,7 +14,7 @@ import tv.caffeine.app.databinding.FragmentFriendsWatchingBinding
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.users.CaidListAdapter
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 import javax.inject.Inject
 
 class FriendsWatchingFragment @Inject constructor(
@@ -31,7 +31,7 @@ class FriendsWatchingFragment @Inject constructor(
         val binding = FragmentFriendsWatchingBinding.inflate(inflater, container, false)
         binding.isReleaseActive = releaseDesignConfig.isReleaseDesignActive()
         userCaidAdapter.setNavController(activity?.findNavController(R.id.activity_main))
-        userCaidAdapter.setUsernameFollowStarColor(FollowStarColor.WHITE)
+        userCaidAdapter.setUsernameFollowStarColor(ThemeColor.DARK)
         binding.usersRecyclerView.adapter = userCaidAdapter
         return binding.root
     }
