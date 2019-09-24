@@ -1,6 +1,8 @@
 package tv.caffeine.app.lobby.release
 
 import android.content.Context
+import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.navigation.NavDirections
@@ -16,7 +18,9 @@ import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
+import tv.caffeine.app.lobby.LobbyQuery
 import tv.caffeine.app.lobby.formatFriendsWatchingShortString
+import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.session.FollowManager
 
 sealed class NavigationCommand {
@@ -155,5 +159,28 @@ class OfflineBroadcaster @AssistedInject constructor(
             lobbyImpressionAnalytics: LobbyImpressionAnalytics,
             coroutineScope: CoroutineScope
         ): OfflineBroadcaster
+    }
+}
+
+class CategoryCardViewModel @AssistedInject constructor(
+    @Assisted categoryCard: LobbyQuery.CategoryCard,
+    @Assisted context: Context,
+    serverConfig: ServerConfig
+) {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(categoryCard: LobbyQuery.CategoryCard, context: Context): CategoryCardViewModel
+    }
+
+    private var isNameVisible = categoryCard.overlayImagePath == null
+
+    val name = categoryCard.name
+    val nameVisibility = if (isNameVisible) View.VISIBLE else View.GONE
+    val gradientDrawable = if (isNameVisible) ContextCompat.getDrawable(context, R.drawable.gradient_overlay) else null
+    val backgroundImageUrl = categoryCard.backgroundImagePath?.let { "${serverConfig.images}$it" }
+    val overlayImageUrl = categoryCard.overlayImagePath?.let { "${serverConfig.images}$it" }
+
+    fun cardClicked() {
     }
 }

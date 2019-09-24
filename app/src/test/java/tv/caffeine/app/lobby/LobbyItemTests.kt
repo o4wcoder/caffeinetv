@@ -88,7 +88,7 @@ class LobbyItemTests {
 
     @Test
     fun `do not show the card list if maxLargeCountDisplayCount is null`() {
-        val cards = (1..3).map { buildCard(it) }
+        val cards = (1..3).map { buildLiveCard(it) }
         val data = buildLobbyV5WithLiveCards(cards, null)
         val lobbyItems = LobbyItem.parse(data)
         assertTrue(lobbyItems[0] is Header)
@@ -99,7 +99,7 @@ class LobbyItemTests {
 
     @Test
     fun `do not show the card list if maxLargeCountDisplayCount is larger than the card count`() {
-        val cards = (1..3).map { buildCard(it) }
+        val cards = (1..3).map { buildLiveCard(it) }
         val data = buildLobbyV5WithLiveCards(cards, 5)
         val lobbyItems = LobbyItem.parse(data)
         assertTrue(lobbyItems[0] is Header)
@@ -110,7 +110,7 @@ class LobbyItemTests {
 
     @Test
     fun `show large cards and then the card list if maxLargeCountDisplayCount is smaller than the card count`() {
-        val cards = (1..3).map { buildCard(it) }
+        val cards = (1..3).map { buildLiveCard(it) }
         val data = buildLobbyV5WithLiveCards(cards, 2)
         val lobbyItems = LobbyItem.parse(data)
         assertTrue(lobbyItems[0] is Header)
@@ -120,27 +120,60 @@ class LobbyItemTests {
         assertEquals(1, (lobbyItems[3] as CardList).cards.size)
     }
 
-    private fun buildLobbyV5WithLiveCards(
-        cards: List<LobbyQuery.Card>,
-        maxLargeCardDisplayCount: Int?
-    ): LobbyQuery.Data {
-        return LobbyQuery.Data(
-            LobbyQuery.PagePayLoad(
-                "", "name", listOf(
-                    LobbyQuery.Cluster(
-                        "", "name", listOf(
-                            LobbyQuery.CardList("", LobbyQuery.AsLiveBroadcastCardList(
-                                "", "cardListId", maxLargeCardDisplayCount, cards
-                                ))
-                        )
-                    )
-
-                )
-            )
-        )
+    @Test
+    fun `show a single category card if the card count is 1`() {
+        val cards = (1..1).map { buildCategoryCard(it) }
+        val data = buildLobbyV5WithCategoryCards(cards)
+        val lobbyItems = LobbyItem.parse(data)
+        assertTrue(lobbyItems[0] is Header)
+        assertTrue(lobbyItems[1] is SingleCategory)
     }
 
-    private fun buildCard(index: Int): LobbyQuery.Card {
+    @Test
+    fun `show a double category card if the card count is 2`() {
+        val cards = (1..2).map { buildCategoryCard(it) }
+        val data = buildLobbyV5WithCategoryCards(cards)
+        val lobbyItems = LobbyItem.parse(data)
+        assertTrue(lobbyItems[0] is Header)
+        assertTrue(lobbyItems[1] is DoubleCategory)
+    }
+
+    private fun buildLobbyV5WithLiveCards(
+        cards: List<LobbyQuery.LiveBroadcastCard>,
+        maxLargeCardDisplayCount: Int?
+    ) = LobbyQuery.Data(
+        LobbyQuery.PagePayLoad(
+            "", "name", listOf(
+                LobbyQuery.Cluster(
+                    "", "name", listOf(
+                        LobbyQuery.CardList("", LobbyQuery.AsLiveBroadcastCardList(
+                            "", "cardListId", maxLargeCardDisplayCount, cards
+                        ))
+                    )
+                )
+
+            )
+        )
+    )
+
+    private fun buildLobbyV5WithCategoryCards(
+        cards: List<LobbyQuery.CategoryCard>
+    ) = LobbyQuery.Data(
+        LobbyQuery.PagePayLoad(
+            "", "name", listOf(
+                LobbyQuery.Cluster(
+                    "", "name", listOf(
+                        LobbyQuery.CardList("", LobbyQuery.AsCategoryCardList(
+                            "", "cardListId", cards
+                        ))
+                    )
+                )
+
+            )
+        )
+    )
+
+    private fun buildLiveCard(index: Int): LobbyQuery.LiveBroadcastCard {
         val userFragment = UserFragment(
             "",
             "caid$index",
@@ -162,7 +195,7 @@ class LobbyItemTests {
             listOf(),
             0
         )
-        return LobbyQuery.Card(
+        return LobbyQuery.LiveBroadcastCard(
             "",
             index.toString(),
             index,
@@ -170,4 +203,13 @@ class LobbyItemTests {
             broadcast
         )
     }
+
+    private fun buildCategoryCard(index: Int) = LobbyQuery.CategoryCard(
+        "",
+        index.toString(),
+        index,
+        "name$index",
+        "/backgroundImage.jpg",
+        "/overlayImage.jpg"
+    )
 }

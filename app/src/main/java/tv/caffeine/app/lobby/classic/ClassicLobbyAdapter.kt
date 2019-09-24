@@ -1,6 +1,7 @@
 package tv.caffeine.app.lobby.classic
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -81,6 +82,7 @@ class ClassicLobbyAdapter @Inject constructor(
             LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> previousBroadcastCard(inflater, parent)
             LobbyItem.Type.CARD_LIST -> listCard(inflater, parent)
             LobbyItem.Type.UPCOMING_BUTTON_CARD -> upcomingButtonCard(inflater, parent)
+            else -> EmptyCard(View(parent.context))
         }
     }
 

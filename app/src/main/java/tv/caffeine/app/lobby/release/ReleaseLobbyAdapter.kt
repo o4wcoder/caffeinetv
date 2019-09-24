@@ -19,17 +19,21 @@ import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
+import tv.caffeine.app.databinding.ReleaseUiDoubleCategoryCardBinding
 import tv.caffeine.app.databinding.ReleaseUiHeaderBinding
 import tv.caffeine.app.databinding.ReleaseUiOfflineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiOnlineBroadcasterCardBinding
+import tv.caffeine.app.databinding.ReleaseUiSingleCategoryCardBinding
 import tv.caffeine.app.databinding.ReleaseUiSubtitleBinding
 import tv.caffeine.app.lobby.CardList
+import tv.caffeine.app.lobby.DoubleCategory
 import tv.caffeine.app.lobby.GenericLobbyAdapter
 import tv.caffeine.app.lobby.Header
 import tv.caffeine.app.lobby.LiveBroadcast
 import tv.caffeine.app.lobby.LiveBroadcastWithFriends
 import tv.caffeine.app.lobby.LobbyItem
 import tv.caffeine.app.lobby.PreviousBroadcast
+import tv.caffeine.app.lobby.SingleCategory
 import tv.caffeine.app.lobby.Subtitle
 import tv.caffeine.app.util.safeNavigate
 import kotlin.coroutines.CoroutineContext
@@ -40,6 +44,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     private val horizontalScrollCardFactory: HorizontalScrollCard.Factory,
     private val lobbyImpressionAnalyticsFactory: LobbyImpressionAnalytics.Factory,
     private val largeOnlineBroadcasterCardFactory: LargeOnlineBroadcasterCard.Factory,
+    private val categoryCardViewModelFactory: CategoryCardViewModel.Factory,
     @Assisted private val lifecycleOwner: LifecycleOwner,
     @Assisted private val navController: NavController
 ) : GenericLobbyAdapter<CardViewHolder>(DiffCallback()), CoroutineScope {
@@ -101,7 +106,9 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> offlineBroadcasterCard(inflater, parent)
             LobbyItem.Type.CARD_LIST -> listCard(inflater, parent)
             // LobbyItem.Type.UPCOMING_BUTTON_CARD -> upcomingButtonCard(inflater, parent)
-            else -> TextCard(View(parent.context))
+            LobbyItem.Type.SINGLE_CATEGORY_CARD -> singleCategoryCard(inflater, parent)
+            LobbyItem.Type.DOUBLE_CATEGORY_CARD -> doubleCategoryCard(inflater, parent)
+            else -> EmptyCard(View(parent.context))
         }
     }
 
@@ -140,6 +147,12 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             navController
         )
 
+    private fun singleCategoryCard(inflater: LayoutInflater, parent: ViewGroup) =
+        SingleCategoryCard(ReleaseUiSingleCategoryCardBinding.inflate(inflater, parent, false))
+
+    private fun doubleCategoryCard(inflater: LayoutInflater, parent: ViewGroup) =
+        DoubleCategoryCard(ReleaseUiDoubleCategoryCardBinding.inflate(inflater, parent, false))
+
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         val item = getItem(position)
         holder.setItemViewType(item)
@@ -149,6 +162,8 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             is LargeOnlineBroadcasterCard -> bind(holder, item)
             is OfflineBroadcasterCard -> bind(holder, item)
             is HorizontalScrollCard -> bind(holder, item)
+            is SingleCategoryCard -> bind(holder, item)
+            is DoubleCategoryCard -> bind(holder, item)
         }
     }
 
@@ -191,6 +206,20 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     private fun bind(horizontalScrollCard: HorizontalScrollCard, item: LobbyItem) {
         val cardList = item as CardList
         horizontalScrollCard.bind(cardList)
+    }
+
+    private fun bind(singleCategoryCard: SingleCategoryCard, item: LobbyItem) {
+        val card = (item as SingleCategory).categoryCard
+        val context = singleCategoryCard.itemView.context
+        singleCategoryCard.bind(categoryCardViewModelFactory.create(card, context))
+    }
+
+    private fun bind(doubleCategoryCard: DoubleCategoryCard, item: LobbyItem) {
+        val cardList = (item as DoubleCategory).categoryCardList.categoryCards
+        val context = doubleCategoryCard.itemView.context
+        doubleCategoryCard.bind(listOf(
+            categoryCardViewModelFactory.create(cardList[0], context),
+            categoryCardViewModelFactory.create(cardList[1], context)))
     }
 }
 
