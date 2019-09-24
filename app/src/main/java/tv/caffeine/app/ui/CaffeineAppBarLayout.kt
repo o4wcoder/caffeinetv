@@ -26,6 +26,7 @@ class CaffeineAppBarLayout : AppBarLayout {
             navController?.safeNavigate(R.id.exploreFragment)
         }
         findViewById<ImageButton>(R.id.releaseActivityButton).setOnClickListener {
+            showNewActivityIcon(false)
             navController?.safeNavigate(R.id.notificationsFragment)
         }
     }
@@ -35,5 +36,10 @@ class CaffeineAppBarLayout : AppBarLayout {
             onLongClick(it)
             true
         }
+    }
+
+    fun showNewActivityIcon(shouldShow: Boolean) {
+        val image = if (shouldShow) R.drawable.ic_activity else R.drawable.ic_no_activity
+        findViewById<ImageButton>(R.id.releaseActivityButton).setImageResource(image)
     }
 }

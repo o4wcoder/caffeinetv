@@ -44,10 +44,9 @@ enum class UsernameTheming(
     }
 }
 
-
-enum class FollowStarColor(val color: Int) {
-    WHITE(R.color.white),
-    BLACK(R.color.black)
+enum class ThemeColor(val color: Int) {
+    DARK(R.color.white),
+    LIGHT(R.color.black)
 }
 
 class UserTheme(@StyleRes val usernameTextAppearance: Int)

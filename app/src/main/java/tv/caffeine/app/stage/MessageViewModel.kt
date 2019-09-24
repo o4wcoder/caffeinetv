@@ -40,6 +40,8 @@ class MessageViewModel(
     var highlightVisibility = View.GONE; private set
     var mentionSelfDecorationImageViewVisibility = View.GONE; private set
     var digitalItemImageUrl = ""; private set
+    var digitalItemCountText: String? = null; private set
+    var digitalItemCountTextVisibility = View.GONE; private set
     private var isUpvotedByMe = false
 
     private var isHighlightMode = false
@@ -55,6 +57,13 @@ class MessageViewModel(
         }
         message.body.digitalItem?.let {
             digitalItemImageUrl = it.previewImageUrl
+            if (it.count > 1) {
+                digitalItemCountText = context.getString(R.string.digital_item_quantity, it.count)
+                digitalItemCountTextVisibility = View.VISIBLE
+            } else {
+                digitalItemCountText = null
+                digitalItemCountTextVisibility = View.GONE
+            }
         }
         rawMessageText = message.body.text
         messageText = highlightUsernames(message.body.text.insertLineBreakAfterFirstMention()) {

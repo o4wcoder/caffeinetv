@@ -65,7 +65,7 @@ class LobbyViewModel @Inject constructor(
         }
     }
 
-    fun refreshV5(page: Page) {
+    fun refreshV5(page: Page, onRefresh: () -> Unit) {
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
             val isVersionSupported = isVersionSupportedCheckUseCase()
@@ -76,6 +76,7 @@ class LobbyViewModel @Inject constructor(
             followManager.refreshFollowedUsers()
             loadLobbyV5(page)
             loadEmailVerificationUser()
+            onRefresh()
         }
     }
 

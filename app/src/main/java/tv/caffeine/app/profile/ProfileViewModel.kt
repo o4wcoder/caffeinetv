@@ -32,10 +32,13 @@ class ProfileViewModel @Inject constructor(
     /**
      * Force load when the UI relies on whether the broadcaster is live.
      */
-    fun forceLoad(caid: CAID) = viewModelScope.launch {
-        val userDetails = followManager.loadUserDetails(caid) ?: return@launch
-        val broadcastDetails = followManager.broadcastDetails(userDetails)
-        configure(userDetails, broadcastDetails)
+    fun forceLoad(caid: CAID): LiveData<UserProfile> {
+        viewModelScope.launch {
+            val userDetails = followManager.loadUserDetails(caid) ?: return@launch
+            val broadcastDetails = followManager.broadcastDetails(userDetails)
+            configure(userDetails, broadcastDetails)
+        }
+        return userProfile
     }
 
     private fun configure(userDetails: User, broadcastDetails: Broadcast?) {

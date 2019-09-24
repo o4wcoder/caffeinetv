@@ -6,11 +6,11 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 
 class FollowStarViewModel(
     val context: Context,
-    private val followStarColor: FollowStarColor,
+    private val themeColor: ThemeColor,
     val onFollowButtonClick: (caid: CAID, isFollowing: Boolean) -> Unit
 ) : BaseObservable() {
 
@@ -25,7 +25,7 @@ class FollowStarViewModel(
     fun getStarVisibility() = if (isSelf || isHidden) View.INVISIBLE else View.VISIBLE
 
     @Bindable
-    fun getTint() = ContextCompat.getColor(context, followStarColor.color)
+    fun getTint() = ContextCompat.getColor(context, themeColor.color)
 
     fun bind(caid: CAID, isFollowing: Boolean, isSelf: Boolean) {
         this.caid = caid

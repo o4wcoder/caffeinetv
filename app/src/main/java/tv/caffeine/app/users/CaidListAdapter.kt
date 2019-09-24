@@ -33,7 +33,7 @@ import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.ui.configureUserIcon
 import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.safeNavigate
@@ -59,14 +59,14 @@ class CaidListAdapter @Inject constructor(
         get() = dispatchConfig.main + job + exceptionHandler
 
     private var navController: NavController? = null
-    private var usernameFollowStarColor: FollowStarColor = FollowStarColor.WHITE
+    private var usernameThemeColor: ThemeColor = ThemeColor.DARK
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         if (releaseDesignConfig.isReleaseDesignActive()) {
             val context = parent.context
             val inflater = LayoutInflater.from(context)
             val binding = DataBindingUtil.inflate<CaidItemBinding>(inflater, R.layout.caid_item, parent, false)
-            ReleaseCaidViewHolder(binding, this, usernameFollowStarColor, ::onFollowStarClick)
+            ReleaseCaidViewHolder(binding, this, usernameThemeColor, ::onFollowStarClick)
         } else {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item_search, parent, false)
             ClassicCaidViewHolder(view, FollowManager.FollowHandler(fragmentManager, callback), this)
@@ -90,8 +90,8 @@ class CaidListAdapter @Inject constructor(
         this.navController = navController
     }
 
-    fun setUsernameFollowStarColor(color: FollowStarColor) {
-        this.usernameFollowStarColor = color
+    fun setUsernameFollowStarColor(color: ThemeColor) {
+        this.usernameThemeColor = color
     }
 }
 
@@ -134,7 +134,7 @@ class ClassicCaidViewHolder(itemView: View, private val followHandler: FollowMan
 class ReleaseCaidViewHolder(
     private val binding: CaidItemBinding,
     private val scope: CoroutineScope,
-    private val usernameFollowStarColor: FollowStarColor,
+    private val usernameThemeColor: ThemeColor,
     onFollowStarClick: (caid: CAID, isFollowing: Boolean) -> Unit
 ) :
     RecyclerView.ViewHolder(binding.root) {
@@ -142,7 +142,7 @@ class ReleaseCaidViewHolder(
     var followButton: Button? = null
 
     init {
-        binding.followStarViewModel = FollowStarViewModel(itemView.context, usernameFollowStarColor, onFollowStarClick)
+        binding.followStarViewModel = FollowStarViewModel(itemView.context, usernameThemeColor, onFollowStarClick)
         binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 
@@ -166,7 +166,7 @@ class ReleaseCaidViewHolder(
             )
             binding.usernameTextView.apply {
                 text = user.username
-                setTextColor(resources.getColor(usernameFollowStarColor.color, null))
+                setTextColor(resources.getColor(usernameThemeColor.color, null))
                 configureUserIcon(
                     when {
                         user.isVerified -> R.drawable.verified

@@ -169,7 +169,12 @@ class ReleaseLobbyItemDecoration(
         val cardTopMargin = if (itemPosition == 0) 0 else cardMargin / 2
         val cardBottomMargin = cardMargin / 2
         when (itemType) {
-            LobbyItem.Type.LIVE_BROADCAST_CARD, LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD, LobbyItem.Type.CARD_LIST -> outRect.set(0, cardTopMargin, 0, cardBottomMargin)
+            LobbyItem.Type.LIVE_BROADCAST_CARD,
+            LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD,
+            LobbyItem.Type.CARD_LIST -> outRect.set(0, cardTopMargin, 0, cardBottomMargin)
+            LobbyItem.Type.SINGLE_CATEGORY_CARD,
+            LobbyItem.Type.DOUBLE_CATEGORY_CARD,
+            LobbyItem.Type.CATEGORY_CARD_LIST -> outRect.set(0, 0, 0, cardBottomMargin)
             else -> outRect.set(0, 0, 0, 0)
         }
     }

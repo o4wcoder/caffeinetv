@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel1"
+            type="tv.caffeine.app.lobby.release.CategoryCardViewModel"/>
+        <variable
+            name="viewModel2"
+            type="tv.caffeine.app.lobby.release.CategoryCardViewModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/double_category_card_start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp"
+            android:onClick="@{() -> viewModel1.cardClicked()}">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:foreground="@{viewModel1.gradientDrawable}"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{viewModel1.backgroundImageUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintDimensionRatio="H, 16:9"
+                tools:ignore="ContentDescription"/>
+
+            <ImageView
+                android:layout_width="@dimen/lobby_category_overlay_image_double_width"
+                android:layout_height="@dimen/lobby_category_overlay_image_double_height"
+                android:elevation="1dp"
+                android:contentDescription="@{viewModel1.name}"
+                app:imageUrl="@{viewModel1.overlayImageUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                style="@style/LobbyDoubleCategoryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel1.name}"
+                android:elevation="2dp"
+                android:visibility="@{viewModel1.nameVisibility}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="Sports"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/double_category_card_end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:onClick="@{() -> viewModel2.cardClicked()}">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:foreground="@{viewModel2.gradientDrawable}"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{viewModel2.backgroundImageUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintDimensionRatio="H, 16:9"
+                tools:ignore="ContentDescription"/>
+
+            <ImageView
+                android:layout_width="@dimen/lobby_category_overlay_image_double_width"
+                android:layout_height="@dimen/lobby_category_overlay_image_double_height"
+                android:elevation="1dp"
+                android:contentDescription="@{viewModel2.name}"
+                app:imageUrl="@{viewModel2.overlayImageUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                style="@style/LobbyDoubleCategoryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel2.name}"
+                android:elevation="2dp"
+                android:visibility="@{viewModel2.nameVisibility}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="Sports"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>

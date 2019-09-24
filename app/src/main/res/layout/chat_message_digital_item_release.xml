@@ -32,6 +32,19 @@
             tools:tint="@color/cyan"/>
 
         <TextView
+            style="@style/StageChatText.DigitalItemCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:elevation="3dp"
+            android:text="@{viewModel.digitalItemCountText}"
+            android:visibility="@{viewModel.digitalItemCountTextVisibility}"
+            app:layout_constraintEnd_toStartOf="@id/digital_item_image_view"
+            app:layout_constraintBottom_toBottomOf="@+id/digital_item_image_view"
+            tools:text="x3"
+            tools:visibility="visible"/>
+
+        <TextView
             style="@style/StageChatText"
             android:id="@+id/speech_bubble_text_view"
             android:layout_width="0dp"

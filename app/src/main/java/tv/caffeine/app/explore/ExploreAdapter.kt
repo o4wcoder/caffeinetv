@@ -28,7 +28,7 @@ import tv.caffeine.app.ui.FollowListAdapter
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.util.DispatchConfig
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.compactNumberFormat
 import tv.caffeine.app.util.configure
@@ -136,7 +136,7 @@ class ReleaseUserViewHolder(
     var followButton: Button? = null
 
     init {
-        binding.followStarViewModel = FollowStarViewModel(itemView.context, FollowStarColor.BLACK, onFollowStarClick)
+        binding.followStarViewModel = FollowStarViewModel(itemView.context, ThemeColor.LIGHT, onFollowStarClick)
         binding.liveStatusIndicatorViewModel = LiveStatusIndicatorViewModel()
     }
 

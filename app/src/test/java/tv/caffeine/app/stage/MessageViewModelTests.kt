@@ -10,6 +10,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -231,6 +232,24 @@ class MessageViewModelTests {
         every { message.body.text } returns "Hi @us!"
         subject.updateMessage(message)
         assertEquals("Hi @us!", subject.messageText.toString())
+    }
+
+    @Test
+    fun `the digital item count text is not visible if the count is 1`() {
+        val count = 1
+        every { message.body.digitalItem } returns Message.ReceivedDigitalItem("1", count, 1, "", "", "", "")
+        subject.updateMessage(message)
+        assertNull(subject.digitalItemCountText)
+        assertEquals(View.GONE, subject.digitalItemCountTextVisibility)
+    }
+
+    @Test
+    fun `the digital item count text is visible if the count is greater than 1`() {
+        val count = 3
+        every { message.body.digitalItem } returns Message.ReceivedDigitalItem("1", count, 1, "", "", "", "")
+        subject.updateMessage(message)
+        assertEquals("x3", subject.digitalItemCountText)
+        assertEquals(View.VISIBLE, subject.digitalItemCountTextVisibility)
     }
 
     private fun getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(context, colorRes)

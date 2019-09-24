@@ -42,7 +42,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatHtmlText
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.formatUsernameAsHtml
-import tv.caffeine.app.util.FollowStarColor
+import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.inTransaction
 import tv.caffeine.app.util.maybeShow
@@ -86,7 +86,8 @@ class StageFragment @Inject constructor(
 
     private val args by navArgs<StageFragmentArgs>()
     private var shouldShowOverlayOnProfileLoaded = true
-    private var isCurrentlyLive: Boolean? = null
+    @VisibleForTesting
+    var haveSetupBottomSection = false
     private lateinit var stageProfileOverlayViewModel: StageProfileOverlayViewModel
     private var isProfileShowing = false
 
@@ -130,6 +131,13 @@ class StageFragment @Inject constructor(
         friendsWatchingViewModel.disconnect()
     }
 
+    override fun onDetach() {
+        // Since we are retaining the instance of the fragment, need to reset this flag to setup
+        // the bottom section on configuration change
+        haveSetupBottomSection = false
+        super.onDetach()
+    }
+
     override fun onDestroy() {
         disconnectStage()
         super.onDestroy()
@@ -162,7 +170,7 @@ class StageFragment @Inject constructor(
 
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
-            binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, FollowStarColor.WHITE, ::onFollowButtonClick)
+            binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, ThemeColor.DARK, ::onFollowButtonClick)
             val isSelf = followManager.isSelf(userProfile.caid)
             binding.stageProfileOverlay?.followStarViewModel?.bind(userProfile.caid, userProfile.isFollowed, isSelf)
             stageProfileOverlayViewModel.bind(userProfile.caid)
@@ -285,9 +293,9 @@ class StageFragment @Inject constructor(
 
     @VisibleForTesting
     fun updateBottomFragmentForOnlineStatus(userProfile: UserProfile) {
-        // If the user is offline, start with the profile section on the bottom, otherwise show chat
-        if (isCurrentlyLive != userProfile.isLive) {
-            isCurrentlyLive = userProfile.isLive
+        // If the user is offline, start with the profile section on the bottom, otherwise show chat. Only do this once
+        if (!haveSetupBottomSection) {
+            haveSetupBottomSection = true
             if (releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive) {
                 updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
             } else {

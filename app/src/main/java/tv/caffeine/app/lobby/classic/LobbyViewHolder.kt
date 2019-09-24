@@ -590,3 +590,8 @@ class UpcomingButtonCard(
         fun onButtonClicked()
     }
 }
+
+class EmptyCard(itemView: View) : LobbyViewHolder(itemView) {
+    override fun configure(item: LobbyItem) {
+    }
+}

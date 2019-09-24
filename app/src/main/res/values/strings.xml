@@ -309,6 +309,9 @@
     <string name="stage_broadcast_biography_tab">\u00A0 Biography \u00A0</string>
     <string name="stage_broadcast_followers_tab">\u00A0 Followers \u00A0</string>
     <string name="stage_broadcast_following_tab">\u00A0 Following \u00A0</string>
+    <string name="stage_profile_empty_biography">%1$s does not have a bio available.</string>
+    <string name="stage_profile_empty_followers">%1$s has no followers.</string>
+    <string name="stage_profile_empty_following">%1$s is not following anyone.</string>
 
     <!-- Feature Program Guide -->
     <string name="fpg_empty_message">There are currently no scheduled events.\nCheck back soon!</string>

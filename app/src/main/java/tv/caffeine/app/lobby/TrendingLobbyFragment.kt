@@ -10,4 +10,5 @@ class TrendingLobbyFragment @Inject constructor(
 ) : LobbyV5Fragment(releaseLobbyAdapterFactoryProvider) {
 
     override fun getPage() = Page.TRENDING
+    override fun shouldObserveNotificationCount() = false
 }

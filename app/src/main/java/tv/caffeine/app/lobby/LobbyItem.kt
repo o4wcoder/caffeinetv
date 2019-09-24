@@ -8,7 +8,8 @@ interface LobbyItem {
 
     enum class Type {
         AVATAR_CARD, FOLLOW_PEOPLE_CARD, HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD,
-        PREVIOUS_BROADCAST_CARD, CARD_LIST, UPCOMING_BUTTON_CARD
+        PREVIOUS_BROADCAST_CARD, CARD_LIST, UPCOMING_BUTTON_CARD,
+        SINGLE_CATEGORY_CARD, DOUBLE_CATEGORY_CARD, CATEGORY_CARD_LIST
     }
 
     // An interface may not implement a method of 'Any'
@@ -59,21 +60,28 @@ interface LobbyItem {
                 }
                 cluster.cardLists.forEach { genericCardList ->
                     (genericCardList.inlineFragment as? LobbyQuery.AsLiveBroadcastCardList)?.let { cardList ->
-                        val totalCount = cardList.cards.size
+                        val totalCount = cardList.liveBroadcastCards.size
                         val maxLargeCardDisplayCount = cardList.maxLargeCardDisplayCount ?: totalCount
-                        cardList.cards.take(maxLargeCardDisplayCount).forEach {
+                        cardList.liveBroadcastCards.take(maxLargeCardDisplayCount).forEach {
                             lobbyItems.add(it.toLiveCard())
                         }
                         if (totalCount > maxLargeCardDisplayCount) {
                             lobbyItems.add(CardList(
                                 cardList.id,
-                                cardList.cards.subList(maxLargeCardDisplayCount, totalCount).map { it.toLiveCard() }
+                                cardList.liveBroadcastCards.subList(maxLargeCardDisplayCount, totalCount).map { it.toLiveCard() }
                             ))
                         }
                     }
                     (genericCardList.inlineFragment as? LobbyQuery.AsCreatorCardList)?.let { cardList ->
-                        cardList.cards.forEach {
+                        cardList.creatorCards.forEach {
                             lobbyItems.add(it.toOfflineCard())
+                        }
+                    }
+                    (genericCardList.inlineFragment as? LobbyQuery.AsCategoryCardList)?.let { cardList ->
+                        when (cardList.categoryCards.size) {
+                            1 -> lobbyItems.add(SingleCategory(cardList.id, cardList.categoryCards[0]))
+                            else -> lobbyItems.add(DoubleCategory(cardList.id, cardList))
+                            // TODO else -> lobbyItems.add(CategoryaCardList(cardList.id, cardList))
                         }
                     }
                 }
@@ -115,3 +123,14 @@ data class CardList(override val id: String, val cards: List<SingleCard>) : Lobb
 data class UpcomingButtonItem(override val id: String) : LobbyItem {
     override val itemType = LobbyItem.Type.UPCOMING_BUTTON_CARD
 }
+data class SingleCategory(override val id: String, val categoryCard: LobbyQuery.CategoryCard) : LobbyItem {
+    override val itemType = LobbyItem.Type.SINGLE_CATEGORY_CARD
+}
+data class DoubleCategory(override val id: String, val categoryCardList: LobbyQuery.AsCategoryCardList) : LobbyItem {
+    override val itemType = LobbyItem.Type.DOUBLE_CATEGORY_CARD
+}
+/* TODO
+data class CategoryCardList(override val id: String, val categoryCardList: LobbyQuery.AsCategoryCardList) : LobbyItem {
+    override val itemType = LobbyItem.Type.CATEGORY_CARD_LIST
+}
+*/

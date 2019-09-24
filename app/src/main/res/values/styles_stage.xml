@@ -29,4 +29,10 @@
         <item name="android:background">@drawable/ic_btn_send</item>
         <item name="android:gravity">center</item>
     </style>
+    <style name="StageChatText.DigitalItemCount">
+        <item name="android:textColor">@color/medium_gray</item>
+        <item name="android:background">@drawable/digital_item_count_background</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+    </style>
 </resources>
