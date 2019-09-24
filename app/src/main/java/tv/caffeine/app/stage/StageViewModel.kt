@@ -1,5 +1,7 @@
 package tv.caffeine.app.stage
 
+import android.view.View
+import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
@@ -28,6 +30,12 @@ class StageViewModel(
 
     private var _showPoorConnectionAnimation = MutableLiveData(false)
     var showPoorConnectionAnimation = _showPoorConnectionAnimation.map { it }
+
+    var isProfileOverlayVisible = false
+        set(value) {
+            field = value
+            notifyChange()
+        }
 
     fun getGameLogoVisibility() = overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
 
@@ -106,6 +114,9 @@ class StageViewModel(
             onAvatarButtonClick()
         }
     }
+
+    @Bindable
+    fun getProfileOverlayVisibility() = if (isProfileOverlayVisible) View.VISIBLE else View.GONE
 
     private fun updatePoorConnectionAnimation() {
         _showPoorConnectionAnimation.value = !overlayIsVisible && feedQuality == FeedQuality.POOR

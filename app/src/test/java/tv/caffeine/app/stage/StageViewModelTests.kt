@@ -1,10 +1,12 @@
 package tv.caffeine.app.stage
 
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -277,5 +279,17 @@ class StageViewModelTests {
         subject.updateStageIsLive(false)
         subject.updateIsMe(false)
         assertFalse(subject.getBadConnectionOverlayVisibility())
+    }
+
+    @Test
+    fun `showing offline profile overlay when stage is not live`() {
+        subject.isProfileOverlayVisible = true
+        assertEquals(subject.getProfileOverlayVisibility(), View.VISIBLE)
+    }
+
+    @Test
+    fun `not showing offline profile overlay when stage is live`() {
+        subject.isProfileOverlayVisible = false
+        assertEquals(subject.getProfileOverlayVisibility(), View.GONE)
     }
 }
