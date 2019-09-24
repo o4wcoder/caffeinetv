@@ -21,7 +21,7 @@ class FriendsWatchingFormatterTests {
     fun `when no friend is watching, return null`() {
         val user = makeGenericUser()
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(), 0, 10, null)
+        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(), 0, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertNull(string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
@@ -33,7 +33,8 @@ class FriendsWatchingFormatterTests {
         val user = makeGenericUser()
         val friendA = unverifiedUser
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
+        val broadcaster = Lobby.Broadcaster(
+            "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA is watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
@@ -45,7 +46,8 @@ class FriendsWatchingFormatterTests {
         val user = makeGenericUser()
         val friendA = verifiedUser
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
+        val broadcaster = Lobby.Broadcaster(
+            "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> is watching", string)
     }
@@ -55,7 +57,8 @@ class FriendsWatchingFormatterTests {
         val user = makeGenericUser()
         val friendA = verifiedUser
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
+        val broadcaster = Lobby.Broadcaster(
+            "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA", shortString)
     }
@@ -65,7 +68,8 @@ class FriendsWatchingFormatterTests {
         val user = makeGenericUser()
         val friendA = casterUser
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
+        val broadcaster = Lobby.Broadcaster(
+            "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"caster\"/> is watching", string)
     }
@@ -75,7 +79,8 @@ class FriendsWatchingFormatterTests {
         val user = makeGenericUser()
         val friendA = casterUser
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
+        val broadcaster = Lobby.Broadcaster(
+            "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA", shortString)
     }
@@ -85,7 +90,8 @@ class FriendsWatchingFormatterTests {
         val user = makeGenericUser()
         val friendA = verifiedCasterUser
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
+        val broadcaster = Lobby.Broadcaster(
+            "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> is watching", string)
     }
@@ -95,7 +101,8 @@ class FriendsWatchingFormatterTests {
         val user = makeGenericUser()
         val friendA = verifiedCasterUser
         val context = InstrumentationRegistry.getInstrumentation().context
-        val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null)
+        val broadcaster = Lobby.Broadcaster(
+            "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA", shortString)
     }
@@ -108,7 +115,7 @@ class FriendsWatchingFormatterTests {
         val context = InstrumentationRegistry.getInstrumentation().context
         val followingViewers = listOf(friendA, friendB)
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
-            followingViewers, followingViewers.size, 10, null)
+            followingViewers, followingViewers.size, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> and one other are watching", string)
     }
@@ -121,7 +128,7 @@ class FriendsWatchingFormatterTests {
         val context = InstrumentationRegistry.getInstrumentation().context
         val followingViewers = listOf(friendA, friendB)
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
-            followingViewers, followingViewers.size, 10, null)
+            followingViewers, followingViewers.size, 10, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA + 1", shortString)
     }
@@ -135,7 +142,7 @@ class FriendsWatchingFormatterTests {
         val context = InstrumentationRegistry.getInstrumentation().context
         val followingViewers = listOf(friendA, friendB, friendC)
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
-            followingViewers, followingViewers.size, 10, null)
+            followingViewers, followingViewers.size, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> and 2 others are watching", string)
     }
@@ -149,7 +156,7 @@ class FriendsWatchingFormatterTests {
         val context = InstrumentationRegistry.getInstrumentation().context
         val followingViewers = listOf(friendA, friendB, friendC)
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
-            followingViewers, followingViewers.size, 10, null)
+            followingViewers, followingViewers.size, 10, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA + 2", shortString)
     }
@@ -164,7 +171,7 @@ class FriendsWatchingFormatterTests {
         val followingViewers = listOf(friendA, friendB, friendC)
         val followingViewersCount = 5
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
-            followingViewers, followingViewersCount, 10, null)
+            followingViewers, followingViewersCount, 10, null, null)
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> and 4 others are watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)

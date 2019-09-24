@@ -32,6 +32,7 @@ class GraphqlLobbyExtTests {
         val graphqlLiveBroadcastCard = LobbyQuery.LiveBroadcastCard(
             "_typename",
             "cluster_id",
+            "Top pick",
             2,
             graphqlUser,
             graphqlBroadcast
@@ -49,6 +50,7 @@ class GraphqlLobbyExtTests {
         assertEquals(1, broadcaster.followingViewersCount)
         assertEquals(2, broadcaster.displayOrder)
         assertEquals("cluster_id", broadcaster.clusterId)
+        assertEquals("Top pick", broadcaster.badgeText)
     }
 
     @Test

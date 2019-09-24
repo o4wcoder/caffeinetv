@@ -31,7 +31,8 @@ fun LobbyQuery.LiveBroadcastCard.toLiveCard(): SingleCard {
         graphqlBroadcast.friendViewers.map { it.fragments.userFragment.toCaffeineUser() },
         graphqlBroadcast.totalFriendViewers,
         displayOrder,
-        id
+        id,
+        name
     )
     return LiveBroadcast(broadcaster.id, broadcaster)
 }
@@ -48,7 +49,8 @@ fun LobbyQuery.CreatorCard.toOfflineCard(): SingleCard {
         null,
         0,
         displayOrder,
-        id
+        id,
+        null
     )
     return PreviousBroadcast(broadcaster.id, broadcaster)
 }

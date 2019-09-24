@@ -173,7 +173,7 @@ class LobbyItemTests {
         )
     )
 
-    private fun buildLiveCard(index: Int): LobbyQuery.LiveBroadcastCard {
+    private fun buildLiveCard(index: Int, name: String? = null): LobbyQuery.LiveBroadcastCard {
         val userFragment = UserFragment(
             "",
             "caid$index",
@@ -198,6 +198,7 @@ class LobbyItemTests {
         return LobbyQuery.LiveBroadcastCard(
             "",
             index.toString(),
+            name,
             index,
             LobbyQuery.User("", LobbyQuery.User.Fragments(userFragment)),
             broadcast
