@@ -120,6 +120,34 @@ class LobbyCardsOnlineBroadcasterTests {
         }
     }
 
+    @Test
+    fun `show the badge text instead of the friends watching or live text if the badge text is not null`() {
+        // TODO: The live badge will be an ImageView. The friends watching badge will be a custom view.
+        // This test will be re-written soon.
+        every { followManager.isFollowing(any()) } returns false
+        val badgeText = "Top pick"
+        val genericUser = makeGenericUser()
+        val onlineBroadcast = makeOnlineBroadcast()
+        val broadcaster = makeBroadcaster(genericUser, onlineBroadcast, badgeText)
+        val liveBroadcast = LiveBroadcast("1", broadcaster)
+        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        assertEquals(badgeText, onlineBroadcaster.badgeText)
+    }
+
+    @Test
+    fun `show the friends watching or live text instead of the badge text if the badge text is null`() {
+        // TODO: The live badge will be an ImageView. The friends watching badge will be a custom view.
+        // This test will be re-written soon.
+        every { followManager.isFollowing(any()) } returns false
+        val badgeText = null
+        val genericUser = makeGenericUser()
+        val onlineBroadcast = makeOnlineBroadcast()
+        val broadcaster = makeBroadcaster(genericUser, onlineBroadcast, badgeText)
+        val liveBroadcast = LiveBroadcast("1", broadcaster)
+        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        assertEquals("live", onlineBroadcaster.badgeText)
+    }
+
     private fun makeLiveBroadcast(): LiveBroadcast {
         val genericUser = makeGenericUser()
         val onlineBroadcast = makeOnlineBroadcast()

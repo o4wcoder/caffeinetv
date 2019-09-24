@@ -68,7 +68,7 @@
             android:id="@+id/friends_watching_text_view"
             android:layout_width="wrap_content"
             android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height}"
-            app:htmlText="@{viewModel.friendsWatchingText}"
+            app:htmlText="@{viewModel.badgeText}"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/content_rating_text_view"

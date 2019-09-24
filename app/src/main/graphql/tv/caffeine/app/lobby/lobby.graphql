@@ -9,6 +9,7 @@ query Lobby($page: Page!) {
                     maxLargeCardDisplayCount
                     liveBroadcastCards: cards {
                         id
+                        name
                         displayOrder
                         user {
                             ...userFragment
