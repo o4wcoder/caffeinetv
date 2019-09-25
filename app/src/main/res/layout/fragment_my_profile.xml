@@ -32,6 +32,7 @@
                 android:layout_height="@dimen/avatar_size_large"
                 android:contentDescription="@string/my_profile_photo_hint"
                 android:src="@drawable/default_avatar_round"
+                android:foreground="@drawable/avatar_inner_shadow"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -139,11 +140,11 @@
                 app:layout_constraintTop_toBottomOf="@id/follower_container" />
 
             <TextView
-                style="@style/MenuTextView.Info"
-                android:id="@+id/info_button"
+                style="@style/MenuTextView.Bio"
+                android:id="@+id/bio_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/info_button"
+                android:text="@string/bio_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent"
@@ -157,7 +158,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/info_button">
+                app:layout_constraintTop_toBottomOf="@+id/bio_button">
                 <!-- Group them in a LinearLayout so the touch state covers the entire container -->
                 <TextView
                     android:layout_width="0dp"

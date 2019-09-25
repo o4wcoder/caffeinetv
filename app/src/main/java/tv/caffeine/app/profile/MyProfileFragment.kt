@@ -71,7 +71,7 @@ class MyProfileFragment @Inject constructor(
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.signOutButton.setOnClickListener { confirmSignOut() }
-        binding.infoButton.setOnClickListener {
+        binding.bioButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToEditBioFragment()
             findNavController().safeNavigate(action)
         }

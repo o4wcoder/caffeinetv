@@ -201,7 +201,7 @@
     <string name="credits_formatted"><![CDATA[<img src=\"purplecoin\">]]> <xliff:g example="42" id="credits_amount">%s</xliff:g></string>
     <string name="gold_coin_content_description">gold coin</string>
 
-    <string name="info_button">Info</string>
+    <string name="bio_button">Biography</string>
     <string name="transaction_history">Transaction History</string>
     <string name="legal_documents">Legal Documents</string>
 
@@ -222,7 +222,7 @@
     <string name="transaction_history_deleted_account">Caffeine User</string>
     <string name="credits_available">Available</string>
     <string name="credits_lifetime">Lifetime</string>
-    <string name="edit_bio_title">Info</string>
+    <string name="edit_bio_title">Biography</string>
     <string name="gold_bundles_title">Gold Bundles</string>
     <string name="update_email_title">Update Email</string>
     <string name="update_email_hint_email">New Email Address</string>
