@@ -49,6 +49,7 @@ import tv.caffeine.app.util.notificationTag
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.setDarkMode
+import tv.caffeine.app.util.setImmersiveMode
 import tv.caffeine.app.util.setImmersiveSticky
 import tv.caffeine.app.util.setNavigationBarDarkMode
 import tv.caffeine.app.util.unsetImmersiveSticky
@@ -372,11 +373,5 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
                 it.edit().putBoolean(key, false).apply()
             }
         }
-    }
-
-    @VisibleForTesting
-    fun setImmersiveMode() {
-        setDarkMode(true)
-        setImmersiveSticky()
     }
 }

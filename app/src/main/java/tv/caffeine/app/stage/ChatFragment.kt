@@ -24,6 +24,7 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.navigateToDigitalItemWithMessage
 import tv.caffeine.app.util.navigateToSendMessage
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.setImmersiveMode
 import javax.inject.Inject
 
 private const val ARG_BROADCAST_USERNAME = "broadcastUsername"
@@ -173,6 +174,12 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
                     message
                 )
             findNavController().safeNavigate(action)
+        }
+    }
+
+    override fun onDismissMessageDialog() {
+        activity?.apply {
+            setImmersiveMode()
         }
     }
 }
