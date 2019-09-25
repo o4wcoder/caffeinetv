@@ -22,6 +22,6 @@ fun makeOfflineBroadcast(game: Game? = null) = Broadcast("id", "name", "contentI
 
 fun makeGame() = Game("/iconImagePath")
 
-fun makeBroadcaster(user: User, broadcast: Broadcast?, badgeText: String? = null) = Lobby.Broadcaster("broadcastId",
-    "OnlineBroadcaster", user, "tag", broadcast, null, listOf(), 0,
-    0, "clusterId", badgeText)
+fun makeBroadcaster(user: User, broadcast: Broadcast?, badgeText: String? = null, ageRestriction: String? = null) =
+    Lobby.Broadcaster("broadcastId", "OnlineBroadcaster", user, "tag", broadcast, null, listOf(), 0, 0,
+        "clusterId", badgeText, ageRestriction)

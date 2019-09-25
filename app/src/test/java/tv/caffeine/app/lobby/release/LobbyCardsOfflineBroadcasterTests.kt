@@ -108,7 +108,7 @@ class LobbyCardsOfflineBroadcasterTests {
         val genericUser = makeGenericUser()
         val offlineBroadcast = makeOfflineBroadcast()
         val broadcaster = Lobby.Broadcaster("2", "OnlineBroadcaster", genericUser, "tag", null, offlineBroadcast,
-            listOf(), 0, 0, null, null)
+            listOf(), 0, 0, null, null, null)
         val previousBroadcast = PreviousBroadcast("1", broadcaster)
         return previousBroadcast
     }

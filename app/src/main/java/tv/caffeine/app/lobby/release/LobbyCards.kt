@@ -138,8 +138,9 @@ class OnlineBroadcaster @AssistedInject constructor (
     private val friendsWatchingText = formatFriendsWatchingShortString(context, broadcaster)
         ?: context.getString(R.string.live_indicator_lowercase)
     val badgeText = broadcaster.badgeText?.let { it } ?: friendsWatchingText
+    val ageRestriction = broadcaster.ageRestriction
+    val ageRestrictionVisibility = if (ageRestriction != null) View.VISIBLE else View.GONE
 
-    val contentRating = if (broadcast?.name?.startsWith("[17+]") == true) "17+" else null
     fun kebabClicked() {
         val action = MainNavDirections.actionGlobalReportOrIgnoreDialogFragment(caid, username, false)
         navigate(action)

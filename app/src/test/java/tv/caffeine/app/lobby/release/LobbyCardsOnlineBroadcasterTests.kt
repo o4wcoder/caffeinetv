@@ -1,6 +1,7 @@
 package tv.caffeine.app.lobby.release
 
 import android.content.Context
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.MockKAnnotations
@@ -13,6 +14,7 @@ import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.GlobalScope
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -146,6 +148,30 @@ class LobbyCardsOnlineBroadcasterTests {
         val liveBroadcast = LiveBroadcast("1", broadcaster)
         val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
         assertEquals("live", onlineBroadcaster.badgeText)
+    }
+
+    @Test
+    fun `show the age restriction badge if there is an age restriction`() {
+        every { followManager.isFollowing(any()) } returns false
+        val genericUser = makeGenericUser()
+        val onlineBroadcast = makeOnlineBroadcast()
+        val broadcaster = makeBroadcaster(genericUser, onlineBroadcast, null, "17+")
+        val liveBroadcast = LiveBroadcast("1", broadcaster)
+        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        assertEquals("17+", onlineBroadcaster.ageRestriction)
+        assertEquals(View.VISIBLE, onlineBroadcaster.ageRestrictionVisibility)
+    }
+
+    @Test
+    fun `do not show the age restriction badge if there is not an age restriction`() {
+        every { followManager.isFollowing(any()) } returns false
+        val genericUser = makeGenericUser()
+        val onlineBroadcast = makeOnlineBroadcast()
+        val broadcaster = makeBroadcaster(genericUser, onlineBroadcast, null, null)
+        val liveBroadcast = LiveBroadcast("1", broadcaster)
+        val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
+        assertNull(onlineBroadcaster.ageRestriction)
+        assertEquals(View.GONE, onlineBroadcaster.ageRestrictionVisibility)
     }
 
     private fun makeLiveBroadcast(): LiveBroadcast {

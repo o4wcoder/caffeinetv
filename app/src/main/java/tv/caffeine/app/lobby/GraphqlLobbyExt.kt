@@ -6,8 +6,9 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.lobby.fragment.ClusterData
 import tv.caffeine.app.lobby.fragment.UserData
+import tv.caffeine.app.lobby.type.AgeRestriction
 
-fun ClusterData.LiveBroadcastCard.toLiveCard(): SingleCard {
+fun ClusterData.LiveBroadcastCard.toLiveCard(): LiveBroadcast {
     val graphqlBroadcast = broadcast
     val graphqlUser = user.fragments.userData
     val broadcast = Broadcast(
@@ -33,12 +34,13 @@ fun ClusterData.LiveBroadcastCard.toLiveCard(): SingleCard {
         graphqlBroadcast.totalFriendViewers,
         displayOrder,
         id,
-        name
+        name,
+        graphqlBroadcast.getAgeRestrictionText()
     )
     return LiveBroadcast(broadcaster.id, broadcaster)
 }
 
-fun ClusterData.CreatorCard.toOfflineCard(): SingleCard {
+fun ClusterData.CreatorCard.toOfflineCard(): PreviousBroadcast {
     val graphqlUser = user.fragments.userData
     val broadcaster = Lobby.Broadcaster(
         graphqlUser.caid,
@@ -51,6 +53,7 @@ fun ClusterData.CreatorCard.toOfflineCard(): SingleCard {
         0,
         displayOrder,
         id,
+        null,
         null
     )
     return PreviousBroadcast(broadcaster.id, broadcaster)
@@ -83,3 +86,6 @@ fun UserData.toCaffeineUser() = User(
     null
     // TODO: add isFollowing
 )
+
+private fun ClusterData.Broadcast.getAgeRestrictionText() =
+    if (ageRestriction == AgeRestriction.SEVENTEEN_PLUS) "17+" else null
