@@ -211,15 +211,29 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     private fun bind(singleCategoryCard: SingleCategoryCard, item: LobbyItem) {
         val card = (item as SingleCategory).categoryCard
         val context = singleCategoryCard.itemView.context
-        singleCategoryCard.bind(categoryCardViewModelFactory.create(card, context))
+        val categoryViewModel = categoryCardViewModelFactory.create(card, context)
+        singleCategoryCard.bind(categoryViewModel)
+        categoryViewModel.navigationCommands.observeEvents(lifecycleOwner) {
+            when (it) {
+                is NavigationCommand.To -> navController.safeNavigate(it.directions)
+            }
+        }
     }
 
     private fun bind(doubleCategoryCard: DoubleCategoryCard, item: LobbyItem) {
         val cardList = (item as DoubleCategory).categoryCardList.categoryCards
         val context = doubleCategoryCard.itemView.context
-        doubleCategoryCard.bind(listOf(
+        val categoryViewModels = listOf(
             categoryCardViewModelFactory.create(cardList[0], context),
-            categoryCardViewModelFactory.create(cardList[1], context)))
+            categoryCardViewModelFactory.create(cardList[1], context))
+        doubleCategoryCard.bind(categoryViewModels)
+        for (categoryViewModel in categoryViewModels) {
+            categoryViewModel.navigationCommands.observeEvents(lifecycleOwner) {
+                when (it) {
+                    is NavigationCommand.To -> navController.safeNavigate(it.directions)
+                }
+            }
+        }
     }
 }
 

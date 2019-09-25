@@ -3,6 +3,7 @@ package tv.caffeine.app.lobby
 import android.content.Context
 import android.view.View
 import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertNotNull
@@ -10,9 +11,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import tv.caffeine.app.R
+import tv.caffeine.app.lobby.fragment.ClusterData
 import tv.caffeine.app.lobby.release.CategoryCardViewModel
+import tv.caffeine.app.lobby.release.NavigationCommand
 import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.settings.InMemorySettingsStorage
+import tv.caffeine.app.test.observeForTesting
 
 @RunWith(RobolectricTestRunner::class)
 class CategoryCardViewModelTests {
@@ -59,9 +64,24 @@ class CategoryCardViewModelTests {
         assertNull(viewModel.overlayImageUrl)
     }
 
-    private fun buildCategoryCard(name: String, backgroundImagePath: String?, overlayImagePath: String?) = LobbyQuery.CategoryCard(
+    @Test
+    fun `clicking the category card navigates to the detail page`() {
+        val card = buildCategoryCard("name", null, null)
+        val viewModel = CategoryCardViewModel(card, context, serverConfig)
+        viewModel.cardClicked()
+        viewModel.navigationCommands.observeForTesting {
+            val navigationCommand = it.peekContent()
+            Assert.assertTrue(navigationCommand is NavigationCommand.To)
+            val directions = (navigationCommand as NavigationCommand.To).directions
+            assertEquals(R.id.action_global_lobbyDetailFragment, directions.actionId)
+            val cardId = navigationCommand.directions.arguments.getString("cardId")
+            assertEquals("cardId_name", cardId)
+        }
+    }
+
+    private fun buildCategoryCard(name: String, backgroundImagePath: String?, overlayImagePath: String?) = ClusterData.CategoryCard(
         "",
-        "id",
+        "cardId_$name",
         0,
         name,
         backgroundImagePath,

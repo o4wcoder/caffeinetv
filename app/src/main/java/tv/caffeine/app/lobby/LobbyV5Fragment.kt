@@ -16,7 +16,6 @@ import tv.caffeine.app.databinding.FragmentLobbyBinding
 import tv.caffeine.app.lobby.classic.LobbyViewHolder
 import tv.caffeine.app.lobby.release.LargeOnlineBroadcasterCard
 import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
-import tv.caffeine.app.lobby.type.Page
 import tv.caffeine.app.notifications.NotificationCountViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.navigateToSendingVerificationEmailDialog
@@ -27,7 +26,7 @@ abstract class LobbyV5Fragment constructor(
     private val releaseLobbyAdapterFactoryProvider: Provider<ReleaseLobbyAdapter.Factory>
 ) : CaffeineFragment(R.layout.fragment_lobby) {
 
-    private val viewModel: LobbyViewModel by viewModels { viewModelFactory }
+    protected val viewModel: LobbyViewModel by viewModels { viewModelFactory }
     private val notificationCountViewModel: NotificationCountViewModel by viewModels { viewModelFactory }
     private var binding: FragmentLobbyBinding? = null
     private var refreshJob: Job? = null
@@ -40,9 +39,7 @@ abstract class LobbyV5Fragment constructor(
         observeNotificationsCount()
     }
 
-    abstract fun getPage(): Page
-
-    abstract fun shouldObserveNotificationCount(): Boolean
+    abstract fun loadLobby()
 
     private fun configure(binding: FragmentLobbyBinding) {
         lobbyAdapter = releaseLobbyAdapterFactoryProvider.get().create(viewLifecycleOwner, findNavController())
@@ -67,6 +64,14 @@ abstract class LobbyV5Fragment constructor(
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })
+        viewModel.lobbyDetail.observe(viewLifecycleOwner, Observer { result ->
+            binding.lobbySwipeRefreshLayout.isRefreshing = false
+            handle(result) { detailPage ->
+                val items = LobbyItem.parse(detailPage)
+                lobbyAdapter.submitList(items, mapOf(), mapOf(), "")
+                binding.lobbyLoadingIndicator.isVisible = false
+            }
+        })
         viewModel.emailVerificationUser.observe(viewLifecycleOwner, Observer { user ->
             val email = user.email ?: return@Observer
             binding.verifyEmailContainer.isVisible = (user.emailVerified == false)
@@ -87,16 +92,14 @@ abstract class LobbyV5Fragment constructor(
         refreshJob?.cancel()
         refreshJob = launch {
             while (isActive) {
-                viewModel.refreshV5(getPage(), ::manageNotificationCount)
+                loadLobby()
                 delay(TimeUnit.SECONDS.toMillis(30))
             }
         }
     }
 
-    private fun manageNotificationCount() {
-        if (shouldObserveNotificationCount()) {
-            notificationCountViewModel.checkNewNotifications()
-        }
+    protected fun manageNotificationCount() {
+        notificationCountViewModel.checkNewNotifications()
     }
 
     private fun observeNotificationsCount() {

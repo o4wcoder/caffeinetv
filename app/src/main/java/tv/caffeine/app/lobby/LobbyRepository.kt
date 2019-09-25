@@ -11,7 +11,9 @@ import javax.inject.Inject
 class LobbyRepository @Inject constructor(
     @VisibleForTesting val apolloClient: ApolloClient
 ) {
-    suspend fun loadLobbyV5(page: Page): CaffeineResult<LobbyQuery.Data> {
-        return apolloClient.query(LobbyQuery(page)).toDeferred().await().asCaffeineResult()
-    }
+    suspend fun loadLobbyV5(page: Page): CaffeineResult<LobbyQuery.Data> =
+        apolloClient.query(LobbyQuery(page)).toDeferred().await().asCaffeineResult()
+
+    suspend fun loadLobbyDetail(cardId: String): CaffeineResult<DetailPageQuery.Data> =
+        apolloClient.query(DetailPageQuery(cardId)).toDeferred().await().asCaffeineResult()
 }

@@ -1,59 +1,71 @@
 query Lobby($page: Page!) {
-    pagePayLoad: lobby(page: $page) {
+    pagePayload: lobby(page: $page) {
+        clusters {
+            ...ClusterData
+        }
+    }
+}
+
+query DetailPage($cardId: ID!) {
+    pagePayload: detailPage(cardId: $cardId) {
         name
         clusters {
-            name
-            cardLists{
-                ... on LiveBroadcastCardList {
+            ...ClusterData
+        }
+    }
+}
+
+fragment ClusterData on Cluster {
+    name
+    cardLists{
+        ... on LiveBroadcastCardList {
+            id
+            maxLargeCardDisplayCount
+            liveBroadcastCards: cards {
+                id
+                name
+                displayOrder
+                user {
+                    ...UserData
+                }
+                broadcast {
                     id
-                    maxLargeCardDisplayCount
-                    liveBroadcastCards: cards {
-                        id
-                        name
-                        displayOrder
-                        user {
-                            ...userFragment
-                        }
-                        broadcast {
-                            id
-                            name
-                            description
-                            previewImagePath
-                            gameImagePath
-                            ageRestriction
-                            contentId
-                            friendViewers {
-                                ...userFragment
-                            }
-                            totalFriendViewers
-                        }
+                    name
+                    description
+                    previewImagePath
+                    gameImagePath
+                    ageRestriction
+                    contentId
+                    friendViewers {
+                        ...UserData
                     }
+                    totalFriendViewers
                 }
-                ... on CreatorCardList {
-                    creatorCards: cards {
-                        id
-                        displayOrder
-                        user {
-                            ...userFragment
-                        }
-                    }
+            }
+        }
+        ... on CreatorCardList {
+            creatorCards: cards {
+                id
+                displayOrder
+                user {
+                    ...UserData
                 }
-                ... on CategoryCardList {
-                    id
-                    categoryCards: cards {
-                        id
-                        displayOrder
-                        name
-                        backgroundImagePath
-                        overlayImagePath
-                    }
-                }
+            }
+        }
+        ... on CategoryCardList {
+            id
+            categoryCards: cards {
+                id
+                displayOrder
+                name
+                backgroundImagePath
+                overlayImagePath
             }
         }
     }
 }
 
-fragment userFragment on User {
+fragment UserData on User {
     caid
     username
     avatarImagePath

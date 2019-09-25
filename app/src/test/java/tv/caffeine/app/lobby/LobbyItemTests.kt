@@ -9,7 +9,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.api.model.Lobby
-import tv.caffeine.app.lobby.fragment.UserFragment
+import tv.caffeine.app.lobby.fragment.ClusterData
+import tv.caffeine.app.lobby.fragment.UserData
 import tv.caffeine.app.lobby.type.AgeRestriction
 
 @RunWith(RobolectricTestRunner::class)
@@ -139,42 +140,50 @@ class LobbyItemTests {
     }
 
     private fun buildLobbyV5WithLiveCards(
-        cards: List<LobbyQuery.LiveBroadcastCard>,
+        cards: List<ClusterData.LiveBroadcastCard>,
         maxLargeCardDisplayCount: Int?
     ) = LobbyQuery.Data(
-        LobbyQuery.PagePayLoad(
-            "", "name", listOf(
+        LobbyQuery.PagePayload(
+            "", listOf(
                 LobbyQuery.Cluster(
-                    "", "name", listOf(
-                        LobbyQuery.CardList("", LobbyQuery.AsLiveBroadcastCardList(
-                            "", "cardListId", maxLargeCardDisplayCount, cards
-                        ))
+                    "", LobbyQuery.Cluster.Fragments(
+                        ClusterData(
+                            "", "name", listOf(
+                                ClusterData.CardList(
+                                    "", ClusterData.AsLiveBroadcastCardList(
+                                        "", "cardListId", maxLargeCardDisplayCount, cards
+                                    )
+                                )
+                            )
+                        )
                     )
                 )
-
             )
         )
     )
 
     private fun buildLobbyV5WithCategoryCards(
-        cards: List<LobbyQuery.CategoryCard>
+        cards: List<ClusterData.CategoryCard>
     ) = LobbyQuery.Data(
-        LobbyQuery.PagePayLoad(
-            "", "name", listOf(
+        LobbyQuery.PagePayload(
+            "", listOf(
                 LobbyQuery.Cluster(
-                    "", "name", listOf(
-                        LobbyQuery.CardList("", LobbyQuery.AsCategoryCardList(
-                            "", "cardListId", cards
-                        ))
+                    "", LobbyQuery.Cluster.Fragments(
+                        ClusterData(
+                            "", "name", listOf(
+                                ClusterData.CardList("", ClusterData.AsCategoryCardList(
+                                    "", "cardListId", cards
+                                ))
+                            )
+                        )
                     )
                 )
-
             )
         )
     )
 
-    private fun buildLiveCard(index: Int, name: String? = null): LobbyQuery.LiveBroadcastCard {
-        val userFragment = UserFragment(
+    private fun buildLiveCard(index: Int, name: String? = null): ClusterData.LiveBroadcastCard {
+        val userFragment = UserData(
             "",
             "caid$index",
             "username$index",
@@ -183,7 +192,7 @@ class LobbyItemTests {
             false,
             false
         )
-        val broadcast = LobbyQuery.Broadcast(
+        val broadcast = ClusterData.Broadcast(
             "",
             "id$index",
             "name$index",
@@ -195,17 +204,17 @@ class LobbyItemTests {
             listOf(),
             0
         )
-        return LobbyQuery.LiveBroadcastCard(
+        return ClusterData.LiveBroadcastCard(
             "",
             index.toString(),
             name,
             index,
-            LobbyQuery.User("", LobbyQuery.User.Fragments(userFragment)),
+            ClusterData.User("", ClusterData.User.Fragments(userFragment)),
             broadcast
         )
     }
 
-    private fun buildCategoryCard(index: Int) = LobbyQuery.CategoryCard(
+    private fun buildCategoryCard(index: Int) = ClusterData.CategoryCard(
         "",
         index.toString(),
         index,

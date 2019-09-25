@@ -9,6 +9,7 @@ import tv.caffeine.app.broadcast.UpcomingBroadcastFragment
 import tv.caffeine.app.explore.ExploreFragment
 import tv.caffeine.app.lobby.FeaturedProgramGuideFragment
 import tv.caffeine.app.lobby.HomeLobbyFragment
+import tv.caffeine.app.lobby.LobbyDetailFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
 import tv.caffeine.app.lobby.TrendingLobbyFragment
@@ -71,6 +72,7 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun lobbyFragment(): LobbyFragment
     @ContributesAndroidInjector abstract fun homeLobbyFragment(): HomeLobbyFragment
     @ContributesAndroidInjector abstract fun trendingLobbyFragment(): TrendingLobbyFragment
+    @ContributesAndroidInjector abstract fun lobbyDetailFragment(): LobbyDetailFragment
     @ContributesAndroidInjector abstract fun featuredProgramGuideFragment(): FeaturedProgramGuideFragment
     @ContributesAndroidInjector abstract fun stageFragment(): StageFragment
     @ContributesAndroidInjector abstract fun stagePagerFragment(): StagePagerFragment

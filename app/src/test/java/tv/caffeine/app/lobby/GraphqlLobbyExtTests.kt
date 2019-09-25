@@ -2,22 +2,23 @@ package tv.caffeine.app.lobby
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import tv.caffeine.app.lobby.fragment.UserFragment
+import tv.caffeine.app.lobby.fragment.ClusterData
+import tv.caffeine.app.lobby.fragment.UserData
 import tv.caffeine.app.lobby.type.AgeRestriction
 
 class GraphqlLobbyExtTests {
 
     @Test
     fun `the live card from the v5 API can be turned to a live card`() {
-        val graphqlUser = LobbyQuery.User(
+        val graphqlUser = ClusterData.User(
             "_typename",
-            LobbyQuery.User.Fragments(getUserFragment("caid1", "user1"))
+            ClusterData.User.Fragments(getUserFragment("caid1", "user1"))
         )
-        val friendViewers = LobbyQuery.FriendViewer(
+        val friendViewers = ClusterData.FriendViewer(
             "_typename",
-            LobbyQuery.FriendViewer.Fragments(getUserFragment("caid2", "friend2"))
+            ClusterData.FriendViewer.Fragments(getUserFragment("caid2", "friend2"))
         )
-        val graphqlBroadcast = LobbyQuery.Broadcast(
+        val graphqlBroadcast = ClusterData.Broadcast(
             "_typename",
             "caid1",
             "broadcast_name",
@@ -29,7 +30,7 @@ class GraphqlLobbyExtTests {
             listOf(friendViewers),
             1
         )
-        val graphqlLiveBroadcastCard = LobbyQuery.LiveBroadcastCard(
+        val graphqlLiveBroadcastCard = ClusterData.LiveBroadcastCard(
             "_typename",
             "cluster_id",
             "Top pick",
@@ -55,11 +56,11 @@ class GraphqlLobbyExtTests {
 
     @Test
     fun `the creator card from the v5 API can be turned to an offline card`() {
-        val graphqlUser = LobbyQuery.User1(
+        val graphqlUser = ClusterData.User1(
             "_typename",
-            LobbyQuery.User1.Fragments(getUserFragment("caid1", "user1"))
+            ClusterData.User1.Fragments(getUserFragment("caid1", "user1"))
         )
-        val graphqlCreatorCard = LobbyQuery.CreatorCard(
+        val graphqlCreatorCard = ClusterData.CreatorCard(
             "_typename",
             "cluster_id",
             2,
@@ -103,7 +104,7 @@ class GraphqlLobbyExtTests {
         isFollowing: Boolean = false,
         isCaster: Boolean = false,
         isVerified: Boolean = false
-    ) = UserFragment(
+    ) = UserData(
         "_typename",
         caid,
         username,

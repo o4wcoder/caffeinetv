@@ -94,11 +94,14 @@ private val destinationsAsDialog = arrayOf(
     R.id.unfollowUserDialogFragment
 )
 
+private val destinationsWithDynamicLabel = arrayOf(R.id.lobbyDetailFragment)
+
 private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)
 
 private val destinationInImmersiveMode = arrayOf(R.id.stagePagerFragment)
 
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
+@VisibleForTesting const val SCREEN_TITLE = "screenTitle"
 
 class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
 
@@ -130,8 +133,8 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         setBottomNavigation(binding)
         setShakeDetector()
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            updateUiOnDestinationChange(destination.id, binding)
+        navController.addOnDestinationChangedListener { _, destination, arguments ->
+            updateUiOnDestinationChange(destination.id, binding, arguments)
             firebaseAnalytics.setCurrentScreen(this, destination.label.toString(), null)
         }
         firebaseInstanceId.instanceId.addOnCompleteListener { task ->
@@ -189,7 +192,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
     }
 
     @VisibleForTesting
-    fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding) {
+    fun updateUiOnDestinationChange(destinationId: Int, binding: ActivityMainBinding, arguments: Bundle? = null) {
         dismissKeyboard()
         val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
         if (destinationId !in destinationsAsDialog) {
@@ -201,6 +204,11 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             binding.bottomNavigation.isVisible = isReleaseDesign &&
                 destinationId !in destinationsWithoutBottomNavBar
             updateBottomNavigationStatus(binding.bottomNavigation, destinationId)
+        }
+        if (destinationId in destinationsWithDynamicLabel) {
+            arguments?.getString(SCREEN_TITLE)?.let {
+                supportActionBar?.title = it
+            }
         }
 
         requestedOrientation = if (destinationId in destinationInPortrait) {

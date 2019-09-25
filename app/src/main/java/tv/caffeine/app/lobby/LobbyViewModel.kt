@@ -32,10 +32,12 @@ class LobbyViewModel @Inject constructor(
 ) : ViewModel() {
     private val _lobby = MutableLiveData<CaffeineResult<Lobby>>()
     private val _lobbyV5 = MutableLiveData<CaffeineResult<LobbyQuery.Data>>()
+    private val _lobbyDetail = MutableLiveData<CaffeineResult<DetailPageQuery.Data>>()
     private val _emailVerificationUser = MutableLiveData<User>()
 
     val lobby: LiveData<CaffeineResult<Lobby>> = _lobby.map { it }
     val lobbyV5: LiveData<CaffeineResult<LobbyQuery.Data>> = _lobbyV5.map { it }
+    val lobbyDetail: LiveData<CaffeineResult<DetailPageQuery.Data>> = _lobbyDetail.map { it }
     val emailVerificationUser = _emailVerificationUser.map { it }
 
     private var refreshJob: Job? = null
@@ -80,6 +82,14 @@ class LobbyViewModel @Inject constructor(
         }
     }
 
+    fun refreshDetail(cardId: String) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            followManager.refreshFollowedUsers()
+            loadLobbyDetail(cardId)
+        }
+    }
+
     private suspend fun loadLobby() = coroutineScope {
         _lobby.value = loadLobbyUseCase()
         if (isFirstLoad) {
@@ -96,6 +106,10 @@ class LobbyViewModel @Inject constructor(
             // load the feature config after the lobby is loaded for better cold start perf
             loadFeatureConfigUseCase()
         }
+    }
+
+    private suspend fun loadLobbyDetail(cardId: String) = coroutineScope {
+        _lobbyDetail.value = lobbyRepository.loadLobbyDetail(cardId)
     }
 
     private suspend fun loadEmailVerificationUser() = coroutineScope {
