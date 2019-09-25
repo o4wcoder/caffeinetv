@@ -1,12 +1,15 @@
 package tv.caffeine.app.navigation
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.core.view.isVisible
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -14,6 +17,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.MainActivity
 import tv.caffeine.app.R
+import tv.caffeine.app.SCREEN_TITLE
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.InjectionActivityTestRule
 import tv.caffeine.app.settings.ReleaseDesignConfig
@@ -181,5 +185,23 @@ class AppBarTests {
         mainActivity.updateUiOnDestinationChange(R.id.unfollowUserDialogFragment, binding)
         assertFalse(binding.releaseAppBar.isVisible)
         assertTrue(binding.classicAppBar.isVisible)
+    }
+
+    @Test
+    fun `the support app bar's title is updated if the screen supports dynamic label`() {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        val binding = mainActivity.binding
+        val arguments = Bundle().apply { putString(SCREEN_TITLE, "Gaming") }
+        mainActivity.updateUiOnDestinationChange(R.id.lobbyDetailFragment, binding, arguments)
+        assertEquals("Gaming", mainActivity.supportActionBar?.title)
+    }
+
+    @Test
+    fun `the support app bar's title is not updated if the screen does not support dynamic label`() {
+        every { releaseDesignConfig.isReleaseDesignActive() } returns true
+        val binding = mainActivity.binding
+        val arguments = Bundle().apply { putString(SCREEN_TITLE, "Gaming") }
+        mainActivity.updateUiOnDestinationChange(R.id.homeLobbyFragment, binding, arguments)
+        assertNotEquals("Gaming", mainActivity.supportActionBar?.title)
     }
 }

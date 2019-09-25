@@ -18,8 +18,8 @@ import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.lobby.LobbyQuery
 import tv.caffeine.app.lobby.formatFriendsWatchingShortString
+import tv.caffeine.app.lobby.fragment.ClusterData
 import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.session.FollowManager
 
@@ -138,8 +138,9 @@ class OnlineBroadcaster @AssistedInject constructor (
     private val friendsWatchingText = formatFriendsWatchingShortString(context, broadcaster)
         ?: context.getString(R.string.live_indicator_lowercase)
     val badgeText = broadcaster.badgeText?.let { it } ?: friendsWatchingText
+    val ageRestriction = broadcaster.ageRestriction
+    val ageRestrictionVisibility = if (ageRestriction != null) View.VISIBLE else View.GONE
 
-    val contentRating = if (broadcast?.name?.startsWith("[17+]") == true) "17+" else null
     fun kebabClicked() {
         val action = MainNavDirections.actionGlobalReportOrIgnoreDialogFragment(caid, username, false)
         navigate(action)
@@ -164,17 +165,21 @@ class OfflineBroadcaster @AssistedInject constructor(
 }
 
 class CategoryCardViewModel @AssistedInject constructor(
-    @Assisted categoryCard: LobbyQuery.CategoryCard,
+    @Assisted categoryCard: ClusterData.CategoryCard,
     @Assisted context: Context,
     serverConfig: ServerConfig
 ) {
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(categoryCard: LobbyQuery.CategoryCard, context: Context): CategoryCardViewModel
+        fun create(categoryCard: ClusterData.CategoryCard, context: Context): CategoryCardViewModel
     }
 
     private var isNameVisible = categoryCard.overlayImagePath == null
+    private val cardId = categoryCard.id
+
+    private val _navigationCommands = MutableLiveData<Event<NavigationCommand>>()
+    val navigationCommands = _navigationCommands.map { it }
 
     val name = categoryCard.name
     val nameVisibility = if (isNameVisible) View.VISIBLE else View.GONE
@@ -183,5 +188,7 @@ class CategoryCardViewModel @AssistedInject constructor(
     val overlayImageUrl = categoryCard.overlayImagePath?.let { "${serverConfig.images}$it" }
 
     fun cardClicked() {
+        val action = MainNavDirections.actionGlobalLobbyDetailFragment(cardId, name)
+        _navigationCommands.value = Event(NavigationCommand.To(action))
     }
 }

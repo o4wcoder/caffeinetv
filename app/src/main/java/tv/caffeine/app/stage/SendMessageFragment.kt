@@ -1,5 +1,6 @@
 package tv.caffeine.app.stage
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
     interface Callback {
         fun sendDigitalItemWithMessage(message: String?)
         fun sendMessage(message: String?)
+        fun onDismissMessageDialog()
     }
 
     private lateinit var binding: FragmentSendMessageBinding
@@ -71,10 +73,16 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
         }
     }
 
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        callback?.onDismissMessageDialog()
+    }
+
     private fun sendMessage() {
         context?.dismissKeyboard(binding.sendButton)
         val message = binding.messageEditText.text.toString()
         callback?.sendMessage(message)
+        callback?.onDismissMessageDialog()
         dismiss()
     }
 
@@ -82,6 +90,7 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
         context?.dismissKeyboard(binding.sendButton)
         val message = binding.messageEditText.text.toString()
         callback?.sendDigitalItemWithMessage(message)
+        callback?.onDismissMessageDialog()
         dismiss()
     }
 }

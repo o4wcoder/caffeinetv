@@ -162,7 +162,7 @@
         <item name="android:paddingBottom">14dp</item>
     </style>
 
-    <style name="MenuTextView.Info">
+    <style name="MenuTextView.Bio">
         <item name="android:background">@drawable/menu_text_view_no_divider_background</item>
     </style>
 

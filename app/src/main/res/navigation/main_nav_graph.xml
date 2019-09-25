@@ -51,9 +51,6 @@
         android:label="@string/lobby"
         tools:layout="@layout/fragment_lobby_swipe">
         <action
-            android:id="@+id/action_lobbySwipeFragment_to_broadcastFragment"
-            app:destination="@+id/broadcastFragment"/>
-        <action
             android:id="@+id/action_lobbySwipeFragment_to_exploreFragment"
             app:destination="@+id/exploreFragment"/>
         <action
@@ -73,11 +70,32 @@
         tools:layout="@layout/fragment_lobby">
     </fragment>
     <fragment
+        android:id="@+id/homeLobbyFragment"
+        android:name="tv.caffeine.app.lobby.HomeLobbyFragment"
+        android:label="@string/for_you_lobby"
+        tools:layout="@layout/fragment_lobby">
+    </fragment>
+    <fragment
         android:id="@+id/trendingLobbyFragment"
         android:name="tv.caffeine.app.lobby.TrendingLobbyFragment"
         android:label="@string/trending_lobby"
         tools:layout="@layout/fragment_lobby">
     </fragment>
+    <fragment
+        android:id="@+id/lobbyDetailFragment"
+        android:name="tv.caffeine.app.lobby.LobbyDetailFragment"
+        android:label="@string/lobby"
+        tools:layout="@layout/fragment_lobby">
+        <argument
+            android:name="cardId"
+            app:argType="string"/>
+        <argument
+            android:name="screenTitle"
+            app:argType="string"/>
+    </fragment>
+    <action
+        android:id="@+id/action_global_lobbyDetailFragment"
+        app:destination="@id/lobbyDetailFragment"/>
     <fragment
         android:id="@+id/featuredProgramGuideFragment"
         android:name="tv.caffeine.app.lobby.FeaturedProgramGuideFragment"

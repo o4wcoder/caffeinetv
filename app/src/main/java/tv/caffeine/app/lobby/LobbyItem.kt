@@ -1,6 +1,7 @@
 package tv.caffeine.app.lobby
 
 import tv.caffeine.app.api.model.Lobby
+import tv.caffeine.app.lobby.fragment.ClusterData
 
 interface LobbyItem {
     val id: String
@@ -52,14 +53,20 @@ interface LobbyItem {
                 else -> LiveBroadcastWithFriends(broadcaster.id, broadcaster)
             }
 
-        fun parse(result: LobbyQuery.Data): List<LobbyItem> {
+        fun parse(lobby: LobbyQuery.Data): List<LobbyItem> =
+            parse(lobby.pagePayload.clusters.map { it.fragments.clusterData })
+
+        fun parse(detailPage: DetailPageQuery.Data): List<LobbyItem> =
+            parse(detailPage.pagePayload.clusters.map { it.fragments.clusterData })
+
+        private fun parse(clusters: List<ClusterData>): List<LobbyItem> {
             val lobbyItems = mutableListOf<LobbyItem>()
-            for (cluster in result.pagePayLoad.clusters) {
+            for (cluster in clusters) {
                 if (cluster.name != null) {
                     lobbyItems.add(Header(cluster.name, cluster.name))
                 }
                 cluster.cardLists.forEach { genericCardList ->
-                    (genericCardList.inlineFragment as? LobbyQuery.AsLiveBroadcastCardList)?.let { cardList ->
+                    (genericCardList.inlineFragment as? ClusterData.AsLiveBroadcastCardList)?.let { cardList ->
                         val totalCount = cardList.liveBroadcastCards.size
                         val maxLargeCardDisplayCount = cardList.maxLargeCardDisplayCount ?: totalCount
                         cardList.liveBroadcastCards.take(maxLargeCardDisplayCount).forEach {
@@ -72,12 +79,12 @@ interface LobbyItem {
                             ))
                         }
                     }
-                    (genericCardList.inlineFragment as? LobbyQuery.AsCreatorCardList)?.let { cardList ->
+                    (genericCardList.inlineFragment as? ClusterData.AsCreatorCardList)?.let { cardList ->
                         cardList.creatorCards.forEach {
                             lobbyItems.add(it.toOfflineCard())
                         }
                     }
-                    (genericCardList.inlineFragment as? LobbyQuery.AsCategoryCardList)?.let { cardList ->
+                    (genericCardList.inlineFragment as? ClusterData.AsCategoryCardList)?.let { cardList ->
                         when (cardList.categoryCards.size) {
                             1 -> lobbyItems.add(SingleCategory(cardList.id, cardList.categoryCards[0]))
                             else -> lobbyItems.add(DoubleCategory(cardList.id, cardList))
@@ -123,14 +130,14 @@ data class CardList(override val id: String, val cards: List<SingleCard>) : Lobb
 data class UpcomingButtonItem(override val id: String) : LobbyItem {
     override val itemType = LobbyItem.Type.UPCOMING_BUTTON_CARD
 }
-data class SingleCategory(override val id: String, val categoryCard: LobbyQuery.CategoryCard) : LobbyItem {
+data class SingleCategory(override val id: String, val categoryCard: ClusterData.CategoryCard) : LobbyItem {
     override val itemType = LobbyItem.Type.SINGLE_CATEGORY_CARD
 }
-data class DoubleCategory(override val id: String, val categoryCardList: LobbyQuery.AsCategoryCardList) : LobbyItem {
+data class DoubleCategory(override val id: String, val categoryCardList: ClusterData.AsCategoryCardList) : LobbyItem {
     override val itemType = LobbyItem.Type.DOUBLE_CATEGORY_CARD
 }
 /* TODO
-data class CategoryCardList(override val id: String, val categoryCardList: LobbyQuery.AsCategoryCardList) : LobbyItem {
+data class CategoryCardList(override val id: String, val categoryCardList: ClusterData.AsCategoryCardList) : LobbyItem {
     override val itemType = LobbyItem.Type.CATEGORY_CARD_LIST
 }
 */

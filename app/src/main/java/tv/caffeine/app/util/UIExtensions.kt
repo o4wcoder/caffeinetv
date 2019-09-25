@@ -122,6 +122,11 @@ fun Activity.setDarkMode(isDarkMode: Boolean) {
     }
 }
 
+fun Activity.setImmersiveMode() {
+    setDarkMode(true)
+    setImmersiveSticky()
+}
+
 fun Activity.setNavigationBarDarkMode(isDarkMode: Boolean) {
     window.apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

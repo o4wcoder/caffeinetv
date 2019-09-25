@@ -9,6 +9,7 @@ class TrendingLobbyFragment @Inject constructor(
     releaseLobbyAdapterFactoryProvider: Provider<ReleaseLobbyAdapter.Factory>
 ) : LobbyV5Fragment(releaseLobbyAdapterFactoryProvider) {
 
-    override fun getPage() = Page.TRENDING
-    override fun shouldObserveNotificationCount() = false
+    override fun loadLobby() {
+        viewModel.refreshV5(Page.TRENDING) {}
+    }
 }

@@ -223,6 +223,7 @@
             android:id="@+id/stage_profile_overlay"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:visibility="@{viewModel.profileOverlayVisibility}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/bottom_fragment_container"
             app:layout_constraintEnd_toEndOf="parent"

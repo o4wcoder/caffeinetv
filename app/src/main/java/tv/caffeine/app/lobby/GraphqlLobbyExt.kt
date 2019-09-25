@@ -4,11 +4,13 @@ import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.Game
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
-import tv.caffeine.app.lobby.fragment.UserFragment
+import tv.caffeine.app.lobby.fragment.ClusterData
+import tv.caffeine.app.lobby.fragment.UserData
+import tv.caffeine.app.lobby.type.AgeRestriction
 
-fun LobbyQuery.LiveBroadcastCard.toLiveCard(): SingleCard {
+fun ClusterData.LiveBroadcastCard.toLiveCard(): LiveBroadcast {
     val graphqlBroadcast = broadcast
-    val graphqlUser = user.fragments.userFragment
+    val graphqlUser = user.fragments.userData
     val broadcast = Broadcast(
         graphqlBroadcast.id,
         graphqlBroadcast.name,
@@ -28,17 +30,18 @@ fun LobbyQuery.LiveBroadcastCard.toLiveCard(): SingleCard {
         "",
         broadcast,
         null,
-        graphqlBroadcast.friendViewers.map { it.fragments.userFragment.toCaffeineUser() },
+        graphqlBroadcast.friendViewers.map { it.fragments.userData.toCaffeineUser() },
         graphqlBroadcast.totalFriendViewers,
         displayOrder,
         id,
-        name
+        name,
+        graphqlBroadcast.getAgeRestrictionText()
     )
     return LiveBroadcast(broadcaster.id, broadcaster)
 }
 
-fun LobbyQuery.CreatorCard.toOfflineCard(): SingleCard {
-    val graphqlUser = user.fragments.userFragment
+fun ClusterData.CreatorCard.toOfflineCard(): PreviousBroadcast {
+    val graphqlUser = user.fragments.userData
     val broadcaster = Lobby.Broadcaster(
         graphqlUser.caid,
         "", // TODO: clean up type
@@ -50,12 +53,13 @@ fun LobbyQuery.CreatorCard.toOfflineCard(): SingleCard {
         0,
         displayOrder,
         id,
+        null,
         null
     )
     return PreviousBroadcast(broadcaster.id, broadcaster)
 }
 
-fun UserFragment.toCaffeineUser() = User(
+fun UserData.toCaffeineUser() = User(
     caid,
     username,
     null,
@@ -82,3 +86,6 @@ fun UserFragment.toCaffeineUser() = User(
     null
     // TODO: add isFollowing
 )
+
+private fun ClusterData.Broadcast.getAgeRestrictionText() =
+    if (ageRestriction == AgeRestriction.SEVENTEEN_PLUS) "17+" else null
