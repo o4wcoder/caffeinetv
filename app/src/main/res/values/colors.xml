@@ -14,7 +14,7 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="yellow">#FFCC00</color>
-    <color name="warning_red">#ff3b30</color>
+    <color name="warning_red">#ff0000</color>
     <color name="notification_blue">#00fffd</color>
     <color name="cyan">#00ffff</color>
 
@@ -78,4 +78,21 @@
     <color name="endorsement_8_text">#FFFFFF</color>
     <color name="endorsement_9_text">#FFFFFF</color>
     <color name="pure_blue">#0000ff</color>
+
+    <!--  CaffeineEditTextLayout  -->
+    <color name="caffeine_edit_text_layout_error">@color/warning_red</color>
+    <color name="caffeine_edit_text_layout_text">@color/black</color>
+    <color name="caffeine_edit_text_layout_text_dark">@color/white</color>
+    <color name="caffeine_edit_text_layout_text_focused">#949494</color>
+    <color name="caffeine_edit_text_layout_text_focused_dark">@color/light_gray</color>
+    <color name="caffeine_edit_text_layout_main_hint">@color/medium_gray</color>
+    <color name="caffeine_edit_text_layout_bottom_hint">@color/black</color>
+    <color name="caffeine_edit_text_layout_bottom_hint_dark">@color/light_gray</color>
+    <color name="caffeine_edit_text_layout_line">@color/medium_gray</color>
+    <color name="caffeine_edit_text_layout_line_dark">@color/light_gray</color>
+    <color name="caffeine_edit_text_layout_line_focused">@color/pure_blue</color>
+    <color name="caffeine_edit_text_layout_line_focused_dark">@color/cyan</color>
+    <color name="caffeine_edit_text_layout_line_finished">@color/very_dark_gray</color>
+    <color name="caffeine_edit_text_layout_line_finished_dark">@color/light_gray</color>
+
 </resources>

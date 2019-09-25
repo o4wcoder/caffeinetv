@@ -246,6 +246,14 @@
         <item name="android:textColor">@color/medium_gray</item>
     </style>
 
+    <style name="CaffeineEditTextLayoutHint" parent="CaffeineText.Medium" >
+        <item name="android:textSize">@dimen/sign_in_text_size</item>
+    </style>
+
+    <style name="CaffeineEditTextLayoutError" parent="CaffeineText.Medium">
+        <item name="android:textSize">@dimen/sign_in_error_text_size</item>
+    </style>
+
     <style name="BigEditText" parent="CaffeineText.Light">
         <item name="android:background">@drawable/big_edit_text_background</item>
         <item name="android:gravity">center</item>
