@@ -78,7 +78,7 @@ fun UserData.toCaffeineUser() = User(
     null,
     null,
     null,
-    false, // TODO: clean up isFeatured
+    null,
     true,
     null,
     null,
