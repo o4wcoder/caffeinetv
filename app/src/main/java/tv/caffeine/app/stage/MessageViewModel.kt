@@ -82,6 +82,7 @@ class MessageViewModel(
     }
 
     fun onMessageClicked() {
+        if (isPublisherMe()) return
         toggleHighlightMode()
     }
 
@@ -91,6 +92,7 @@ class MessageViewModel(
     }
 
     fun onUpvoteClicked() {
+        if (isPublisherMe()) return
         if (isHighlightMode) {
             toggleHighlightMode()
         }
@@ -102,11 +104,13 @@ class MessageViewModel(
 
     fun onUsernameClicked() {
         message?.publisher?.let {
-            if (!followManager.isSelf(it.caid)) {
+            if (!isPublisherMe()) {
                 callback?.usernameClicked(it.username)
             }
         }
     }
+
+    private fun isPublisherMe() = message?.publisher?.caid?.let { followManager.isSelf(it) } ?: false
 
     private fun updateUpvoteUi(upvoteCount: Int) {
         updateHighlightMode()

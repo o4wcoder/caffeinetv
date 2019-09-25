@@ -47,11 +47,20 @@ class MessageViewModelTests {
     }
 
     @Test
-    fun `clicking on the message toggles the highlight mode`() {
+    fun `clicking on the message toggles the highlight mode if the publisher is not me`() {
         subject.updateMessage(message)
         subject.onMessageClicked()
         assertEquals(View.INVISIBLE, subject.avatarImageViewVisibility)
         assertEquals(View.VISIBLE, subject.highlightVisibility)
+        subject.onMessageClicked()
+        assertEquals(View.VISIBLE, subject.avatarImageViewVisibility)
+        assertEquals(View.GONE, subject.highlightVisibility)
+    }
+
+    @Test
+    fun `clicking on the message does not toggle the highlight mode if the publisher is me`() {
+        every { followManager.isSelf(any()) } returns true
+        subject.updateMessage(message)
         subject.onMessageClicked()
         assertEquals(View.VISIBLE, subject.avatarImageViewVisibility)
         assertEquals(View.GONE, subject.highlightVisibility)
@@ -93,12 +102,20 @@ class MessageViewModelTests {
     }
 
     @Test
-    fun `clicking on the upvote text triggers the callback`() {
+    fun `clicking on the upvote text triggers the callback if the publisher is not me`() {
         subject.updateMessage(message)
         subject.onUpvoteClicked()
         assertEquals(View.VISIBLE, subject.avatarImageViewVisibility)
         assertEquals(View.GONE, subject.highlightVisibility)
         verify(exactly = 1) { callback.upvoteClicked(any()) }
+    }
+
+    @Test
+    fun `clicking on the upvote text does not trigger the callback if the publisher is me`() {
+        every { followManager.isSelf(any()) } returns true
+        subject.updateMessage(message)
+        subject.onUpvoteClicked()
+        verify(exactly = 0) { callback.upvoteClicked(any()) }
     }
 
     @Test
