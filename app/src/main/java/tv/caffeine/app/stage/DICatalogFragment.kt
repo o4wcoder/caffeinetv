@@ -1,5 +1,6 @@
 package tv.caffeine.app.stage
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,16 +32,17 @@ class DICatalogFragment @Inject constructor(
 
     interface Callback {
         fun digitalItemSelected(digitalItem: DigitalItem, message: String? = null)
+        fun onDismissMessageDialog()
     }
 
+    private val callback get() = targetFragment as? Callback
     private val args by navArgs<DICatalogFragmentArgs>()
 
     private val adapter by lazy {
         DigitalItemAdapter(picasso, object : DigitalItemViewHolder.Callback {
             override fun digitalItemSelected(digitalItem: DigitalItem) {
-                val callback = targetFragment as? Callback ?: return
                 val message = args.message
-                callback.digitalItemSelected(digitalItem, message)
+                callback?.digitalItemSelected(digitalItem, message)
                 dismiss()
             }
         })
@@ -83,6 +85,11 @@ class DICatalogFragment @Inject constructor(
         } else {
             binding.diCatalogTitle.text = getString(R.string.send_gold_to_user, binding.username)
         }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        callback?.onDismissMessageDialog()
     }
 }
 
