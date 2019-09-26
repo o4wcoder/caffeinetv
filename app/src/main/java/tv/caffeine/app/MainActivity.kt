@@ -33,6 +33,7 @@ import tv.caffeine.app.analytics.Profiling
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.ActivityMainBinding
 import tv.caffeine.app.di.ViewModelFactory
+import tv.caffeine.app.ext.expand
 import tv.caffeine.app.feature.DevOptionsDialog
 import tv.caffeine.app.feature.Feature
 import tv.caffeine.app.feature.FeatureConfig
@@ -359,10 +360,12 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
     }
 
     private fun launchDevOptions() {
-        val dialog = DevOptionsDialog(this)
-        dialog.show()
-        dialog.setOnDismissListener {
-            isDevOptionsOpen = false
+        DevOptionsDialog(this).apply {
+            expand()
+            show()
+            setOnDismissListener {
+                isDevOptionsOpen = false
+            }
         }
     }
 

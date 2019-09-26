@@ -28,7 +28,7 @@ data class User(
     val countryCode: Any?,
     val countryName: Any?,
     val gender: Any?,
-    val isFeatured: Boolean,
+    val isFeatured: Boolean?,
     val isOnline: Boolean,
     val notificationsLastViewedAt: ZonedDateTime?,
     val mfaMethod: MfaMethod?,

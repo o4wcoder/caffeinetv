@@ -43,7 +43,7 @@ class LobbyImpressionEventData(
     val payloadId: String?,
     val caid: CAID?,
     val stageId: String,
-    val featured: Boolean,
+    val featured: Boolean?,
     val isLive: Boolean,
     val displayOrder: Int,
     val friendsWatching: List<String>,
