@@ -44,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{viewModel.name}"
+            android:textSize="@{isMiniStyle ? @dimen/lobby_category_single_text_mini : @dimen/lobby_category_single_text}"
             android:elevation="2dp"
             android:visibility="@{viewModel.nameVisibility}"
             app:layout_constraintStart_toStartOf="parent"

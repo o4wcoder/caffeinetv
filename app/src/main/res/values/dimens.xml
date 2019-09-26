@@ -74,6 +74,9 @@
     <dimen name="lobby_category_overlay_image_single_height">100dp</dimen>
     <dimen name="lobby_category_overlay_image_double_width">100dp</dimen>
     <dimen name="lobby_category_overlay_image_double_height">50dp</dimen>
+    <dimen name="lobby_category_single_text">30dp</dimen>
+    <dimen name="lobby_category_single_text_mini">20dp</dimen>
+    <dimen name="lobby_category_double_text">14dp</dimen>
     <dimen name="lobby_header_top_margin">20dp</dimen>
     <dimen name="lobby_header_bottom_margin">0dp</dimen>
     <dimen name="lobby_subtitle_top_margin">0dp</dimen>

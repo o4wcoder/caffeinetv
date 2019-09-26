@@ -25,6 +25,7 @@ import tv.caffeine.app.databinding.ReleaseUiOnlineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiSingleCategoryCardBinding
 import tv.caffeine.app.databinding.ReleaseUiSubtitleBinding
 import tv.caffeine.app.lobby.CardList
+import tv.caffeine.app.lobby.CategoryCardList
 import tv.caffeine.app.lobby.Header
 import tv.caffeine.app.lobby.LiveInTheLobbyCapable
 import tv.caffeine.app.lobby.LobbyItem
@@ -185,9 +186,11 @@ class HorizontalScrollCard @AssistedInject constructor(
         }
     }
 
-    fun bind(cardList: CardList) {
-        if (payloadId != null) {
-            lobbyAdapter.submitList(cardList.cards, tags, content, payloadId)
+    fun bind(item: LobbyItem) {
+        if (payloadId == null) return
+        when (item) {
+            is CardList -> lobbyAdapter.submitList(item.cards, tags, content, payloadId)
+            is CategoryCardList -> lobbyAdapter.submitList(item.categoryCards, tags, content, payloadId)
         }
     }
 }

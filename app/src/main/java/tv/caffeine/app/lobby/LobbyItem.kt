@@ -87,8 +87,9 @@ interface LobbyItem {
                     (genericCardList.inlineFragment as? ClusterData.AsCategoryCardList)?.let { cardList ->
                         when (cardList.categoryCards.size) {
                             1 -> lobbyItems.add(SingleCategory(cardList.id, cardList.categoryCards[0]))
-                            else -> lobbyItems.add(DoubleCategory(cardList.id, cardList))
-                            // TODO else -> lobbyItems.add(CategoryaCardList(cardList.id, cardList))
+                            2 -> lobbyItems.add(DoubleCategory(cardList.id, cardList))
+                            else -> lobbyItems.add(CategoryCardList(
+                                cardList.id, cardList.categoryCards.map { SingleCategory(it.id, it) }))
                         }
                     }
                 }
@@ -136,8 +137,6 @@ data class SingleCategory(override val id: String, val categoryCard: ClusterData
 data class DoubleCategory(override val id: String, val categoryCardList: ClusterData.AsCategoryCardList) : LobbyItem {
     override val itemType = LobbyItem.Type.DOUBLE_CATEGORY_CARD
 }
-/* TODO
-data class CategoryCardList(override val id: String, val categoryCardList: ClusterData.AsCategoryCardList) : LobbyItem {
+data class CategoryCardList(override val id: String, val categoryCards: List<SingleCategory>) : LobbyItem {
     override val itemType = LobbyItem.Type.CATEGORY_CARD_LIST
 }
-*/

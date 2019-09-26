@@ -44,12 +44,12 @@
     </style>
 
     <style name="LobbySingleCategoryText" parent="LobbyCardText">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">@dimen/lobby_category_single_text</item>
         <item name="android:maxLines">2</item>
         <item name="android:layout_margin">@dimen/margin</item>
     </style>
     <style name="LobbyDoubleCategoryText" parent="LobbyCardText">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/lobby_category_double_text</item>
         <item name="android:maxLines">2</item>
         <item name="android:layout_margin">@dimen/margin</item>
     </style>
