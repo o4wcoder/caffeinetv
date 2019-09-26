@@ -372,10 +372,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
     @VisibleForTesting
     fun unsetImmersiveMode() {
         unsetImmersiveSticky()
-        setDarkMode(false)
-        if (releaseDesignConfig.isReleaseDesignActive()) {
-            setNavigationBarDarkMode(true)
-        }
+        setDarkMode(isStatusBarDark = false, isNavBarDark = releaseDesignConfig.isReleaseDesignActive())
 
         getPreferences(Context.MODE_PRIVATE)?.let {
             val key = getString(R.string.is_first_time_on_stage)
