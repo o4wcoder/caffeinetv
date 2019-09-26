@@ -72,10 +72,10 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/sign_in_with_username_prompt"/>
             <TextView
-                style="@style/LinkText"
                 android:id="@+id/sign_in_with_username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/caffeine_blue"
                 android:paddingBottom="24dp"
                 android:text="@string/sign_in_with_username"/>
         </LinearLayout>

@@ -19,30 +19,46 @@ class CaffeineEditTextLayoutViewModel(val context: Context) : BaseObservable() {
         callback: Observable.OnPropertyChangedCallback
     ) { callbacks.add(callback) }
 
-    private val defaultStateLineColorPair = Pair(R.color.caffeine_edit_text_layout_line_dark, R.color.caffeine_edit_text_layout_line)
-    private val finishedStateLineColorPair = Pair(R.color.caffeine_edit_text_layout_line_finished_dark, R.color.caffeine_edit_text_layout_line_finished)
-    private val focusedStateLineColorPair = Pair(R.color.caffeine_edit_text_layout_line_focused_dark, R.color.caffeine_edit_text_layout_line_focused)
-    private val editTextTextColorPair = Pair(R.color.caffeine_edit_text_layout_text_dark, R.color.caffeine_edit_text_layout_text)
-    private val bottomViewTextColorPair = Pair(R.color.caffeine_edit_text_layout_bottom_hint_dark, R.color.caffeine_edit_text_layout_bottom_hint)
+    private val defaultStateLineColorPair =
+        Pair(R.color.caffeine_edit_text_layout_line_dark, R.color.caffeine_edit_text_layout_line)
+    private val finishedStateLineColorPair =
+        Pair(R.color.caffeine_edit_text_layout_line_finished_dark, R.color.caffeine_edit_text_layout_line_finished)
+    private val focusedStateLineColorPair =
+        Pair(R.color.caffeine_edit_text_layout_line_focused_dark, R.color.caffeine_edit_text_layout_line_focused)
+    private val editTextTextColorPair =
+        Pair(R.color.caffeine_edit_text_layout_text_dark, R.color.caffeine_edit_text_layout_text)
+    private val focusedEditTextHintColorPair =
+        Pair(R.color.caffeine_edit_text_layout_hint_focused_dark, R.color.caffeine_edit_text_layout_hint_focused)
+    private val bottomViewTextColorPair =
+        Pair(R.color.caffeine_edit_text_layout_bottom_hint_dark, R.color.caffeine_edit_text_layout_bottom_hint)
+    private val bottomViewErrorTextColorPair =
+        Pair(R.color.white, R.color.caffeine_edit_text_layout_error)
 
     private var isDarkMode = false
     private var editTextHasFocus = false
     private var editTextIsEmpty = true
     private var isError = false
-    private var shouldShowBottomTextView = false
 
-    private var editTextHint: String = ""
     private var bottomViewText: String? = null
 
     @Bindable
-    fun getBottomViewVisibility() = if (shouldShowBottomTextView) View.VISIBLE else View.GONE
+    fun getBottomViewVisibility() =
+        when {
+            editTextHasFocus || isError || !editTextIsEmpty -> View.VISIBLE
+            else -> View.GONE
+        }
 
     @Bindable
-    fun getEditTextHint() = editTextHint
+    var editTextHint: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.editTextHint)
+        }
 
     @Bindable
     @ColorRes
-    fun getEditTextHintColor() = R.color.caffeine_edit_text_layout_main_hint
+    fun getEditTextHintColor() =
+        if (editTextHasFocus) getColorForMode(focusedEditTextHintColorPair) else R.color.caffeine_edit_text_layout_main_hint
 
     @Bindable
     @ColorRes
@@ -51,14 +67,11 @@ class CaffeineEditTextLayoutViewModel(val context: Context) : BaseObservable() {
     @Bindable
     fun getLineColor(): ColorStateList {
         val color =
-            if (isError) {
-                R.color.caffeine_edit_text_layout_error
-            } else {
-                when {
-                    editTextHasFocus -> getColorForMode(focusedStateLineColorPair)
-                    editTextIsEmpty -> getColorForMode(defaultStateLineColorPair)
-                    else -> getColorForMode(finishedStateLineColorPair)
-                }
+            when {
+                isError -> R.color.caffeine_edit_text_layout_error
+                editTextHasFocus -> getColorForMode(focusedStateLineColorPair)
+                editTextIsEmpty -> getColorForMode(defaultStateLineColorPair)
+                else -> getColorForMode(finishedStateLineColorPair)
             }
 
         return getColorStateList(color)
@@ -67,25 +80,18 @@ class CaffeineEditTextLayoutViewModel(val context: Context) : BaseObservable() {
     @Bindable
     @ColorRes
     fun getBottomViewTextColor(): Int {
-        return if (isError) {
-            R.color.caffeine_edit_text_layout_error
-        } else {
-            getColorForMode(bottomViewTextColorPair)
+        return when {
+            isError -> getColorForMode(bottomViewErrorTextColorPair)
+            else -> getColorForMode(bottomViewTextColorPair)
         }
     }
 
     @Bindable
     fun getBottomViewText() = bottomViewText?.let { it } ?: editTextHint
 
-    fun setEditTextHint(text: String) {
-        editTextHint = text
-        notifyPropertyChanged(BR.editTextHint)
-    }
-
     fun setBottomViewText(text: String?, isError: Boolean) {
         bottomViewText = text
         this.isError = isError
-        setBottomViewVisibility(true)
         notifyPropertyChanged(BR.bottomViewText)
         notifyPropertyChanged(BR.bottomViewTextColor)
         notifyPropertyChanged(BR.bottomViewVisibility)
@@ -94,7 +100,6 @@ class CaffeineEditTextLayoutViewModel(val context: Context) : BaseObservable() {
 
     fun setEditTextHasFocus(hasFocus: Boolean) {
         editTextHasFocus = hasFocus
-        setBottomViewVisibility(hasFocus || isError)
         notifyPropertyChanged(BR.bottomViewVisibility)
         notifyPropertyChanged(BR.lineColor)
     }
@@ -102,6 +107,7 @@ class CaffeineEditTextLayoutViewModel(val context: Context) : BaseObservable() {
     fun setEditTextIsEmpty(isEmpty: Boolean) {
         editTextIsEmpty = isEmpty
         notifyPropertyChanged(BR.lineColor)
+        notifyPropertyChanged(BR.bottomViewVisibility)
     }
 
     fun setDarkMode(isDarkMode: Boolean) {
@@ -112,17 +118,12 @@ class CaffeineEditTextLayoutViewModel(val context: Context) : BaseObservable() {
         notifyPropertyChanged(BR.editTextTextColor)
     }
 
-    fun setError(errorMessage: String) {
+    fun setError(errorMessage: String?) {
         setBottomViewText(errorMessage, true)
     }
 
     fun clearError() {
         setBottomViewText(null, false)
-    }
-
-    private fun setBottomViewVisibility(shouldShow: Boolean) {
-        shouldShowBottomTextView = shouldShow
-        notifyPropertyChanged(BR.bottomViewVisibility)
     }
 
     private fun getColorResource(@ColorRes color: Int): Int {

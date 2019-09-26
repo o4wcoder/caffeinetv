@@ -1,6 +1,9 @@
 package tv.caffeine.app.ui
 
 import android.content.Context
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -12,6 +15,7 @@ import androidx.databinding.Observable
 import tv.caffeine.app.BR
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.CaffeineEditTextLayoutBinding
+import tv.caffeine.app.util.addFilter
 
 class CaffeineEditTextLayout @JvmOverloads constructor(
     context: Context,
@@ -26,6 +30,13 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
     private val layoutBottomTextView: TextView
     private val layoutViewModel: CaffeineEditTextLayoutViewModel
     private val binding: CaffeineEditTextLayoutBinding
+
+    var text: String = ""
+        set(value) {
+            field = value
+            layoutEditText.setText(value)
+        }
+        get() = layoutEditText.text.toString()
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -61,8 +72,9 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
             when (attr) {
                 R.styleable.CaffeineEditTextLayout_android_imeOptions -> layoutEditText.imeOptions = attributes.getInt(attr, 0)
                 R.styleable.CaffeineEditTextLayout_android_inputType -> layoutEditText.inputType = attributes.getInt(attr, 0)
+                R.styleable.CaffeineEditTextLayout_android_hint -> layoutViewModel.editTextHint = attributes.getString(attr) ?: ""
+                R.styleable.CaffeineEditTextLayout_android_maxLength -> layoutEditText.addFilter(InputFilter.LengthFilter(attributes.getInt(attr, 0)))
                 R.styleable.CaffeineEditTextLayout_isDarkMode -> layoutViewModel.setDarkMode(attributes.getBoolean(attr, false))
-                R.styleable.CaffeineEditTextLayout_hint -> layoutViewModel.setEditTextHint(attributes.getString(attr) ?: "")
                 R.styleable.CaffeineEditTextLayout_bottomHint -> layoutViewModel.setBottomViewText(attributes.getString(attr), false)
             }
         }
@@ -73,12 +85,26 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
         }
     }
 
-    fun clearError() {
-        layoutViewModel.clearError()
-    }
+    fun setOnActionGo(action: () -> Unit) = layoutEditText.setOnActionGo(action)
 
-    fun showError(errorText: String) {
-        layoutViewModel.setError(errorText)
+    fun isEmpty() = layoutEditText.text.isNullOrEmpty()
+
+    fun showError(errorText: String?) = layoutViewModel.setError(errorText)
+
+    fun clearError() = layoutViewModel.clearError()
+
+    fun afterTextChanged(afterTextChanged: (String) -> Unit) {
+        this.layoutEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                afterTextChanged.invoke(editable.toString())
+            }
+        })
     }
 
     private fun getColorResource(@ColorRes color: Int): Int {

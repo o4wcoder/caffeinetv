@@ -16,8 +16,8 @@ import tv.caffeine.app.analytics.FirebaseEvent
 import tv.caffeine.app.analytics.logEvent
 import tv.caffeine.app.databinding.FragmentSignInBinding
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.setOnActionGo
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
@@ -30,6 +30,7 @@ class SignInFragment @Inject constructor(
     private val signInViewModel: SignInViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        activity?.setDarkMode(true)
         binding = FragmentSignInBinding.bind(view)
         configure(binding)
     }
@@ -37,10 +38,11 @@ class SignInFragment @Inject constructor(
     private fun configure(binding: FragmentSignInBinding) {
         Navigation.createNavigateOnClickListener(R.id.forgotFragment).let {
             binding.resetPasswordTextView.setOnClickListener(it)
-            binding.resetPasswordPromptTextView.setOnClickListener(it)
         }
         binding.signInButton.setOnClickListener { login() }
-        binding.passwordEditText.setOnActionGo { login() }
+        binding.usernameEditTextLayout.afterTextChanged { validate() }
+        binding.passwordEditTextLayout.setOnActionGo { login() }
+        binding.passwordEditTextLayout.afterTextChanged { validate() }
         signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { outcome ->
             when (outcome) {
                 is SignInOutcome.Success -> onSuccess()
@@ -54,13 +56,19 @@ class SignInFragment @Inject constructor(
 
     private fun clearErrors() {
         binding.formErrorTextView.isInvisible = true
+        binding.usernameEditTextLayout.clearError()
     }
 
     private fun login() {
         clearErrors()
-        val username = binding.usernameEditText.text.toString()
-        val password = binding.passwordEditText.text.toString()
+        val username = binding.usernameEditTextLayout.text
+        val password = binding.passwordEditTextLayout.text
         signInViewModel.login(username, password)
+    }
+
+    private fun validate() {
+        binding.signInButton.isEnabled =
+            !binding.usernameEditTextLayout.isEmpty() && !binding.passwordEditTextLayout.isEmpty()
     }
 
     @UiThread
@@ -76,8 +84,8 @@ class SignInFragment @Inject constructor(
     private fun onMfaRequired() {
         firebaseAnalytics.logEvent(FirebaseEvent.SignInContinueToMFA)
         val navController = findNavController()
-        val username = binding.usernameEditText.text.toString()
-        val password = binding.passwordEditText.text.toString()
+        val username = binding.usernameEditTextLayout.text
+        val password = binding.passwordEditTextLayout.text
         val action =
                 SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)
         navController.safeNavigate(action)
@@ -96,12 +104,13 @@ class SignInFragment @Inject constructor(
         val errorMessages = listOfNotNull(
                 error.formError,
                 error.usernameError,
-                error.passwordError,
-                getString(R.string.sign_in_description)
+                error.passwordError
         )
         errorMessages.firstOrNull { it.isNotEmpty() }?.let {
             binding.formErrorTextView.text = it
             binding.formErrorTextView.isInvisible = false
+            binding.usernameEditTextLayout.showError(null)
+            binding.passwordEditTextLayout.showError(null)
         }
     }
 

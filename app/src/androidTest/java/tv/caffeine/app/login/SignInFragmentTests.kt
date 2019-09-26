@@ -41,13 +41,13 @@ class SignInFragmentTests : BaseNavigationTest() {
 
     @Test
     override fun testDestination() {
-        onView(withId(R.id.username_edit_text)).check(matches(isDisplayed()))
+        onView(withId(R.id.username_edit_text_layout)).check(matches(isDisplayed()))
     }
 
     @Test
     fun invalidLoginShowsErrorMessage() {
-        onView(withId(R.id.username_edit_text)).perform(click(), typeText(invalidUsername))
-        onView(withId(R.id.password_edit_text)).perform(click(), typeText(invalidPassword))
+        onView(withId(R.id.username_edit_text_layout)).perform(click(), typeText(invalidUsername))
+        onView(withId(R.id.password_edit_text_layout)).perform(click(), typeText(invalidPassword))
         onView(withId(R.id.sign_in_button)).perform(click())
         // TODO - wait for login to complete
         onView(withId(R.id.form_error_text_view)).check(matches(withText(containsString(invalidUsernameOrPasswordErrorMessage))))
@@ -55,7 +55,7 @@ class SignInFragmentTests : BaseNavigationTest() {
 
     @Test
     fun missingUsernameShowsErrorMessage() {
-        onView(withId(R.id.password_edit_text)).perform(click(), typeText(invalidPassword))
+        onView(withId(R.id.password_edit_text_layout)).perform(click(), typeText(invalidPassword))
         onView(withId(R.id.sign_in_button)).perform(click())
         // TODO - wait for login to complete
         onView(withId(R.id.form_error_text_view)).check(matches(withText(containsString(invalidUsernameOrPasswordErrorMessage))))
@@ -63,7 +63,7 @@ class SignInFragmentTests : BaseNavigationTest() {
 
     @Test
     fun missingPasswordShowsErrorMessage() {
-        onView(withId(R.id.username_edit_text)).perform(click(), typeText(invalidUsername))
+        onView(withId(R.id.username_edit_text_layout)).perform(click(), typeText(invalidUsername))
         onView(withId(R.id.sign_in_button)).perform(click())
         // TODO - wait for login to complete
         onView(withId(R.id.form_error_text_view)).check(matches(withText(containsString(invalidUsernameOrPasswordErrorMessage))))

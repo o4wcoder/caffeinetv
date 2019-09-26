@@ -83,8 +83,8 @@
     <color name="caffeine_edit_text_layout_error">@color/warning_red</color>
     <color name="caffeine_edit_text_layout_text">@color/black</color>
     <color name="caffeine_edit_text_layout_text_dark">@color/white</color>
-    <color name="caffeine_edit_text_layout_text_focused">#949494</color>
-    <color name="caffeine_edit_text_layout_text_focused_dark">@color/light_gray</color>
+    <color name="caffeine_edit_text_layout_hint_focused">#949494</color>
+    <color name="caffeine_edit_text_layout_hint_focused_dark">@color/light_gray</color>
     <color name="caffeine_edit_text_layout_main_hint">@color/medium_gray</color>
     <color name="caffeine_edit_text_layout_bottom_hint">@color/black</color>
     <color name="caffeine_edit_text_layout_bottom_hint_dark">@color/light_gray</color>

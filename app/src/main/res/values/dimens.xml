@@ -30,6 +30,7 @@
     <dimen name="game_logo_width">120dp</dimen>
     <dimen name="game_logo_height">90dp</dimen>
 
+    <dimen name="medium_button_width">204dp</dimen>
     <dimen name="medium_button_height">40dp</dimen>
     <dimen name="big_button_width">280dp</dimen>
     <dimen name="big_button_height">60dp</dimen>
@@ -130,6 +131,13 @@
     <dimen name="my_profile_signout_bottom_margin">80dp</dimen>
     <dimen name="my_profile_divider_top_margin">26dp</dimen>
 
-    <dimen name="sign_in_text_size">16sp</dimen>
-    <dimen name="sign_in_error_text_size">12sp</dimen>
+    <dimen name="caffeine_edit_text_layout_edit_text_text_size">16sp</dimen>
+    <dimen name="caffeine_edit_text_layout_bottom_view_text_size">12sp</dimen>
+
+    <dimen name="sign_in_flow_start_padding">36dp</dimen>
+    <dimen name="sign_in_flow_end_padding">40dp</dimen>
+    <dimen name="sign_in_form_error_margin_top">132dp</dimen>
+    <dimen name="sign_in_margin_top">44dp</dimen>
+    <dimen name="sign_in_username_margin_top">88dp</dimen>
+    <dimen name="sign_in_title_margin_top">96dp</dimen>
 </resources>
