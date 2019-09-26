@@ -24,6 +24,7 @@
             android:layout_height="0dp"
             android:keepScreenOn="true"
             android:visibility="gone"
+            android:foreground="@drawable/gradient_overlay"
             app:layout_constraintStart_toStartOf="@id/preview_image_view"
             app:layout_constraintEnd_toEndOf="@id/preview_image_view"
             app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
