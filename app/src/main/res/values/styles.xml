@@ -233,6 +233,7 @@
     </style>
     <style name="CaffeineText.Bold">
         <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item> <!-- poppins_bold is not bold with the normal text style on Android M -->
     </style>
     <style name="CaffeineText.Medium">
         <item name="android:fontFamily">@font/poppins_medium</item>

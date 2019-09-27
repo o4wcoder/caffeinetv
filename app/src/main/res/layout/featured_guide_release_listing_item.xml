@@ -83,7 +83,7 @@
             tools:visibility="visible"/>
 
         <TextView
-            style="@style/FPGTitle"
+            style="@style/LobbyCardTitle"
             android:id="@+id/title_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
