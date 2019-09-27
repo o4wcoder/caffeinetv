@@ -1,5 +1,6 @@
 package tv.caffeine.app.stage
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -28,6 +29,7 @@ import tv.caffeine.app.util.setImmersiveMode
 import javax.inject.Inject
 
 private const val ARG_BROADCAST_USERNAME = "broadcastUsername"
+private const val REQUEST_SHARE_BROADCAST = 100
 
 abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     SendMessageFragment.Callback, DICatalogFragment.Callback {
@@ -72,13 +74,13 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
                     isMe = userProfile.isMe
                     binding.shareButton?.setOnClickListener {
                         val sharerId = followManager.currentUserDetails()?.caid
-                        startActivity(
+                        startActivityForResult(
                             StageShareIntentBuilder(
                                 userProfile,
                                 sharerId,
                                 resources,
                                 clock
-                            ).build()
+                            ).build(), REQUEST_SHARE_BROADCAST
                         )
                     }
                 }
@@ -125,6 +127,12 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     override fun onDestroy() {
         disconnectMessages()
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_SHARE_BROADCAST) {
+            resetStageImmersiveMode()
+        }
     }
 
     private fun connectMessages() {
@@ -178,8 +186,8 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     }
 
     override fun onDismissMessageDialog() {
-        activity?.apply {
-            setImmersiveMode()
-        }
+        resetStageImmersiveMode()
     }
+
+    private fun resetStageImmersiveMode() = activity?.apply { setImmersiveMode() }
 }

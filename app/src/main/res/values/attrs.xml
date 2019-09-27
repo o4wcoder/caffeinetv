@@ -3,9 +3,10 @@
     <declare-styleable name="CaffeineEditTextLayout">
         <attr name="android:imeOptions"/>
         <attr name="android:inputType"/>
+        <attr name="android:hint"/>
+        <attr name="android:maxLength"/>
         <attr name="isDarkMode" format="boolean"/>
         <attr name="text" format="string"/>
-        <attr name="hint" format="string"/>
         <attr name="bottomHint" format="string"/>
     </declare-styleable>
 </resources>

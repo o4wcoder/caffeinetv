@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.ConnectivityManager
 import android.os.Build
+import android.text.InputFilter
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -15,6 +16,7 @@ import android.text.style.URLSpan
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -95,12 +97,12 @@ fun Activity.unsetImmersiveSticky() {
     }
 }
 
-fun Activity.setDarkMode(isDarkMode: Boolean) {
+fun Activity.setDarkMode(isStatusBarDark: Boolean, isNavBarDark: Boolean = true) {
     window.apply {
         addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         statusBarColor = ContextCompat.getColor(context,
-                if (isDarkMode) android.R.color.black else R.color.status_bar)
-        if (isDarkMode) {
+                if (isStatusBarDark) android.R.color.black else R.color.status_bar)
+        if (isStatusBarDark) {
             decorView.systemUiVisibility = decorView.systemUiVisibility
                     .and(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv())
         } else {
@@ -110,8 +112,8 @@ fun Activity.setDarkMode(isDarkMode: Boolean) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             navigationBarColor = ContextCompat.getColor(context,
-                    if (isDarkMode) android.R.color.black else R.color.nav_bar)
-            if (isDarkMode) {
+                    if (isNavBarDark) android.R.color.black else R.color.nav_bar)
+            if (isNavBarDark) {
                 decorView.systemUiVisibility = decorView.systemUiVisibility
                         .and(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv())
             } else {
@@ -132,13 +134,13 @@ fun Activity.setNavigationBarDarkMode(isDarkMode: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             navigationBarColor = ContextCompat.getColor(context,
-                    if (isDarkMode) android.R.color.black else R.color.nav_bar)
+                if (isDarkMode) android.R.color.black else R.color.nav_bar)
             if (isDarkMode) {
                 decorView.systemUiVisibility = decorView.systemUiVisibility
-                        .and(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv())
+                    .and(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv())
             } else {
                 decorView.systemUiVisibility = decorView.systemUiVisibility
-                        .or(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+                    .or(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
             }
         }
     }
@@ -237,4 +239,19 @@ fun InputStream.decodeToBitmap(inSampleSize: Int): Bitmap? {
     return BitmapFactory.decodeStream(this, null, options)?.run {
         scale(width / inSampleSize, height / inSampleSize)
     }
+}
+
+fun EditText.addFilter(filter: InputFilter) {
+    filters =
+        if (filters.isNullOrEmpty()) {
+            arrayOf(filter)
+        } else {
+            filters
+                .toMutableList()
+                .apply {
+                    removeAll { it.javaClass == filter.javaClass }
+                    add(filter)
+                }
+                .toTypedArray()
+        }
 }

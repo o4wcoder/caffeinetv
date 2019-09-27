@@ -34,22 +34,32 @@
     <style name="LobbyCardTitle" parent="LobbyCardText">
         <item name="android:textSize">@dimen/release_lobby_card_title</item>
         <item name="android:maxLines">3</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:shadowColor">@color/text_shadow</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">4</item>
+    </style>
+    <style name="LobbyCardTitle.Mini">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">@dimen/release_lobby_card_title_mini</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="LobbyCardUsername" parent="LobbyCardText">
-        <item name="android:fontFamily">@font/poppins_medium</item>
+    <style name="LobbyCardUsername" parent="CaffeineText.Medium">
+        <item name="android:textColor">@color/white</item>
     </style>
     <style name="LobbyCardUsername.Dark">
         <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="LobbySingleCategoryText" parent="LobbyCardText">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">@dimen/lobby_category_single_text</item>
         <item name="android:maxLines">2</item>
         <item name="android:layout_margin">@dimen/margin</item>
     </style>
     <style name="LobbyDoubleCategoryText" parent="LobbyCardText">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/lobby_category_double_text</item>
         <item name="android:maxLines">2</item>
         <item name="android:layout_margin">@dimen/margin</item>
     </style>
@@ -60,8 +70,8 @@
         <item name="android:paddingBottom">8dp</item>
     </style>
 
-    <style name="VerifyEmailText" parent="LobbyCardText">
-        <item name="android:fontFamily">@font/poppins_medium</item>
+    <style name="VerifyEmailText" parent="CaffeineText.Medium">
+        <item name="android:textColor">@color/white</item>
         <item name="android:textSize">12sp</item>
         <item name="android:paddingStart">@dimen/lobby_card_side_padding_release</item>
         <item name="android:paddingEnd">@dimen/lobby_card_side_padding_release</item>

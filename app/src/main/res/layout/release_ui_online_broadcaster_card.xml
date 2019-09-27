@@ -6,6 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="tv.caffeine.app.R"/>
         <variable
             name="viewModel"
             type="tv.caffeine.app.lobby.release.OnlineBroadcaster"/>
@@ -24,6 +25,7 @@
             android:layout_height="0dp"
             android:keepScreenOn="true"
             android:visibility="gone"
+            android:foreground="@drawable/gradient_overlay"
             app:layout_constraintStart_toStartOf="@id/preview_image_view"
             app:layout_constraintEnd_toEndOf="@id/preview_image_view"
             app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
@@ -110,7 +112,7 @@
             android:layout_marginStart="@dimen/lobby_card_side_padding_release"
             android:layout_marginEnd="@dimen/lobby_card_side_padding_release"
             android:text="@{viewModel.broadcastTitle}"
-            android:textSize="@{isMiniStyle ? @dimen/release_lobby_card_title_mini : @dimen/release_lobby_card_title}"
+            android:textAppearance="@{isMiniStyle ? R.style.LobbyCardTitle_Mini : R.style.LobbyCardTitle}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

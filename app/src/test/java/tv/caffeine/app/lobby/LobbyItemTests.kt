@@ -139,6 +139,16 @@ class LobbyItemTests {
         assertTrue(lobbyItems[1] is DoubleCategory)
     }
 
+    @Test
+    fun `show a category card list if the card count is greater than 2`() {
+        val cards = (1..3).map { buildCategoryCard(it) }
+        val data = buildLobbyV5WithCategoryCards(cards)
+        val lobbyItems = LobbyItem.parse(data)
+        assertTrue(lobbyItems[0] is Header)
+        assertTrue(lobbyItems[1] is CategoryCardList)
+        assertEquals(3, (lobbyItems[1] as CategoryCardList).categoryCards.size)
+    }
+
     private fun buildLobbyV5WithLiveCards(
         cards: List<ClusterData.LiveBroadcastCard>,
         maxLargeCardDisplayCount: Int?

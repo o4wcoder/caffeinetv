@@ -6,6 +6,7 @@ import android.text.style.URLSpan
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import androidx.databinding.BindingAdapter
 import tv.caffeine.app.R
 import tv.caffeine.app.util.convertLinks
@@ -25,3 +26,6 @@ fun TextView.configureEmbeddedLink(
     movementMethod = LinkMovementMethod.getInstance()
     highlightColor = Color.TRANSPARENT
 }
+
+@BindingAdapter("android:textAppearance")
+fun TextView.configureTextAppearance(@StyleRes textAppearanceRes: Int) = setTextAppearance(textAppearanceRes)

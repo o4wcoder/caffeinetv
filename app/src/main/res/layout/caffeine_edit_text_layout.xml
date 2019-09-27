@@ -11,14 +11,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-4dp">
 
         <androidx.appcompat.widget.AppCompatEditText
             style="@style/CaffeineEditTextLayoutHint"
             android:id="@+id/caffeine_layout_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sign_in_text_size"
+            android:textSize="@dimen/caffeine_edit_text_layout_edit_text_text_size"
             android:hint="@{viewModel.editTextHint}"
             android:backgroundTint="@{viewModel.lineColor}"
             android:paddingStart="8dp"

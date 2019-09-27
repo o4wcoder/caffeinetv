@@ -34,58 +34,87 @@ class CaffeineEditTextLayoutViewModelTests {
 
     @Test
     fun `bottom view is hidden on creation`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getBottomViewVisibility() == View.GONE)
     }
 
     @Test
+    fun `bottom view is visible when edit text has focus`() {
+        subject.editTextHint = HINT
+        subject.setEditTextHasFocus(true)
+        assertTrue(subject.getBottomViewVisibility() == View.VISIBLE)
+    }
+
+    @Test
+    fun `bottom view is visible when edit text is not empty`() {
+        subject.editTextHint = HINT
+        subject.setEditTextIsEmpty(false)
+        assertTrue(subject.getBottomViewVisibility() == View.VISIBLE)
+    }
+
+    @Test
     fun `edit text text color is correct`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getEditTextTextColor() == R.color.caffeine_edit_text_layout_text)
     }
 
     @Test
     fun `edit text text color is correct in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getEditTextTextColor() == R.color.caffeine_edit_text_layout_text_dark)
     }
 
     @Test
     fun `edit text hint is correct`() {
-        subject.setEditTextHint(HINT)
-        assertTrue(subject.getEditTextHint() == HINT)
+        subject.editTextHint = HINT
+        assertTrue(subject.editTextHint == HINT)
     }
 
     @Test
     fun `edit text hint color is correct`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getEditTextHintColor() == R.color.caffeine_edit_text_layout_main_hint)
     }
 
     @Test
     fun `edit text hint color is correct in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getEditTextHintColor() == R.color.caffeine_edit_text_layout_main_hint)
     }
 
     @Test
+    fun `edit text hint color is correct when focused`() {
+        subject.editTextHint = HINT
+        subject.setEditTextHasFocus(true)
+        assertTrue(subject.getEditTextHintColor() == R.color.caffeine_edit_text_layout_hint_focused)
+    }
+
+    @Test
+    fun `edit text hint color is correct when focused in dark mode`() {
+        subject.setDarkMode(true)
+        subject.editTextHint = HINT
+        subject.setEditTextHasFocus(true)
+        assertTrue(subject.getEditTextHintColor() == R.color.caffeine_edit_text_layout_hint_focused_dark)
+    }
+
+    @Test
     fun `line color is correct`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line))
     }
 
     @Test
     fun `line color is correct in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line_dark))
     }
 
     @Test
     fun `line color is correct with error`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setError(ERROR)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_error))
     }
@@ -93,14 +122,14 @@ class CaffeineEditTextLayoutViewModelTests {
     @Test
     fun `line color is correct with error in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setError(ERROR)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_error))
     }
 
     @Test
     fun `line color is correct when edit text has focus`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setEditTextHasFocus(true)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line_focused))
     }
@@ -108,14 +137,14 @@ class CaffeineEditTextLayoutViewModelTests {
     @Test
     fun `line color is correct when edit text has focus in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setEditTextHasFocus(true)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line_focused_dark))
     }
 
     @Test
     fun `line color is correct when edit text is not empty`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setEditTextIsEmpty(false)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line_finished))
     }
@@ -123,14 +152,14 @@ class CaffeineEditTextLayoutViewModelTests {
     @Test
     fun `line color is correct when edit text is not empty in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setEditTextIsEmpty(false)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line_finished_dark))
     }
 
     @Test
     fun `line color is correct when edit text is not empty and has focus`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setEditTextHasFocus(true)
         subject.setEditTextIsEmpty(false)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line_focused))
@@ -139,7 +168,7 @@ class CaffeineEditTextLayoutViewModelTests {
     @Test
     fun `line color is correct when edit text is not empty and has focus in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setEditTextHasFocus(true)
         subject.setEditTextIsEmpty(false)
         assertTrue(subject.getLineColor() == getColorStateList(R.color.caffeine_edit_text_layout_line_focused_dark))
@@ -147,20 +176,20 @@ class CaffeineEditTextLayoutViewModelTests {
 
     @Test
     fun `bottom view color is correct`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getBottomViewTextColor() == R.color.caffeine_edit_text_layout_bottom_hint)
     }
 
     @Test
     fun `bottom view color is correct in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getBottomViewTextColor() == R.color.caffeine_edit_text_layout_bottom_hint_dark)
     }
 
     @Test
     fun `bottom view color is correct with error`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setError(ERROR)
         assertTrue(subject.getBottomViewTextColor() == R.color.caffeine_edit_text_layout_error)
     }
@@ -168,34 +197,34 @@ class CaffeineEditTextLayoutViewModelTests {
     @Test
     fun `bottom view color is correct with error in dark mode`() {
         subject.setDarkMode(true)
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setError(ERROR)
-        assertTrue(subject.getBottomViewTextColor() == R.color.caffeine_edit_text_layout_error)
+        assertTrue(subject.getBottomViewTextColor() == R.color.white)
     }
 
     @Test
     fun `bottom view text is correct when bottom hint not provided`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         assertTrue(subject.getBottomViewText() == HINT)
     }
 
     @Test
     fun `bottom view text is correct when bottom hint is provided`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setBottomViewText(BOTTOM_HINT, false)
         assertTrue(subject.getBottomViewText() == BOTTOM_HINT)
     }
 
     @Test
     fun `bottom view text is correct with error when bottom hint not provided`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setError(ERROR)
         assertTrue(subject.getBottomViewText() == ERROR)
     }
 
     @Test
     fun `bottom view text is correct with error when bottom hint is provided`() {
-        subject.setEditTextHint(HINT)
+        subject.editTextHint = HINT
         subject.setBottomViewText(BOTTOM_HINT, false)
         subject.setError(ERROR)
         assertTrue(subject.getBottomViewText() == ERROR)

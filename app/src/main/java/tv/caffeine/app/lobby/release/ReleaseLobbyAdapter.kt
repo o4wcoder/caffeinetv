@@ -101,13 +101,14 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             // LobbyItem.Type.FOLLOW_PEOPLE_CARD -> followPeopleCard(inflater, parent)
             LobbyItem.Type.HEADER -> headerCard(inflater, parent)
             LobbyItem.Type.SUBTITLE -> subtitleCard(inflater, parent)
-            LobbyItem.Type.LIVE_BROADCAST_CARD -> largeOnlineBroadcasterCard(inflater, parent)
-            LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD -> largeOnlineBroadcasterCard(inflater, parent)
+            LobbyItem.Type.LIVE_BROADCAST_CARD -> largeOnlineBroadcasterCard(inflater, parent, isMiniStyle)
+            LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD -> largeOnlineBroadcasterCard(inflater, parent, isMiniStyle)
             LobbyItem.Type.PREVIOUS_BROADCAST_CARD -> offlineBroadcasterCard(inflater, parent)
             LobbyItem.Type.CARD_LIST -> listCard(inflater, parent)
             // LobbyItem.Type.UPCOMING_BUTTON_CARD -> upcomingButtonCard(inflater, parent)
-            LobbyItem.Type.SINGLE_CATEGORY_CARD -> singleCategoryCard(inflater, parent)
+            LobbyItem.Type.SINGLE_CATEGORY_CARD -> singleCategoryCard(inflater, parent, isMiniStyle)
             LobbyItem.Type.DOUBLE_CATEGORY_CARD -> doubleCategoryCard(inflater, parent)
+            LobbyItem.Type.CATEGORY_CARD_LIST -> listCard(inflater, parent)
             else -> EmptyCard(View(parent.context))
         }
     }
@@ -122,10 +123,10 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
                 ReleaseUiSubtitleBinding.inflate(inflater, parent, false)
             )
 
-    private fun largeOnlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup) =
+    private fun largeOnlineBroadcasterCard(inflater: LayoutInflater, parent: ViewGroup, isMiniStyle: Boolean) =
             largeOnlineBroadcasterCardFactory.create(
                 ReleaseUiOnlineBroadcasterCardBinding.inflate(inflater, parent, false).apply {
-                    isMiniStyle = this@ReleaseLobbyAdapter.isMiniStyle
+                    this.isMiniStyle = isMiniStyle
                 },
                 this,
                 lifecycleOwner
@@ -147,8 +148,10 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             navController
         )
 
-    private fun singleCategoryCard(inflater: LayoutInflater, parent: ViewGroup) =
-        SingleCategoryCard(ReleaseUiSingleCategoryCardBinding.inflate(inflater, parent, false))
+    private fun singleCategoryCard(inflater: LayoutInflater, parent: ViewGroup, isMiniStyle: Boolean) =
+        SingleCategoryCard(ReleaseUiSingleCategoryCardBinding.inflate(inflater, parent, false).apply {
+            this.isMiniStyle = isMiniStyle
+        })
 
     private fun doubleCategoryCard(inflater: LayoutInflater, parent: ViewGroup) =
         DoubleCategoryCard(ReleaseUiDoubleCategoryCardBinding.inflate(inflater, parent, false))
@@ -204,8 +207,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     }
 
     private fun bind(horizontalScrollCard: HorizontalScrollCard, item: LobbyItem) {
-        val cardList = item as CardList
-        horizontalScrollCard.bind(cardList)
+        horizontalScrollCard.bind(item)
     }
 
     private fun bind(singleCategoryCard: SingleCategoryCard, item: LobbyItem) {

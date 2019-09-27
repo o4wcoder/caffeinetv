@@ -113,6 +113,12 @@
         <item name="android:insetBottom">0dp</item>
         <item name="cornerRadius">30dp</item>
     </style>
+    <style name="Button.Big.ReleaseUI">
+        <item name="android:layout_width">@dimen/medium_button_width</item>
+        <item name="android:layout_height">@dimen/big_button_height</item>
+        <item name="backgroundTint">@color/dark_mode_button_background</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
     <style name="Button.Big.FixedSize">
         <item name="android:layout_height">@dimen/big_button_height</item>
         <item name="android:layout_width">@dimen/big_button_width</item>
@@ -227,6 +233,7 @@
     </style>
     <style name="CaffeineText.Bold">
         <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item> <!-- poppins_bold is not bold with the normal text style on Android M -->
     </style>
     <style name="CaffeineText.Medium">
         <item name="android:fontFamily">@font/poppins_medium</item>
@@ -234,26 +241,36 @@
     <style name="CaffeineText.Light" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
-    <style name="UnauthScreenTitle" parent="CaffeineText.Light">
-        <item name="android:textSize">24sp</item>
-        <item name="android:textAlignment">center</item>
+    <style name="UnauthScreenTitle" parent="CaffeineText.Bold">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textAlignment">textStart</item>
     </style>
-    <style name="LinkText" parent="CaffeineText.Light">
-        <item name="android:textColor">@color/caffeine_blue</item>
+    <style name="UnauthScreenTitle.DarkMode">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="LinkText" parent="CaffeineText.Medium">
+        <item name="android:textColor">@color/dark_gray</item>
+    </style>
+    <style name="LinkText.Landing">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
     </style>
     <style name="FormErrorText" parent="CaffeineText.Light">
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/medium_gray</item>
     </style>
-
+    <style name="FormErrorText.DarkMode">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
     <style name="CaffeineEditTextLayoutHint" parent="CaffeineText.Medium" >
-        <item name="android:textSize">@dimen/sign_in_text_size</item>
+        <item name="android:textSize">@dimen/caffeine_edit_text_layout_edit_text_text_size</item>
     </style>
 
     <style name="CaffeineEditTextLayoutError" parent="CaffeineText.Medium">
-        <item name="android:textSize">@dimen/sign_in_error_text_size</item>
+        <item name="android:textSize">@dimen/caffeine_edit_text_layout_bottom_view_text_size</item>
     </style>
-
     <style name="BigEditText" parent="CaffeineText.Light">
         <item name="android:background">@drawable/big_edit_text_background</item>
         <item name="android:gravity">center</item>
