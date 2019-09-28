@@ -65,13 +65,15 @@
     </style>
 
     <style name="VerifyEmailContainer">
-        <item name="android:background">@color/black</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:background">@color/very_very_light_gray</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingStart">@dimen/release_lobby_card_side_margin</item>
+        <item name="android:paddingEnd">@dimen/release_lobby_card_side_margin</item>
     </style>
 
-    <style name="VerifyEmailText" parent="CaffeineText.Medium">
-        <item name="android:textColor">@color/white</item>
+    <style name="VerifyEmailText" parent="CaffeineText.SemiBold">
+        <item name="android:textColor">@color/dark_gray</item>
         <item name="android:textSize">12sp</item>
         <item name="android:paddingStart">@dimen/lobby_card_side_padding_release</item>
         <item name="android:paddingEnd">@dimen/lobby_card_side_padding_release</item>

@@ -208,7 +208,8 @@
 
     <style name="Button.Action">
         <item name="android:includeFontPadding">false</item>
-        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
         <item name="android:maxLines">1</item>
         <item name="android:height">@dimen/action_button_height</item>
         <item name="android:inset">0dp</item>
@@ -234,6 +235,9 @@
     <style name="CaffeineText.Bold">
         <item name="android:fontFamily">@font/poppins_bold</item>
         <item name="android:textStyle">bold</item> <!-- poppins_bold is not bold with the normal text style on Android M -->
+    </style>
+    <style name="CaffeineText.SemiBold">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
     </style>
     <style name="CaffeineText.Medium">
         <item name="android:fontFamily">@font/poppins_medium</item>

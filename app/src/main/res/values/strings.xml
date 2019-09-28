@@ -177,7 +177,7 @@
     <string name="settings_button">Settings</string>
     <string name="add_your_full_name">Add your full name</string>
     <string name="verify_email_to_follow_and_comment">Verify your email to follow and comment.</string>
-    <string name="verify_email_to_follow_and_comment_release">To broadcast, react and follow just verify your email address.</string>
+    <string name="verify_email_to_follow_and_comment_release">Confirm your account to react and give to your faves.</string>
     <string name="verify_email_to_follow_more_users">Verify your email to follow more users</string>
     <string name="resend_email">resend email</string>
 
@@ -280,7 +280,7 @@
     <string name="email_verification_record_not_found">Record not found</string>
     <string name="email_verification_failed">Email verification failed</string>
     <string name="sending_verification_email_title">Sending Verification Email</string>
-    <string name="sending_verification_email_message">Follow the link in the email sent to <xliff:g example="lia.n@me.com" id="email">%1$s</xliff:g> to verify your account.</string>
+    <string name="sending_verification_email_message">Email sent to <xliff:g example="lia.n@me.com" id="email">%1$s</xliff:g></string>
 
     <!-- Shared preference keys -->
     <string name="is_first_time_on_stage" translatable="false">is_first_time_on_stage</string>
