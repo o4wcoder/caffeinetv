@@ -11,6 +11,7 @@ import androidx.annotation.StyleRes
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.processphoenix.ProcessPhoenix
+import tv.caffeine.app.BuildConfig
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.DialogDevOptionsBinding
 
@@ -34,6 +35,7 @@ class DevOptionsDialog : BottomSheetDialog {
     }
 
     private fun configure() {
+        binding.versionTextView.text = context.getString(R.string.dev_options_version, BuildConfig.VERSION_NAME)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         load(sharedPreferences)
         binding.okButton.setOnClickListener {
