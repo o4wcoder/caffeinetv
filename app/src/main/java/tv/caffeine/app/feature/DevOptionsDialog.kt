@@ -3,6 +3,7 @@ package tv.caffeine.app.feature
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import androidx.annotation.StyleRes
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jakewharton.processphoenix.ProcessPhoenix
-import tv.caffeine.app.BuildConfig
+import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.DialogDevOptionsBinding
 
@@ -35,7 +36,14 @@ class DevOptionsDialog : BottomSheetDialog {
     }
 
     private fun configure() {
-        binding.versionTextView.text = context.getString(R.string.dev_options_version, BuildConfig.VERSION_NAME)
+        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        binding.versionTextView.text = context.getString(R.string.dev_options_version, versionName)
+        // TODO: remove the logs once we verified that the version code works in production.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Timber.d("long version code: %s", context.packageManager.getPackageInfo(context.packageName, 0).longVersionCode.toString())
+        } else {
+            Timber.d("version code: %s", context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toString())
+        }
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         load(sharedPreferences)
         binding.okButton.setOnClickListener {
