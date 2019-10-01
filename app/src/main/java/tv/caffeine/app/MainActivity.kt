@@ -97,7 +97,13 @@ private val destinationsAsDialog = arrayOf(
 
 private val destinationsWithDynamicLabel = arrayOf(R.id.lobbyDetailFragment)
 
-private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)
+private val destinationInPortrait = arrayOf(
+    R.id.landingFragment,
+    R.id.signUpFragment,
+    R.id.signInFragment,
+    R.id.forgotFragment,
+    R.id.mfaCodeFragment
+)
 
 private val destinationInImmersiveMode = arrayOf(R.id.stagePagerFragment)
 
