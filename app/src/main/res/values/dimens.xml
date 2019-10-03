@@ -113,6 +113,10 @@
     <dimen name="two_step_auth_message_bottom_margin">16dp</dimen>
     <dimen name="two_step_auth_code_text_size">20sp</dimen>
     <dimen name="two_step_auth_done_image_size">120dp</dimen>
+    <dimen name="two_step_auth_login_bottom_margin">132dp</dimen>
+    <dimen name="two_step_auth_login_subtitle_top_margin">56dp</dimen>
+    <dimen name="two_step_auth_login_code_input_top_margin">56dp</dimen>
+    <dimen name="two_step_auth_login_button_top_margin">156dp</dimen>
 
     <dimen name="bad_connection_icon_size">40dp</dimen>
 
@@ -139,5 +143,7 @@
     <dimen name="sign_in_form_error_margin_top">132dp</dimen>
     <dimen name="sign_in_margin_top">44dp</dimen>
     <dimen name="sign_in_username_margin_top">88dp</dimen>
-    <dimen name="sign_in_title_margin_top">96dp</dimen>
+    <dimen name="sign_in_title_margin_top">70dp</dimen>
+
+    <dimen name="login_mfa_resend_code_text_margin_top">40dp</dimen>
 </resources>

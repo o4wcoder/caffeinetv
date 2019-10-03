@@ -90,6 +90,14 @@ private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.confirmEmailFragment
 )
 
+private val destinationsLoginWithDarkMode = arrayOf(
+    R.id.signInFragment,
+    R.id.mfaCodeFragment
+)
+
+// TODO: fill this in with login screens that use light mode
+private val destinationsLoginWithLightMode = emptyArray<Int>()
+
 private val destinationsAsDialog = arrayOf(
     R.id.reportOrIgnoreDialogFragment,
     R.id.unfollowUserDialogFragment
@@ -224,6 +232,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
         updateImmersiveMode(destinationId)
+        updateLoginTheme(destinationId)
     }
 
     private fun createNotificationChannel() {
@@ -347,6 +356,12 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             setImmersiveMode()
         } else if (destinationId !in destinationsAsDialog) {
             unsetImmersiveMode()
+        }
+    }
+
+    private fun updateLoginTheme(destinationId: Int) {
+        if (destinationId in destinationsLoginWithDarkMode) {
+            setDarkMode(true)
         }
     }
 

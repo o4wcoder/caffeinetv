@@ -45,14 +45,6 @@
     <string name="reset_your_password_description">We\'ll send you an email with a link to reset your password.</string>
     <string name="reset_your_password_failure">Could not reset your password. Please try again later.</string>
     <string name="email_sent_message">Email Sent. Please check your inbox.</string>
-    <string name="mfa_code_title">Code Emailed</string>
-    <string name="mfa_code_subtitle">A verification code was sent to your email. Please enter the code below or <![CDATA[<a href=resend_email>resend email</a>]]>.</string>
-    <string name="enter_code_title">Enter Code</string>
-    <string name="mfa_code_hint">Verification Code</string>
-    <string name="submit_mfa_code">Submit</string>
-    <string name="mfa_status_on">On</string>
-    <string name="mfa_status_off">Off</string>
-    <string name="mfa_failure">Could not verify the code. Please try again later.</string>
     <string name="manage_mfa_coming_soon">Please manage two factor authentication on the web</string>
     <string name="sign_out_button">sign out</string>
     <string name="sign_out_question">Sign out of account?</string>
@@ -334,6 +326,15 @@
     <string name="two_step_auth_dialog_off_disable_button">Disable</string>
     <string name="two_step_auth_dialog_on_message">Do you want to enable Two-Step Authentication?</string>
     <string name="two_step_auth_dialog_on_enable_button">Enable</string>
+    <string name="two_step_auth_login_title">2-Step\nVerification</string>
+    <string name="two_step_auth_login_subtitle">Enter the verification code sent to your email.</string>
+    <string name="two_step_auth_login_resend_link">Send Another Code</string>
+    <string name="two_step_auth_login_continue_button">Continue</string>
+    <string name="enter_code_title">Enter Code</string>
+    <string name="mfa_code_hint">Verification Code</string>
+    <string name="submit_mfa_code">Submit</string>
+    <string name="mfa_status_on">On</string>
+    <string name="mfa_status_off">Off</string>
 
     <!-- Chat -->
     <string name="chat_react_button">react</string>

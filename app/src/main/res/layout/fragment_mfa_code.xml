@@ -1,58 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.settings.authentication.TwoStepAuthViewModel" />
     </data>
 
     <ScrollView
         style="@style/NoBarScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/black"
         tools:context=".login.MfaCodeFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:paddingStart="@dimen/sign_in_flow_start_padding"
+            android:paddingEnd="@dimen/sign_in_flow_end_padding">
 
             <TextView
-                style="@style/UnauthScreenTitle"
+                style="@style/LoginText.Title"
                 android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:text="@string/mfa_code_title"/>
+                android:layout_marginTop="@dimen/sign_in_title_margin_top"
+                android:text="@string/two_step_auth_login_title" />
 
             <TextView
-                style="@style/FormErrorText"
+                style="@style/LoginText.SubTitle"
                 android:id="@+id/mfa_code_subtitle"
                 android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/mfa_code_subtitle"/>
+                android:layout_marginTop="@dimen/two_step_auth_login_subtitle_top_margin"
+                android:text="@string/two_step_auth_login_subtitle" />
+
+
+            <tv.caffeine.app.ui.CaffeineEditTextLayout
+                android:id="@+id/mfa_code_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/two_step_auth_login_code_input_top_margin"
+                android:hint="@string/mfa_code_hint"
+                android:imeOptions="actionGo"
+                android:inputType="number"
+                app:isDarkMode="true" />
 
             <TextView
-                style="@style/FormErrorText"
-                android:id="@+id/form_error_text_view"
-                android:layout_width="@dimen/big_button_width"
+                style="@style/LoginText.Link"
+                android:id="@+id/mfa_code_resend_email_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"/>
-
-            <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText.FixedSize"
-                android:id="@+id/mfa_code_edit_text"
-                android:layout_marginTop="20dp"
-                android:hint="@string/mfa_code_hint"
-                android:inputType="number"
-                android:imeOptions="actionGo"/>
+                android:layout_marginTop="@dimen/login_mfa_resend_code_text_margin_top"
+                android:text="@string/two_step_auth_login_resend_link" />
 
             <Button
-                style="@style/Button.VeryBig.FixedSize"
                 android:id="@+id/submit_mfa_code_button"
-                android:layout_marginTop="20dp"
-                android:text="@string/submit_mfa_code"/>
+                style="@style/LoginButton"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/two_step_auth_login_button_top_margin"
+                android:enabled="@{viewModel.verificationCodeButtonEnabled}"
+                android:text="@string/two_step_auth_login_continue_button" />
         </LinearLayout>
     </ScrollView>
 </layout>

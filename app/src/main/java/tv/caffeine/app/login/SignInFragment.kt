@@ -17,7 +17,6 @@ import tv.caffeine.app.analytics.logEvent
 import tv.caffeine.app.databinding.FragmentSignInBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.safeNavigate
-import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
@@ -30,7 +29,6 @@ class SignInFragment @Inject constructor(
     private val signInViewModel: SignInViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activity?.setDarkMode(true)
         binding = FragmentSignInBinding.bind(view)
         configure(binding)
     }

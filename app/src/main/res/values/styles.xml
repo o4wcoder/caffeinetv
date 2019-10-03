@@ -245,6 +245,26 @@
     <style name="CaffeineText.Light" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
+
+    <!-- Dark Mode Text -->
+    <style name="CaffeineText.DarkMode" parent="CaffeineText.Release">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="CaffeineText.DarkMode.BoldFont" parent="CaffeineText.DarkMode">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CaffeineText.DarkMode.MediumFont" parent="CaffeineText.DarkMode">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
+    <style name="CaffeineText.DarkMode.LightFont" parent="CaffeineText.DarkMode">
+        <item name="android:fontFamily">@font/poppins_light</item>
+    </style>
+
+
     <style name="UnauthScreenTitle" parent="CaffeineText.Bold">
         <item name="android:textSize">30sp</item>
         <item name="android:textAlignment">textStart</item>
@@ -664,5 +684,26 @@
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
+
+    <!-- Login  -->
+    <style name="LoginText" parent="CaffeineText.DarkMode" />
+
+    <style name="LoginText.Title" parent="CaffeineText.DarkMode.BoldFont">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="LoginText.SubTitle" parent="CaffeineText.DarkMode.MediumFont">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="LoginErrorText" parent="FormErrorText.DarkMode" />
+
+    <style name="LoginText.Link" parent="CaffeineText.DarkMode.MediumFont">
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="LoginButton" parent="Button.Big.ReleaseUI" />
+
 
 </resources>
