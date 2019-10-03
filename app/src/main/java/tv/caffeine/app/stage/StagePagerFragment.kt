@@ -25,6 +25,8 @@ import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.databinding.FragmentStagePagerBinding
 import tv.caffeine.app.lobby.LobbyViewModel
+import tv.caffeine.app.lobby.toDistinctLiveBroadcasters
+import tv.caffeine.app.lobby.type.Page
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.settings.ReleaseDesignConfig
@@ -41,10 +43,11 @@ private const val BUNDLE_KEY_BROADCASTERS = "broadcasters"
 class StagePagerFragment @Inject constructor(
     private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
     private val adapterFactory: StagePagerAdapter.Factory,
-    private val followManager: FollowManager
+    private val followManager: FollowManager,
+    private val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_stage_pager) {
 
-    private var binding: FragmentStagePagerBinding? = null
+    @VisibleForTesting var binding: FragmentStagePagerBinding? = null
     private val args by navArgs<StagePagerFragmentArgs>()
     private val sessionCheckViewModel: SessionCheckViewModel by viewModels { viewModelFactory }
     private val lobbyViewModel: LobbyViewModel by viewModels { viewModelFactory }
@@ -81,20 +84,7 @@ class StagePagerFragment @Inject constructor(
         }
         savedInstanceState?.getStringArrayList(BUNDLE_KEY_BROADCASTERS)?.let { broadcasters = it }
         if (broadcasters.isEmpty()) {
-            val currentUsername = followManager.currentUserDetails()?.username
-            if (currentUsername != null && currentUsername == args.broadcasterUsername()) {
-                setBroadcastersAndAdapter(listOf(currentUsername), swipeButtonOnClickListener)
-            } else {
-                lobbyViewModel.refresh()
-                lobbyViewModel.lobby.observe(this, Observer {
-                    handle(it) { lobby ->
-                        val (configuredBroadcasters, index) = configureBroadcasters(
-                            args.broadcasterUsername(), lobby.getAllBroadcasters()
-                        )
-                        setBroadcastersAndAdapter(configuredBroadcasters, swipeButtonOnClickListener, index)
-                    }
-                })
-            }
+            setupAdapter(swipeButtonOnClickListener)
         } else {
             // The view pager restores the index.
             stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
@@ -110,6 +100,48 @@ class StagePagerFragment @Inject constructor(
     override fun onPause() {
         context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
         super.onPause()
+    }
+
+    @VisibleForTesting fun setupAdapter(swipeButtonOnClickListener: View.OnClickListener) {
+        val currentUsername = followManager.currentUserDetails()?.username
+        if (currentUsername != null && currentUsername == args.broadcasterUsername()) {
+            // disable swiping between broadcasts if the user lands on their own stage
+            setBroadcastersAndAdapter(listOf(currentUsername), swipeButtonOnClickListener)
+        } else {
+            val allDistinctLiveBroadcasters = args.broadcasters
+            if (allDistinctLiveBroadcasters != null) {
+                val (configuredBroadcasters, index) = configureBroadcasters(
+                    args.broadcasterUsername(), allDistinctLiveBroadcasters.toList()
+                )
+                setBroadcastersAndAdapter(configuredBroadcasters, swipeButtonOnClickListener, index)
+            } else {
+                loadAndSetBroadcastersAndAdapter(swipeButtonOnClickListener)
+            }
+        }
+    }
+
+    private fun loadAndSetBroadcastersAndAdapter(swipeButtonOnClickListener: View.OnClickListener) {
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            lobbyViewModel.refreshV5(page = Page.HOME) {}
+            lobbyViewModel.lobbyV5.observe(this, Observer {
+                handle(it) { lobby ->
+                    val (configuredBroadcasters, index) = configureBroadcasters(
+                        args.broadcasterUsername(), lobby.pagePayload.toDistinctLiveBroadcasters()
+                    )
+                    setBroadcastersAndAdapter(configuredBroadcasters, swipeButtonOnClickListener, index)
+                }
+            })
+        } else {
+            lobbyViewModel.refresh()
+            lobbyViewModel.lobby.observe(this, Observer {
+                handle(it) { lobby ->
+                    val (configuredBroadcasters, index) = configureBroadcasters(
+                        args.broadcasterUsername(), lobby.getAllBroadcasters()
+                    )
+                    setBroadcastersAndAdapter(configuredBroadcasters, swipeButtonOnClickListener, index)
+                }
+            })
+        }
     }
 
     private fun setBroadcastersAndAdapter(

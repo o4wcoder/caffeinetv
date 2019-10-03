@@ -89,3 +89,22 @@ fun UserData.toCaffeineUser() = User(
 
 private fun ClusterData.Broadcast.getAgeRestrictionText() =
     if (ageRestriction == AgeRestriction.SEVENTEEN_PLUS) "17+" else null
+
+fun List<LobbyItem>.toDistinctLiveBroadcasters(): List<String> {
+    val broadcasters = ArrayList<String>()
+    for (item in this) {
+        if (item is LiveBroadcast) {
+            broadcasters.add(item.broadcaster.user.username)
+        } else if (item is CardList) {
+            broadcasters.addAll(item.cards.map { it.broadcaster.user.username })
+        }
+    }
+    return broadcasters.distinct()
+}
+
+fun LobbyQuery.PagePayload.toDistinctLiveBroadcasters(): List<String> =
+    clusters.flatMap { it.fragments.clusterData.cardLists }
+        .filter { it.inlineFragment is ClusterData.AsLiveBroadcastCardList }
+        .flatMap { (it.inlineFragment as ClusterData.AsLiveBroadcastCardList).liveBroadcastCards }
+        .map { it.user.fragments.userData.username }
+        .distinct()

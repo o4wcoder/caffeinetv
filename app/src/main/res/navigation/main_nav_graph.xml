@@ -136,6 +136,11 @@
         <argument
             android:name="broadcastLink"
             app:argType="string"/>
+        <argument
+            android:name="broadcasters"
+            android:defaultValue="@null"
+            app:argType="string[]"
+            app:nullable="true"/>
         <deepLink
             android:id="@+id/deepLink"
             app:uri="caffeine.tv/{broadcastLink}"/>

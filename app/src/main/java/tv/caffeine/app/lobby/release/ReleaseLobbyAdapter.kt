@@ -35,6 +35,7 @@ import tv.caffeine.app.lobby.LobbyItem
 import tv.caffeine.app.lobby.PreviousBroadcast
 import tv.caffeine.app.lobby.SingleCategory
 import tv.caffeine.app.lobby.Subtitle
+import tv.caffeine.app.lobby.toDistinctLiveBroadcasters
 import tv.caffeine.app.util.safeNavigate
 import kotlin.coroutines.CoroutineContext
 
@@ -76,6 +77,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
     private var tags: Map<String, Lobby.Tag> = mapOf()
     private var content: Map<String, Lobby.Content> = mapOf()
     private var payloadId: String? = null
+    private var allDistinctLiveBroadcasters: List<String>? = null
     private lateinit var lobbyImpressionAnalytics: LobbyImpressionAnalytics
 
     override fun submitList(
@@ -88,6 +90,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
         this.tags = tags
         this.content = content
         this.payloadId = payloadId
+        this.allDistinctLiveBroadcasters = list.toDistinctLiveBroadcasters()
         lobbyImpressionAnalytics = lobbyImpressionAnalyticsFactory.create(payloadId)
     }
 
@@ -162,7 +165,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
         when (holder) {
             is ReleaseHeaderCard -> bind(holder, item)
             is ReleaseSubtitleCard -> bind(holder, item)
-            is LargeOnlineBroadcasterCard -> bind(holder, item)
+            is LargeOnlineBroadcasterCard -> bind(holder, item, allDistinctLiveBroadcasters)
             is OfflineBroadcasterCard -> bind(holder, item)
             is HorizontalScrollCard -> bind(holder, item)
             is SingleCategoryCard -> bind(holder, item)
@@ -180,13 +183,18 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
         subtitleCard.bind(subtitle)
     }
 
-    private fun bind(largeOnlineBroadcasterCard: LargeOnlineBroadcasterCard, item: LobbyItem) {
+    private fun bind(
+        largeOnlineBroadcasterCard: LargeOnlineBroadcasterCard,
+        item: LobbyItem,
+        allDistinctLiveBroadcasters: List<String>?
+    ) {
         val liveBroadcast = when (item) {
             is LiveBroadcast -> item
             is LiveBroadcastWithFriends -> LiveBroadcast(item.id, item.broadcaster)
             else -> return
         }
-        val onlineBroadcaster = onlineBroadcasterFactory.create(liveBroadcast.broadcaster, lobbyImpressionAnalytics, this)
+        val onlineBroadcaster = onlineBroadcasterFactory.create(
+            liveBroadcast.broadcaster, lobbyImpressionAnalytics, this, allDistinctLiveBroadcasters)
         largeOnlineBroadcasterCard.bind(onlineBroadcaster)
         onlineBroadcaster.navigationCommands.observeEvents(lifecycleOwner) {
             when (it) {
