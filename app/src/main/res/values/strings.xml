@@ -55,6 +55,7 @@
     <string name="delete_account_incorrect_password_error">Password is incorrect.</string>
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
+    <string name="get_notified">get notified</string>
 
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
@@ -177,6 +178,10 @@
 
     <string name="error_out_of_capacity">Caffeine servers are full.\nCheck back later.</string>
     <string name="out_of_capacity_title">Caffeine servers are full</string>
+    <string name="velvet_rope_title">Welcome <![CDATA[<font color=\"#0000ff\">]]>@<xliff:g example="randomUser" id="username">%1$s</xliff:g><![CDATA[</font>]]>!</string>
+    <string name="velvet_rope_section1">We\'re at maximum capacity, so come back in a little bit and we\'ll let you in to join the party.</string>
+    <string name="velvet_rope_section2">Want to know when we\'re ready for you? Turn on notifications.</string>
+    <string name="velvet_rope_label" translatable="false">Velvet rope</string> <!-- for logging only -->
 
     <!-- Gold and Credits -->
     <string name="gold_and_credits_button">Gold and credits</string>

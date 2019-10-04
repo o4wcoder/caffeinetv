@@ -202,6 +202,11 @@
         android:name="tv.caffeine.app.stage.OutOfCapacityFragment"
         android:label="@string/out_of_capacity_title"
         tools:layout="@layout/fragment_out_of_capacity"/>
+    <fragment
+        android:id="@+id/velvetRopeFragment"
+        android:name="tv.caffeine.app.session.VelvetRopeFragment"
+        android:label="@string/velvet_rope_label"
+        tools:layout="@layout/fragment_velvet_rope"/>
     <dialog
         android:id="@+id/friendsWatchingFragment"
         android:name="tv.caffeine.app.stage.FriendsWatchingFragment"

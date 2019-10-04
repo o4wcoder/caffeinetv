@@ -24,6 +24,7 @@ import tv.caffeine.app.login.SignInFragment
 import tv.caffeine.app.login.SignUpFragment
 import tv.caffeine.app.notifications.NotificationsFragment
 import tv.caffeine.app.profile.MyProfileFragment
+import tv.caffeine.app.session.VelvetRopeFragment
 import tv.caffeine.app.settings.GoldAndCreditsFragment
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.settings.SettingsFragment
@@ -215,4 +216,9 @@ abstract class FragmentBindingModule {
     @IntoMap
     @FragmentKey(StageBroadcastProfilePagerFragment::class)
     abstract fun bindStageBroadcastProfilePagerFragment(fragment: StageBroadcastProfilePagerFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(VelvetRopeFragment::class)
+    abstract fun bindVelvetRopeFragment(fragment: VelvetRopeFragment): Fragment
 }

@@ -116,8 +116,13 @@
     <style name="Button.Big.ReleaseUI">
         <item name="android:layout_width">@dimen/medium_button_width</item>
         <item name="android:layout_height">@dimen/big_button_height</item>
-        <item name="backgroundTint">@color/dark_mode_button_background</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/light_mode_button_background</item>
+    </style>
+    <style name="Button.Big.ReleaseUI.Dark">
         <item name="android:textColor">@color/black</item>
+        <item name="backgroundTint">@color/dark_mode_button_background</item>
     </style>
     <style name="Button.Big.FixedSize">
         <item name="android:layout_height">@dimen/big_button_height</item>
@@ -320,6 +325,10 @@
     <style name="NoNetworkBody" parent="CaffeineText.Light">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
+    <style name="FullscreenModalTitle" parent="CaffeineText.Bold">
+        <item name="android:textSize">24sp</item>
     </style>
 
     <!-- End of the new text design from Apr. 2019 (Landing page) -->

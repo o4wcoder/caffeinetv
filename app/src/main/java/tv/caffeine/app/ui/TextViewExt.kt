@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
+import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import tv.caffeine.app.R
 import tv.caffeine.app.util.convertLinks
@@ -29,3 +30,8 @@ fun TextView.configureEmbeddedLink(
 
 @BindingAdapter("android:textAppearance")
 fun TextView.configureTextAppearance(@StyleRes textAppearanceRes: Int) = setTextAppearance(textAppearanceRes)
+
+@BindingAdapter("htmlText")
+fun TextView.configureHtmlText(text: String) {
+    setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
+}
