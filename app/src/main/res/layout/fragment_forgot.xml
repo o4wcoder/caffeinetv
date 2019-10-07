@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
     </data>
@@ -9,42 +10,51 @@
         style="@style/NoBarScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".login.ForgotFragment">
+        tools:context=".login.ForgotFragment"
+        android:background="@color/black">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:paddingStart="@dimen/sign_in_flow_start_padding"
+            android:paddingEnd="@dimen/sign_in_flow_end_padding"
+            android:orientation="vertical">
 
             <TextView
-                style="@style/UnauthScreenTitle"
+                style="@style/LoginText.Title"
+                android:id="@+id/title_text_view"
                 android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:text="@string/reset_your_password"/>
+                android:layout_marginTop="@dimen/sign_in_margin_top"
+                android:text="@string/forgot_password_no_worries"/>
 
             <TextView
-                style="@style/FormErrorText"
-                android:id="@+id/form_error_text_view"
-                android:layout_width="@dimen/big_button_width"
+                style="@style/LoginText.SubTitle"
+                android:id="@+id/subtitle_text_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/reset_your_password_description"/>
+                android:layout_marginTop="@dimen/forgot_subtitle_margin_top"
+                android:text="@string/check_your_email"
+                android:visibility="invisible"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText.FixedSize"
-                android:id="@+id/email_edit_text"
-                android:layout_marginTop="20dp"
+            <tv.caffeine.app.ui.CaffeineEditTextLayout
+                android:id="@+id/email_edit_text_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/reset_password_title_margin_top"
                 android:hint="@string/unauth_hint_email"
                 android:inputType="textEmailAddress"
-                android:imeOptions="actionSend"/>
+                android:imeOptions="actionSend"
+                app:isDarkMode="true"/>
 
             <Button
-                style="@style/Button.VeryBig.FixedSize"
+                style="@style/LoginButton"
                 android:id="@+id/send_email_button"
-                android:layout_marginTop="@dimen/margin"
-                android:text="@string/send_email_button"/>
+                android:layout_marginTop="@dimen/forgot_margin_subtitle_top"
+                android:text="@string/send_email_button"
+                android:layout_gravity="center"
+                android:enabled="false"
+                />
         </LinearLayout>
     </ScrollView>
 </layout>

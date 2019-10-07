@@ -94,6 +94,7 @@ private val destinationsWithoutBottomNavBar = arrayOf(
 
 private val destinationsLoginWithDarkMode = arrayOf(
     R.id.signInFragment,
+    R.id.forgotFragment,
     R.id.mfaCodeFragment
 )
 

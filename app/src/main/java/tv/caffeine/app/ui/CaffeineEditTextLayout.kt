@@ -85,6 +85,7 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
         }
     }
 
+    fun setOnAction(action: Int, block: () -> Unit) = layoutEditText.setOnAction(action, block)
     fun setOnActionGo(action: () -> Unit) = layoutEditText.setOnActionGo(action)
 
     fun isEmpty() = layoutEditText.text.isNullOrEmpty()

@@ -527,7 +527,7 @@
         <fragment
             android:id="@+id/forgotFragment"
             android:name="tv.caffeine.app.login.ForgotFragment"
-            android:label="@string/reset_your_password"
+            android:label="@string/forgot_password_no_worries"
             tools:layout="@layout/fragment_forgot" />
         <fragment
             android:id="@+id/mfaCodeFragment"

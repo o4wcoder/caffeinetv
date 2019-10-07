@@ -114,6 +114,7 @@
         <item name="cornerRadius">30dp</item>
     </style>
     <style name="Button.Big.ReleaseUI">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
         <item name="android:layout_width">@dimen/medium_button_width</item>
         <item name="android:layout_height">@dimen/big_button_height</item>
         <item name="android:fontFamily">@font/poppins_semibold</item>
@@ -276,13 +277,18 @@
     </style>
     <style name="UnauthScreenTitle.DarkMode">
         <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="UnauthScreenSubtitle" parent="CaffeineText.Medium">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
     </style>
     <style name="LinkText" parent="CaffeineText.Medium">
         <item name="android:textColor">@color/dark_gray</item>
     </style>
     <style name="LinkText.Landing">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:textColor">@color/caffeine_blue</item>
     </style>
     <style name="FormErrorText" parent="CaffeineText.Light">
         <item name="android:textAlignment">center</item>
