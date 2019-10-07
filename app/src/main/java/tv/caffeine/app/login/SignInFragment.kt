@@ -41,13 +41,15 @@ class SignInFragment @Inject constructor(
         binding.usernameEditTextLayout.afterTextChanged { validate() }
         binding.passwordEditTextLayout.setOnActionGo { login() }
         binding.passwordEditTextLayout.afterTextChanged { validate() }
-        signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { outcome ->
-            when (outcome) {
-                is SignInOutcome.Success -> onSuccess()
-                is SignInOutcome.MFARequired -> onMfaRequired()
-                is SignInOutcome.MustAcceptTerms -> onMustAcceptTerms()
-                is SignInOutcome.Error -> onError(outcome)
-                is SignInOutcome.Failure -> onFailure(outcome.exception)
+        signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let { outcome ->
+                when (outcome) {
+                    is SignInOutcome.Success -> onSuccess()
+                    is SignInOutcome.MFARequired -> onMfaRequired()
+                    is SignInOutcome.MustAcceptTerms -> onMustAcceptTerms()
+                    is SignInOutcome.Error -> onError(outcome)
+                    is SignInOutcome.Failure -> onFailure(outcome.exception)
+                }
             }
         })
     }
@@ -85,7 +87,7 @@ class SignInFragment @Inject constructor(
         val username = binding.usernameEditTextLayout.text
         val password = binding.passwordEditTextLayout.text
         val action =
-                SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)
+            SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)
         navController.safeNavigate(action)
     }
 

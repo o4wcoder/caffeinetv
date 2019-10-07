@@ -712,7 +712,7 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="LoginButton" parent="Button.Big.ReleaseUI" />
+    <style name="LoginButton" parent="Button.Big.ReleaseUI.Dark" />
 
 
 </resources>
