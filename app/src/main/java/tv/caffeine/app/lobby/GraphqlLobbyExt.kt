@@ -1,6 +1,7 @@
 package tv.caffeine.app.lobby
 
 import tv.caffeine.app.api.model.Broadcast
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Game
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
@@ -70,7 +71,7 @@ fun UserData.toCaffeineUser() = User(
     isVerified,
     isCaster,
     null,
-    "",
+    caid.toStageId(),
     mapOf(), // TODO: clean up abilities
     null,
     null,
@@ -108,3 +109,5 @@ fun LobbyQuery.PagePayload.toDistinctLiveBroadcasters(): List<String> =
         .flatMap { (it.inlineFragment as ClusterData.AsLiveBroadcastCardList).liveBroadcastCards }
         .map { it.user.fragments.userData.username }
         .distinct()
+
+fun CAID.toStageId() = substring(4, length)

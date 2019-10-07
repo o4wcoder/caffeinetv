@@ -60,7 +60,7 @@ abstract class LobbyV5Fragment constructor(
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { lobby ->
                 val items = LobbyItem.parse(lobby)
-                lobbyAdapter.submitList(items, mapOf(), mapOf(), "")
+                lobbyAdapter.submitList(items, mapOf(), mapOf(), lobby.pagePayload.id)
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })
@@ -68,7 +68,7 @@ abstract class LobbyV5Fragment constructor(
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { detailPage ->
                 val items = LobbyItem.parse(detailPage)
-                lobbyAdapter.submitList(items, mapOf(), mapOf(), "")
+                lobbyAdapter.submitList(items, mapOf(), mapOf(), detailPage.pagePayload.id)
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })

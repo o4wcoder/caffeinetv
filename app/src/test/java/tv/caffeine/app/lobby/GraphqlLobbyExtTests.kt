@@ -104,12 +104,14 @@ class GraphqlLobbyExtTests {
 
         assertEquals("caid1", user1.caid)
         assertEquals("user1", user1.username)
+        assertEquals("1", user1.stageId)
         assertEquals("https://images.caffeine.tv/avatar_image_path/user1.jpg", user1.avatarImageUrl)
         assertEquals(true, user1.isCaster)
         assertEquals(true, user1.isVerified)
 
         assertEquals("caid2", user2.caid)
         assertEquals("user2", user2.username)
+        assertEquals("2", user2.stageId)
         assertEquals("https://images.caffeine.tv/avatar_image_path/user2.jpg", user2.avatarImageUrl)
         assertEquals(false, user2.isCaster)
         assertEquals(false, user2.isVerified)
@@ -153,7 +155,7 @@ class GraphqlLobbyExtTests {
             buildLiveBroadcastCard(username = "user$it")
         }
         val payload = LobbyQuery.PagePayload(
-            "", listOf(
+            "", "", listOf(
                 LobbyQuery.Cluster(
                     "", LobbyQuery.Cluster.Fragments(
                         ClusterData(

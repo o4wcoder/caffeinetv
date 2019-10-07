@@ -1,5 +1,6 @@
 query Lobby($page: Page!) {
     pagePayload: lobby(page: $page) {
+        id
         clusters {
             ...ClusterData
         }
@@ -8,6 +9,7 @@ query Lobby($page: Page!) {
 
 query DetailPage($cardId: ID!) {
     pagePayload: detailPage(cardId: $cardId) {
+        id
         name
         clusters {
             ...ClusterData
