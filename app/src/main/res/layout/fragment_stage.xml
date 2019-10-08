@@ -306,10 +306,10 @@
                     app:layout_constraintBottom_toBottomOf="@id/live_indicator"/>
 
                 <ImageView
+                    style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
                     android:id="@+id/live_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/pure_blue"
                     android:src="@drawable/ic_live_indicator"
                     android:contentDescription="@string/live_indicator_lowercase"
                     android:visibility="invisible"
