@@ -32,6 +32,10 @@ fun TextView.configureEmbeddedLink(
 fun TextView.configureTextAppearance(@StyleRes textAppearanceRes: Int) = setTextAppearance(textAppearanceRes)
 
 @BindingAdapter("htmlText")
-fun TextView.configureHtmlText(text: String) {
-    setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
+fun TextView.configureHtmlText(text: String?) {
+    if (text != null) {
+        setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
+    } else {
+        setText(null)
+    }
 }
