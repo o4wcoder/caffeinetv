@@ -554,7 +554,7 @@
         <fragment
             android:id="@+id/signUpFragment"
             android:name="tv.caffeine.app.login.SignUpFragment"
-            android:label="@string/sign_up_for_caffeine"
+            android:label="@string/sign_up_title"
             tools:layout="@layout/fragment_sign_up">
             <action
                 android:id="@+id/action_signUpFragment_to_legalDocsFragment"

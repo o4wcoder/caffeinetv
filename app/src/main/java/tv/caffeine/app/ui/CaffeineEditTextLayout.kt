@@ -26,7 +26,7 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
     attrs,
     defStyleAttr) {
 
-    private val layoutEditText: EditText
+    val layoutEditText: EditText
     private val layoutBottomTextView: TextView
     private val layoutViewModel: CaffeineEditTextLayoutViewModel
     private val binding: CaffeineEditTextLayoutBinding

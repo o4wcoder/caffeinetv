@@ -12,6 +12,10 @@ fun ApiErrorResult.isMustVerifyEmailError() = errors?._unverifiedEmail?.isNullOr
 fun ApiErrorResult.isRecordNotFoundError() = errors?._record?.contains("could not be found") == true
 fun ApiErrorResult.isVerificationFailedError() = errors?.code?.contains("Verification failed.") == true
 fun ApiErrorResult.isOutOfCapacityError() = type == OUT_OF_CAPACITY_REYES_V4
+fun ApiErrorResult.isEmailError() = errors?.email?.isNullOrEmpty() == false
+fun ApiErrorResult.isUsernameError() = errors?.username?.isNullOrEmpty() == false
+fun ApiErrorResult.isPasswordError() = errors?.password?.isNullOrEmpty() == false
+fun ApiErrorResult.isBirtdateError() = errors?.dob?.isNullOrEmpty() == false
 fun RefreshTokenMissingError() = ApiErrorResult(ApiError(_token = listOf("Refresh token missing")))
 
 data class ApiError(

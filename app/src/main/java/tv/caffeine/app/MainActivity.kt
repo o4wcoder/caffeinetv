@@ -99,7 +99,9 @@ private val destinationsLoginWithDarkMode = arrayOf(
 )
 
 // TODO: fill this in with login screens that use light mode
-private val destinationsLoginWithLightMode = emptyArray<Int>()
+private val destinationsLoginWithLightMode = arrayOf(
+    R.id.signUpFragment
+)
 
 private val destinationsAsDialog = arrayOf(
     R.id.reportOrIgnoreDialogFragment,
@@ -235,6 +237,7 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
         updateImmersiveMode(destinationId)
+
         updateLoginTheme(destinationId)
     }
 

@@ -1,6 +1,9 @@
 package tv.caffeine.app.ui
 
 import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.widget.TextView
@@ -28,6 +31,19 @@ fun TextView.configureEmbeddedLink(
     highlightColor = Color.TRANSPARENT
 }
 
+fun TextView.stripUrlUnderline() {
+    val spannable: Spannable = SpannableString(text)
+    val spans = spannable.getSpans(0, spannable.length, URLSpan::class.java)
+    for (span in spans) {
+        val start = spannable.getSpanStart(span)
+        val end = spannable.getSpanEnd(span)
+        spannable.removeSpan(span)
+        val spanNoUnderline = URLSpanNoUnderline(span.url)
+        spannable.setSpan(spanNoUnderline, start, end, 0)
+    }
+    text = spannable
+}
+
 @BindingAdapter("android:textAppearance")
 fun TextView.configureTextAppearance(@StyleRes textAppearanceRes: Int) = setTextAppearance(textAppearanceRes)
 
@@ -37,5 +53,12 @@ fun TextView.configureHtmlText(text: String?) {
         setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
     } else {
         setText(null)
+    }
+}
+
+open class URLSpanNoUnderline(url: String) : URLSpan(url) {
+    override fun updateDrawState(ds: TextPaint) {
+        super.updateDrawState(ds)
+        ds.isUnderlineText = false
     }
 }

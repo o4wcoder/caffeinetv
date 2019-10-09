@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.login.SignUpViewModel" />
     </data>
 
     <ScrollView
@@ -14,72 +18,82 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:paddingStart="@dimen/sign_in_flow_start_padding"
+            android:paddingEnd="@dimen/sign_in_flow_end_padding"
+            android:orientation="vertical">
 
             <TextView
-                style="@style/UnauthScreenTitle"
+                style="@style/SignUpText.Title"
                 android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:text="@string/sign_up_for_caffeine"/>
+                android:layout_marginTop="@dimen/sign_up_title_margin_top"
+                android:text="@string/sign_up_title"/>
 
-            <TextView
-                style="@style/FormErrorText"
-                android:id="@+id/form_error_text_view"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/sign_up_description"/>
-
-            <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText.FixedSize"
+            <tv.caffeine.app.ui.CaffeineEditTextLayout
                 android:id="@+id/email_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="@string/unauth_hint_email"
+                android:hint="@string/sign_up_email_hint"
                 android:inputType="textEmailAddress"
                 android:imeOptions="actionNext"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText.FixedSize"
+            <tv.caffeine.app.ui.CaffeineEditTextLayout
+                android:id="@+id/password_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
+                android:hint="@string/sign_up_password_hint"
+                android:inputType="textPassword"
+                android:imeOptions="actionNext"
+                app:bottomHint="@string/sign_up_password_length_hint"/>
+
+            <tv.caffeine.app.ui.CaffeineEditTextLayout
                 android:id="@+id/username_edit_text"
-                android:layout_marginTop="12dp"
-                android:hint="@string/unauth_hint_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
+                android:hint="@string/sign_up_username_hint"
                 android:inputType="text"
                 android:maxLength="@integer/max_username_length"
-                android:imeOptions="actionNext"/>
+                android:imeOptions="actionNext"
+                app:bottomHint="@string/unauth_hint_username"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText.FixedSize"
-                android:id="@+id/password_edit_text"
-                android:layout_marginTop="12dp"
-                android:hint="@string/unauth_hint_password"
-                android:inputType="textPassword"
-                android:imeOptions="actionNext"/>
-
-            <androidx.appcompat.widget.AppCompatEditText
-                style="@style/BigEditText.FixedSize"
+            <tv.caffeine.app.ui.CaffeineEditTextLayout
                 android:id="@+id/dob_edit_text"
-                android:layout_marginTop="12dp"
-                android:hint="@string/sign_up_hint_birthday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
+                android:hint="@string/sign_up_birthdate_hint"
                 android:inputType="none"
-                android:editable="false"
                 android:textIsSelectable="false"
                 android:imeOptions="actionNext"/>
 
+            <TextView
+                style="@style/SignUpErrorText"
+                android:id="@+id/form_error_text_view"
+                android:layout_width="@dimen/sign_up_form_error_text_width"
+                android:layout_height="66dp"
+                android:layout_gravity="center"
+                android:gravity="bottom"
+                tools:text="Sorry you are not eligible to sign up at this time"/>
+
             <Button
-                style="@style/Button.VeryBig.FixedSize"
+                style="@style/SignUpButton"
                 android:id="@+id/sign_up_button"
-                android:layout_marginTop="20dp"
-                android:text="@string/sign_up_button"/>
+                android:layout_marginTop="@dimen/sign_up_button_top_margin"
+                android:layout_gravity="center"
+                android:text="@string/sign_up_button"
+                android:enabled="@{viewModel.signUpButtonEnabled}"/>
 
             <TextView
-                style="@style/CaffeineText.Light"
+                style="@style/SignUpBodyText"
                 android:id="@+id/agree_to_legal_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:textAlignment="center"
+                android:textColorLink="@color/dark_gray"
                 tools:text="By continuing, you agree to Caffeine's Terms of Service, Privacy Policy and Community Guidelines"/>
         </LinearLayout>
     </ScrollView>
