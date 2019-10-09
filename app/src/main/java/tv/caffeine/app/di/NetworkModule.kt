@@ -29,6 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import tv.caffeine.app.analytics.ProfilingInterceptor
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.ContentGuideService
 import tv.caffeine.app.api.DevicesService
 import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.FeatureConfigService
@@ -54,7 +55,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 enum class Service {
-    MainApi, RefreshToken, Payments, Realtime, Events, RealtimeWebSocket
+    MainApi, RefreshToken, Payments, Realtime, Events, ContentGuide
 }
 
 enum class AuthorizationType {
@@ -175,6 +176,15 @@ class RetrofitModule {
     @Provides
     @CaffeineApi(Service.Realtime)
     fun providesRealtimeRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.Realtime) baseUrl: String, @ClientType(AuthorizationType.Required) client: OkHttpClient) = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .client(client)
+        .addConverterFactory(gsonConverterFactory)
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .build()
+
+    @Provides
+    @CaffeineApi(Service.ContentGuide)
+    fun providesContentGuideRetrofit(gsonConverterFactory: GsonConverterFactory, @CaffeineApi(Service.ContentGuide) baseUrl: String, @ClientType(AuthorizationType.Required) client: OkHttpClient) = Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(gsonConverterFactory)
@@ -209,6 +219,8 @@ class ApiModule {
     @Provides fun providesRealtimeService(@CaffeineApi(Service.Realtime) retrofit: Retrofit) = retrofit.create(Realtime::class.java)
 
     @Provides fun providesFeatureConfigService(@CaffeineApi(Service.MainApi) retrofit: Retrofit) = retrofit.create(FeatureConfigService::class.java)
+
+    @Provides fun providesContentGuideService(@CaffeineApi(Service.ContentGuide) retrofit: Retrofit) = retrofit.create(ContentGuideService::class.java)
 }
 
 @Module

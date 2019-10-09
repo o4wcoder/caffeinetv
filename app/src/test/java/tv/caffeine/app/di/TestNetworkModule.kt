@@ -10,6 +10,7 @@ import org.webrtc.EglBase
 import org.webrtc.PeerConnectionFactory
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.ContentGuideService
 import tv.caffeine.app.api.DevicesService
 import tv.caffeine.app.api.EventsService
 import tv.caffeine.app.api.FeatureConfigService
@@ -50,6 +51,7 @@ class FakeApiModule {
     @Provides fun providesRefreshTokenService() = mockk<RefreshTokenService>(relaxed = true)
     @Provides fun providesRealtimeService() = mockk<Realtime>(relaxed = true)
     @Provides fun providesFeatureConfigService() = mockk<FeatureConfigService>(relaxed = true)
+    @Provides fun providesContentGuideService() = mockk<ContentGuideService>(relaxed = true)
 }
 
 @Module

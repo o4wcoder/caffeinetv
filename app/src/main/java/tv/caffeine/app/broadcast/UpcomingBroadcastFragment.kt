@@ -28,7 +28,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.ContentGuideService
 import tv.caffeine.app.api.Guide
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
@@ -91,7 +91,7 @@ class UpcomingBroadcastFragment @Inject constructor(
 }
 
 class GuideViewModel @Inject constructor(
-    private val broadcastsService: BroadcastsService,
+    private val contentGuideService: ContentGuideService,
     private val gson: Gson
 ) : ViewModel() {
 
@@ -104,7 +104,7 @@ class GuideViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch {
-            val result = broadcastsService.guide().awaitAndParseErrors(gson)
+            val result = contentGuideService.guide().awaitAndParseErrors(gson)
             when (result) {
                 is CaffeineResult.Success -> _guides.value = prepareGuideTimestamp(result.value.listings)
                 is CaffeineResult.Error -> Timber.e("Failed to fetch content guide ${result.error}")

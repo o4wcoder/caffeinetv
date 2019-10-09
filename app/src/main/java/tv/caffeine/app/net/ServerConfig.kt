@@ -22,6 +22,7 @@ class ServerConfig @Inject constructor(settingsStorage: SettingsStorage) {
     val events = "https://events$modifier.caffeine.tv"
     val assets = "https://assets$modifier.caffeine.tv"
     val images = "https://images$modifier.caffeine.tv"
+    val contentGuide = "https://content-guide$modifier.caffeine.tv"
 
     fun normalizeImageUri(uri: Uri): Uri {
         val stringUrl = uri.toString()
