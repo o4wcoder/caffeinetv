@@ -51,7 +51,7 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
         super.onDestroy()
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         super.onNewToken(token)
         Timber.d("New FCM token generated $token")
         if (secureSettingsStorage.firebaseToken == null || token != secureSettingsStorage.firebaseToken) {
@@ -59,15 +59,13 @@ class CaffeineFirebaseMessagingService : FirebaseMessagingService() {
 
             // if we have a deviceId, we are logged in and need to update caffeine server with new token
             val id = secureSettingsStorage.deviceId ?: return
-            val notificationToken = token ?: return
-            coroutineScope.launch { deviceRepository.updateDevice(id, notificationToken) }
+            coroutineScope.launch { deviceRepository.updateDevice(id, token) }
         }
     }
 
-    override fun onMessageReceived(message: RemoteMessage?) {
+    override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
         Timber.d("FCM message received: $message")
-        if (message == null) return
         Timber.d("notification.body = ${message.notification?.body}")
         Timber.d("data = ${message.data}")
         when (val imageUrl = message.imageUrl) {
