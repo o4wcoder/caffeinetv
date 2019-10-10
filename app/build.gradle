@@ -189,7 +189,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-safetynet:17.0.0'
 
     // Kochava
-    implementation 'com.kochava.base:tracker:3.5.0'
+    implementation 'com.kochava.base:tracker:3.6.1'
 
     // ThreatMetrix
     implementation 'commons-io:commons-io:2.6'
