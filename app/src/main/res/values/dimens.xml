@@ -151,7 +151,7 @@
     <dimen name="sign_up_button_top_margin">16dp</dimen>
     <dimen name="sign_up_form_error_margin_top">32dp</dimen>
     <dimen name="sign_up_form_error_text_width">160dp</dimen>
-
+    
     <dimen name="login_mfa_resend_code_text_margin_top">40dp</dimen>
     <dimen name="reset_password_title_margin_top">72dp</dimen>
     <dimen name="forgot_subtitle_margin_top">56dp</dimen>

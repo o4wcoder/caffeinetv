@@ -3,6 +3,7 @@ package tv.caffeine.app.login
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
+import androidx.annotation.VisibleForTesting
 import androidx.core.view.isInvisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -24,7 +25,8 @@ class SignInFragment @Inject constructor(
     private val firebaseAnalytics: FirebaseAnalytics
 ) : CaffeineFragment(R.layout.fragment_sign_in) {
 
-    private lateinit var binding: FragmentSignInBinding
+    @VisibleForTesting
+    lateinit var binding: FragmentSignInBinding
 
     private val signInViewModel: SignInViewModel by viewModels { viewModelFactory }
 

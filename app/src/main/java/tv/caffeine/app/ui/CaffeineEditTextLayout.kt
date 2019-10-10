@@ -16,6 +16,9 @@ import tv.caffeine.app.BR
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.CaffeineEditTextLayoutBinding
 import tv.caffeine.app.util.addFilter
+import android.os.Parcel
+import android.os.Parcelable
+import android.util.SparseArray
 
 class CaffeineEditTextLayout @JvmOverloads constructor(
     context: Context,
@@ -24,7 +27,8 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
 ) : ConstraintLayout(
     context,
     attrs,
-    defStyleAttr) {
+    defStyleAttr
+) {
 
     val layoutEditText: EditText
     private val layoutBottomTextView: TextView
@@ -43,6 +47,8 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
         layoutViewModel = CaffeineEditTextLayoutViewModel(context)
         binding = DataBindingUtil.inflate(inflater, R.layout.caffeine_edit_text_layout, this, true)
         binding.viewModel = layoutViewModel
+        // Save state of fields of custom view
+        isSaveEnabled = true
 
         layoutEditText = binding.caffeineLayoutEditText
         layoutBottomTextView = binding.caffeineEditTextBottomTextView
@@ -110,5 +116,64 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
 
     private fun getColorResource(@ColorRes color: Int): Int {
         return resources.getColor(color, null)
+    }
+
+    public override fun onSaveInstanceState(): Parcelable? {
+        if (isSaveEnabled) {
+            val superState = super.onSaveInstanceState()
+            val ss = SavedState(superState)
+            ss.childrenStates = SparseArray()
+            for (i in 0 until childCount) {
+                getChildAt(i).saveHierarchyState(ss.childrenStates)
+            }
+            return ss
+        } else {
+            return super.onSaveInstanceState()
+        }
+    }
+
+    public override fun onRestoreInstanceState(state: Parcelable) {
+        if (isSaveEnabled) {
+            val ss = state as SavedState
+            super.onRestoreInstanceState(ss.getSuperState())
+            for (i in 0 until childCount) {
+                getChildAt(i).restoreHierarchyState(ss.childrenStates)
+            }
+        } else {
+            super.onRestoreInstanceState(state)
+        }
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
+        dispatchFreezeSelfOnly(container)
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>) {
+        dispatchThawSelfOnly(container)
+    }
+
+    internal class SavedState : BaseSavedState {
+
+        var childrenStates: SparseArray<Parcelable>? = null
+
+        constructor(superState: Parcelable?) : super(superState)
+
+        constructor(source: Parcel) : super(source) {
+            childrenStates =
+                source.readSparseArray(javaClass.classLoader) as SparseArray<Parcelable>?
+        }
+
+        override fun writeToParcel(out: Parcel, flags: Int) {
+            super.writeToParcel(out, flags)
+            out.writeSparseArray(childrenStates as SparseArray<Any>)
+        }
+
+        companion object {
+            @JvmField
+            val CREATOR = object : Parcelable.Creator<SavedState> {
+                override fun createFromParcel(source: Parcel) = SavedState(source)
+                override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+            }
+        }
     }
 }
