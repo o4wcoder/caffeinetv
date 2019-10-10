@@ -44,7 +44,14 @@ class LobbySwipeFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sessionCheckViewModel.sessionCheck.observe(this, Observer { result ->
-            handle(result) {}
+            handle(result) {
+                // TODO: uncomment it once we confirm that the attribution works
+                /*
+                analytics.getDeferredDeeplinkNavDirections()?.let {
+                    findNavController().safeNavigate(it)
+                }
+                */
+            }
         })
     }
 

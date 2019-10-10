@@ -1,6 +1,12 @@
 package tv.caffeine.app.analytics
 
+import androidx.annotation.VisibleForTesting
+import androidx.navigation.NavDirections
 import com.kochava.base.Tracker
+import org.json.JSONException
+import org.json.JSONObject
+import timber.log.Timber
+import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.api.model.IdentityProvider
 import javax.inject.Inject
 
@@ -12,12 +18,20 @@ private fun IdentityProvider.toEventName() = when (this) {
 private const val NOTIFICATION_ID = "notification_id"
 private const val NOTIFICATION_TAG = "notification_tag"
 private const val NOTIFICATION_IS_DISPLAYED = "notification_is_displayed"
+private const val ATTRIBUTION = "attribution"
+private const val ATTRIBUTION_EMPTY = "false"
+private const val USERNAME_KEY = "user"
+private const val PAGE_KEY = "page"
+private const val PAGE_STAGE = "stage"
 
 class KochavaAnalytics @Inject constructor(
     private val configuration: Tracker.Configuration
 ) : Analytics {
+
+    private var navDirections: NavDirections? = null
+
     override fun initialize() {
-        Tracker.configure(configuration)
+        Tracker.configure(configuration.setAttributionUpdateListener { handleAttribution(it) })
     }
 
     override fun trackEvent(event: AnalyticsEvent) {
@@ -37,4 +51,23 @@ class KochavaAnalytics @Inject constructor(
         }
         Tracker.sendEvent(trackerEvent)
     }
+
+    @VisibleForTesting fun handleAttribution(attribution: String) {
+        // TODO: remove the log and add tests once we confirm that the attribution works.
+        Timber.e("Kochava attribution: $attribution")
+        try {
+            val attributionObject = JSONObject(attribution)
+            if (attributionObject.optString(ATTRIBUTION, ATTRIBUTION_EMPTY) != ATTRIBUTION_EMPTY) {
+                val username = attributionObject.optString(USERNAME_KEY, null)
+                val page = attributionObject.optString(PAGE_KEY, null)
+                if (username != null && page == PAGE_STAGE) {
+                    navDirections = MainNavDirections.actionGlobalStagePagerFragment(username)
+                }
+            }
+        } catch (exception: JSONException) {
+            Timber.e(exception)
+        }
+    }
+
+    override fun getDeferredDeeplinkNavDirections() = navDirections
 }
