@@ -1,5 +1,6 @@
 package tv.caffeine.app.analytics
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.navigation.NavDirections
 import com.google.gson.Gson
@@ -29,7 +30,7 @@ class KochavaAnalytics @Inject constructor(
 
     override fun initialize() {
         // TODO: remove the log once we confirm that the attribution works.
-        Timber.e("Kochava initialized")
+        Log.d("Caffeine", "Kochava initialized")
         Tracker.configure(configuration.setAttributionUpdateListener { handleAttribution(it) })
     }
 
@@ -53,7 +54,7 @@ class KochavaAnalytics @Inject constructor(
 
     @VisibleForTesting fun handleAttribution(attributionString: String) {
         // TODO: remove the log once we confirm that the attribution works.
-        Timber.e("Kochava attribution: $attributionString")
+        Log.d("Caffeine", "Kochava initialized: $attributionString")
         try {
             val attribution = gson.fromJson(attributionString, DeeplinkAttribution::class.java)
             if (attribution.attribution == true) {
