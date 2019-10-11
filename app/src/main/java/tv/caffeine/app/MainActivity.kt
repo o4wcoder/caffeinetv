@@ -93,6 +93,7 @@ private val destinationsWithoutBottomNavBar = arrayOf(
 )
 
 private val destinationsLoginWithDarkMode = arrayOf(
+    R.id.landingFragment,
     R.id.signInFragment,
     R.id.forgotFragment,
     R.id.mfaCodeFragment
@@ -118,7 +119,10 @@ private val destinationInPortrait = arrayOf(
     R.id.mfaCodeFragment
 )
 
-private val destinationInImmersiveMode = arrayOf(R.id.stagePagerFragment)
+private val destinationInImmersiveMode = arrayOf(
+    R.id.stagePagerFragment,
+    R.id.landingFragment
+)
 
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
 @VisibleForTesting const val SCREEN_TITLE = "screenTitle"

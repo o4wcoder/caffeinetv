@@ -19,7 +19,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import tv.caffeine.app.R
 import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
 import tv.caffeine.app.analytics.FirebaseEvent
@@ -49,6 +48,9 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
+import android.widget.MediaController
+import tv.caffeine.app.R
+import tv.caffeine.app.util.getAssetFile
 
 class LandingFragment @Inject constructor(
     private val accountsService: AccountsService,
@@ -86,7 +88,6 @@ class LandingFragment @Inject constructor(
             findNavController().safeNavigate(LandingFragmentDirections.actionLandingFragmentToSignInFragment())
         }.let {
             binding.signInWithUsernameTextView.setOnClickListener(it)
-            binding.signInWithUsernamePromptTextView.setOnClickListener(it)
         }
         binding.facebookSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.facebook))
@@ -104,6 +105,19 @@ class LandingFragment @Inject constructor(
         args.message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
         }
+
+        loadSplashVideo()
+    }
+
+    private fun loadSplashVideo() {
+        val videoView = binding.splashVideoView
+        val mediaController = MediaController(context)
+        mediaController.setAnchorView(videoView)
+        videoView.setMediaController(mediaController)
+        val videoUri = activity?.getAssetFile(R.raw.caffeine_mobile_splash)
+        videoView.setVideoURI(videoUri)
+        videoView.start()
+        videoView.setOnPreparedListener { it.isLooping = true }
     }
 
     private val facebookCallback = object : FacebookCallback<LoginResult?> {

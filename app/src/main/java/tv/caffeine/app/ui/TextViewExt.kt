@@ -51,13 +51,6 @@ fun TextView.stripUrlUnderline() {
 @BindingAdapter("android:textAppearance")
 fun TextView.configureTextAppearance(@StyleRes textAppearanceRes: Int) = setTextAppearance(textAppearanceRes)
 
-open class URLSpanNoUnderline(url: String) : URLSpan(url) {
-    override fun updateDrawState(ds: TextPaint) {
-        super.updateDrawState(ds)
-        ds.isUnderlineText = false
-    }
-}
-
 fun TextView.formatUsernameAsHtml(
     picasso: Picasso,
     string: String?,
@@ -81,4 +74,11 @@ fun TextView.formatUsernameAsHtml(
 @BindingAdapter("htmlText")
 fun TextView.formatHtmlText(string: String?) {
     formatUsernameAsHtml(context.getPicasso(), string, false, R.dimen.avatar_friends_watching)
+}
+
+open class URLSpanNoUnderline(url: String) : URLSpan(url) {
+    override fun updateDrawState(ds: TextPaint) {
+        super.updateDrawState(ds)
+        ds.isUnderlineText = false
+    }
 }

@@ -7,44 +7,54 @@
     <data>
     </data>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <VideoView
+            android:id="@+id/splash_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
     <ScrollView
         style="@style/NoBarScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="65dp"
                 android:contentDescription="@string/caffeine_logo_content_description"
-                app:srcCompat="@drawable/caffeine_logo_80"/>
+                app:srcCompat="@drawable/ic_logo_white"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:contentDescription="@string/caffeine_logo_content_description"
-                app:srcCompat="@drawable/caffeine_wordmark"/>
+                app:srcCompat="@drawable/ic_logotype"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:contentDescription="@string/pre_release"
-                app:srcCompat="@drawable/pre_release"/>
-
-            <TextView
-                style="@style/UnauthScreenTitle"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:text="@string/landing_signup_prompt"/>
+            <androidx.legacy.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
             <Button
                 style="@style/Button.Big.FixedSize.Facebook"
@@ -55,29 +65,25 @@
             <Button
                 style="@style/Button.Big.FixedSize.Twitter"
                 android:id="@+id/twitter_sign_in_button"
-                android:layout_marginTop="@dimen/margin_list"
+                android:layout_marginTop="16dp"
                 android:text="@string/continue_with_twitter"/>
 
             <Button
                 style="@style/Button.Big.FixedSize.Email"
                 android:id="@+id/new_account_button"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/sign_up_with_email"/>
 
-            <TextView
-                style="@style/CaffeineText.Light"
-                android:id="@+id/sign_in_with_username_prompt_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/sign_in_with_username_prompt"/>
             <TextView
                 style="@style/LinkText.Landing"
                 android:id="@+id/sign_in_with_username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="76dp"
+                android:padding="4dp"
                 android:text="@string/sign_in_with_username"/>
         </LinearLayout>
     </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

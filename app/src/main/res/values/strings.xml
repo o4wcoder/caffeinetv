@@ -13,9 +13,9 @@
 
     <string name="pre_release">PRE-RELEASE</string>
     <string name="landing_signup_prompt">Watch live streams with your friends.</string>
-    <string name="continue_with_facebook">Continue with Facebook</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
-    <string name="sign_up_with_email">Sign up with email</string>
+    <string name="continue_with_facebook">continue with facebook</string>
+    <string name="continue_with_twitter">continue with twitter</string>
+    <string name="sign_up_with_email">sign up with email</string>
     <string name="error_facebook_callback">Error connecting to Facebook</string>
     <string name="twitter_login">Twitter Login</string>
     <string name="twitter_login_failed">Twitter login failed</string>
@@ -24,6 +24,7 @@
     <string name="social_account_rate_limit_exceeded">Social account rate limit exceeded</string>
 
     <!-- Sign Up/In -->
+
     <string name="sign_up_title">Let\'s get\nstarted</string>
     <string name="sign_up_description">Create an account to watch and create live broadcasts on Caffeine.</string>
     <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
@@ -32,8 +33,7 @@
     <string name="sign_up_password_length_hint">Passwords needs to be at least 7 characters</string>
     <string name="sign_up_username_hint">Create a Username</string>
     <string name="sign_up_birthdate_hint">Birthdate</string>
-    <string name="sign_in_with_username_prompt">Already have an account?</string>
-    <string name="sign_in_with_username">Sign in with username</string>
+    <string name="sign_in_with_username">log in</string>
     <string name="sign_in_failure">Could not sign in. Please try again later.</string>
 
     <string name="unauth_hint_username">Username</string>
