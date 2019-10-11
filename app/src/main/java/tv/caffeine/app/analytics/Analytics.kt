@@ -12,7 +12,7 @@ import javax.inject.Singleton
 interface Analytics {
     fun initialize()
     fun trackEvent(event: AnalyticsEvent)
-    fun getDeferredDeeplinkNavDirections(): NavDirections?
+    fun handleDeferredDeeplink(block: (directions: NavDirections?) -> Unit)
 }
 
 @Singleton
@@ -31,7 +31,7 @@ class LogAnalytics @Inject constructor() : Analytics {
         Timber.d(logMessage)
     }
 
-    override fun getDeferredDeeplinkNavDirections(): NavDirections? = null
+    override fun handleDeferredDeeplink(block: (directions: NavDirections?) -> Unit) {}
 }
 
 data class NotificationEvent(val type: Type, val id: String?, val tag: String?, val isDisplayed: Boolean = true) {
