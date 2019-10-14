@@ -1,6 +1,7 @@
 package tv.caffeine.app.session
 
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import timber.log.Timber
 import tv.caffeine.app.api.BroadcastsService
@@ -10,6 +11,7 @@ import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.UserContainer
 import tv.caffeine.app.api.model.UserUpdateBody
@@ -32,6 +34,8 @@ class FollowManager @Inject constructor(
     private val followedUsers: MutableMap<CAID, Set<String>> = mutableMapOf()
     private val userDetails: MutableMap<CAID, User> = mutableMapOf()
     private val usernameToCAID: MutableMap<String, CAID> = mutableMapOf()
+
+    val followResult: MutableLiveData<Event<CaffeineEmptyResult>> = MutableLiveData()
 
     fun followers() = tokenStore.caid?.let { followedUsers[it] } ?: setOf()
 
@@ -64,6 +68,7 @@ class FollowManager @Inject constructor(
             followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
             callback?.onUserFollowed()
         }
+        followResult.value = Event(result)
         refreshFollowedUsers()
         return result
     }

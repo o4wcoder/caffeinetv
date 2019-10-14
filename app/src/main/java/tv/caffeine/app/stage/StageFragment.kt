@@ -25,28 +25,23 @@ import kotlinx.coroutines.launch
 import org.webrtc.EglRenderer
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
-import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.NewReyes
-import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentStageBinding
 import tv.caffeine.app.lobby.formatFriendsWatchingShortString
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
-import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.formatHtmlText
 import tv.caffeine.app.ui.FollowStarViewModel
+import tv.caffeine.app.ui.formatHtmlText
 import tv.caffeine.app.ui.formatUsernameAsHtml
-import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.PulseAnimator
+import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.inTransaction
-import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
@@ -151,6 +146,9 @@ class StageFragment @Inject constructor(
         binding.lifecycleOwner = viewLifecycleOwner
         stageViewModel = StageViewModel(releaseDesignConfig, ::onAvatarButtonClick)
         binding.viewModel = stageViewModel
+
+        observeFollowEvents()
+
         stageViewModel.showPoorConnectionAnimation.observe(viewLifecycleOwner, Observer {
             if (it) poorConnectionPulseAnimator.startPulse() else poorConnectionPulseAnimator.stopPulse()
         })
@@ -234,20 +232,7 @@ class StageFragment @Inject constructor(
             if (userProfile.isFollowed) {
                 profileViewModel.unfollow(userProfile.caid)
             } else {
-                profileViewModel.follow(userProfile.caid).observe(this, Observer { result ->
-                    when (result) {
-                        is CaffeineEmptyResult.Error -> {
-                            if (result.error.isMustVerifyEmailError()) {
-                                val fragment =
-                                    AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                                fragment.maybeShow(fragmentManager, "verifyEmail")
-                            } else {
-                                Timber.e("Couldn't follow user ${result.error}")
-                            }
-                        }
-                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                    }
-                })
+                profileViewModel.follow(userProfile.caid)
             }
         }
         binding.followButtonText.setOnClickListener(followListener)
@@ -569,20 +554,7 @@ class StageFragment @Inject constructor(
         if (isFollowing) {
             profileViewModel.unfollow(caid)
         } else {
-            profileViewModel.follow(caid).observe(this, Observer { result ->
-                when (result) {
-                    is CaffeineEmptyResult.Error -> {
-                        if (result.error.isMustVerifyEmailError()) {
-                            val fragment =
-                                AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.maybeShow(fragmentManager, "verifyEmail")
-                        } else {
-                            Timber.e("Couldn't follow user ${result.error}")
-                        }
-                    }
-                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                }
-            })
+            profileViewModel.follow(caid)
         }
     }
 }

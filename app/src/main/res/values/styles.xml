@@ -479,6 +479,17 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="VerifyEmailDialogTitleText" parent="CaffeineText.Medium">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="VerifyEmailDialogSubtitleText" parent="CaffeineText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <!-- Design approved - End -->
 
     <style name="ScreenCaption" parent="@style/TextAppearance.MaterialComponents.Caption"/>

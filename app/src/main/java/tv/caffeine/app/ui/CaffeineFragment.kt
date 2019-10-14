@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -27,7 +28,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId),
-        HasAndroidInjector, CoroutineScope {
+        HasAndroidInjector, CoroutineScope, AlertDialogFragment.Callbacks {
 
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Any>
 
@@ -40,6 +41,8 @@ abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(cont
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var dispatchConfig: DispatchConfig
+
+    private val alertDialogViewModel: AlertDialogViewModel by viewModels { viewModelFactory }
 
     protected lateinit var job: Job
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -58,6 +61,14 @@ abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(cont
         super.onDestroy()
         job.cancel()
     }
+
+    fun observeFollowEvents() {
+        alertDialogViewModel.observeFollowEvents(viewLifecycleOwner, this)
+    }
+
+    fun isUserEmailVerified() = alertDialogViewModel.isUserVerified()
+
+    fun showVerifyEmailDialog() = alertDialogViewModel.showVerifyEmailDialog(this, fragmentManager)
 
     inline fun <T> handle(result: CaffeineResult<T>, crossinline block: (value: T) -> Unit) {
         when (result) {
@@ -83,4 +94,8 @@ abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(cont
     }
 
     fun isChangingConfigurations() = activity?.isChangingConfigurations != false
+
+    override fun onResendEmail() {
+        alertDialogViewModel.resendEmail()
+    }
 }

@@ -6,10 +6,14 @@ import tv.caffeine.app.util.navigateToSendMessage
 class ReleaseChatFragment : ChatFragment() {
     override fun setButtonLayout() {
         binding.reactButton?.setOnClickListener {
-            fragmentManager?.navigateToSendMessage(
-                this@ReleaseChatFragment,
-                isMe
-            )
+            if (isUserEmailVerified()) {
+                fragmentManager?.navigateToSendMessage(
+                    this@ReleaseChatFragment,
+                    isMe
+                )
+            } else {
+                showVerifyEmailDialog()
+            }
         }
     }
 

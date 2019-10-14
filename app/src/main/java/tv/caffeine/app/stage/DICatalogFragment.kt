@@ -19,6 +19,8 @@ import tv.caffeine.app.databinding.FragmentDiCatalogBinding
 import tv.caffeine.app.settings.BuyGoldOption
 import tv.caffeine.app.settings.GoldBundlesFragment
 import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.ui.AlertDialogFragment
+import tv.caffeine.app.ui.AlertDialogViewModel
 import tv.caffeine.app.ui.CaffeineBottomSheetDialogFragment
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.wallet.WalletViewModel
@@ -28,7 +30,7 @@ import javax.inject.Inject
 class DICatalogFragment @Inject constructor(
     private val picasso: Picasso,
     private val releaseDesignConfig: ReleaseDesignConfig
-) : CaffeineBottomSheetDialogFragment() {
+) : CaffeineBottomSheetDialogFragment(), AlertDialogFragment.Callbacks {
 
     interface Callback {
         fun digitalItemSelected(digitalItem: DigitalItem, message: String? = null)
@@ -41,14 +43,19 @@ class DICatalogFragment @Inject constructor(
     private val adapter by lazy {
         DigitalItemAdapter(picasso, object : DigitalItemViewHolder.Callback {
             override fun digitalItemSelected(digitalItem: DigitalItem) {
-                val message = args.message
-                callback?.digitalItemSelected(digitalItem, message)
-                dismiss()
+                if (alertDialogViewModel.isUserVerified()) {
+                    val message = args.message
+                    callback?.digitalItemSelected(digitalItem, message)
+                    dismiss()
+                } else {
+                    alertDialogViewModel.showVerifyEmailDialog(this@DICatalogFragment, fragmentManager)
+                }
             }
         })
     }
     private val viewModel: DICatalogViewModel by viewModels { viewModelFactory }
     private val walletViewModel: WalletViewModel by viewModels { viewModelFactory }
+    private val alertDialogViewModel: AlertDialogViewModel by viewModels { viewModelFactory }
     private lateinit var binding: FragmentDiCatalogBinding
 
     override fun getTheme() = if (releaseDesignConfig.isReleaseDesignActive()) {
@@ -73,12 +80,7 @@ class DICatalogFragment @Inject constructor(
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it.digitalItems.state)
         })
-        binding.buyGoldButton.setOnClickListener {
-            val action = DICatalogFragmentDirections.actionDigitalItemListDialogFragmentToGoldBundlesFragment(BuyGoldOption.UsingPlayStore, true)
-            val fragment = GoldBundlesFragment(picasso, releaseDesignConfig)
-            fragment.arguments = action.arguments
-            fragment.maybeShow(fragmentManager, "buyGold")
-        }
+        binding.buyGoldButton.setOnClickListener(buyGoldListener)
         if (releaseDesignConfig.isReleaseDesignActive()) {
             binding.buyGoldButton.text = getString(R.string.buy_gold_lowercase)
             binding.diCatalogTitle.text = getString(R.string.send_gold_to_user_lowercase, binding.username)
@@ -87,9 +89,24 @@ class DICatalogFragment @Inject constructor(
         }
     }
 
+    private var buyGoldListener = View.OnClickListener {
+        if (alertDialogViewModel.isUserVerified()) {
+            val action = DICatalogFragmentDirections.actionDigitalItemListDialogFragmentToGoldBundlesFragment(BuyGoldOption.UsingPlayStore, true)
+            val fragment = GoldBundlesFragment(picasso, releaseDesignConfig)
+            fragment.arguments = action.arguments
+            fragment.maybeShow(fragmentManager, "buyGold")
+        } else {
+            alertDialogViewModel.showVerifyEmailDialog(this, fragmentManager)
+        }
+    }
+
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         callback?.onDismissMessageDialog()
+    }
+
+    override fun onResendEmail() {
+        alertDialogViewModel.resendEmail()
     }
 }
 

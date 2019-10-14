@@ -29,5 +29,7 @@ class NotificationsFragment @Inject constructor(
             notificationsAdapter.submitList(it)
             viewModel.markNotificationsViewed()
         })
+
+        observeFollowEvents()
     }
 }

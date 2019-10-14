@@ -28,6 +28,9 @@ abstract class FollowListFragment(private val caidListAdapter: CaidListAdapter) 
             adapter = caidListAdapter
             setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
+
+        observeFollowEvents()
+
         viewModel.caid = getCAID()
         viewModel.followList.observe(viewLifecycleOwner, Observer {
             viewModel.isEmptyFollowList = it.isEmpty()

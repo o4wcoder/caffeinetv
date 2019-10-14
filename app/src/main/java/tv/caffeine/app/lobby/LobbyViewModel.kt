@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import tv.caffeine.app.api.VersionCheckError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
@@ -120,7 +121,12 @@ class LobbyViewModel @Inject constructor(
 
     fun sendVerificationEmail() {
         viewModelScope.launch {
-            accountRepository.resendVerification()
+            val result = accountRepository.resendVerification()
+            when (result) {
+                is CaffeineEmptyResult.Success -> Timber.d("Successfully resent verification email")
+                is CaffeineEmptyResult.Error -> Timber.e("Error resending verification email")
+                is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+            }
         }
     }
 }

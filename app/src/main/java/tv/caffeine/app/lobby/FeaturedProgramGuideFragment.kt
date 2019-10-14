@@ -29,6 +29,7 @@ class FeaturedProgramGuideFragment @Inject constructor(
         binding = FragmentFeaturedProgramGuideBinding.bind(view).apply {
             configure(this)
         }
+        observeFollowEvents()
     }
 
     override fun onDestroyView() {

@@ -48,7 +48,11 @@ class GoldAndCreditsFragment @Inject constructor(
     }
 
     private fun navigateToBuyGold(buyGoldOption: BuyGoldOption) {
-        val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToGoldBundlesFragment(buyGoldOption, false)
-        findNavController().safeNavigate(action)
+        if (isUserEmailVerified()) {
+            val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToGoldBundlesFragment(buyGoldOption, false)
+            findNavController().safeNavigate(action)
+        } else {
+            showVerifyEmailDialog()
+        }
     }
 }

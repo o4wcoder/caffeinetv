@@ -359,4 +359,10 @@
     <!-- Dev options -->
     <string name="dev_options_fragment_title" translatable="false">Dev Options</string>
     <string name="dev_options_version" translatable="false">version: <xliff:g example="0.20" id="versionName">%s</xliff:g></string>
+
+    <!--  Verify Email  -->
+    <string name="resend_email_dialog_button">Resend Email</string>
+    <string name="verify_email_dialog_title">Confirm Your Account</string>
+    <string name="verify_email_dialog_subtitle">Confirm your account to buy gold, react and give to your faves.</string>
+    <string name="verify_email_success_dialog_title">Confirmation Email Sent</string>
 </resources>

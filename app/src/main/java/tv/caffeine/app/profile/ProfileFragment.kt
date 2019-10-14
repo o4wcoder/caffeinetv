@@ -10,18 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentProfileBinding
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.FollowButtonDecorator
 import tv.caffeine.app.ui.FollowButtonDecorator.Style
-import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.navigateToUnfollowUserDialog
 import tv.caffeine.app.util.safeNavigate
@@ -35,19 +30,7 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
     private var isFollowed: Boolean = false
     private val callback = object : FollowManager.Callback() {
         override fun follow(caid: CAID) {
-            viewModel.follow(caid).observe(viewLifecycleOwner, Observer { result ->
-                when (result) {
-                    is CaffeineEmptyResult.Error -> {
-                        if (result.error.isMustVerifyEmailError()) {
-                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.maybeShow(fragmentManager, "verifyEmail")
-                        } else {
-                            Timber.e("Couldn't follow user ${result.error}")
-                        }
-                    }
-                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                }
-            })
+            viewModel.follow(caid)
         }
 
         override fun unfollow(caid: CAID) {
@@ -80,6 +63,7 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
                 FollowButtonDecorator(if (userProfile.isFollowed) Style.FOLLOWING else Style.FOLLOW).decorate(this)
             }
         })
+        observeFollowEvents()
         binding.lifecycleOwner = viewLifecycleOwner
         binding.followingContainer.setOnClickListener { showFollowingList() }
         binding.followerContainer.setOnClickListener { showFollowersList() }
