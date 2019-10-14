@@ -749,7 +749,7 @@
     </style>
 
     <style name="SignUpText.SubTitle" parent="CaffeineText.Medium">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="SignUpErrorText" parent="FormErrorText.LightMode" />
@@ -758,11 +758,6 @@
 
     <style name="SignUpBodyText" parent="CaffeineText.Light">
         <item name="android:textColor">@color/dark_gray</item>
-    </style>
-
-    <style name="SignUpLinkText" parent="CaffeineText.Release">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/pure_blue</item>
     </style>
 
 </resources>

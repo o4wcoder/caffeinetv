@@ -68,8 +68,7 @@ private val destinationsWithCustomToolbar = arrayOf(
     R.id.friendsWatchingFragment,
     R.id.sendDigitalItemFragment,
     R.id.confirmEmailFragment,
-    R.id.velvetRopeFragment,
-    R.id.welcomeFragment
+    R.id.velvetRopeFragment
 )
 
 private val destinationWithReleaseToolbar = arrayOf(
@@ -90,8 +89,7 @@ private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.friendsWatchingFragment,
     R.id.sendDigitalItemFragment,
     R.id.confirmEmailFragment,
-    R.id.velvetRopeFragment,
-    R.id.welcomeFragment
+    R.id.velvetRopeFragment
 )
 
 private val destinationsLoginWithDarkMode = arrayOf(
@@ -118,8 +116,7 @@ private val destinationInPortrait = arrayOf(
     R.id.signUpFragment,
     R.id.signInFragment,
     R.id.forgotFragment,
-    R.id.mfaCodeFragment,
-    R.id.welcomeFragment
+    R.id.mfaCodeFragment
 )
 
 private val destinationInImmersiveMode = arrayOf(
