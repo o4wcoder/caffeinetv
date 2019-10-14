@@ -402,6 +402,10 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="BroadcastTitle.Night.Release">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
     <style name="FollowText" parent="CaffeineText">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:paddingStart">8dp</item>

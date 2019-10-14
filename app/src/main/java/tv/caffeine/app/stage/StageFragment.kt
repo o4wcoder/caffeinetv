@@ -9,6 +9,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -155,6 +156,11 @@ class StageFragment @Inject constructor(
         })
 
         stageProfileOverlayViewModel = StageProfileOverlayViewModel(context!!, ::onProfileToggleButtonClick)
+
+        // TODO: When release design goes live, remove this and just update styles
+        if (releaseDesignConfig.isReleaseDesignActive()) {
+            TextViewCompat.setTextAppearance(binding.broadcastTitleTextView, R.style.BroadcastTitle_Night_Release)
+        }
 
         configureFriendsWatchingIndicator()
 
