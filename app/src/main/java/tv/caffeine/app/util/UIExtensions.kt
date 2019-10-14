@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.text.InputFilter
 import android.text.Spannable
@@ -18,6 +19,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.ColorRes
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
@@ -149,6 +151,9 @@ fun Activity.setNavigationBarDarkMode(isDarkMode: Boolean) {
 fun Activity.showSnackbar(@StringRes resId: Int) {
     Snackbar.make(window.decorView, resId, Snackbar.LENGTH_SHORT).show()
 }
+
+fun Activity.getAssetFile(@IdRes fileResId: Int): Uri =
+    Uri.parse("android.resource://$packageName/$fileResId")
 
 fun Fragment.showSnackbar(@StringRes resId: Int) {
     val view = this.view ?: return

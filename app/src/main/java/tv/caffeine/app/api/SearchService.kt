@@ -12,6 +12,6 @@ interface SearchService {
     fun searchUsers(@Body searchQueryBody: SearchQueryBody): Deferred<Response<SearchUsersResult>>
 }
 
-class SearchQueryBody(@SerializedName("q") val query: String)
+class SearchQueryBody(@SerializedName("q") val query: String, val sort: String = "BROADCASTING_FIRST")
 class SearchUsersResult(val results: Array<SearchUserItem>)
 class SearchUserItem(val user: User, val score: Float, val id: String)

@@ -14,7 +14,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
-import tv.caffeine.app.api.BroadcastsService
+import tv.caffeine.app.api.ContentGuideService
 import tv.caffeine.app.api.FeaturedGuideList
 import tv.caffeine.app.api.FeaturedGuideListing
 import tv.caffeine.app.lobby.LoadFeaturedProgramGuideUseCase
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 class LoadFeaturedProgramGuideUseCaseTests {
 
-    @MockK lateinit var broadcastsService: BroadcastsService
+    @MockK lateinit var contentGuideService: ContentGuideService
     @MockK lateinit var featuredGuideResponse: Deferred<Response<FeaturedGuideList>>
     @MockK lateinit var followManager: FollowManager
     private val gson = Gson()
@@ -31,7 +31,7 @@ class LoadFeaturedProgramGuideUseCaseTests {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        every { broadcastsService.featuredGuide() } returns featuredGuideResponse
+        every { contentGuideService.featuredGuide() } returns featuredGuideResponse
         coEvery { followManager.refreshFollowedUsers() } returns Unit
     }
 
@@ -43,7 +43,7 @@ class LoadFeaturedProgramGuideUseCaseTests {
                 buildFeaturedGuideListing(1, 1)
         ))
         coEvery { featuredGuideResponse.await() } returns Response.success(featuredGuideList)
-        val subject = LoadFeaturedProgramGuideUseCase(broadcastsService, followManager, gson)
+        val subject = LoadFeaturedProgramGuideUseCase(contentGuideService, followManager, gson)
         val result = runBlocking { subject() }
         assertEquals(featuredGuideList.listings.size + dateHeaderCount, result.size)
         coVerify(exactly = 1) { followManager.refreshFollowedUsers() }
@@ -58,7 +58,7 @@ class LoadFeaturedProgramGuideUseCaseTests {
                 buildFeaturedGuideListing(2, TimeUnit.DAYS.toMillis(1))
         ))
         coEvery { featuredGuideResponse.await() } returns Response.success(featuredGuideList)
-        val subject = LoadFeaturedProgramGuideUseCase(broadcastsService, followManager, gson)
+        val subject = LoadFeaturedProgramGuideUseCase(contentGuideService, followManager, gson)
         val result = runBlocking { subject() }
         assertEquals(featuredGuideList.listings.size + dateHeaderCount, result.size)
         coVerify(exactly = 1) { followManager.refreshFollowedUsers() }
@@ -67,7 +67,7 @@ class LoadFeaturedProgramGuideUseCaseTests {
     @Test
     fun `empty featured program guide on error`() {
         coEvery { featuredGuideResponse.await() } returns Response.error(404, ResponseBody.create(null, "{}"))
-        val subject = LoadFeaturedProgramGuideUseCase(broadcastsService, followManager, gson)
+        val subject = LoadFeaturedProgramGuideUseCase(contentGuideService, followManager, gson)
         val result = runBlocking { subject() }
         assertTrue(result.isEmpty())
         coVerify(exactly = 0) { followManager.refreshFollowedUsers() }
@@ -76,7 +76,7 @@ class LoadFeaturedProgramGuideUseCaseTests {
     @Test
     fun `empty featured program guide on failure`() {
         coEvery { featuredGuideResponse.await() } throws Exception()
-        val subject = LoadFeaturedProgramGuideUseCase(broadcastsService, followManager, gson)
+        val subject = LoadFeaturedProgramGuideUseCase(contentGuideService, followManager, gson)
         val result = runBlocking { subject() }
         assertTrue(result.isEmpty())
         coVerify(exactly = 0) { followManager.refreshFollowedUsers() }

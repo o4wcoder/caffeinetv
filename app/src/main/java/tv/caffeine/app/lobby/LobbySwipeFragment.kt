@@ -11,10 +11,12 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.logScreen
 import tv.caffeine.app.databinding.FragmentLobbySwipeBinding
 import tv.caffeine.app.feature.DevOptionsDialog
@@ -26,6 +28,7 @@ import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.ViewPagerColorOnPageChangeListener
 import tv.caffeine.app.ui.loadRoundedImage
+import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,7 +36,8 @@ class LobbySwipeFragment @Inject constructor(
     private val firebaseAnalytics: FirebaseAnalytics,
     private val adapterFactory: LobbyPagerAdapter.Factory,
     private val releaseDesignConfig: ReleaseDesignConfig,
-    private val featureConfig: FeatureConfig
+    private val featureConfig: FeatureConfig,
+    private val analytics: Analytics
 ) : CaffeineFragment(R.layout.fragment_lobby_swipe) {
 
     private lateinit var binding: FragmentLobbySwipeBinding
@@ -44,7 +48,12 @@ class LobbySwipeFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sessionCheckViewModel.sessionCheck.observe(this, Observer { result ->
-            handle(result) {}
+            handle(result) {
+                // TODO: uncomment it once we confirm that the attribution works
+                analytics.handleDeferredDeeplink { directions ->
+                    directions?.let { findNavController().safeNavigate(it) }
+                }
+            }
         })
     }
 

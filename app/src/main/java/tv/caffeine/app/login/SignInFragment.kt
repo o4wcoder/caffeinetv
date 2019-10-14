@@ -3,6 +3,7 @@ package tv.caffeine.app.login
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
+import androidx.annotation.VisibleForTesting
 import androidx.core.view.isInvisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -17,7 +18,6 @@ import tv.caffeine.app.analytics.logEvent
 import tv.caffeine.app.databinding.FragmentSignInBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.safeNavigate
-import tv.caffeine.app.util.setDarkMode
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
 
@@ -25,12 +25,12 @@ class SignInFragment @Inject constructor(
     private val firebaseAnalytics: FirebaseAnalytics
 ) : CaffeineFragment(R.layout.fragment_sign_in) {
 
-    private lateinit var binding: FragmentSignInBinding
+    @VisibleForTesting
+    lateinit var binding: FragmentSignInBinding
 
     private val signInViewModel: SignInViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activity?.setDarkMode(true)
         binding = FragmentSignInBinding.bind(view)
         configure(binding)
     }
@@ -43,13 +43,15 @@ class SignInFragment @Inject constructor(
         binding.usernameEditTextLayout.afterTextChanged { validate() }
         binding.passwordEditTextLayout.setOnActionGo { login() }
         binding.passwordEditTextLayout.afterTextChanged { validate() }
-        signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { outcome ->
-            when (outcome) {
-                is SignInOutcome.Success -> onSuccess()
-                is SignInOutcome.MFARequired -> onMfaRequired()
-                is SignInOutcome.MustAcceptTerms -> onMustAcceptTerms()
-                is SignInOutcome.Error -> onError(outcome)
-                is SignInOutcome.Failure -> onFailure(outcome.exception)
+        signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let { outcome ->
+                when (outcome) {
+                    is SignInOutcome.Success -> onSuccess()
+                    is SignInOutcome.MFARequired -> onMfaRequired()
+                    is SignInOutcome.MustAcceptTerms -> onMustAcceptTerms()
+                    is SignInOutcome.Error -> onError(outcome)
+                    is SignInOutcome.Failure -> onFailure(outcome.exception)
+                }
             }
         })
     }
@@ -87,7 +89,7 @@ class SignInFragment @Inject constructor(
         val username = binding.usernameEditTextLayout.text
         val password = binding.passwordEditTextLayout.text
         val action =
-                SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)
+            SignInFragmentDirections.actionSignInFragmentToMfaCodeFragment(username, password, null, null)
         navController.safeNavigate(action)
     }
 

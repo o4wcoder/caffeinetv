@@ -8,7 +8,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.BR
+import tv.caffeine.app.api.Account
+import tv.caffeine.app.api.MfaCode
+import tv.caffeine.app.api.SignInBody
+import tv.caffeine.app.api.SignInResult
 import tv.caffeine.app.api.model.CaffeineEmptyResult
+import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.repository.TwoStepAuthRepository
 import tv.caffeine.app.ui.CaffeineViewModel
@@ -27,6 +32,7 @@ class TwoStepAuthViewModel @Inject constructor(
     val mfaEnabledUpdate: LiveData<Event<Boolean>> = _mfaEnabledUpdate.map { it }
     private val _startEnableMfaUpdate = MutableLiveData<Event<Boolean>>()
     val startEnableMfaUpdate: LiveData<Event<Boolean>> = _startEnableMfaUpdate.map { it }
+    private val _signInWithMfaCodeUpdate = MutableLiveData<Event<CaffeineResult<SignInResult>>>()
 
     fun startEnableMtaSetup() {
         sendMTAEmailCode()
@@ -56,6 +62,15 @@ class TwoStepAuthViewModel @Inject constructor(
         }
     }
 
+    fun signInWithMfaCode(username: String?, password: String?, caid: String?, loginToken: String?, code: MfaCode?): LiveData<Event<CaffeineResult<SignInResult>>> {
+        viewModelScope.launch {
+            val signInBody = SignInBody(Account(username, password, caid, loginToken), code)
+            val result = twoStepAuthRepository.signInWithMfaCode(signInBody)
+            _signInWithMfaCodeUpdate.value = Event(result)
+        }
+        return _signInWithMfaCodeUpdate
+    }
+
     fun disableAuth() {
         viewModelScope.launch {
             val result = twoStepAuthRepository.disableAuth()
@@ -71,6 +86,11 @@ class TwoStepAuthViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun setVerificationCode(verificationCode: String) {
+        this.verificationCode = verificationCode
+        notifyPropertyChanged(BR.verificationCodeButtonEnabled)
     }
 
     fun onVerificationCodeTextChanged(text: CharSequence?) {

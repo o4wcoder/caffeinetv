@@ -114,10 +114,22 @@
         <item name="cornerRadius">30dp</item>
     </style>
     <style name="Button.Big.ReleaseUI">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
         <item name="android:layout_width">@dimen/medium_button_width</item>
         <item name="android:layout_height">@dimen/big_button_height</item>
-        <item name="backgroundTint">@color/dark_mode_button_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/light_mode_button_background</item>
+    </style>
+    <style name="Button.Big.ReleaseUI.Dark" parent="Button.Big.ReleaseUI">
         <item name="android:textColor">@color/black</item>
+        <item name="backgroundTint">@color/dark_mode_button_background</item>
+    </style>
+
+    <style name="Button.Big.LightMode">
+        <item name="android:layout_width">@dimen/medium_button_width</item>
+        <item name="android:layout_height">@dimen/big_button_height</item>
+        <item name="backgroundTint">@color/light_mode_button_background</item>
+        <item name="android:textColor">@color/light_mode_button_text</item>
     </style>
     <style name="Button.Big.FixedSize">
         <item name="android:layout_height">@dimen/big_button_height</item>
@@ -150,11 +162,14 @@
     <style name="Button.Big.FixedSize.Facebook">
         <item name="android:backgroundTint">#4267b2</item>
     </style>
+
     <style name="Button.Big.FixedSize.Twitter">
         <item name="android:backgroundTint">#1da1f2</item>
     </style>
+
     <style name="Button.Big.FixedSize.Email">
-        <item name="android:backgroundTint">@color/black</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="MenuTextView">
@@ -208,7 +223,8 @@
 
     <style name="Button.Action">
         <item name="android:includeFontPadding">false</item>
-        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
         <item name="android:maxLines">1</item>
         <item name="android:height">@dimen/action_button_height</item>
         <item name="android:inset">0dp</item>
@@ -235,25 +251,54 @@
         <item name="android:fontFamily">@font/poppins_bold</item>
         <item name="android:textStyle">bold</item> <!-- poppins_bold is not bold with the normal text style on Android M -->
     </style>
+    <style name="CaffeineText.SemiBold">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
     <style name="CaffeineText.Medium">
         <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
     <style name="CaffeineText.Light" parent="CaffeineText">
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
+
+    <!-- Dark Mode Text -->
+    <style name="CaffeineText.DarkMode" parent="CaffeineText.Release">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="CaffeineText.DarkMode.BoldFont" parent="CaffeineText.DarkMode">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CaffeineText.DarkMode.MediumFont" parent="CaffeineText.DarkMode">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
+    <style name="CaffeineText.DarkMode.LightFont" parent="CaffeineText.DarkMode">
+        <item name="android:fontFamily">@font/poppins_light</item>
+    </style>
+
     <style name="UnauthScreenTitle" parent="CaffeineText.Bold">
         <item name="android:textSize">30sp</item>
         <item name="android:textAlignment">textStart</item>
     </style>
+
     <style name="UnauthScreenTitle.DarkMode">
         <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="UnauthScreenSubtitle" parent="CaffeineText.Medium">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
     </style>
     <style name="LinkText" parent="CaffeineText.Medium">
         <item name="android:textColor">@color/dark_gray</item>
     </style>
     <style name="LinkText.Landing">
-        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16dp</item>
     </style>
     <style name="FormErrorText" parent="CaffeineText.Light">
         <item name="android:textAlignment">center</item>
@@ -264,6 +309,13 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="FormErrorText.LightMode">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/warning_red</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="CaffeineEditTextLayoutHint" parent="CaffeineText.Medium" >
         <item name="android:textSize">@dimen/caffeine_edit_text_layout_edit_text_text_size</item>
     </style>
@@ -296,6 +348,10 @@
     <style name="NoNetworkBody" parent="CaffeineText.Light">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
+    <style name="FullscreenModalTitle" parent="CaffeineText.Bold">
+        <item name="android:textSize">24sp</item>
     </style>
 
     <!-- End of the new text design from Apr. 2019 (Landing page) -->
@@ -344,6 +400,10 @@
     </style>
     <style name="BroadcastTitle.Night">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="BroadcastTitle.Night.Release">
+        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
     <style name="FollowText" parent="CaffeineText">
@@ -659,6 +719,50 @@
     <style name="Profile.Name">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/poppins_light</item>
+    </style>
+
+    <!-- Login  -->
+    <style name="LoginText" parent="CaffeineText.DarkMode" />
+
+    <style name="LoginText.Title" parent="CaffeineText.DarkMode.BoldFont">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="LoginText.SubTitle" parent="CaffeineText.DarkMode.MediumFont">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="LoginErrorText" parent="FormErrorText.DarkMode" />
+
+    <style name="LoginText.Link" parent="CaffeineText.DarkMode.MediumFont">
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="LoginButton" parent="Button.Big.ReleaseUI.Dark" />
+
+    <!--Sign Up -->
+    <style name="SignUpText" parent="CaffeineText.Release"/>
+
+    <style name="SignUpText.Title" parent="CaffeineText.Bold">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="SignUpText.SubTitle" parent="CaffeineText.Medium">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="SignUpErrorText" parent="FormErrorText.LightMode" />
+
+    <style name="SignUpButton" parent="Button.Big.LightMode"/>
+
+    <style name="SignUpBodyText" parent="CaffeineText.Light">
+        <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
+    <style name="SignUpLinkText" parent="CaffeineText.Release">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/pure_blue</item>
     </style>
 
 </resources>

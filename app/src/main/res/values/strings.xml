@@ -13,46 +13,48 @@
 
     <string name="pre_release">PRE-RELEASE</string>
     <string name="landing_signup_prompt">Watch live streams with your friends.</string>
-    <string name="continue_with_facebook">Continue with Facebook</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
-    <string name="sign_up_with_email">Sign up with email</string>
+    <string name="continue_with_facebook">continue with facebook</string>
+    <string name="continue_with_twitter">continue with twitter</string>
+    <string name="sign_up_with_email">sign up with email</string>
     <string name="error_facebook_callback">Error connecting to Facebook</string>
-    <string name="sign_up_for_caffeine">Sign up\nfor Caffeine</string>
-    <string name="sign_up_description">Create an account to watch and create live broadcasts on Caffeine.</string>
-    <string name="sign_up_failure">Could not sign up. Please try again later.</string>
-    <string name="sign_in_with_username_prompt">Already have an account?</string>
-    <string name="sign_in_with_username">Sign in with username</string>
-    <string name="sign_in_failure">Could not sign in. Please try again later.</string>
     <string name="twitter_login">Twitter Login</string>
     <string name="twitter_login_failed">Twitter login failed</string>
     <string name="success_disconnecting_social_account">Social account disconnected</string>
     <string name="failure_disconnecting_social_account">Failed to disconnect social account</string>
     <string name="social_account_rate_limit_exceeded">Social account rate limit exceeded</string>
 
+    <!-- Sign Up/In -->
+
+    <string name="sign_up_title">Let\'s get\nstarted</string>
+    <string name="sign_up_description">Create an account to watch and create live broadcasts on Caffeine.</string>
+    <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
+    <string name="sign_up_email_hint">Email Address</string>
+    <string name="sign_up_password_hint">Create a Password</string>
+    <string name="sign_up_password_length_hint">Passwords needs to be at least 7 characters</string>
+    <string name="sign_up_username_hint">Create a Username</string>
+    <string name="sign_up_birthdate_hint">Birthdate</string>
+    <string name="sign_in_with_username">log in</string>
+    <string name="sign_in_failure">Could not sign in. Please try again later.</string>
+
     <string name="unauth_hint_username">Username</string>
-    <string name="unauth_hint_email">Email</string>
+    <string name="unauth_hint_email">Email Address</string>
     <string name="unauth_hint_password">Password</string>
     <string name="sign_in_button">Sign in</string>
     <string name="forget_password">Forget password?</string>
-    <string name="reset_your_password">Reset your password</string>
+    <string name="forgot_password_no_worries">Forgot your\npassword?\n\nNo worries.</string>
+    <string name="help_is_on_the_way">Help is on the way</string>
+    <string name="reset_password_button">reset password</string>
+    <string name="back_to_login_button">back to login</string>
+    <string name="check_your_email">Check your email to reset your password</string>
     <string name="sign_up_button">Sign up</string>
-    <string name="i_agree_to_legal"><![CDATA[By continuing, you agree to Caffeine\'s <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a>, and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>.]]></string>
+    <string name="i_agree_to_legal"><![CDATA[By continuing, you agree to Caffeine\'s <a href="https://www.caffeine.tv/tos.html"><b>Terms of Service</b></a>, <a href="https://www.caffeine.tv/privacy.html"><b>Privacy Policy</b></a>, and <a href="https://www.caffeine.tv/guidelines.html"><b>Community Guidelines</b></a>.]]></string>
     <string name="must_agree_to_legal"><![CDATA[Caffeine requires your consent to personalize your experience based on your relationships and activities. We have new <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>. Please read them and agree to them to continue using Caffeine.]]></string>
-    <string name="sign_up_hint_birthday">Birthday</string>
     <string name="send_email_button">Send email</string>
     <string name="caffeine_logo_content_description">Caffeine logo</string>
     <string name="sign_in_title">Welcome\nback</string>
     <string name="reset_your_password_description">We\'ll send you an email with a link to reset your password.</string>
     <string name="reset_your_password_failure">Could not reset your password. Please try again later.</string>
     <string name="email_sent_message">Email Sent. Please check your inbox.</string>
-    <string name="mfa_code_title">Code Emailed</string>
-    <string name="mfa_code_subtitle">A verification code was sent to your email. Please enter the code below or <![CDATA[<a href=resend_email>resend email</a>]]>.</string>
-    <string name="enter_code_title">Enter Code</string>
-    <string name="mfa_code_hint">Verification Code</string>
-    <string name="submit_mfa_code">Submit</string>
-    <string name="mfa_status_on">On</string>
-    <string name="mfa_status_off">Off</string>
-    <string name="mfa_failure">Could not verify the code. Please try again later.</string>
     <string name="manage_mfa_coming_soon">Please manage two factor authentication on the web</string>
     <string name="sign_out_button">sign out</string>
     <string name="sign_out_question">Sign out of account?</string>
@@ -63,6 +65,13 @@
     <string name="delete_account_incorrect_password_error">Password is incorrect.</string>
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
+    <string name="get_notified">get notified</string>
+    <string name="welcome_title">Welcome to\nCaffeine</string>
+    <string name="welcome_subtitle_one">Get ready to watch, react\nand follow you faves to\nyour heart\'s content</string>
+    <string name="welcome_subtitle_two">But before you do, check your\nemail to confirm your account</string>
+    <string name="welcome_resend_email">Resend Email</string>
+    <string name="welcome_lets_go_button">let\'s go</string>
+    <string name="welcome_email_sent_to">Email sent to</string>
 
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
@@ -177,7 +186,7 @@
     <string name="settings_button">Settings</string>
     <string name="add_your_full_name">Add your full name</string>
     <string name="verify_email_to_follow_and_comment">Verify your email to follow and comment.</string>
-    <string name="verify_email_to_follow_and_comment_release">To broadcast, react and follow just verify your email address.</string>
+    <string name="verify_email_to_follow_and_comment_release">Confirm your account to react and give to your faves.</string>
     <string name="verify_email_to_follow_more_users">Verify your email to follow more users</string>
     <string name="resend_email">resend email</string>
 
@@ -185,6 +194,10 @@
 
     <string name="error_out_of_capacity">Caffeine servers are full.\nCheck back later.</string>
     <string name="out_of_capacity_title">Caffeine servers are full</string>
+    <string name="velvet_rope_title">Welcome <![CDATA[<font color=\"#0000ff\">]]>@<xliff:g example="randomUser" id="username">%1$s</xliff:g><![CDATA[</font>]]>!</string>
+    <string name="velvet_rope_section1">We\'re at maximum capacity, so come back in a little bit and we\'ll let you in to join the party.</string>
+    <string name="velvet_rope_section2">Want to know when we\'re ready for you? Turn on notifications.</string>
+    <string name="velvet_rope_label" translatable="false">Velvet rope</string> <!-- for logging only -->
 
     <!-- Gold and Credits -->
     <string name="gold_and_credits_button">Gold and credits</string>
@@ -280,7 +293,7 @@
     <string name="email_verification_record_not_found">Record not found</string>
     <string name="email_verification_failed">Email verification failed</string>
     <string name="sending_verification_email_title">Sending Verification Email</string>
-    <string name="sending_verification_email_message">Follow the link in the email sent to <xliff:g example="lia.n@me.com" id="email">%1$s</xliff:g> to verify your account.</string>
+    <string name="sending_verification_email_message">Email sent to <xliff:g example="lia.n@me.com" id="email">%1$s</xliff:g></string>
 
     <!-- Shared preference keys -->
     <string name="is_first_time_on_stage" translatable="false">is_first_time_on_stage</string>
@@ -334,6 +347,15 @@
     <string name="two_step_auth_dialog_off_disable_button">Disable</string>
     <string name="two_step_auth_dialog_on_message">Do you want to enable Two-Step Authentication?</string>
     <string name="two_step_auth_dialog_on_enable_button">Enable</string>
+    <string name="two_step_auth_login_title">2-Step\nVerification</string>
+    <string name="two_step_auth_login_subtitle">Enter the verification code sent to your email.</string>
+    <string name="two_step_auth_login_resend_link">Send Another Code</string>
+    <string name="two_step_auth_login_continue_button">Continue</string>
+    <string name="enter_code_title">Enter Code</string>
+    <string name="mfa_code_hint">Verification Code</string>
+    <string name="submit_mfa_code">Submit</string>
+    <string name="mfa_status_on">On</string>
+    <string name="mfa_status_off">Off</string>
 
     <!-- Chat -->
     <string name="chat_react_button">react</string>
@@ -342,4 +364,5 @@
 
     <!-- Dev options -->
     <string name="dev_options_fragment_title" translatable="false">Dev Options</string>
+    <string name="dev_options_version" translatable="false">version: <xliff:g example="0.20" id="versionName">%s</xliff:g></string>
 </resources>

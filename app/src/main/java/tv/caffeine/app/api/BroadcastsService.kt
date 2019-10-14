@@ -13,13 +13,15 @@ interface BroadcastsService {
     @GET("v1/broadcasts/{broadcastId}")
     fun broadcastDetails(@Path("broadcastId") broadcastId: String): Deferred<Response<BroadcastEnvelope>>
 
-    @GET("public/v1/guide/hostable")
-    fun guide(): Deferred<Response<GuideList>>
-
     @GET("v1/live-hostable-broadcasters")
     fun liveHostableBroadcasters(): Deferred<Response<BroadcasterList>>
+}
 
-    @GET("public/v1/guide/featured")
+interface ContentGuideService {
+    @GET("v1/hostable")
+    fun guide(): Deferred<Response<GuideList>>
+
+    @GET("v1/featured")
     fun featuredGuide(): Deferred<Response<FeaturedGuideList>>
 }
 

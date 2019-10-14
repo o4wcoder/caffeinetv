@@ -2,6 +2,7 @@ package tv.caffeine.app.lobby
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -18,7 +19,6 @@ import tv.caffeine.app.lobby.release.LargeOnlineBroadcasterCard
 import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
 import tv.caffeine.app.notifications.NotificationCountViewModel
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.util.navigateToSendingVerificationEmailDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Provider
 
@@ -60,7 +60,7 @@ abstract class LobbyV5Fragment constructor(
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { lobby ->
                 val items = LobbyItem.parse(lobby)
-                lobbyAdapter.submitList(items, mapOf(), mapOf(), "")
+                lobbyAdapter.submitList(items, mapOf(), mapOf(), lobby.pagePayload.id)
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })
@@ -68,7 +68,7 @@ abstract class LobbyV5Fragment constructor(
             binding.lobbySwipeRefreshLayout.isRefreshing = false
             handle(result) { detailPage ->
                 val items = LobbyItem.parse(detailPage)
-                lobbyAdapter.submitList(items, mapOf(), mapOf(), "")
+                lobbyAdapter.submitList(items, mapOf(), mapOf(), detailPage.pagePayload.id)
                 binding.lobbyLoadingIndicator.isVisible = false
             }
         })
@@ -77,7 +77,8 @@ abstract class LobbyV5Fragment constructor(
             binding.verifyEmailContainer.isVisible = (user.emailVerified == false)
             binding.resendEmailButton.setOnClickListener {
                 viewModel.sendVerificationEmail()
-                fragmentManager?.navigateToSendingVerificationEmailDialog(email)
+                binding.verifyEmailTextView.text = getString(R.string.sending_verification_email_message, email)
+                it.isInvisible = true
             }
         })
     }

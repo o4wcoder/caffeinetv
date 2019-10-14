@@ -12,6 +12,8 @@ import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.login.ArkoseViewModel
 import tv.caffeine.app.login.LegalAgreementViewModel
 import tv.caffeine.app.login.SignInViewModel
+import tv.caffeine.app.login.SignUpViewModel
+import tv.caffeine.app.login.WelcomeViewModel
 import tv.caffeine.app.notifications.NotificationCountViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.DeleteAccountViewModel
@@ -43,6 +45,11 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(SignInViewModel::class)
     abstract fun bindSignInViewModel(viewModel: SignInViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SignUpViewModel::class)
+    abstract fun bindSignUpViewModel(viewModel: SignUpViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -198,4 +205,9 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(NotificationCountViewModel::class)
     abstract fun bindNotificationCountViewModel(viewModel: NotificationCountViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(WelcomeViewModel::class)
+    abstract fun bindWelcomeViewModel(viewModel: WelcomeViewModel): ViewModel
 }

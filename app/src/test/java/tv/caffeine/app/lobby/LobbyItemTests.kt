@@ -154,7 +154,7 @@ class LobbyItemTests {
         maxLargeCardDisplayCount: Int?
     ) = LobbyQuery.Data(
         LobbyQuery.PagePayload(
-            "", listOf(
+            "", "", listOf(
                 LobbyQuery.Cluster(
                     "", LobbyQuery.Cluster.Fragments(
                         ClusterData(
@@ -176,7 +176,7 @@ class LobbyItemTests {
         cards: List<ClusterData.CategoryCard>
     ) = LobbyQuery.Data(
         LobbyQuery.PagePayload(
-            "", listOf(
+            "", "", listOf(
                 LobbyQuery.Cluster(
                     "", LobbyQuery.Cluster.Fragments(
                         ClusterData(

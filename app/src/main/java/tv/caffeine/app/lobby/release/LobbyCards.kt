@@ -89,14 +89,16 @@ abstract class AbstractLobbyBroadcaster(
     followManager: FollowManager,
     val broadcaster: Lobby.Broadcaster,
     private val lobbyImpressionAnalytics: LobbyImpressionAnalytics,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    private val allDistinctLiveBroadcasters: List<String>? = null
 ) : AbstractBroadcaster(followManager, broadcaster.user, coroutineScope) {
 
     override fun cardClicked() {
         coroutineScope.launch {
             lobbyImpressionAnalytics.cardClicked(broadcaster)
         }
-        val action = MainNavDirections.actionGlobalStagePagerFragment(username)
+        val action = MainNavDirections.actionGlobalStagePagerFragment(
+            username, allDistinctLiveBroadcasters?.toTypedArray())
         navigate(action)
     }
 
@@ -113,14 +115,18 @@ class OnlineBroadcaster @AssistedInject constructor (
     followManager: FollowManager,
     @Assisted broadcaster: Lobby.Broadcaster,
     @Assisted lobbyImpressionAnalytics: LobbyImpressionAnalytics,
-    @Assisted coroutineScope: CoroutineScope
-) : AbstractLobbyBroadcaster(followManager, broadcaster, lobbyImpressionAnalytics, coroutineScope) {
+    @Assisted coroutineScope: CoroutineScope,
+    @Assisted allDistinctLiveBroadcasters: List<String>? = null
+) : AbstractLobbyBroadcaster(
+    followManager, broadcaster, lobbyImpressionAnalytics, coroutineScope, allDistinctLiveBroadcasters
+) {
     @AssistedInject.Factory
     interface Factory {
         fun create(
             broadcaster: Lobby.Broadcaster,
             lobbyImpressionAnalytics: LobbyImpressionAnalytics,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
+            allDistinctLiveBroadcasters: List<String>?
         ): OnlineBroadcaster
     }
 
@@ -136,8 +142,9 @@ class OnlineBroadcaster @AssistedInject constructor (
     val mainPreviewImageUrl = broadcast?.mainPreviewImageUrl
     val pictureInPictureImageUrl = broadcast?.pictureInPictureImageUrl
     private val friendsWatchingText = formatFriendsWatchingShortString(context, broadcaster)
-        ?: context.getString(R.string.live_indicator_lowercase)
     val badgeText = broadcaster.badgeText?.let { it } ?: friendsWatchingText
+    val liveBadgeIndicatorVisibility = if (badgeText == null) View.VISIBLE else View.GONE
+    val liveBadgeTextVisibility = if (badgeText != null) View.VISIBLE else View.GONE
     val ageRestriction = broadcaster.ageRestriction
     val ageRestrictionVisibility = if (ageRestriction != null) View.VISIBLE else View.GONE
 

@@ -11,6 +11,7 @@ import tv.caffeine.app.api.NextAccountAction
 import tv.caffeine.app.api.SignInResult
 import tv.caffeine.app.api.generalErrorsString
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.api.usernameErrorsString
 import javax.inject.Inject
@@ -27,17 +28,19 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase
 ) : ViewModel() {
 
-    private val _signInOutcome = MutableLiveData<SignInOutcome>()
-    val signInOutcome: LiveData<SignInOutcome> = _signInOutcome.map { it }
+    private val _signInOutcome = MutableLiveData<Event<SignInOutcome>>()
+    val signInOutcome: LiveData<Event<SignInOutcome>> = _signInOutcome.map { it }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
             val result = signInUseCase(username, password)
-            _signInOutcome.value = when (result) {
-                is CaffeineResult.Success -> processSuccess(result.value)
-                is CaffeineResult.Error -> processError(result.error)
-                is CaffeineResult.Failure -> processFailure(result.throwable)
-            }
+            _signInOutcome.value = Event(
+                when (result) {
+                    is CaffeineResult.Success -> processSuccess(result.value)
+                    is CaffeineResult.Error -> processError(result.error)
+                    is CaffeineResult.Failure -> processFailure(result.throwable)
+                }
+            )
         }
     }
 

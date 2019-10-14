@@ -67,7 +67,9 @@ private val destinationsWithCustomToolbar = arrayOf(
     R.id.needsUpdateFragment,
     R.id.friendsWatchingFragment,
     R.id.sendDigitalItemFragment,
-    R.id.confirmEmailFragment
+    R.id.confirmEmailFragment,
+    R.id.velvetRopeFragment,
+    R.id.welcomeFragment
 )
 
 private val destinationWithReleaseToolbar = arrayOf(
@@ -87,7 +89,21 @@ private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.needsUpdateFragment,
     R.id.friendsWatchingFragment,
     R.id.sendDigitalItemFragment,
-    R.id.confirmEmailFragment
+    R.id.confirmEmailFragment,
+    R.id.velvetRopeFragment,
+    R.id.welcomeFragment
+)
+
+private val destinationsLoginWithDarkMode = arrayOf(
+    R.id.landingFragment,
+    R.id.signInFragment,
+    R.id.forgotFragment,
+    R.id.mfaCodeFragment
+)
+
+// TODO: fill this in with login screens that use light mode
+private val destinationsLoginWithLightMode = arrayOf(
+    R.id.signUpFragment
 )
 
 private val destinationsAsDialog = arrayOf(
@@ -97,9 +113,19 @@ private val destinationsAsDialog = arrayOf(
 
 private val destinationsWithDynamicLabel = arrayOf(R.id.lobbyDetailFragment)
 
-private val destinationInPortrait = arrayOf(R.id.landingFragment, R.id.signUpFragment)
+private val destinationInPortrait = arrayOf(
+    R.id.landingFragment,
+    R.id.signUpFragment,
+    R.id.signInFragment,
+    R.id.forgotFragment,
+    R.id.mfaCodeFragment,
+    R.id.welcomeFragment
+)
 
-private val destinationInImmersiveMode = arrayOf(R.id.stagePagerFragment)
+private val destinationInImmersiveMode = arrayOf(
+    R.id.stagePagerFragment,
+    R.id.landingFragment
+)
 
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
 @VisibleForTesting const val SCREEN_TITLE = "screenTitle"
@@ -218,6 +244,8 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
         updateImmersiveMode(destinationId)
+
+        updateLoginTheme(destinationId)
     }
 
     private fun createNotificationChannel() {
@@ -341,6 +369,12 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             setImmersiveMode()
         } else if (destinationId !in destinationsAsDialog) {
             unsetImmersiveMode()
+        }
+    }
+
+    private fun updateLoginTheme(destinationId: Int) {
+        if (destinationId in destinationsLoginWithDarkMode) {
+            setDarkMode(true)
         }
     }
 

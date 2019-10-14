@@ -18,9 +18,16 @@
             style="@style/LobbyCardTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:textColor="@color/black"
             android:text="@string/dev_options_fragment_title"/>
+
+        <TextView
+            style="@style/CaffeineText.Light"
+            android:id="@+id/version_text_view"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"/>
 
         <Switch
             style="@style/CaffeineSwitch"

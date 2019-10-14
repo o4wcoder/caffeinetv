@@ -34,6 +34,8 @@ class DevOptionsDialog : BottomSheetDialog {
     }
 
     private fun configure() {
+        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        binding.versionTextView.text = context.getString(R.string.dev_options_version, versionName)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         load(sharedPreferences)
         binding.okButton.setOnClickListener {

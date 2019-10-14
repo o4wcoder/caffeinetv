@@ -25,4 +25,8 @@ class ServerConfigModule {
     @Provides
     @CaffeineApi(Service.Events)
     fun providesEventsBaseUrl(serverConfig: ServerConfig) = serverConfig.events
+
+    @Provides
+    @CaffeineApi(Service.ContentGuide)
+    fun providesContentGuideBaseUrl(serverConfig: ServerConfig) = serverConfig.contentGuide
 }

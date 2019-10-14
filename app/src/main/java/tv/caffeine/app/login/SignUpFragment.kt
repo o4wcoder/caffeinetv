@@ -10,13 +10,11 @@ import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.View
 import android.widget.DatePicker
-import android.widget.TextView
 import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
@@ -24,8 +22,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.safetynet.SafetyNet
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.gson.Gson
-import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -35,23 +31,24 @@ import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
 import tv.caffeine.app.analytics.FirebaseEvent
 import tv.caffeine.app.analytics.logEvent
-import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.ApiErrorResult
 import tv.caffeine.app.api.CaffeineCredentials
-import tv.caffeine.app.api.SignUpAccount
-import tv.caffeine.app.api.SignUpBody
 import tv.caffeine.app.api.deniedErrorsString
 import tv.caffeine.app.api.dobErrorsString
 import tv.caffeine.app.api.emailErrorsString
 import tv.caffeine.app.api.generalErrorsString
+import tv.caffeine.app.api.isBirtdateError
+import tv.caffeine.app.api.isEmailError
+import tv.caffeine.app.api.isPasswordError
+import tv.caffeine.app.api.isUsernameError
 import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.passwordErrorsString
 import tv.caffeine.app.api.usernameErrorsString
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentSignUpBinding
 import tv.caffeine.app.settings.LegalDoc
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.stripUrlUnderline
 import tv.caffeine.app.util.convertLinks
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
@@ -61,14 +58,13 @@ import java.util.Locale
 import javax.inject.Inject
 
 class SignUpFragment @Inject constructor(
-    private val accountsService: AccountsService,
     private val tokenStore: TokenStore,
-    private val gson: Gson,
     private val analytics: Analytics,
     private val firebaseAnalytics: FirebaseAnalytics
 ) : CaffeineFragment(R.layout.fragment_sign_up), DatePickerDialog.OnDateSetListener {
 
     private lateinit var binding: FragmentSignUpBinding
+    private val viewModel: SignUpViewModel by viewModels { viewModelFactory }
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val args by navArgs<SignUpFragmentArgs>()
 
@@ -78,21 +74,33 @@ class SignUpFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSignUpBinding.bind(view)
+        binding.viewModel = viewModel
+        binding.emailEditText.afterTextChanged { viewModel.email = it }
+        binding.usernameEditText.afterTextChanged { viewModel.username = it }
+        binding.passwordEditText.afterTextChanged { viewModel.password = it }
+        binding.dobEditText.afterTextChanged { viewModel.birthdate = it }
         binding.signUpButton.setOnClickListener { signUpClicked() }
         binding.agreeToLegalTextView.apply {
             text = convertLinks(R.string.i_agree_to_legal, resources, ::legalDocLinkSpanFactory)
             movementMethod = LinkMovementMethod.getInstance()
+            stripUrlUnderline()
         }
-        binding.dobEditText.apply {
+        // TODO: Should not get access to the internal EditText. Need to create a
+        // TODO: focus change listener for the whole layout
+        binding.dobEditText.layoutEditText.apply {
             setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) { setDate() }
+                if (hasFocus) {
+                    setDate()
+                }
             }
             setOnClickListener { setDate() }
         }
-        arguments?.let { arguments ->
-            binding.usernameEditText.setText(args.possibleUsername)
-            binding.emailEditText.setText(args.email)
+
+        arguments?.let {
+            args.possibleUsername?.let { binding.usernameEditText.text = it }
+            args.email?.let { binding.emailEditText.text = it }
         }
+
         arkoseViewModel.arkoseToken.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let { token -> processArkoseTokenResult(token) }
         })
@@ -128,7 +136,7 @@ class SignUpFragment @Inject constructor(
         val calendar = Calendar.getInstance().also { it.set(year, month, dayOfMonth) }
         val displayText = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(LocalDate.of(year, month + 1, dayOfMonth))
         val apiText = apiDateFormat.format(calendar.time)
-        binding.dobEditText.setText(displayText, TextView.BufferType.NORMAL)
+        binding.dobEditText.text = displayText
         arkoseViewModel.signUpBdayApiDate = apiText
     }
 
@@ -166,23 +174,17 @@ class SignUpFragment @Inject constructor(
 
     private fun signUp(recaptchaToken: String?, arkoseToken: String?, iid: String?) {
         clearErrors()
-        val username = binding.usernameEditText.text.toString()
-        val password = binding.passwordEditText.text.toString()
-        val email = binding.emailEditText.text.toString()
         val dob = arkoseViewModel.signUpBdayApiDate ?: ""
-
-        val countryCode = "US"
-        val account = SignUpAccount(username, password, email, dob, countryCode)
-        val signUpBody = SignUpBody(account, iid, true, recaptchaToken, arkoseToken)
         // TODO: better error handling before calling the API
-        launch {
-            val result = accountsService.signUp(signUpBody).awaitAndParseErrors(gson)
-            when (result) {
-                is CaffeineResult.Success -> onSuccess(result.value.credentials)
-                is CaffeineResult.Error -> onError(result.error)
-                is CaffeineResult.Failure -> onFailure(result.throwable)
+        viewModel.signIn(dob, recaptchaToken, arkoseToken, iid).observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let { result ->
+                when (result) {
+                    is CaffeineResult.Success -> onSuccess(result.value.credentials)
+                    is CaffeineResult.Error -> onError(result.error)
+                    is CaffeineResult.Failure -> onFailure(result.throwable)
+                }
             }
-        }
+        })
     }
 
     @UiThread
@@ -190,35 +192,42 @@ class SignUpFragment @Inject constructor(
         analytics.trackEvent(AnalyticsEvent.NewRegistration(credentials.caid))
         firebaseAnalytics.logEvent(FirebaseEvent.SignUpSuccess)
         tokenStore.storeCredentials(credentials)
-        val navController = findNavController()
-        val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
-        navController.safeNavigate(R.id.main_nav, null, navOptions)
+        findNavController().safeNavigate(SignUpFragmentDirections.actionSignUpFragmentToWelcomeFragment(viewModel.email))
     }
 
     private fun clearErrors() {
-        binding.formErrorTextView.isInvisible = true
+        binding.emailEditText.clearError()
+        binding.usernameEditText.clearError()
+        binding.passwordEditText.clearError()
+        binding.dobEditText.clearError()
     }
 
     @UiThread
     private fun onError(error: ApiErrorResult) {
         Timber.d("Error: $error")
         val errorMessages = listOfNotNull(
-                listOfNotNull(error.generalErrorsString, error.deniedErrorsString).joinToString("\n"),
-                error.emailErrorsString,
-                error.usernameErrorsString,
-                error.passwordErrorsString,
-                error.dobErrorsString,
-                getString(R.string.sign_up_description))
+            listOfNotNull(error.generalErrorsString, error.deniedErrorsString).joinToString("\n"),
+            error.emailErrorsString,
+            error.usernameErrorsString,
+            error.passwordErrorsString,
+            error.dobErrorsString,
+            getString(R.string.sign_up_description)
+        )
         errorMessages.firstOrNull { it.isNotEmpty() }?.let {
-            binding.formErrorTextView.text = it
-            binding.formErrorTextView.isInvisible = false
+            when {
+                error.isEmailError() -> binding.emailEditText.showError(it)
+                error.isUsernameError() -> binding.usernameEditText.showError(it)
+                error.isPasswordError() -> binding.passwordEditText.showError(it)
+                error.isBirtdateError() -> binding.dobEditText.showError(it)
+                else -> binding.formErrorTextView.text = it
+            }
         }
     }
 
     @UiThread
     private fun onFailure(t: Throwable) {
         Timber.e(t, "sign up failure")
-        showSnackbar(R.string.sign_up_failure)
+        binding.formErrorTextView.text = getString(R.string.sign_up_failure)
     }
 
     private fun legalDocLinkSpanFactory(url: String?) =

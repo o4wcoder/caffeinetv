@@ -21,6 +21,7 @@ import tv.caffeine.app.login.LegalAgreementFragment
 import tv.caffeine.app.login.MfaCodeFragment
 import tv.caffeine.app.login.SignInFragment
 import tv.caffeine.app.login.SignUpFragment
+import tv.caffeine.app.login.WelcomeFragment
 import tv.caffeine.app.notifications.CaffeineFirebaseMessagingService
 import tv.caffeine.app.notifications.NotificationsFragment
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
@@ -32,6 +33,7 @@ import tv.caffeine.app.profile.ReportOrIgnoreDialogFragment
 import tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragment
 import tv.caffeine.app.profile.UpdateEmailFragment
 import tv.caffeine.app.profile.UpdatePasswordFragment
+import tv.caffeine.app.session.VelvetRopeFragment
 import tv.caffeine.app.settings.BuyGoldUsingCreditsDialogFragment
 import tv.caffeine.app.settings.DisconnectIdentityDialogFragment
 import tv.caffeine.app.settings.GoldAndCreditsFragment
@@ -119,4 +121,6 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun releaseChatFragment(): ReleaseChatFragment
     @ContributesAndroidInjector abstract fun stageBroadcastProfilePagerFragment(): StageBroadcastProfilePagerFragment
     @ContributesAndroidInjector abstract fun biographyFragment(): BiographyFragment
+    @ContributesAndroidInjector abstract fun velvetRopeFragment(): VelvetRopeFragment
+    @ContributesAndroidInjector abstract fun welcomeFragment(): WelcomeFragment
 }

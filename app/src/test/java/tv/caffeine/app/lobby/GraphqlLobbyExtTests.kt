@@ -28,22 +28,22 @@ class GraphqlLobbyExtTests {
 
     @Test
     fun `the age restriction badge is 17+ if the live card has an age restriction of 17+`() {
-        val liveCard = buildLiveBroadcastCard(AgeRestriction.SEVENTEEN_PLUS).toLiveCard()
+        val liveCard = buildLiveBroadcastCard(ageRestriction = AgeRestriction.SEVENTEEN_PLUS).toLiveCard()
         val broadcaster = liveCard.broadcaster
         assertEquals("17+", broadcaster.ageRestriction)
     }
 
     @Test
     fun `the age restriction badge is null if the live card does not have an age restriction of 17+`() {
-        val liveCard = buildLiveBroadcastCard(null).toLiveCard()
+        val liveCard = buildLiveBroadcastCard(ageRestriction = null).toLiveCard()
         val broadcaster = liveCard.broadcaster
         assertNull(broadcaster.ageRestriction)
     }
 
-    private fun buildLiveBroadcastCard(ageRestriction: AgeRestriction? = null): ClusterData.LiveBroadcastCard {
+    private fun buildLiveBroadcastCard(username: String = "user1", ageRestriction: AgeRestriction? = null): ClusterData.LiveBroadcastCard {
         val graphqlUser = ClusterData.User(
             "_typename",
-            ClusterData.User.Fragments(getUserData("caid1", "user1"))
+            ClusterData.User.Fragments(getUserData("caid1", username))
         )
         val friendViewers = ClusterData.FriendViewer(
             "_typename",
@@ -104,12 +104,14 @@ class GraphqlLobbyExtTests {
 
         assertEquals("caid1", user1.caid)
         assertEquals("user1", user1.username)
+        assertEquals("1", user1.stageId)
         assertEquals("https://images.caffeine.tv/avatar_image_path/user1.jpg", user1.avatarImageUrl)
         assertEquals(true, user1.isCaster)
         assertEquals(true, user1.isVerified)
 
         assertEquals("caid2", user2.caid)
         assertEquals("user2", user2.username)
+        assertEquals("2", user2.stageId)
         assertEquals("https://images.caffeine.tv/avatar_image_path/user2.jpg", user2.avatarImageUrl)
         assertEquals(false, user2.isCaster)
         assertEquals(false, user2.isVerified)
@@ -130,4 +132,49 @@ class GraphqlLobbyExtTests {
         isCaster,
         isVerified
     )
+
+    @Test
+    fun `the lobby items can be converted to a list of distinct broadcasters`() {
+        val liveBroadcasts = (1..3).map {
+            buildLiveBroadcastCard(username = "user$it").toLiveCard()
+        }
+        val lobbyItems = listOf(
+            liveBroadcasts[0],
+            CardList("id", liveBroadcasts)
+        )
+        val broadcasters = lobbyItems.toDistinctLiveBroadcasters()
+        assertEquals(3, broadcasters.size)
+        assertEquals("user1", broadcasters[0])
+        assertEquals("user2", broadcasters[1])
+        assertEquals("user3", broadcasters[2])
+    }
+
+    @Test
+    fun `the lobby payload can be converted to a list of distinct broadcasters`() {
+        val cards = listOf(1, 1, 2, 3).map {
+            buildLiveBroadcastCard(username = "user$it")
+        }
+        val payload = LobbyQuery.PagePayload(
+            "", "", listOf(
+                LobbyQuery.Cluster(
+                    "", LobbyQuery.Cluster.Fragments(
+                        ClusterData(
+                            "", "name", listOf(
+                                ClusterData.CardList(
+                                    "", ClusterData.AsLiveBroadcastCardList(
+                                        "", "cardListId", 2, cards
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        val broadcasters = payload.toDistinctLiveBroadcasters()
+        assertEquals(3, broadcasters.size)
+        assertEquals("user1", broadcasters[0])
+        assertEquals("user2", broadcasters[1])
+        assertEquals("user3", broadcasters[2])
+    }
 }

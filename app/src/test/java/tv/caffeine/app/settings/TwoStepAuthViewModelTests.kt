@@ -96,4 +96,16 @@ class TwoStepAuthViewModelTests {
         subject.onVerificationCodeTextChanged("")
         assertFalse(subject.isVerificationCodeButtonEnabled())
     }
+
+    @Test
+    fun `verification code button is disabled when verification code size is zero after setting code directly`() {
+        subject.setVerificationCode("")
+        assertFalse(subject.isVerificationCodeButtonEnabled())
+    }
+
+    @Test
+    fun `verification code button is enabled when verification code size is not zero after setting code directly`() {
+        subject.setVerificationCode("123456")
+        assertTrue(subject.isVerificationCodeButtonEnabled())
+    }
 }

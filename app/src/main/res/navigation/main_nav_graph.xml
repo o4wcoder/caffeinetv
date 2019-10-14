@@ -136,6 +136,11 @@
         <argument
             android:name="broadcastLink"
             app:argType="string"/>
+        <argument
+            android:name="broadcasters"
+            android:defaultValue="@null"
+            app:argType="string[]"
+            app:nullable="true"/>
         <deepLink
             android:id="@+id/deepLink"
             app:uri="caffeine.tv/{broadcastLink}"/>
@@ -197,6 +202,11 @@
         android:name="tv.caffeine.app.stage.OutOfCapacityFragment"
         android:label="@string/out_of_capacity_title"
         tools:layout="@layout/fragment_out_of_capacity"/>
+    <fragment
+        android:id="@+id/velvetRopeFragment"
+        android:name="tv.caffeine.app.session.VelvetRopeFragment"
+        android:label="@string/velvet_rope_label"
+        tools:layout="@layout/fragment_velvet_rope"/>
     <dialog
         android:id="@+id/friendsWatchingFragment"
         android:name="tv.caffeine.app.stage.FriendsWatchingFragment"
@@ -517,7 +527,7 @@
         <fragment
             android:id="@+id/forgotFragment"
             android:name="tv.caffeine.app.login.ForgotFragment"
-            android:label="@string/reset_your_password"
+            android:label="@string/forgot_password_no_worries"
             tools:layout="@layout/fragment_forgot" />
         <fragment
             android:id="@+id/mfaCodeFragment"
@@ -544,7 +554,7 @@
         <fragment
             android:id="@+id/signUpFragment"
             android:name="tv.caffeine.app.login.SignUpFragment"
-            android:label="@string/sign_up_for_caffeine"
+            android:label="@string/sign_up_title"
             tools:layout="@layout/fragment_sign_up">
             <action
                 android:id="@+id/action_signUpFragment_to_legalDocsFragment"
@@ -552,6 +562,9 @@
             <action
                 android:id="@+id/action_signUpFragment_to_arkoseFragment"
                 app:destination="@+id/arkoseFragment" />
+            <action
+                android:id="@+id/action_signUpFragment_to_welcomeFragment"
+                app:destination="@+id/welcomeFragment" />
             <argument
                 android:name="possibleUsername"
                 android:defaultValue="@null"
@@ -568,6 +581,16 @@
                 app:argType="string"
                 app:nullable="true" />
         </fragment>
+
+        <fragment
+            android:id="@+id/welcomeFragment"
+            android:name="tv.caffeine.app.login.WelcomeFragment"
+            tools:layout="@layout/fragment_welcome">
+            <argument
+                android:name="email"
+                app:argType="string"/>
+        </fragment>
+
         <fragment
             android:id="@+id/arkoseFragment"
             android:name="tv.caffeine.app.login.ArkoseFragment"

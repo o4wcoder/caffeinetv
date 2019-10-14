@@ -1,5 +1,6 @@
 package tv.caffeine.app.analytics
 
+import androidx.navigation.NavDirections
 import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import tv.caffeine.app.api.model.CAID
@@ -11,6 +12,7 @@ import javax.inject.Singleton
 interface Analytics {
     fun initialize()
     fun trackEvent(event: AnalyticsEvent)
+    fun handleDeferredDeeplink(block: (directions: NavDirections?) -> Unit)
 }
 
 @Singleton
@@ -28,6 +30,8 @@ class LogAnalytics @Inject constructor() : Analytics {
         }
         Timber.d(logMessage)
     }
+
+    override fun handleDeferredDeeplink(block: (directions: NavDirections?) -> Unit) {}
 }
 
 data class NotificationEvent(val type: Type, val id: String?, val tag: String?, val isDisplayed: Boolean = true) {
