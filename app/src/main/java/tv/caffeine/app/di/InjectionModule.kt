@@ -21,6 +21,7 @@ import tv.caffeine.app.login.LegalAgreementFragment
 import tv.caffeine.app.login.MfaCodeFragment
 import tv.caffeine.app.login.SignInFragment
 import tv.caffeine.app.login.SignUpFragment
+import tv.caffeine.app.login.WelcomeFragment
 import tv.caffeine.app.notifications.CaffeineFirebaseMessagingService
 import tv.caffeine.app.notifications.NotificationsFragment
 import tv.caffeine.app.profile.DeleteAccountDialogFragment
@@ -121,4 +122,5 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun stageBroadcastProfilePagerFragment(): StageBroadcastProfilePagerFragment
     @ContributesAndroidInjector abstract fun biographyFragment(): BiographyFragment
     @ContributesAndroidInjector abstract fun velvetRopeFragment(): VelvetRopeFragment
+    @ContributesAndroidInjector abstract fun welcomeFragment(): WelcomeFragment
 }

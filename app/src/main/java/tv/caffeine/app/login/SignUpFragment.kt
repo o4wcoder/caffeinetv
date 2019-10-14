@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
@@ -193,9 +192,7 @@ class SignUpFragment @Inject constructor(
         analytics.trackEvent(AnalyticsEvent.NewRegistration(credentials.caid))
         firebaseAnalytics.logEvent(FirebaseEvent.SignUpSuccess)
         tokenStore.storeCredentials(credentials)
-        val navController = findNavController()
-        val navOptions = NavOptions.Builder().setPopUpTo(navController.graph.id, true).build()
-        navController.safeNavigate(R.id.main_nav, null, navOptions)
+        findNavController().safeNavigate(SignUpFragmentDirections.actionSignUpFragmentToWelcomeFragment(viewModel.email))
     }
 
     private fun clearErrors() {

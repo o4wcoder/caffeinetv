@@ -66,6 +66,12 @@
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
     <string name="get_notified">get notified</string>
+    <string name="welcome_title">Welcome to\nCaffeine</string>
+    <string name="welcome_subtitle_one">Get ready to watch, react\nand follow you faves to\nyour heart\'s content</string>
+    <string name="welcome_subtitle_two">But before you do, check your\nemail to confirm your account</string>
+    <string name="welcome_resend_email">Resend Email</string>
+    <string name="welcome_lets_go_button">let\'s go</string>
+    <string name="welcome_email_sent_to">Email sent to</string>
 
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
