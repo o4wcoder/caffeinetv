@@ -56,6 +56,7 @@ jobs:
       - run:
           name: Run Unit Tests
           command: ./gradlew testDebugUnitTestCoverage -PdisablePreDex --stacktrace
+          no_output_timeout: 15m
 #      - persist_to_workspace:
 #          root: *working_directory
 #          paths:
