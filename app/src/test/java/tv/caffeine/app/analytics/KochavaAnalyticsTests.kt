@@ -56,16 +56,14 @@ class KochavaAnalyticsTests {
     }
 
     @Test
-    fun `stage navigation is not created if the attribution included in the deferred deeplink is false or null`() {
+    fun `stage navigation is not created if the attribution included in the deferred deeplink is false`() {
         analytics.handleAttribution(buildAttribution(false, null, null))
-        analytics.handleDeferredDeeplink { assertNull(it) }
-        analytics.handleAttribution(buildAttribution(null, null, null))
         analytics.handleDeferredDeeplink { assertNull(it) }
     }
 
-    private fun buildAttribution(hasAttribution: Boolean?, page: String?, user: String?): String {
+    private fun buildAttribution(hasAttribution: Boolean, page: String?, user: String?): String {
         val params = listOfNotNull(
-            hasAttribution?.let { "\"attribution\":\"$it\"" },
+            if (hasAttribution) null else "\"attribution\":\"false\"",
             page?.let { "\"page\":\"$it\"" },
             user?.let { "\"user\":\"$it\"" }
         ).joinToString()
