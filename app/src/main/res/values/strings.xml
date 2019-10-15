@@ -42,6 +42,7 @@
     <string name="sign_in_button">Sign in</string>
     <string name="forget_password">Forget password?</string>
     <string name="forgot_password_no_worries">Forgot your\npassword?\n\nNo worries.</string>
+    <string name="forgot_password_button">reset password</string>
     <string name="help_is_on_the_way">Help is on the way</string>
     <string name="reset_password_button">reset password</string>
     <string name="back_to_login_button">back to login</string>
@@ -49,7 +50,6 @@
     <string name="sign_up_button">Sign up</string>
     <string name="i_agree_to_legal"><![CDATA[By continuing, you agree to Caffeine\'s <a href="https://www.caffeine.tv/tos.html"><b>Terms of Service</b></a>, <a href="https://www.caffeine.tv/privacy.html"><b>Privacy Policy</b></a>, and <a href="https://www.caffeine.tv/guidelines.html"><b>Community Guidelines</b></a>.]]></string>
     <string name="must_agree_to_legal"><![CDATA[Caffeine requires your consent to personalize your experience based on your relationships and activities. We have new <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>. Please read them and agree to them to continue using Caffeine.]]></string>
-    <string name="send_email_button">Send email</string>
     <string name="caffeine_logo_content_description">Caffeine logo</string>
     <string name="sign_in_title">Welcome\nback</string>
     <string name="reset_your_password_description">We\'ll send you an email with a link to reset your password.</string>
