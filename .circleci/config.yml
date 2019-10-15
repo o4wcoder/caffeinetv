@@ -5,7 +5,7 @@ working_directory: &working_directory ~/repo
 defaults: &defaults
   working_directory: *working_directory
   docker:
-    - image: circleci/android:api-28-node
+    - image: circleci/android:api-28
   environment:
     JAVA_TOOL_OPTIONS: "-Xmx2048m"
     GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy=in-process"
@@ -117,6 +117,8 @@ jobs:
 
   danger:
     <<: *defaults
+    docker:
+      - image: circleci/node:9.9.0
     steps:
       - checkout
       - restore_cache:

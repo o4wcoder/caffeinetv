@@ -103,12 +103,11 @@ class LobbyCardsOfflineBroadcasterTests {
         return PreviousBroadcast("1", broadcaster)
     }
 
-    private fun makeOfflineBroadcaster(previousBroadcast: PreviousBroadcast): OfflineBroadcaster {
-        return OfflineBroadcaster(
+    private fun makeOfflineBroadcaster(previousBroadcast: PreviousBroadcast) =
+        OfflineBroadcaster(
             followManager,
             previousBroadcast.broadcaster,
             lobbyImpressionAnalytics,
             GlobalScope
         )
-    }
 }

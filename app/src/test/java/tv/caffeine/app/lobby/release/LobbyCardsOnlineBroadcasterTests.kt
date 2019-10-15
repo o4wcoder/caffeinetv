@@ -21,7 +21,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.LooperMode
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.User
@@ -33,12 +32,11 @@ import tv.caffeine.app.util.makeOnlineBroadcast
 import tv.caffeine.app.test.observeForTesting
 
 @RunWith(RobolectricTestRunner::class)
-@LooperMode(LooperMode.Mode.PAUSED)
 class LobbyCardsOnlineBroadcasterTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     lateinit var context: Context
-    lateinit var liveBroadcast: LiveBroadcast
+    private lateinit var liveBroadcast: LiveBroadcast
     @MockK lateinit var followManager: FollowManager
     @MockK lateinit var lobbyImpressionAnalytics: LobbyImpressionAnalytics
 
@@ -196,18 +194,15 @@ class LobbyCardsOnlineBroadcasterTests {
         val genericUser = makeGenericUser()
         val onlineBroadcast = makeOnlineBroadcast()
         val broadcaster = makeBroadcaster(genericUser, onlineBroadcast)
-        val liveBroadcast = LiveBroadcast("1", broadcaster)
-        return liveBroadcast
+        return LiveBroadcast("1", broadcaster)
     }
 
-    private fun makeOnlineBroadcaster(liveBroadcast: LiveBroadcast): OnlineBroadcaster {
-        val onlineBroadcaster = OnlineBroadcaster(
+    private fun makeOnlineBroadcaster(liveBroadcast: LiveBroadcast) =
+        OnlineBroadcaster(
             context,
             followManager,
             liveBroadcast.broadcaster,
             lobbyImpressionAnalytics,
             GlobalScope
         )
-        return onlineBroadcaster
-    }
 }
