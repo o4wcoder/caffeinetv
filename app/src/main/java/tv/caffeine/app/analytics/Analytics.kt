@@ -51,7 +51,8 @@ enum class FirebaseEvent {
     ContinueWithFacebookClicked, FacebookSignInSuccess, FacebookContinueToMFA, FacebookContinueToSignUp,
     ContinueWithTwitterClicked, TwitterSignInSuccess, TwitterContinueToMFA, TwitterContinueToSignUp,
     SocialOAuthEdgeCase, NewAccountClicked, SignUpSuccess,
-    SignInClicked, SignInSuccess, SignInContinueToMFA, SignInContinueToTerms, MFASignInSuccess
+    SignInClicked, SignInSuccess, SignInContinueToMFA, SignInContinueToTerms, MFASignInSuccess,
+    StageSwipeNext, StageSwipePrevious, StageSwipeButtonClicked
 }
 
 fun FirebaseAnalytics.logEvent(event: FirebaseEvent) {
