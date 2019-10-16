@@ -1,10 +1,13 @@
 package tv.caffeine.app.ui
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.TextView
@@ -16,9 +19,6 @@ import tv.caffeine.app.BR
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.CaffeineEditTextLayoutBinding
 import tv.caffeine.app.util.addFilter
-import android.os.Parcel
-import android.os.Parcelable
-import android.util.SparseArray
 
 class CaffeineEditTextLayout @JvmOverloads constructor(
     context: Context,
@@ -77,7 +77,7 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
             val attr = attributes.getIndex(i)
             when (attr) {
                 R.styleable.CaffeineEditTextLayout_android_imeOptions -> layoutEditText.imeOptions = attributes.getInt(attr, 0)
-                R.styleable.CaffeineEditTextLayout_android_inputType -> layoutEditText.inputType = attributes.getInt(attr, 0)
+                R.styleable.CaffeineEditTextLayout_android_inputType -> layoutEditText.updateInputType(attributes.getInt(attr, 0))
                 R.styleable.CaffeineEditTextLayout_android_hint -> layoutViewModel.editTextHint = attributes.getString(attr) ?: ""
                 R.styleable.CaffeineEditTextLayout_android_maxLength -> layoutEditText.addFilter(InputFilter.LengthFilter(attributes.getInt(attr, 0)))
                 R.styleable.CaffeineEditTextLayout_isDarkMode -> layoutViewModel.setDarkMode(attributes.getBoolean(attr, false))
@@ -92,6 +92,7 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
     }
 
     fun setOnAction(action: Int, block: () -> Unit) = layoutEditText.setOnAction(action, block)
+
     fun setOnActionGo(action: () -> Unit) = layoutEditText.setOnActionGo(action)
 
     fun isEmpty() = layoutEditText.text.isNullOrEmpty()
@@ -119,23 +120,23 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
     }
 
     public override fun onSaveInstanceState(): Parcelable? {
-        if (isSaveEnabled) {
+        return if (isSaveEnabled) {
             val superState = super.onSaveInstanceState()
             val ss = SavedState(superState)
             ss.childrenStates = SparseArray()
             for (i in 0 until childCount) {
                 getChildAt(i).saveHierarchyState(ss.childrenStates)
             }
-            return ss
+            ss
         } else {
-            return super.onSaveInstanceState()
+            super.onSaveInstanceState()
         }
     }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
         if (isSaveEnabled) {
             val ss = state as SavedState
-            super.onRestoreInstanceState(ss.getSuperState())
+            super.onRestoreInstanceState(ss.superState)
             for (i in 0 until childCount) {
                 getChildAt(i).restoreHierarchyState(ss.childrenStates)
             }
