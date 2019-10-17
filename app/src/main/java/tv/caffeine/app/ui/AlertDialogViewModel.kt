@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
-import tv.caffeine.app.api.model.User
 import tv.caffeine.app.repository.AccountRepository
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.util.maybeShow
@@ -24,22 +23,21 @@ class AlertDialogViewModel @Inject constructor(
     private val accountRepository: AccountRepository
 ) : ViewModel() {
 
-    private var user: User? = null
+    private var user = followManager.currentUserDetails()
     private var fragmentManager: FragmentManager? = null
 
     init {
-        viewModelScope.launch {
-            followManager.loadMyUserDetails()?.let { user ->
-                this@AlertDialogViewModel.user = user
+        // Do not make a user detail API call if the user's email is verified.
+        if (user?.emailVerified != true) {
+            viewModelScope.launch {
+                followManager.loadMyUserDetails()?.let { user ->
+                    this@AlertDialogViewModel.user = user
+                }
             }
         }
     }
 
-    fun isUserVerified(): Boolean {
-        return user?.let {
-            it.emailVerified
-        } ?: false
-    }
+    fun isUserVerified() = user?.emailVerified ?: false
 
     fun showVerifyEmailDialog(fragment: Fragment, fragmentManager: FragmentManager?) {
         this.fragmentManager = fragmentManager
