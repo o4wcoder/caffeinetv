@@ -35,12 +35,11 @@
     <string name="sign_up_birthdate_hint">Birthdate</string>
     <string name="sign_in_with_username">log in</string>
     <string name="sign_in_failure">Could not sign in. Please try again later.</string>
-
+    <string name="sign_in_button">log in</string>
     <string name="unauth_hint_username">Username</string>
     <string name="unauth_hint_email">Email Address</string>
     <string name="unauth_hint_password">Password</string>
-    <string name="sign_in_button">Sign in</string>
-    <string name="forget_password">Forget password?</string>
+    <string name="forgot_password">Forgot Password?</string>
     <string name="forgot_password_no_worries">Forgot your\npassword?\n\nNo worries.</string>
     <string name="forgot_password_button">reset password</string>
     <string name="help_is_on_the_way">Help is on the way</string>

@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sign_in_margin_top"
-                android:text="@string/forget_password" />
+                android:text="@string/forgot_password" />
 
             <TextView
                 style="@style/LoginErrorText"
