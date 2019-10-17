@@ -26,14 +26,16 @@ import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.lobby.LiveBroadcast
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.test.observeForTesting
+import tv.caffeine.app.util.CoroutinesTestRule
 import tv.caffeine.app.util.makeBroadcaster
 import tv.caffeine.app.util.makeGenericUser
 import tv.caffeine.app.util.makeOnlineBroadcast
-import tv.caffeine.app.test.observeForTesting
 
 @RunWith(RobolectricTestRunner::class)
 class LobbyCardsOnlineBroadcasterTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutinesTestRule = CoroutinesTestRule()
 
     lateinit var context: Context
     private lateinit var liveBroadcast: LiveBroadcast

@@ -21,12 +21,14 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.lobby.PreviousBroadcast
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.test.observeForTesting
+import tv.caffeine.app.util.CoroutinesTestRule
 import tv.caffeine.app.util.makeGenericUser
 import tv.caffeine.app.util.makeOfflineBroadcast
-import tv.caffeine.app.test.observeForTesting
 
 class LobbyCardsOfflineBroadcasterTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutinesTestRule = CoroutinesTestRule()
 
     private lateinit var previousBroadcast: PreviousBroadcast
     @MockK lateinit var followManager: FollowManager

@@ -15,6 +15,7 @@ import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.PaginatedFollowers
 import tv.caffeine.app.api.model.PaginatedFollowing
 import tv.caffeine.app.api.model.SignedUserToken
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.UserContainer
 import tv.caffeine.app.api.model.UserUpdateBody
 
@@ -60,9 +61,14 @@ interface UsersService {
 
     @PATCH("v1/users/{caid}/notifications-viewed")
     fun notificationsViewed(@Path("caid") userId: CAID): Deferred<Response<UserContainer>>
+
+    @POST("v1/users/list")
+    suspend fun multipleUserDetails(@Body batchUserFetchBody: BatchUserFetchBody): List<User>
 }
 
 class ReportUserBody(val reason: String, val description: String?)
+
+class BatchUserFetchBody(val identifiers: List<String>)
 
 enum class ReasonKey {
     HARASSMENT_OR_TROLLING,

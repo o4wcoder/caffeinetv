@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import timber.log.Timber
+import tv.caffeine.app.api.BatchUserFetchBody
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.MAX_PAGE_LIMIT
 import tv.caffeine.app.api.UsersService
@@ -92,6 +93,19 @@ class FollowManager @Inject constructor(
         }
         userDetails[caid]?.let { return it }
         return loadUserDetails(userHandle)
+    }
+
+    suspend fun loadMultipleUserDetails(userIDs: List<CAID>): List<User>? {
+        return try {
+            val users = usersService.multipleUserDetails(BatchUserFetchBody(userIDs))
+            users.forEach {
+                userDetails[it.caid] = it
+            }
+            users
+        } catch (e: Exception) {
+            Timber.e(e)
+            null
+        }
     }
 
     // / can be called with CAID or username
