@@ -30,7 +30,7 @@
     <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
     <string name="sign_up_email_hint">Email Address</string>
     <string name="sign_up_password_hint">Create a Password</string>
-    <string name="sign_up_password_length_hint">Passwords needs to be at least 7 characters</string>
+    <string name="sign_up_password_length_hint">Passwords need to be at least 7 characters</string>
     <string name="sign_up_username_hint">Create a Username</string>
     <string name="sign_up_birthdate_hint">Birthdate</string>
     <string name="sign_in_with_username">log in</string>
