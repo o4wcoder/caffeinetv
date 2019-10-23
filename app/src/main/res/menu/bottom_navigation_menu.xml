@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/bottom_nav_star_menu_item"
-        android:icon="@drawable/bottom_nav_star"
+        android:id="@+id/bottom_nav_upcoming_menu_item"
+        android:icon="@drawable/bottom_nav_upcoming"
         android:title=""/>
 
     <item
-        android:id="@+id/bottom_nav_flame_menu_item"
-        android:icon="@drawable/bottom_nav_flame"
-        android:title=""/>
-
-    <item
-        android:id="@+id/bottom_nav_clock_menu_item"
-        android:icon="@drawable/bottom_nav_clock"
+        android:id="@+id/bottom_nav_home_menu_item"
+        android:icon="@drawable/bottom_nav_home"
         android:title=""/>
 
     <item

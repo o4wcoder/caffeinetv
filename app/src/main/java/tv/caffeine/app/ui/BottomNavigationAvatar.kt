@@ -7,7 +7,6 @@ import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import com.squareup.picasso.Callback
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import tv.caffeine.app.R
 import tv.caffeine.app.util.CropBorderedCircleTransformation
 import tv.caffeine.app.util.getPicasso
@@ -41,7 +40,9 @@ class BottomNavigationAvatar(val context: Context, val menuItem: MenuItem) {
             .centerCrop()
 
         requestCreator
-            .transform(CropCircleTransformation())
+            .transform(CropBorderedCircleTransformation(
+                ContextCompat.getColor(context, R.color.purple),
+                context.resources.getDimension(R.dimen.avatar_rim_size_small)))
             .into(unselectedImageView, object : Callback {
                 override fun onSuccess() {
                     unselectedAvatarDrawable = unselectedImageView.drawable
@@ -56,7 +57,7 @@ class BottomNavigationAvatar(val context: Context, val menuItem: MenuItem) {
         requestCreator
             .transform(CropBorderedCircleTransformation(
                 ContextCompat.getColor(context, R.color.almost_black),
-                context.resources.getDimension(R.dimen.avatar_rim_size_regular)))
+                context.resources.getDimension(R.dimen.avatar_rim_size_small)))
             .into(selectedImageView, object : Callback {
                 override fun onSuccess() {
                     selectedAvatarDrawable = selectedImageView.drawable

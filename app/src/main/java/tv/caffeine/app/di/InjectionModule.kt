@@ -12,7 +12,6 @@ import tv.caffeine.app.lobby.HomeLobbyFragment
 import tv.caffeine.app.lobby.LobbyDetailFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
-import tv.caffeine.app.lobby.TrendingLobbyFragment
 import tv.caffeine.app.login.ArkoseFragment
 import tv.caffeine.app.login.ConfirmEmailFragment
 import tv.caffeine.app.login.ForgotFragment
@@ -72,7 +71,6 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun lobbySwipeFragment(): LobbySwipeFragment
     @ContributesAndroidInjector abstract fun lobbyFragment(): LobbyFragment
     @ContributesAndroidInjector abstract fun homeLobbyFragment(): HomeLobbyFragment
-    @ContributesAndroidInjector abstract fun trendingLobbyFragment(): TrendingLobbyFragment
     @ContributesAndroidInjector abstract fun lobbyDetailFragment(): LobbyDetailFragment
     @ContributesAndroidInjector abstract fun featuredProgramGuideFragment(): FeaturedProgramGuideFragment
     @ContributesAndroidInjector abstract fun stageFragment(): StageFragment

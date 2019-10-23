@@ -18,6 +18,7 @@
     <dimen name="avatar_toolbar_padding">12dp</dimen>
     <dimen name="avatar_rim_size_large">4dp</dimen>
     <dimen name="avatar_rim_size_regular">2dp</dimen>
+    <dimen name="avatar_rim_size_small">1dp</dimen>
     <dimen name="avatar_no_rim">0dp</dimen>
     <dimen name="avatar_rim_size_not_following">1dp</dimen>
     <dimen name="avatar_rim_size_threshold_on_avatar_size">150dp</dimen>

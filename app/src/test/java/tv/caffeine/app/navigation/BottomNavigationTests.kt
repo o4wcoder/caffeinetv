@@ -35,9 +35,8 @@ class BottomNavigationTests {
         val bottomNavigationView = mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.isSelected = false
         mainActivity.updateBottomNavigationStatus(bottomNavigationView, R.id.lobbySwipeFragment)
-        assertTrue(bottomNavigationView.menu.findItem(R.id.bottom_nav_star_menu_item).isChecked)
-        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_flame_menu_item).isChecked)
-        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_clock_menu_item).isChecked)
+        assertTrue(bottomNavigationView.menu.findItem(R.id.bottom_nav_home_menu_item).isChecked)
+        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_upcoming_menu_item).isChecked)
         assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_profile_menu_item).isChecked)
     }
 
@@ -46,9 +45,8 @@ class BottomNavigationTests {
         val bottomNavigationView = mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.isSelected = false
         mainActivity.updateBottomNavigationStatus(bottomNavigationView, R.id.featuredProgramGuideFragment)
-        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_star_menu_item).isChecked)
-        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_flame_menu_item).isChecked)
-        assertTrue(bottomNavigationView.menu.findItem(R.id.bottom_nav_clock_menu_item).isChecked)
+        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_home_menu_item).isChecked)
+        assertTrue(bottomNavigationView.menu.findItem(R.id.bottom_nav_upcoming_menu_item).isChecked)
         assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_profile_menu_item).isChecked)
     }
 
@@ -57,9 +55,8 @@ class BottomNavigationTests {
         val bottomNavigationView = mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.isSelected = false
         mainActivity.updateBottomNavigationStatus(bottomNavigationView, R.id.myProfileFragment)
-        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_star_menu_item).isChecked)
-        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_flame_menu_item).isChecked)
-        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_clock_menu_item).isChecked)
+        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_home_menu_item).isChecked)
+        assertFalse(bottomNavigationView.menu.findItem(R.id.bottom_nav_upcoming_menu_item).isChecked)
         assertTrue(bottomNavigationView.menu.findItem(R.id.bottom_nav_profile_menu_item).isChecked)
     }
 }
