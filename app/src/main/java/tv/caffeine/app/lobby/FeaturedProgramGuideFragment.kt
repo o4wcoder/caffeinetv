@@ -42,8 +42,12 @@ class FeaturedProgramGuideFragment @Inject constructor(
         guideAdapter = guideAdapterFactory.create(viewLifecycleOwner)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.guideRecyclerView.adapter = guideAdapter
-        binding.guideSwipeRefreshLayout.setOnRefreshListener { viewModel.load() }
+        binding.guideSwipeRefreshLayout.setOnRefreshListener {
+            binding.guideLoadingIndicator.isVisible = true
+            viewModel.load()
+        }
         viewModel.listings.observe(viewLifecycleOwner, Observer {
+            binding.guideLoadingIndicator.isVisible = false
             binding.guideSwipeRefreshLayout.isRefreshing = false
             binding.emptyMessageTextView.isVisible = it.isEmpty()
             guideAdapter.submitList(it)

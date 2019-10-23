@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -69,7 +68,7 @@ class StageFragment @Inject constructor(
     private lateinit var poorConnectionPulseAnimator: PulseAnimator
     private val canSwipe: Boolean by lazy { args.canSwipe }
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
-    private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
+    private val loadingIndicators: MutableMap<NewReyes.Feed.Role, View> = mutableMapOf()
     private var newReyesController: NewReyesController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()

@@ -735,6 +735,13 @@
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
 
+    <!-- Caffeine animated loading indicator -->
+    <style name="AnimatedLoadingIndicator">
+        <item name="lottie_rawRes">@raw/spinner_color_together</item>
+        <item name="lottie_autoPlay">true</item>
+        <item name="lottie_loop">true</item>
+    </style>
+
     <!-- Login  -->
     <style name="LoginText" parent="CaffeineText.DarkMode" />
 

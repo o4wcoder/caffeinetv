@@ -59,6 +59,15 @@
             tools:listitem="@layout/user_item_explore"
             tools:spanCount="3"/>
 
+        <com.airbnb.lottie.LottieAnimationView
+            style="@style/AnimatedLoadingIndicator"
+            android:id="@+id/loading_indicator"
+            android:layout_width="@dimen/animated_loading_indicator_size"
+            android:layout_height="@dimen/animated_loading_indicator_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

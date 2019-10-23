@@ -2,6 +2,7 @@ package tv.caffeine.app.users
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import tv.caffeine.app.R
@@ -20,6 +21,7 @@ abstract class FollowListFragment(private val caidListAdapter: CaidListAdapter) 
         val viewModel = getFollowListViewModel()
         binding.viewModel = viewModel
         viewModel.isDarkMode = isDarkMode()
+        binding.loadingIndicator.isVisible = true
         caidListAdapter.fragmentManager = fragmentManager
         val usernameThemeColor =
             if (isDarkMode()) ThemeColor.DARK else ThemeColor.LIGHT
@@ -33,6 +35,7 @@ abstract class FollowListFragment(private val caidListAdapter: CaidListAdapter) 
 
         viewModel.caid = getCAID()
         viewModel.followList.observe(viewLifecycleOwner, Observer {
+            binding.loadingIndicator.isVisible = false
             viewModel.isEmptyFollowList = it.isEmpty()
             if (it.isEmpty()) {
                 viewModel.loadUserProfile(getCAID())

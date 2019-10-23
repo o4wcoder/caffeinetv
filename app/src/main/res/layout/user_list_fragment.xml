@@ -20,6 +20,14 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+        <com.airbnb.lottie.LottieAnimationView
+            style="@style/AnimatedLoadingIndicator"
+            android:id="@+id/loading_indicator"
+            android:visibility="gone"
+            android:layout_width="@dimen/animated_loading_indicator_size"
+            android:layout_height="@dimen/animated_loading_indicator_size"
+            android:layout_gravity="center"/>
+
         <TextView
             style="@style/Profile"
             android:id="@+id/user_list_empty_text_view"

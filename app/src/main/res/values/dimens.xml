@@ -85,6 +85,8 @@
     <dimen name="stage_loading_indicator_size">48dp</dimen>
     <dimen name="twitter_auth_web_view_height">0dp</dimen>
 
+    <dimen name="animated_loading_indicator_size">120dp</dimen>
+
     <dimen name="no_network_screen_icon_size">56dp</dimen>
     <dimen name="no_network_indicator_size">65dp</dimen>
 

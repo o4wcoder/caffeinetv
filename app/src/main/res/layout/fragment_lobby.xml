@@ -11,11 +11,11 @@
         android:layout_height="match_parent"
         tools:context=".lobby.LobbyFragment">
 
-        <ProgressBar
+        <com.airbnb.lottie.LottieAnimationView
+            style="@style/AnimatedLoadingIndicator"
             android:id="@+id/lobby_loading_indicator"
-            android:layout_width="@dimen/stage_loading_indicator_size"
-            android:layout_height="@dimen/stage_loading_indicator_size"
-            android:indeterminate="true"
+            android:layout_width="@dimen/animated_loading_indicator_size"
+            android:layout_height="@dimen/animated_loading_indicator_size"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

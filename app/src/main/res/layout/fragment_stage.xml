@@ -89,12 +89,12 @@
                 app:layout_constraintTop_toTopOf="@id/secondary_view_renderer"
                 tools:visibility="visible"/>
 
-            <ProgressBar
+            <com.airbnb.lottie.LottieAnimationView
+                style="@style/AnimatedLoadingIndicator"
                 android:id="@+id/primary_loading_indicator"
-                android:layout_width="@dimen/stage_loading_indicator_size"
-                android:layout_height="@dimen/stage_loading_indicator_size"
+                android:layout_width="@dimen/animated_loading_indicator_size"
+                android:layout_height="@dimen/animated_loading_indicator_size"
                 android:visibility="gone"
-                android:indeterminate="true"
                 app:layout_constraintTop_toTopOf="@id/renderer_container"
                 app:layout_constraintBottom_toBottomOf="@id/renderer_container"
                 app:layout_constraintStart_toStartOf="@id/renderer_container"
