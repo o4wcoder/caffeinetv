@@ -184,8 +184,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/biographyFragment"
-        android:name="tv.caffeine.app.stage.biography.BiographyFragment">
+        android:id="@+id/aboutFragment"
+        android:name="tv.caffeine.app.stage.AboutFragment">
         <argument
             android:name="caid"
             app:argType="string" />

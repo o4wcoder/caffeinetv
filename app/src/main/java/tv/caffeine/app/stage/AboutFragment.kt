@@ -1,4 +1,4 @@
-package tv.caffeine.app.stage.biography
+package tv.caffeine.app.stage
 
 import android.os.Bundle
 import android.view.View
@@ -7,21 +7,21 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import tv.caffeine.app.R
-import tv.caffeine.app.databinding.FragmentBiographyBinding
+import tv.caffeine.app.databinding.FragmentAboutBinding
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
-class BiographyFragment @Inject constructor() : CaffeineFragment(R.layout.fragment_biography) {
+class AboutFragment @Inject constructor() : CaffeineFragment(R.layout.fragment_about) {
 
     private val viewModel: ProfileViewModel by viewModels { viewModelFactory }
-    private val args by navArgs<BiographyFragmentArgs>()
+    private val args by navArgs<AboutFragmentArgs>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val binding = FragmentBiographyBinding.bind(view)
+        val binding = FragmentAboutBinding.bind(view)
         viewModel.forceLoad(args.caid).observe(viewLifecycleOwner, Observer { userProfile ->
-            binding.biographyTextView.text = getBioText(userProfile)
+            binding.aboutTextView.text = getBioText(userProfile)
         })
     }
 

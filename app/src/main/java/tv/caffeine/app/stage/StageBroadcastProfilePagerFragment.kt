@@ -15,8 +15,6 @@ import org.threeten.bp.Clock
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentStageBroadcastProfilePagerBinding
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.stage.biography.BiographyFragment
-import tv.caffeine.app.stage.biography.BiographyFragmentArgs
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowersFragmentArgs
@@ -72,7 +70,7 @@ class StageBroadcastProfilePagerAdapter @AssistedInject constructor(
     @Assisted fm: FragmentManager,
     @Assisted private val caid: String,
     private val resources: Resources,
-    private val biographyFragmentProvider: Provider<BiographyFragment>,
+    private val aboutFragmentProvider: Provider<AboutFragment>,
     private val followingFragmentProvider: Provider<FollowingFragment>,
     private val followersFragmentProvider: Provider<FollowersFragment>
 ) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -83,7 +81,7 @@ class StageBroadcastProfilePagerAdapter @AssistedInject constructor(
     }
     override fun getItem(position: Int): Fragment =
         when (position) {
-            0 -> { biographyFragmentProvider.get().apply { arguments = BiographyFragmentArgs(caid).toBundle() } }
+            0 -> { aboutFragmentProvider.get().apply { arguments = AboutFragmentArgs(caid).toBundle() } }
             1 -> { followersFragmentProvider.get().apply { arguments = FollowersFragmentArgs(caid, true).toBundle() } }
             2 -> { followingFragmentProvider.get().apply { arguments = FollowingFragmentArgs(caid, true).toBundle() } }
 
@@ -94,7 +92,7 @@ class StageBroadcastProfilePagerAdapter @AssistedInject constructor(
 
     override fun getPageTitle(position: Int): CharSequence? {
         return when (position) {
-            0 -> resources.getString(R.string.stage_broadcast_biography_tab)
+            0 -> resources.getString(R.string.stage_broadcast_about_tab)
             1 -> resources.getString(R.string.stage_broadcast_followers_tab)
             else -> resources.getString(R.string.stage_broadcast_following_tab)
         }
