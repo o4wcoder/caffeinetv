@@ -67,6 +67,7 @@
     </style>
 
     <!-- Container -->
+
     <style name="NoBarScrollView">
         <item name="android:scrollbars">none</item>
     </style>
@@ -507,6 +508,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.MainActivity" parent="AppTheme.NoActionBar"/>
 
     <style name="ActionBarTitle" parent="@style/TextAppearance.MaterialComponents.Headline6"/>
     <style name="ActionBarActionText" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
