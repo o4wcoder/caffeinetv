@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.CaffeineConstants.TAG_VERIFY_EMAIL
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.repository.AccountRepository
@@ -43,7 +44,7 @@ class AlertDialogViewModel @Inject constructor(
         this.fragmentManager = fragmentManager
         AlertDialogFragment.verifyEmail().also {
             it.setTargetFragment(fragment, REQUEST_SHOW_EMAIL_VERIFICATION_DIALOG)
-            it.maybeShow(fragmentManager, "verifyEmail")
+            it.maybeShow(fragmentManager, TAG_VERIFY_EMAIL)
         }
     }
 

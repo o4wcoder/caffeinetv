@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="viewModel"
-            type="tv.caffeine.app.stage.StageBroadcastProfilePagerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,7 +41,6 @@
                     android:text="@string/stage_broadcast_followers_tab"/>
             </com.google.android.material.tabs.TabLayout>
         </androidx.viewpager.widget.ViewPager>
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_stage_broadcast_details_toolbar"
             android:layout_width="match_parent"
@@ -54,37 +50,49 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageButton
-                android:id="@+id/chat_button"
                 style="@android:style/Widget.Material.ActionButton"
+                android:id="@+id/gift_button"
                 android:layout_width="@dimen/stage_bottom_icon"
                 android:layout_height="@dimen/stage_bottom_icon"
-                android:layout_marginEnd="@dimen/stage_profile_button_margin"
+                android:layout_marginEnd="@dimen/stage_chat_controls_internal_margin"
                 android:background="@android:color/transparent"
-                android:contentDescription="@string/chat_button_content_description"
-                android:tint="@color/white"
+                android:contentDescription="@string/gift_button_content_description"
+                android:tint="@color/medium_gray"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/share_button"
+                app:layout_constraintEnd_toStartOf="@+id/react_button"
+                app:layout_constraintStart_toEndOf="@+id/chat_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_bottomnav_messages"
-                tools:tint="@color/black" />
+                app:srcCompat="@drawable/ic_gifts" />
+
+            <TextView
+                style="@style/ChatReactButtonText"
+                android:id="@+id/react_button"
+                android:layout_width="@dimen/chat_react_button_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@drawable/ic_btn_react"
+                android:text="@string/chat_react_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/share_button"
+                app:layout_constraintStart_toEndOf="@+id/gift_button"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/share_button"
                 style="@android:style/Widget.Material.ActionButton"
+                android:id="@+id/share_button"
                 android:layout_width="@dimen/stage_bottom_icon"
                 android:layout_height="@dimen/stage_bottom_icon"
-                android:layout_marginStart="@dimen/stage_profile_button_margin"
+                android:layout_marginStart="@dimen/stage_chat_controls_internal_margin"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/share_button_content_description"
                 android:paddingBottom="4dp"
-                android:tint="@color/white"
+                android:tint="@color/medium_gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/chat_button"
+                app:layout_constraintStart_toEndOf="@+id/react_button"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_share_dark"
-                tools:tint="@color/black" />
+                app:srcCompat="@drawable/ic_chat_share" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

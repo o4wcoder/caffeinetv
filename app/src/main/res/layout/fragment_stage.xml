@@ -372,6 +372,7 @@
                     android:layout_marginEnd="8dp"
                     android:padding="2dp"
                     android:onClick="@{() -> viewModel.onAvatarClick()}"
+                    android:visibility="@{viewModel.avatarVisibility}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:roundedImageUrl="@{userProfile.avatarImageUrl}"
@@ -379,6 +380,19 @@
                     tools:background="@drawable/circle_white_with_blue_rim"
                     tools:src="@drawable/default_avatar_round"
                     android:contentDescription="@string/user_avatar_content_description"/>
+
+                <ImageView
+                    android:id="@+id/chat_toggle_image_view"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    android:tint="@color/medium_gray"
+                    android:visibility="@{viewModel.chatToggleVisibility}"
+                    android:onClick="@{() -> viewModel.onAvatarClick()}"
+                    app:srcCompat="@drawable/ic_chat_toggle"
+                    app:layout_constraintStart_toStartOf="@id/avatar_image_view"
+                    app:layout_constraintEnd_toEndOf="@id/avatar_image_view"
+                    app:layout_constraintTop_toTopOf="@id/avatar_image_view"
+                    app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"/>
 
                 <TextView
                     style="@style/BroadcasterUsername.Night"

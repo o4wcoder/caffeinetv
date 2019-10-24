@@ -292,4 +292,28 @@ class StageViewModelTests {
         subject.isProfileOverlayVisible = false
         assertEquals(subject.getProfileOverlayVisibility(), View.GONE)
     }
+
+    @Test
+    fun `show user avatar when not showing the profile section`() {
+        subject.updateIsViewProfile(false)
+        assertEquals(subject.getAvatarVisibility(), View.VISIBLE)
+    }
+
+    @Test
+    fun `do not show user avatar when showing the profile section`() {
+        subject.updateIsViewProfile(true)
+        assertEquals(subject.getAvatarVisibility(), View.INVISIBLE)
+    }
+
+    @Test
+    fun `show chat toggle when showing the profile section`() {
+        subject.updateIsViewProfile(true)
+        assertEquals(subject.getChatToggleVisibility(), View.VISIBLE)
+    }
+
+    @Test
+    fun `do not show chat toggle when not showing the profile section`() {
+        subject.updateIsViewProfile(false)
+        assertEquals(subject.getChatToggleVisibility(), View.INVISIBLE)
+    }
 }

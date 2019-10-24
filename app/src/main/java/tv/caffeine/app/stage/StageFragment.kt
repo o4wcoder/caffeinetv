@@ -21,6 +21,7 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.threeten.bp.Clock
 import org.webrtc.EglRenderer
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
@@ -55,9 +56,10 @@ class StageFragment @Inject constructor(
     private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val followManager: FollowManager,
     private val picasso: Picasso,
+    private val clock: Clock,
     @VisibleForTesting
     val releaseDesignConfig: ReleaseDesignConfig
-) : CaffeineFragment(R.layout.fragment_stage), StageBroadcastProfilePagerFragment.Callback {
+) : CaffeineFragment(R.layout.fragment_stage), ChatActionCallback {
 
     @Inject lateinit var stageBroadcastProfilePagerFragmentProvider: Provider<StageBroadcastProfilePagerFragment>
 
@@ -261,13 +263,13 @@ class StageFragment @Inject constructor(
     }
 
     @VisibleForTesting
-    fun updateBottomFragment(bottomContainerType: BottomContainerType, caid: String = "") {
+    fun updateBottomFragment(bottomContainerType: BottomContainerType, caid: String = "", chatAction: ChatAction? = null) {
         stageViewModel.updateIsViewProfile(bottomContainerType == BottomContainerType.PROFILE)
         updateAvatarImageViewBackground()
         binding.bottomFragmentContainer?.let {
             val fragment = when (bottomContainerType) {
                 BottomContainerType.CHAT -> {
-                    ChatFragment.newInstance(broadcasterUsername, releaseDesignConfig.isReleaseDesignActive())
+                    ChatFragment.newInstance(broadcasterUsername, releaseDesignConfig.isReleaseDesignActive(), chatAction)
                 }
                 BottomContainerType.PROFILE -> {
                     stageBroadcastProfilePagerFragmentProvider.get().apply {
@@ -292,13 +294,6 @@ class StageFragment @Inject constructor(
                 updateBottomFragment(BottomContainerType.CHAT)
             }
         }
-    }
-
-    override fun returnToChat() {
-        // Need to click the profile toggle button so it switches to the correct state/color
-        stageProfileOverlayViewModel.onProfileToggleClick()
-        updateBottomFragment(BottomContainerType.CHAT)
-        isProfileShowing = false
     }
 
     override fun onDestroyView() {
@@ -554,6 +549,31 @@ class StageFragment @Inject constructor(
             profileViewModel.unfollow(caid)
         } else {
             profileViewModel.follow(caid)
+        }
+    }
+
+    override fun processChatAction(type: ChatAction) {
+        when (type) {
+            ChatAction.DIGITAL_ITEM, ChatAction.MESSAGE -> {
+                stageProfileOverlayViewModel.onProfileToggleClick()
+                updateBottomFragment(BottomContainerType.CHAT, chatAction = type)
+                isProfileShowing = false
+            }
+            ChatAction.SHARE -> shareBroadcast()
+        }
+    }
+
+    private fun shareBroadcast() {
+        binding.userProfile?.let {
+            val sharerId = followManager.currentUserDetails()?.caid
+            startActivity(
+                StageShareIntentBuilder(
+                    it,
+                    sharerId,
+                    resources,
+                    clock
+                ).build()
+            )
         }
     }
 }

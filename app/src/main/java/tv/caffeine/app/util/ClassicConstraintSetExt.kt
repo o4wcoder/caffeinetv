@@ -39,7 +39,6 @@ fun ConstraintLayout.transformToClassicUI() {
             constraintSet.connect(R.id.share_button, ConstraintSet.END, R.id.chat_button, ConstraintSet.START)
             constraintSet.connect(R.id.share_button, ConstraintSet.START, this.id, ConstraintSet.START)
             constraintSet.connect(R.id.share_button, ConstraintSet.TOP, this.id, ConstraintSet.TOP)
-            constraintSet.setMargin(R.id.share_button, ConstraintSet.START, 0)
 
             constraintSet.connect(R.id.chat_button, ConstraintSet.END, R.id.gift_button, ConstraintSet.START)
             constraintSet.connect(R.id.chat_button, ConstraintSet.START, R.id.share_button, ConstraintSet.END)

@@ -6,15 +6,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import org.threeten.bp.Clock
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentStageBroadcastProfilePagerBinding
-import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowersFragmentArgs
@@ -26,43 +22,23 @@ import javax.inject.Provider
 private const val NUM_DETAILS_TABS = 3
 
 class StageBroadcastProfilePagerFragment @Inject constructor(
-    private val adapterFactory: StageBroadcastProfilePagerAdapter.Factory,
-    private val followManager: FollowManager,
-    private val clock: Clock
+    private val adapterFactory: StageBroadcastProfilePagerAdapter.Factory
 ) : CaffeineFragment(R.layout.fragment_stage_broadcast_profile_pager) {
 
     private lateinit var binding: FragmentStageBroadcastProfilePagerBinding
-    private val viewModel: StageBroadcastProfilePagerViewModel by viewModels { viewModelFactory }
     private val args by navArgs<StageBroadcastProfilePagerFragmentArgs>()
-
-    interface Callback {
-        fun returnToChat()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStageBroadcastProfilePagerBinding.bind(view)
-        binding.viewModel = viewModel
-
-        viewModel.loadUserProfile(args.broadcastUsername)
-            .observe(viewLifecycleOwner, Observer { userProfile ->
-                userProfile?.let {
-                    binding.shareButton?.setOnClickListener {
-                        val sharerId = followManager.currentUserDetails()?.caid
-                        startActivity(
-                            StageShareIntentBuilder(
-                                userProfile,
-                                sharerId,
-                                resources,
-                                clock
-                            ).build()
-                        )
-                    }
-                }
-            })
-
         binding.stageBroadcastDetailsViewPager.adapter = adapterFactory.create(childFragmentManager, args.caid)
-        binding.chatButton.setOnClickListener { (parentFragment as? StageFragment)?.returnToChat() }
+        binding.giftButton.setOnClickListener { processChatAction(ChatAction.DIGITAL_ITEM) }
+        binding.reactButton.setOnClickListener { processChatAction(ChatAction.MESSAGE) }
+        binding.shareButton.setOnClickListener { processChatAction(ChatAction.SHARE) }
+    }
+
+    private fun processChatAction(chatAction: ChatAction) {
+        (parentFragment as? StageFragment)?.processChatAction(chatAction)
     }
 }
 

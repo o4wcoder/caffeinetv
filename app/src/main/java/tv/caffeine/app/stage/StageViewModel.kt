@@ -99,6 +99,7 @@ class StageViewModel(
     fun updateIsViewProfile(isViewingProfile: Boolean) {
         this.isViewingProfile = isViewingProfile
         updateAvatarImageBackground()
+        notifyChange()
     }
 
     fun updateHasFriendsWatching(hasFriendsWatching: Boolean) {
@@ -114,6 +115,12 @@ class StageViewModel(
             onAvatarButtonClick()
         }
     }
+
+    @Bindable
+    fun getAvatarVisibility() = if (isViewingProfile) View.INVISIBLE else View.VISIBLE
+
+    @Bindable
+    fun getChatToggleVisibility() = if (isViewingProfile) View.VISIBLE else View.INVISIBLE
 
     @Bindable
     fun getProfileOverlayVisibility() = if (isProfileOverlayVisible) View.VISIBLE else View.GONE

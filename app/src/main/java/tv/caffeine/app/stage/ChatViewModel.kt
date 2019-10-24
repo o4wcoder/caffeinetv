@@ -89,6 +89,14 @@ class ChatViewModel @Inject constructor(
     val messages: LiveData<List<Message>> = _messages.map { it }
 
     @Bindable
+    fun getShareIcon() = ContextCompat.getDrawable(context, if (releaseDesignConfig.isReleaseDesignActive())
+            R.drawable.ic_chat_share else R.drawable.ic_share_dark)
+
+    @Bindable
+    fun getDigitalItemsIcon() = ContextCompat.getDrawable(context, if (releaseDesignConfig.isReleaseDesignActive())
+            R.drawable.ic_gifts else R.drawable.ic_digital_items)
+
+    @Bindable
     fun getBottomButtonTint() = ContextCompat.getColor(context,
         if (releaseDesignConfig.isReleaseDesignActive()) R.color.medium_gray else R.color.white)
 

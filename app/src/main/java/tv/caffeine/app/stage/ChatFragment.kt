@@ -3,6 +3,7 @@ package tv.caffeine.app.stage
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -29,6 +30,7 @@ import tv.caffeine.app.util.setImmersiveMode
 import javax.inject.Inject
 
 private const val ARG_BROADCAST_USERNAME = "broadcastUsername"
+private const val ARG_CHAT_ACTION = "chatAction"
 private const val REQUEST_SHARE_BROADCAST = 100
 
 abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
@@ -40,7 +42,8 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     @Inject lateinit var clock: Clock
     @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
 
-    protected lateinit var binding: FragmentChatBinding
+    @VisibleForTesting
+    lateinit var binding: FragmentChatBinding
     protected var isMe = false
     protected val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
@@ -54,10 +57,11 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     abstract fun connectFriendsWatching(stageIdentifier: String)
 
     companion object {
-        fun newInstance(broadcasterUsername: String, isRelease: Boolean): ChatFragment {
+        fun newInstance(broadcasterUsername: String, isRelease: Boolean, chatAction: ChatAction? = null): ChatFragment {
             val fragment = if (isRelease) ReleaseChatFragment() else ClassicChatFragment()
             val args = Bundle()
             args.putString(ARG_BROADCAST_USERNAME, broadcasterUsername)
+            args.putSerializable(ARG_CHAT_ACTION, chatAction)
             fragment.arguments = args
             return fragment
         }
@@ -112,6 +116,13 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
         }
 
         setButtonLayout()
+
+        (arguments?.getSerializable(ARG_CHAT_ACTION) as? ChatAction)?.let {
+            when (it) {
+                ChatAction.DIGITAL_ITEM -> sendDigitalItemWithMessage(null)
+                ChatAction.MESSAGE -> showMessageDialog(isUserEmailVerified())
+            }
+        }
     }
 
     override fun onResume() {
@@ -190,4 +201,15 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     }
 
     private fun resetStageImmersiveMode() = activity?.apply { setImmersiveMode() }
+
+    fun showMessageDialog(isEmailVerified: Boolean) {
+        if (isEmailVerified) {
+            fragmentManager?.navigateToSendMessage(
+                this@ChatFragment,
+                isMe
+            )
+        } else {
+            showVerifyEmailDialog()
+        }
+    }
 }
