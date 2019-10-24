@@ -101,6 +101,7 @@ class StageFragment @Inject constructor(
 
     fun connectStage() {
         if (connectStageJob == null) {
+
             loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = true
             connectStageJob = launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
@@ -326,9 +327,14 @@ class StageFragment @Inject constructor(
             surfaceViewRendererTuner.configure(renderer)
             feeds.values.firstOrNull { it.role == key }?.let { feed ->
                 configureRenderer(renderer, feed, videoTracks[feed.stream.id])
+                setFeedContentRating()
             }
             renderer.setOnClickListener { toggleOverlayVisibility() }
         }
+    }
+
+    private fun setFeedContentRating() {
+        feeds.values.firstOrNull()?.let { stageViewModel.contentRating = it.contentRating }
     }
 
     private var overlayVisibilityJob: Job? = null
@@ -370,8 +376,9 @@ class StageFragment @Inject constructor(
         binding.liveIndicator.isInvisible = !stageViewModel.getLiveIndicatorVisibility()
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
-        binding.friendsWatchingIndicator.isVisible = stageViewModel.getFriendsWatchingIndicatorVisiblility()
+        binding.friendsWatchingIndicator.isVisible = stageViewModel.getFriendsWatchingIndicatorVisibility()
         binding.swipeButton.isVisible = stageViewModel.getSwipeButtonVisibility()
+        binding.contentRatingTextView.isVisible = stageViewModel.getAgeRestrictionVisibility()
     }
 
     fun updateAvatarImageViewBackground() {
@@ -447,6 +454,8 @@ class StageFragment @Inject constructor(
             val activeRoles = feeds.values.filter { it.capabilities.video }.map { it.role }.toList()
             renderers[NewReyes.Feed.Role.primary]?.isVisible = NewReyes.Feed.Role.primary in activeRoles
             renderers[NewReyes.Feed.Role.secondary]?.isVisible = NewReyes.Feed.Role.secondary in activeRoles
+
+            setFeedContentRating()
         }
     }
 

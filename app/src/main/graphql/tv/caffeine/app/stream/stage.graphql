@@ -24,6 +24,7 @@ subscription Stage(
       username
       title
       broadcastId
+      contentRating
       live
       feeds {
         id

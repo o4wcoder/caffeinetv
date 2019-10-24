@@ -1,5 +1,6 @@
 package tv.caffeine.app.lobby
 
+import tv.caffeine.app.CaffeineConstants.RATING_SEVENTEEN_PLUS_TEXT
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Game
@@ -89,7 +90,7 @@ fun UserData.toCaffeineUser() = User(
 )
 
 private fun ClusterData.Broadcast.getAgeRestrictionText() =
-    if (ageRestriction == AgeRestriction.SEVENTEEN_PLUS) "17+" else null
+    if (ageRestriction == AgeRestriction.SEVENTEEN_PLUS) RATING_SEVENTEEN_PLUS_TEXT else null
 
 fun List<LobbyItem>.toDistinctLiveBroadcasters(): List<String> {
     val broadcasters = ArrayList<String>()

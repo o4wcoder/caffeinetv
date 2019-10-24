@@ -12,7 +12,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import tv.caffeine.app.CaffeineConstants
 import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.stream.type.ContentRating
 
 class StageViewModelTests {
     @get:Rule
@@ -85,7 +87,7 @@ class StageViewModelTests {
         subject.updateStageIsLive(true)
         subject.updateHasFriendsWatching(true)
         subject.updateIsMe(false)
-        assertTrue(subject.getFriendsWatchingIndicatorVisiblility())
+        assertTrue(subject.getFriendsWatchingIndicatorVisibility())
     }
 
     @Test
@@ -315,5 +317,89 @@ class StageViewModelTests {
     fun `do not show chat toggle when not showing the profile section`() {
         subject.updateIsViewProfile(false)
         assertEquals(subject.getChatToggleVisibility(), View.INVISIBLE)
+    }
+
+    @Test
+    fun `show age restriction indicator if content rating is seventeen plus for release design`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertTrue(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `don not show age restriction if overlay is not visible for release design`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateOverlayIsVisible(false, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(true)
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `don not show age restriction if feed quality is bad for release design`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.BAD)
+        subject.updateStageIsLive(true)
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `don not show age restriction if stage is not live for release design`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateOverlayIsVisible(false, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(false)
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `do not show age restriction indicator if content rating is everyone for release design`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.EVERYONE
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `do not show age restriction indicator if content rating is seventeen plus for classic design`() {
+        subject.isReleaseDesign.set(false)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `do not show age restriction indicator if content rating is everyone for classic design`() {
+        subject.isReleaseDesign.set(false)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.EVERYONE
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `show seventeen plus text when content rating is seventeen plus`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertEquals(subject.getAgeRestriction(), CaffeineConstants.RATING_SEVENTEEN_PLUS_TEXT)
+    }
+
+    @Test
+    fun `do not show any text on seventeen plus indicator when rating is everyone`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.EVERYONE
+        assertEquals(subject.getAgeRestriction(), "")
+    }
+
+    private fun turnOnBasicIndicatorVisibility() {
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(true)
     }
 }

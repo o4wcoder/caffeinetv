@@ -5,8 +5,10 @@ import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
+import tv.caffeine.app.CaffeineConstants.RATING_SEVENTEEN_PLUS_TEXT
 import tv.caffeine.app.R
 import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.stream.type.ContentRating
 import tv.caffeine.app.ui.CaffeineViewModel
 
 class StageViewModel(
@@ -37,27 +39,32 @@ class StageViewModel(
             notifyChange()
         }
 
+    var contentRating = ContentRating.EVERYONE
+        set(value) {
+            field = value
+            notifyChange()
+        }
+
     fun getGameLogoVisibility() = overlayIsVisible && stageIsLive && feedQuality != FeedQuality.BAD
 
     fun getClassicLiveIndicatorTextViewVisibility() =
         !isReleaseDesign.get() &&
-            overlayIsVisible &&
-            stageIsLive &&
-            feedQuality != FeedQuality.BAD
+            getBasicIndicatorVisibility()
 
     fun getLiveIndicatorVisibility() =
         isReleaseDesign.get() &&
             !hasFriendsWatching &&
-            overlayIsVisible &&
-            stageIsLive &&
-            feedQuality != FeedQuality.BAD
+            getBasicIndicatorVisibility()
 
-    fun getFriendsWatchingIndicatorVisiblility() =
+    fun getFriendsWatchingIndicatorVisibility() =
         isReleaseDesign.get() &&
             hasFriendsWatching &&
-            overlayIsVisible &&
-            stageIsLive &&
-            feedQuality != FeedQuality.BAD
+            getBasicIndicatorVisibility()
+
+    fun getAgeRestrictionVisibility() =
+        isReleaseDesign.get() &&
+            contentRating == ContentRating.SEVENTEEN_PLUS &&
+            getBasicIndicatorVisibility()
 
     fun getLiveIndicatorAndAvatarContainerVisibility() = overlayIsVisible
 
@@ -70,6 +77,8 @@ class StageViewModel(
     fun getBadConnectionOverlayVisibility() = feedQuality == FeedQuality.BAD
 
     fun getSwipeButtonVisibility() = overlayIsVisible
+
+    fun getAgeRestriction() = if (contentRating == ContentRating.SEVENTEEN_PLUS) RATING_SEVENTEEN_PLUS_TEXT else ""
 
     fun updateFeedQuality(quality: FeedQuality) {
         feedQuality = quality
@@ -148,4 +157,9 @@ class StageViewModel(
     private fun updateUsernameTextColor() {
         usernameTextColor = if (isFollowed && !isReleaseDesign.get()) R.color.caffeine_blue else R.color.white
     }
+
+    private fun getBasicIndicatorVisibility() =
+        overlayIsVisible &&
+            stageIsLive &&
+            feedQuality != FeedQuality.BAD
 }

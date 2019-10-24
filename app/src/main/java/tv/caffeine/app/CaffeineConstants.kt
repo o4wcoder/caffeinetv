@@ -2,6 +2,8 @@ package tv.caffeine.app
 
 object CaffeineConstants {
 
+    const val RATING_SEVENTEEN_PLUS_TEXT = "17+"
+
     // Dialog tags
     const val TAG_UNFOLLOW_USER = "unfollowUser"
     const val TAG_VERIFICATION_SENT = "verificationEmailSent"

@@ -309,7 +309,7 @@
                     style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
                     android:id="@+id/live_indicator"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/stage_badge_height"
                     android:src="@drawable/ic_live_indicator"
                     android:contentDescription="@string/live_indicator_lowercase"
                     android:visibility="invisible"
@@ -320,10 +320,28 @@
                     style="@style/LobbyCardLiveBadge"
                     android:id="@+id/friends_watching_indicator"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="@dimen/stage_badge_height"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/live_indicator_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="end"
+                    app:constraint_referenced_ids="live_indicator,friends_watching_indicator" />
+
+                <TextView
+                    style="@style/LobbyCardContentRating"
+                    android:id="@+id/content_rating_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/stage_badge_height"
+                    android:text="@{viewModel.ageRestriction}"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/live_indicator_barrier"
+                    app:layout_constraintBottom_toBottomOf="@id/live_indicator"/>
 
                 <ImageView
                     android:id="@+id/swipe_button"

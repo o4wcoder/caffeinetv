@@ -21,6 +21,7 @@ import tv.caffeine.app.net.ServerConfig
 import tv.caffeine.app.stream.StageSubscription
 import tv.caffeine.app.stream.type.Capability
 import tv.caffeine.app.stream.type.ClientType
+import tv.caffeine.app.stream.type.ContentRating
 import tv.caffeine.app.stream.type.Role
 import tv.caffeine.app.stream.type.SourceConnectionQuality
 import javax.inject.Inject
@@ -85,16 +86,17 @@ fun <T> Response<T>.asCaffeineResult(): CaffeineResult<T> {
 
 fun StageSubscription.Data.toNewReyesFeeds(): Map<String, NewReyes.Feed> {
     val feeds = stage?.stage?.feeds?.filterNotNull() ?: return mapOf()
+    val contentRating = stage.stage.contentRating
     return feeds
         .map {
-            it.toNewReyes()
+            it.toNewReyes(contentRating)
         }
         .associateBy {
             it.id
         }
 }
 
-fun StageSubscription.Feed.toNewReyes(): NewReyes.Feed {
+fun StageSubscription.Feed.toNewReyes(contentRating: ContentRating): NewReyes.Feed {
     val feed = NewReyes.Feed(
         id,
         clientId,
@@ -107,7 +109,8 @@ fun StageSubscription.Feed.toNewReyes(): NewReyes.Feed {
         capabilities.toNewReyes(),
         "TODO",
         "TODO",
-        stream!!.toNewReyes()
+        stream!!.toNewReyes(),
+        contentRating
     )
     return feed
 }
