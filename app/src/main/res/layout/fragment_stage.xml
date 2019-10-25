@@ -388,6 +388,7 @@
                     android:visibility="@{viewModel.avatarVisibility}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:roundedImageUrl="@{userProfile.avatarImageUrl}"
                     app:placeholder="@{@drawable/default_avatar_round}"
                     tools:background="@drawable/circle_white_with_blue_rim"
@@ -440,9 +441,9 @@
                     android:layout_marginEnd="16dp"
                     android:background="@{userProfile.shouldShowFollow ? @drawable/star_outline : @drawable/star_filled}"
                     android:text="@string/follow_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
                     app:layout_constraintEnd_toStartOf="@id/avatar_image_view"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/avatar_image_view"
                     tools:background="@drawable/star_outline"/>
 
                 <TextView
@@ -453,7 +454,7 @@
                     android:layout_marginEnd="4dp"
                     android:layout_marginBottom="4dp"
                     android:layout_marginStart="10dp"
-                    android:maxLines="@{viewModel.isReleaseDesign ? 1 : 2}"
+                    android:maxLines="2"
                     android:text="@{userProfile.isLive ? userProfile.broadcastName : userProfile.name}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

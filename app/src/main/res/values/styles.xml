@@ -392,6 +392,12 @@
     <style name="BroadcasterUsername.Night">
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="BroadcasterUsername.Night.Release">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="BroadcastTitle" parent="CaffeineText">
         <item name="android:textSize">@dimen/broadcast_title</item>
         <item name="android:textColor">@color/almost_black</item>
@@ -404,7 +410,8 @@
     </style>
 
     <style name="BroadcastTitle.Night.Release">
-        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="FollowText" parent="CaffeineText">

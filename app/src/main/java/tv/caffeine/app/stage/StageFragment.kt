@@ -155,6 +155,7 @@ class StageFragment @Inject constructor(
         // TODO: When release design goes live, remove this and just update styles
         if (releaseDesignConfig.isReleaseDesignActive()) {
             TextViewCompat.setTextAppearance(binding.broadcastTitleTextView, R.style.BroadcastTitle_Night_Release)
+            TextViewCompat.setTextAppearance(binding.usernameTextView, R.style.BroadcasterUsername_Night_Release)
         }
 
         configureFriendsWatchingIndicator()

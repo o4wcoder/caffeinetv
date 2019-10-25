@@ -310,6 +310,7 @@
                     android:onClick="@{() -> viewModel.onLandscapeAvatarClick()}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:roundedImageUrl="@{userProfile.avatarImageUrl}"
                     app:placeholder="@{@drawable/default_avatar_round}"
                     tools:background="@drawable/circle_white_with_blue_rim"
@@ -349,9 +350,9 @@
                     android:layout_marginEnd="16dp"
                     android:background="@{userProfile.shouldShowFollow ? @drawable/star_outline : @drawable/star_filled}"
                     android:text="@string/follow_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
                     app:layout_constraintEnd_toStartOf="@id/avatar_image_view"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/avatar_image_view"
                     tools:background="@drawable/ic_star_border_24dp"/>
 
                 <TextView
