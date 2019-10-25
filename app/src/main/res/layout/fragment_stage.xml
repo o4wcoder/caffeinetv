@@ -14,10 +14,6 @@
             name="viewModel"
             type="tv.caffeine.app.stage.StageViewModel" />
 
-        <variable
-            name="stageProfileOverlayViewModel"
-            type="tv.caffeine.app.stage.StageProfileOverlayViewModel" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -228,8 +224,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottom_fragment_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            bind:userProfile="@{userProfile}"
-            bind:viewModel="@{stageProfileOverlayViewModel}"/>
+            bind:userProfile="@{userProfile}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/live_indicator_and_avatar_container"
@@ -459,7 +454,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginStart="10dp"
                     android:maxLines="@{viewModel.isReleaseDesign ? 1 : 2}"
-                    android:text="@{userProfile.broadcastName}"
+                    android:text="@{userProfile.isLive ? userProfile.broadcastName : userProfile.name}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/follow_button_image"

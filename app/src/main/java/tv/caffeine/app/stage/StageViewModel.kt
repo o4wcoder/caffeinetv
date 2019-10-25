@@ -1,6 +1,7 @@
 package tv.caffeine.app.stage
 
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,6 @@ import tv.caffeine.app.ui.CaffeineViewModel
 class StageViewModel(
     val releaseDesignConfig: ReleaseDesignConfig,
     val onAvatarButtonClick: () -> Unit
-
 ) : CaffeineViewModel() {
 
     private var feedQuality = FeedQuality.GOOD
@@ -70,7 +70,7 @@ class StageViewModel(
 
     fun getAppBarVisibility() = overlayIsVisible && appbarIsVisible
 
-    fun getAvatarUsernameContainerVisibility() = getOfflineAvatarUsernameContainerVisibility() && !isMe && overlayIsVisible && feedQuality != FeedQuality.BAD
+    fun getAvatarUsernameContainerVisibility() = !isMe && overlayIsVisible && feedQuality != FeedQuality.BAD
 
     fun getWeakConnnectionContainerVisibility() = feedQuality == FeedQuality.POOR
 
@@ -138,19 +138,14 @@ class StageViewModel(
         _showPoorConnectionAnimation.value = !overlayIsVisible && feedQuality == FeedQuality.POOR
     }
 
-    private fun getOfflineAvatarUsernameContainerVisibility() =
-        if (isReleaseDesign.get()) {
-            stageIsLive
-        } else {
-            true
-        }
-
-    private fun updateAvatarImageBackground() {
-        val background: Int = if (isReleaseDesign.get()) {
-            if (isViewingProfile) R.drawable.circle_white_with_cyan_rim else R.drawable.circle_white_with_stage_avatar_white_rim
-        } else {
-            if (isFollowed) R.drawable.circle_white_with_blue_rim else R.drawable.circle_white
-        }
+    @VisibleForTesting
+    fun updateAvatarImageBackground() {
+        val background: Int =
+            if (isReleaseDesign.get()) {
+                R.drawable.circle_white_with_stage_avatar_white_rim
+            } else {
+                if (isFollowed) R.drawable.circle_white_with_blue_rim else R.drawable.circle_white
+            }
         avatarImageBackground = background
     }
 

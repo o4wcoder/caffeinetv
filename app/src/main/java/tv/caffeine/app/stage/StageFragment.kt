@@ -36,11 +36,9 @@ import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.formatHtmlText
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.PulseAnimator
-import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.inTransaction
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
@@ -85,7 +83,6 @@ class StageFragment @Inject constructor(
     private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting
     var haveSetupBottomSection = false
-    private lateinit var stageProfileOverlayViewModel: StageProfileOverlayViewModel
     private var isProfileShowing = false
 
     @VisibleForTesting
@@ -155,8 +152,6 @@ class StageFragment @Inject constructor(
             if (it) poorConnectionPulseAnimator.startPulse() else poorConnectionPulseAnimator.stopPulse()
         })
 
-        stageProfileOverlayViewModel = StageProfileOverlayViewModel(context!!, ::onProfileToggleButtonClick)
-
         // TODO: When release design goes live, remove this and just update styles
         if (releaseDesignConfig.isReleaseDesignActive()) {
             TextViewCompat.setTextAppearance(binding.broadcastTitleTextView, R.style.BroadcastTitle_Night_Release)
@@ -176,11 +171,6 @@ class StageFragment @Inject constructor(
 
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
-            binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, ThemeColor.DARK, ::onFollowButtonClick)
-            val isSelf = followManager.isSelf(userProfile.caid)
-            binding.stageProfileOverlay?.followStarViewModel?.bind(userProfile.caid, userProfile.isFollowed, isSelf)
-            stageProfileOverlayViewModel.bind(userProfile.caid)
-            binding.stageProfileOverlay?.viewModel = stageProfileOverlayViewModel
             binding.showIsOverTextView.formatUsernameAsHtml(
                 picasso,
                 getString(R.string.broadcaster_show_is_over, userProfile.username)
@@ -210,7 +200,7 @@ class StageFragment @Inject constructor(
 
             stageViewModel.updateIsMe(userProfile.isMe)
             binding.root.setOnClickListener { toggleOverlayVisibility() }
-            setupClassicFollowClickListener(userProfile)
+            setupFollowClickListener(userProfile)
             updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
 
@@ -228,7 +218,7 @@ class StageFragment @Inject constructor(
         configureButtons()
     }
 
-    private fun setupClassicFollowClickListener(userProfile: UserProfile) {
+    private fun setupFollowClickListener(userProfile: UserProfile) {
         // TODO: extract to VM
         val followListener = View.OnClickListener {
             if (userProfile.isFollowed) {
@@ -290,6 +280,7 @@ class StageFragment @Inject constructor(
         if (!haveSetupBottomSection) {
             haveSetupBottomSection = true
             if (releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive) {
+                isProfileShowing = true
                 updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
             } else {
                 updateBottomFragment(BottomContainerType.CHAT)
@@ -553,18 +544,9 @@ class StageFragment @Inject constructor(
         renderers.clear()
     }
 
-    fun onFollowButtonClick(caid: CAID, isFollowing: Boolean) {
-        if (isFollowing) {
-            profileViewModel.unfollow(caid)
-        } else {
-            profileViewModel.follow(caid)
-        }
-    }
-
     override fun processChatAction(type: ChatAction) {
         when (type) {
             ChatAction.DIGITAL_ITEM, ChatAction.MESSAGE -> {
-                stageProfileOverlayViewModel.onProfileToggleClick()
                 updateBottomFragment(BottomContainerType.CHAT, chatAction = type)
                 isProfileShowing = false
             }

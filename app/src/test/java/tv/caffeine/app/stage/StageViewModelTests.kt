@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import tv.caffeine.app.CaffeineConstants
+import tv.caffeine.app.R
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stream.type.ContentRating
 
@@ -210,23 +211,12 @@ class StageViewModelTests {
     }
 
     @Test
-    fun `showing overlays on an classic offline stage shows avatar username container`() {
-        subject.isReleaseDesign.set(false)
+    fun `showing overlays on an offline stage shows avatar username container`() {
         subject.updateOverlayIsVisible(true, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
         subject.updateIsMe(false)
         assertTrue(subject.getAvatarUsernameContainerVisibility())
-    }
-
-    @Test
-    fun `showing overlays on an offline stage does not show avatar username container`() {
-        subject.isReleaseDesign.set(true)
-        subject.updateOverlayIsVisible(true, false)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
-        assertFalse(subject.getAvatarUsernameContainerVisibility())
     }
 
     @Test
@@ -397,9 +387,33 @@ class StageViewModelTests {
         assertEquals(subject.getAgeRestriction(), "")
     }
 
+    @Test
+    fun `when release design show release version of avatar background ring`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateAvatarImageBackground()
+        assertEquals(subject.avatarImageBackground, R.drawable.circle_white_with_stage_avatar_white_rim)
+    }
+
+    @Test
+    fun `when classic design show and user is fllowed show blue avatar background ring`() {
+        subject.isReleaseDesign.set(false)
+        subject.updateIsFollowed(true)
+        subject.updateAvatarImageBackground()
+        assertEquals(subject.avatarImageBackground, R.drawable.circle_white_with_blue_rim)
+    }
+
+    @Test
+    fun `when classic design show and user is not fllowed show white avatar background ring`() {
+        subject.isReleaseDesign.set(false)
+        subject.updateIsFollowed(false)
+        subject.updateAvatarImageBackground()
+        assertEquals(subject.avatarImageBackground, R.drawable.circle_white)
+    }
+
     private fun turnOnBasicIndicatorVisibility() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
+
     }
 }
