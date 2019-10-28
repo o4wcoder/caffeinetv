@@ -65,31 +65,16 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintVertical_bias="1.0"/>
 
-
-        <ImageView
+        <tv.caffeine.app.ui.AvatarOverlapLiveBadge
             style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
-            android:id="@+id/live_indicator"
-            android:layout_width="0dp"
-            android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height}"
-            android:src="@drawable/ic_live_indicator"
-            android:contentDescription="@string/live_indicator_lowercase"
-            android:visibility="@{viewModel.liveBadgeIndicatorVisibility}"
-            app:layout_constraintDimensionRatio="V,100:56"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            style="@style/LobbyCardLiveBadge"
-            android:id="@+id/friends_watching_text_view"
+            android:id="@+id/avatar_overlap_live_badge"
             android:layout_width="wrap_content"
             android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height}"
-            android:visibility="@{viewModel.liveBadgeTextVisibility}"
-            app:htmlText="@{viewModel.badgeText}"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintEnd_toStartOf="@id/content_rating_text_view"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="ben + 2"/>
+            app:lobbyBroadcaster="@{viewModel}"/>
 
         <TextView
             style="@style/LobbyCardContentRating"

@@ -133,10 +133,10 @@
         <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/> and one other are watching]]></item>
         <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/> and %3$s others are watching]]></item>
     </plurals>
-    <string name="user_watching_short"><![CDATA[<img src=\"%2$s\"> %1$s]]></string>
+    <string name="user_watching_short"><![CDATA[%1$s]]></string>
     <plurals name="user_and_friends_watching_short">
-        <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s + 1]]></item>
-        <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s + %3$s]]></item>
+        <item quantity="one"><![CDATA[%1$s + 1]]></item>
+        <item quantity="other"><![CDATA[%1$s + %2$s]]></item>
     </plurals>
     <plurals name="number_of_followers">
         <item quantity="one"><![CDATA[<b>1</b>]]> follower</item>

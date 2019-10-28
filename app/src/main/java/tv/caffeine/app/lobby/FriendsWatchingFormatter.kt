@@ -61,8 +61,7 @@ fun formatFriendsWatchingShortString(
             followingViewers.let {
                 context.getString(
                     singleFriendWatchingResId,
-                    followingViewers[0].username,
-                    followingViewers[0].avatarImageUrl
+                    followingViewers[0].username
                 )
             }
         }
@@ -72,7 +71,6 @@ fun formatFriendsWatchingShortString(
                     multipleFriendsWatchingResId,
                     followingViewersCount - 1,
                     followingViewers[0].username,
-                    followingViewers[0].avatarImageUrl,
                     followingViewersCount - 1
                 )
             }

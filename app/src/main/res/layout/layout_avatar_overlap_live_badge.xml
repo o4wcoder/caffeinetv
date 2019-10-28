@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.ui.AvatarOverlapLiveBadgeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/pure_blue">
+
+        <ImageView
+            android:id="@+id/avatar_1"
+            android:layout_width="@dimen/avatar_friends_watching"
+            android:layout_height="@dimen/avatar_friends_watching"
+            android:layout_marginStart="@dimen/live_badge_horizontal_margin"
+            android:visibility="@{viewModel.avatar1Visibility}"
+            android:contentDescription="@string/user_avatar_content_description"
+            android:elevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundedImageUrl="@{viewModel.avatar1Url}"
+            app:placeholder="@{@drawable/default_avatar_round}"
+            tools:background="@color/caffeine_blue"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/avatar_2"
+            android:layout_width="@dimen/avatar_friends_watching"
+            android:layout_height="@dimen/avatar_friends_watching"
+            android:layout_marginStart="@dimen/avatar_friends_watching_overlap_start"
+            android:visibility="@{viewModel.avatar2Visibility}"
+            android:contentDescription="@string/user_avatar_content_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundedImageUrl="@{viewModel.avatar2Url}"
+            app:placeholder="@{@drawable/default_avatar_round}"
+            tools:background="@color/black"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="avatar_1,avatar_2" />
+
+        <TextView
+            style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+            android:id="@+id/title_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@{viewModel.titleTextSmallMargin ? @dimen/live_badge_small_title_start_margin : @dimen/live_badge_horizontal_margin }"
+            android:layout_marginEnd="@dimen/live_badge_horizontal_margin"
+            android:visibility="@{viewModel.titleViewVisibility}"
+            android:contentDescription="@{viewModel.titleText}"
+            app:htmlText="@{viewModel.titleText}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/barrier"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Baaaaaaad + 1" />
+
+        <ImageView
+            style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+            android:id="@+id/live_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/live_indicator_lowercase"
+            android:visibility="@{viewModel.liveBadgeVisibility}"
+            android:src="@drawable/ic_live_indicator"
+            app:layout_constraintDimensionRatio="V,100:56"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

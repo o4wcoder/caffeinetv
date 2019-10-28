@@ -35,60 +35,30 @@ class StageViewModelTests {
     }
 
     @Test
-    fun `showing overlays on a live stage with good quality shows live indicator`() {
+    fun `showing overlays on a live stage with good quality shows avatar overlap live badge`() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
         subject.updateIsMe(false)
-        assertTrue(subject.getLiveIndicatorVisibility())
+        assertTrue(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
     @Test
-    fun `showing overlays on a live stage with poor quality shows live indicator`() {
+    fun `showing overlays on a live stage with poor quality shows avatar overlap live badge`() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.POOR)
         subject.updateStageIsLive(true)
         subject.updateIsMe(false)
-        assertTrue(subject.getLiveIndicatorVisibility())
+        assertTrue(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
     @Test
-    fun `showing overlays on an offline stage does not show live indicator`() {
+    fun `showing overlays on an offline stage does not show avatar overlap live badge`() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
         subject.updateIsMe(false)
-        assertFalse(subject.getLiveIndicatorVisibility())
-    }
-
-    @Test
-    fun `showing overlays with no friends watching on shows the live indicator`() {
-        subject.updateOverlayIsVisible(true, true)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(true)
-        subject.updateHasFriendsWatching(false)
-        subject.updateIsMe(false)
-        assertTrue(subject.getLiveIndicatorVisibility())
-    }
-
-    @Test
-    fun `showing overlays with friends watching on live stage does not show live indicator`() {
-        subject.updateOverlayIsVisible(true, true)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(true)
-        subject.updateHasFriendsWatching(true)
-        subject.updateIsMe(false)
-        assertFalse(subject.getLiveIndicatorVisibility())
-    }
-
-    @Test
-    fun `showing overlays with friends watching on shows the friends watching indicator`() {
-        subject.updateOverlayIsVisible(true, true)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(true)
-        subject.updateHasFriendsWatching(true)
-        subject.updateIsMe(false)
-        assertTrue(subject.getFriendsWatchingIndicatorVisibility())
+        assertFalse(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
     @Test

@@ -141,7 +141,7 @@ class OnlineBroadcaster @AssistedInject constructor (
     val broadcastTitle = broadcast?.name
     val mainPreviewImageUrl = broadcast?.mainPreviewImageUrl
     val pictureInPictureImageUrl = broadcast?.pictureInPictureImageUrl
-    private val friendsWatchingText = formatFriendsWatchingShortString(context, broadcaster)
+    val friendsWatchingText = formatFriendsWatchingShortString(context, broadcaster)
     val badgeText = broadcaster.badgeText?.let { it } ?: friendsWatchingText
     val liveBadgeIndicatorVisibility = if (badgeText == null) View.VISIBLE else View.GONE
     val liveBadgeTextVisibility = if (badgeText != null) View.VISIBLE else View.GONE

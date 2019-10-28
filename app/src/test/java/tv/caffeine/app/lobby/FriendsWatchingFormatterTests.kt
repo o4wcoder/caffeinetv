@@ -29,7 +29,7 @@ class FriendsWatchingFormatterTests {
     }
 
     @Test
-    fun `when 1 unverified friend is watching, show their avatar and name`() {
+    fun `when 1 unverified friend is watching, show their avatar for long version and name for both versions`() {
         val user = makeGenericUser()
         val friendA = unverifiedUser
         val context = InstrumentationRegistry.getInstrumentation().context
@@ -38,7 +38,7 @@ class FriendsWatchingFormatterTests {
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA is watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA", shortString)
+        assertEquals("usernameA", shortString)
     }
 
     @Test
@@ -53,14 +53,14 @@ class FriendsWatchingFormatterTests {
     }
 
     @Test
-    fun `when 1 verified friend is watching, show their avatar, name for the short version`() {
+    fun `when 1 verified friend is watching, show their name for the short version`() {
         val user = makeGenericUser()
         val friendA = verifiedUser
         val context = InstrumentationRegistry.getInstrumentation().context
         val broadcaster = Lobby.Broadcaster(
             "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA", shortString)
+        assertEquals("usernameA", shortString)
     }
 
     @Test
@@ -75,14 +75,14 @@ class FriendsWatchingFormatterTests {
     }
 
     @Test
-    fun `when 1 unverified caster friend is watching, show their avatar and name for the short version`() {
+    fun `when 1 unverified caster friend is watching, show their name for the short version`() {
         val user = makeGenericUser()
         val friendA = casterUser
         val context = InstrumentationRegistry.getInstrumentation().context
         val broadcaster = Lobby.Broadcaster(
             "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA", shortString)
+        assertEquals("usernameA", shortString)
     }
 
     @Test
@@ -97,14 +97,14 @@ class FriendsWatchingFormatterTests {
     }
 
     @Test
-    fun `when 1 verified caster friend is watching, show their avatar and name for the short version`() {
+    fun `when 1 verified caster friend is watching, show their name for the short version`() {
         val user = makeGenericUser()
         val friendA = verifiedCasterUser
         val context = InstrumentationRegistry.getInstrumentation().context
         val broadcaster = Lobby.Broadcaster(
             "fake id", "Featured", user, "tag", null, null, listOf(friendA), 1, 10, null, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA", shortString)
+        assertEquals("usernameA", shortString)
     }
 
     @Test
@@ -121,7 +121,7 @@ class FriendsWatchingFormatterTests {
     }
 
     @Test
-    fun `when 2 friends are watching, show the first friend's avatar, name and correct quantity for the short version`() {
+    fun `when 2 friends are watching, name and correct quantity for the short version`() {
         val user = makeGenericUser()
         val friendA = verifiedCasterUser
         val friendB = casterUser
@@ -130,7 +130,7 @@ class FriendsWatchingFormatterTests {
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
             followingViewers, followingViewers.size, 10, null, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA + 1", shortString)
+        assertEquals("usernameA + 1", shortString)
     }
 
     @Test
@@ -148,7 +148,7 @@ class FriendsWatchingFormatterTests {
     }
 
     @Test
-    fun `when 3 friends are watching, show the first friend's avatar, name and correct quantity for the short version`() {
+    fun `when 3 friends are watching, name and correct quantity for the short version`() {
         val user = makeGenericUser()
         val friendA = verifiedCasterUser
         val friendB = casterUser
@@ -158,7 +158,7 @@ class FriendsWatchingFormatterTests {
         val broadcaster = Lobby.Broadcaster("fake id", "Featured", user, "tag", null, null,
             followingViewers, followingViewers.size, 10, null, null, null)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA + 2", shortString)
+        assertEquals("usernameA + 2", shortString)
     }
 
     @Test
@@ -175,6 +175,6 @@ class FriendsWatchingFormatterTests {
         val string = formatFriendsWatchingString(context, broadcaster)
         assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA <img src=\"verified_white\"/> and 4 others are watching", string)
         val shortString = formatFriendsWatchingShortString(context, broadcaster)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> usernameA + 4", shortString)
+        assertEquals("usernameA + 4", shortString)
     }
 }

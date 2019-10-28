@@ -161,4 +161,8 @@
     <dimen name="reset_password_title_margin_top">72dp</dimen>
     <dimen name="forgot_subtitle_margin_top">56dp</dimen>
     <dimen name="forgot_margin_subtitle_top">124dp</dimen>
+
+    <dimen name="live_badge_horizontal_margin">16dp</dimen>
+    <dimen name="avatar_friends_watching_overlap_start">30dp</dimen>
+    <dimen name="live_badge_small_title_start_margin">8dp</dimen>
 </resources>

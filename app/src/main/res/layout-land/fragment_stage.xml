@@ -222,34 +222,24 @@
                     android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/avatar_overlap_live_badge"/>
 
-                <ImageView
-                    android:id="@+id/live_indicator"
+                <tv.caffeine.app.ui.AvatarOverlapLiveBadge
+                    style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+                    android:id="@+id/avatar_overlap_live_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/stage_badge_height"
-                    android:background="@color/pure_blue"
-                    android:src="@drawable/ic_live_indicator"
-                    android:contentDescription="@string/live_indicator_lowercase"
-                    android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    style="@style/LobbyCardLiveBadge"
-                    android:id="@+id/friends_watching_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/stage_badge_height"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintEnd_toStartOf="@id/content_rating_text_view"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/live_indicator_barrier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="end"
-                    app:constraint_referenced_ids="live_indicator,friends_watching_indicator" />
+                    app:constraint_referenced_ids="avatar_overlap_live_badge" />
 
                 <TextView
                     style="@style/LobbyCardContentRating"
@@ -260,7 +250,7 @@
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/live_indicator_barrier"
-                    app:layout_constraintBottom_toBottomOf="@id/live_indicator"/>
+                    app:layout_constraintBottom_toBottomOf="@id/avatar_overlap_live_badge"/>
 
                 <ImageView
                     android:id="@+id/swipe_button"
@@ -270,7 +260,7 @@
                     android:contentDescription="@string/stage_swipe_image_content_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/avatar_overlap_live_badge"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

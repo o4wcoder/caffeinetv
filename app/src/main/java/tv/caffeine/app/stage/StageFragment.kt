@@ -30,13 +30,11 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.NewReyes
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.databinding.FragmentStageBinding
-import tv.caffeine.app.lobby.formatFriendsWatchingShortString
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.formatHtmlText
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.inTransaction
@@ -73,6 +71,7 @@ class StageFragment @Inject constructor(
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private lateinit var stageId: String
+    private var hasFriendsWatching: Boolean = false
 
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
@@ -365,10 +364,9 @@ class StageFragment @Inject constructor(
         binding.avatarUsernameContainer.isVisible = stageViewModel.getAvatarUsernameContainerVisibility()
         binding.liveIndicatorAndAvatarContainer.isVisible = stageViewModel.getLiveIndicatorAndAvatarContainerVisibility()
         binding.gameLogoImageView.isVisible = stageViewModel.getGameLogoVisibility()
-        binding.liveIndicator.isInvisible = !stageViewModel.getLiveIndicatorVisibility()
+        binding.avatarOverlapLiveBadge.isInvisible = !stageViewModel.getAvatarOverlapLiveBadgeVisibility()
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
-        binding.friendsWatchingIndicator.isVisible = stageViewModel.getFriendsWatchingIndicatorVisibility()
         binding.swipeButton.isVisible = stageViewModel.getSwipeButtonVisibility()
         binding.contentRatingTextView.isVisible = stageViewModel.getAgeRestrictionVisibility()
     }
@@ -397,21 +395,18 @@ class StageFragment @Inject constructor(
 
     private fun configureFriendsWatchingIndicator() {
         friendsWatchingViewModel.friendsWatching.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) stageViewModel.updateHasFriendsWatching(true) else stageViewModel.updateHasFriendsWatching(false)
-            val friendsWatchingString = context?.let { context -> formatFriendsWatchingShortString(context, it) }
-            if (friendsWatchingString != null) {
-                binding.friendsWatchingIndicator.formatHtmlText(friendsWatchingString)
-            } else {
-                stageViewModel.updateHasFriendsWatching(false)
-            }
+            hasFriendsWatching = it.isNotEmpty()
+            binding.avatarOverlapLiveBadge.stageFollowers = it
         })
 
-        binding.friendsWatchingIndicator.setOnClickListener {
-            val action =
-                StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(
-                    stageId
-                )
-            findNavController().safeNavigate(action)
+        binding.avatarOverlapLiveBadge.setOnClickListener {
+            if (hasFriendsWatching) {
+                val action =
+                    StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(
+                        stageId
+                    )
+                findNavController().safeNavigate(action)
+            }
         }
     }
 

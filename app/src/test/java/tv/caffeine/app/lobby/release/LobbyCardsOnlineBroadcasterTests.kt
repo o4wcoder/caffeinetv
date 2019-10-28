@@ -148,7 +148,7 @@ class LobbyCardsOnlineBroadcasterTests {
         val broadcaster = makeBroadcaster(genericUser, onlineBroadcast, badgeText, null, followingViewers)
         val liveBroadcast = LiveBroadcast("1", broadcaster)
         val onlineBroadcaster = makeOnlineBroadcaster(liveBroadcast)
-        assertEquals("<img src=\"https://images.caffeine.tv/avatarImagePath\"> username", onlineBroadcaster.badgeText)
+        assertEquals("username", onlineBroadcaster.badgeText)
         assertEquals(View.GONE, onlineBroadcaster.liveBadgeIndicatorVisibility)
         assertEquals(View.VISIBLE, onlineBroadcaster.liveBadgeTextVisibility)
     }

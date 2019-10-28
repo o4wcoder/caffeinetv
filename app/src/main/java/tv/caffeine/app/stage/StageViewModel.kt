@@ -24,7 +24,6 @@ class StageViewModel(
     private var appbarIsVisible = false
     private var isFollowed = false
     private var isViewingProfile = false
-    private var hasFriendsWatching = false
 
     val isReleaseDesign = ObservableBoolean(releaseDesignConfig.isReleaseDesignActive())
     var usernameTextColor = R.color.white
@@ -51,14 +50,8 @@ class StageViewModel(
         !isReleaseDesign.get() &&
             getBasicIndicatorVisibility()
 
-    fun getLiveIndicatorVisibility() =
+    fun getAvatarOverlapLiveBadgeVisibility() =
         isReleaseDesign.get() &&
-            !hasFriendsWatching &&
-            getBasicIndicatorVisibility()
-
-    fun getFriendsWatchingIndicatorVisibility() =
-        isReleaseDesign.get() &&
-            hasFriendsWatching &&
             getBasicIndicatorVisibility()
 
     fun getAgeRestrictionVisibility() =
@@ -109,10 +102,6 @@ class StageViewModel(
         this.isViewingProfile = isViewingProfile
         updateAvatarImageBackground()
         notifyChange()
-    }
-
-    fun updateHasFriendsWatching(hasFriendsWatching: Boolean) {
-        this.hasFriendsWatching = hasFriendsWatching
     }
 
     fun onAvatarClick() = onAvatarButtonClick()
