@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import timber.log.Timber
 import tv.caffeine.app.api.BatchUserFetchBody
 import tv.caffeine.app.api.BroadcastsService
-import tv.caffeine.app.api.MAX_PAGE_LIMIT
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
@@ -53,9 +52,9 @@ class FollowManager @Inject constructor(
 
     suspend fun refreshFollowedUsers() {
         tokenStore.caid?.let { caid ->
-            val result = usersService.listFollowing(caid, MAX_PAGE_LIMIT).awaitAndParseErrors(gson)
+            val result = usersService.legacyListFollowing(caid).awaitAndParseErrors(gson)
             when (result) {
-                is CaffeineResult.Success -> followedUsers[caid] = result.value.following.map { it.caid }.toSet()
+                is CaffeineResult.Success -> followedUsers[caid] = result.value.map { it.caid }.toSet()
                 is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
                 is CaffeineResult.Failure -> Timber.e(result.throwable)
             }

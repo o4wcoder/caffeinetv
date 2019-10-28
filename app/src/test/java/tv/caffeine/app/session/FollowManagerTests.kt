@@ -35,12 +35,12 @@ class FollowManagerTests {
     }
 
     @Test
-    fun `refreshing followed users requests max page limit`() {
+    fun `refreshing followed users uses legacy following endpoint`() {
         every { tokenStore.caid } returns "CAID1"
         runBlocking {
             followManager.refreshFollowedUsers()
         }
-        verify { usersService.listFollowing("CAID1", 500) }
+        verify { usersService.legacyListFollowing("CAID1") }
     }
 
     @Test

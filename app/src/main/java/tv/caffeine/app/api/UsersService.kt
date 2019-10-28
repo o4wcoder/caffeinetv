@@ -29,6 +29,9 @@ interface UsersService {
     @GET("v2/users/{caid}/following")
     fun listFollowing(@Path("caid") userId: CAID, @Query("limit") limit: Int = DEFAULT_PAGE_LIMIT): Deferred<Response<PaginatedFollowing>>
 
+    @GET("v1/users/{caid}/following")
+    fun legacyListFollowing(@Path("caid") userId: CAID): Deferred<Response<List<CaidRecord.FollowRecord>>>
+
     @POST("v1/users/{caid1}/follow/{caid2}")
     fun follow(@Path("caid1") follower: CAID, @Path("caid2") toFollow: CAID): Deferred<Response<Void>>
 
