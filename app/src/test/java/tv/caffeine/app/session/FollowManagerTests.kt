@@ -3,9 +3,9 @@ package tv.caffeine.app.session
 import com.google.gson.Gson
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -40,7 +40,7 @@ class FollowManagerTests {
         runBlocking {
             followManager.refreshFollowedUsers()
         }
-        verify { usersService.legacyListFollowing("CAID1") }
+        coVerify { usersService.legacyListFollowing("CAID1") }
     }
 
     @Test

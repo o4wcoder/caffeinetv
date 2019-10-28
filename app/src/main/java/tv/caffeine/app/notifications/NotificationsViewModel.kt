@@ -42,14 +42,15 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             val currentUser = followManager.loadUserDetails(caid) ?: return@launch
             val referenceTimestamp = currentUser.notificationsLastViewedAt
-            var allNotifications: MutableList<CaffeineNotification>? = null
+            val allNotifications: MutableList<CaffeineNotification> = mutableListOf()
 
-            val followersResult = usersRepository.getFollowersList(caid)
-            when (followersResult) {
-                is CaffeineResult.Success -> allNotifications = followersResult.value.followers.map {
-                    FollowNotification(it, it.followedAt.isNewer(referenceTimestamp)) }.toMutableList()
-                is CaffeineResult.Error -> Timber.e("Error loading followers ${followersResult.error}")
-                is CaffeineResult.Failure -> Timber.e(followersResult.throwable)
+            try {
+                val followersResult = usersRepository.getFollowersList(caid)
+                allNotifications.addAll(followersResult.followers.map {
+                    FollowNotification(it, it.followedAt.isNewer(referenceTimestamp))
+                })
+            } catch(e: Exception) {
+                Timber.e(e)
             }
 
             if (releaseDesignConfig.isReleaseDesignActive()) {
@@ -58,7 +59,7 @@ class NotificationsViewModel @Inject constructor(
                     is CaffeineResult.Success -> {
                         val receivedDigitalsItems = receivedDigitalItemsResult.value.payload.transactions.state.map {
                             it.convert() }.filterIsInstance<TransactionHistoryItem.ReceiveDigitalItem>()
-                        allNotifications?.addAll(receivedDigitalsItems.map {
+                        allNotifications.addAll(receivedDigitalsItems.map {
                             ReceivedDigitalItemNotification(it, it.createdAt.toZonedDateTime().isNewer(referenceTimestamp)) })
                     }
                     is CaffeineResult.Error -> Timber.e("Error loading received digital items for count ${receivedDigitalItemsResult.error}")

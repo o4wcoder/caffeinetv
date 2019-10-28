@@ -34,15 +34,13 @@ class NotificationCountViewModel @Inject constructor(
             val referenceTimestamp = currentUser.notificationsLastViewedAt
             var hasNewNotifications = false
 
-            val followersResult = usersRepository.getFollowersList(currentUser.caid)
-            when (followersResult) {
-                is CaffeineResult.Success -> {
-                    hasNewNotifications = followersResult.value.followers.count {
-                        it.followedAt.isNewer(referenceTimestamp)
-                    } > 0
-                }
-                is CaffeineResult.Error -> Timber.e("Error loading followers for count ${followersResult.error}")
-                is CaffeineResult.Failure -> Timber.e(followersResult.throwable)
+            try {
+                val followersResult = usersRepository.getFollowersList(currentUser.caid)
+                hasNewNotifications = followersResult.followers.count {
+                    it.followedAt.isNewer(referenceTimestamp)
+                } > 0
+            } catch(e: Exception) {
+                Timber.e(e)
             }
 
             if (!hasNewNotifications && releaseDesignConfig.isReleaseDesignActive()) {

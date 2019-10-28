@@ -91,7 +91,7 @@ class NotificationsViewModelTests {
 
     @Test
     fun `new follow and received digital item records result in new follow notifications`() {
-        val result = CaffeineResult.Success(paginatedFollowersNew)
+        val result = paginatedFollowersNew
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayloadNew))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -108,7 +108,7 @@ class NotificationsViewModelTests {
 
     @Test
     fun `old follow and received digital item records result in old follow notifications`() {
-        val result = CaffeineResult.Success(paginatedFollowersOld)
+        val result = paginatedFollowersOld
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayloadOld))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -128,7 +128,7 @@ class NotificationsViewModelTests {
         val transHistoryPayloadToSort = getReceivedItemsForSortTest()
         val followersToSort = PaginatedFollowers(0, 100, getFollowersForSortTest())
 
-        val result = CaffeineResult.Success(followersToSort)
+        val result = followersToSort
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayloadToSort))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -147,7 +147,7 @@ class NotificationsViewModelTests {
 
     @Test
     fun `users service list followers is called on load`() {
-        val result = CaffeineResult.Success(paginatedFollowersOld)
+        val result = paginatedFollowersOld
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayloadOld))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -158,7 +158,7 @@ class NotificationsViewModelTests {
 
     @Test
     fun `transaction repository list is called on load`() {
-        val result = CaffeineResult.Success(paginatedFollowersOld)
+        val result = paginatedFollowersOld
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayloadOld))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult

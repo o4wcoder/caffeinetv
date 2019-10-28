@@ -17,6 +17,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.repository.ProfileRepository
+import tv.caffeine.app.session.FollowManager
 
 @RunWith(RobolectricTestRunner::class)
 class FollowListViewModelTests {
@@ -24,6 +25,7 @@ class FollowListViewModelTests {
     lateinit var subject: FollowListViewModel
     lateinit var context: Context
 
+    @MockK lateinit var followManager: FollowManager
     @MockK lateinit var profileRepository: ProfileRepository
     @MockK lateinit var usersService: UsersService
     @MockK lateinit var gson: Gson
@@ -32,7 +34,7 @@ class FollowListViewModelTests {
     fun setup() {
         MockKAnnotations.init(this)
         context = InstrumentationRegistry.getInstrumentation().context
-        subject = FollowersViewModel(context, gson, usersService, profileRepository)
+        subject = FollowersViewModel(context, gson, usersService, followManager, profileRepository)
     }
 
     @Test

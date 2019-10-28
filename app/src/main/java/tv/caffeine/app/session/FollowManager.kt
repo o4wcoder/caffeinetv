@@ -51,13 +51,12 @@ class FollowManager @Inject constructor(
     fun followersLoaded() = tokenStore.caid?.let { followedUsers.containsKey(it) } == true
 
     suspend fun refreshFollowedUsers() {
-        tokenStore.caid?.let { caid ->
-            val result = usersService.legacyListFollowing(caid).awaitAndParseErrors(gson)
-            when (result) {
-                is CaffeineResult.Success -> followedUsers[caid] = result.value.map { it.caid }.toSet()
-                is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
-            }
+        val caid = tokenStore.caid ?: return
+        try {
+            val result = usersService.legacyListFollowing(caid)
+            followedUsers[caid] = result.map { it.caid }.toSet()
+        } catch(e: Exception) {
+            Timber.e(e)
         }
     }
 

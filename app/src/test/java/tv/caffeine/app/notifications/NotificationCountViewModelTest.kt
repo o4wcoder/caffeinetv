@@ -57,7 +57,7 @@ class NotificationCountViewModelTest {
         val transHistoryPayload = getTenReceivedItems(0)
         val followers = PaginatedFollowers(0, 100, getTenFollowers(1))
 
-        val result = CaffeineResult.Success(followers)
+        val result = followers
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -75,7 +75,7 @@ class NotificationCountViewModelTest {
         val transHistoryPayload = getTenReceivedItems(1)
         val followers = PaginatedFollowers(0, 100, getTenFollowers(0))
 
-        val result = CaffeineResult.Success(followers)
+        val result = followers
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -93,7 +93,7 @@ class NotificationCountViewModelTest {
         val transHistoryPayload = getTenReceivedItems(1)
         val followers = PaginatedFollowers(0, 100, getTenFollowers(1))
 
-        val result = CaffeineResult.Success(followers)
+        val result = followers
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -111,7 +111,7 @@ class NotificationCountViewModelTest {
         val transHistoryPayload = getTenReceivedItems(3)
         val followers = PaginatedFollowers(0, 100, getTenFollowers(4))
 
-        val result = CaffeineResult.Success(followers)
+        val result = followers
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult
@@ -129,7 +129,7 @@ class NotificationCountViewModelTest {
         val transHistoryPayload = getTenReceivedItems(0)
         val followers = PaginatedFollowers(0, 100, getTenFollowers(0))
 
-        val result = CaffeineResult.Success(followers)
+        val result = followers
         coEvery { fakeUsersRepository.getFollowersList(any()) } returns result
         val transactionHistoryResult = CaffeineResult.Success(PaymentsEnvelope("", 1, transHistoryPayload))
         coEvery { fakeTransactionHistoryRepository.getTransactionHistory() } returns transactionHistoryResult

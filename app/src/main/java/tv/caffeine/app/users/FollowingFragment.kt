@@ -9,8 +9,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.repository.ProfileRepository
 import javax.inject.Inject
 
@@ -39,11 +37,11 @@ class FollowingViewModel @Inject constructor(
 
     override fun loadFollowList() {
         viewModelScope.launch {
-            val result = usersService.listFollowing(caid).awaitAndParseErrors(gson)
-            when (result) {
-                is CaffeineResult.Success -> setFollowList(result.value.following)
-                is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
+            try {
+                val result = usersService.listFollowing(caid)
+                setFollowList(result.following)
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }
