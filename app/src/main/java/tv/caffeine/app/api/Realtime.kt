@@ -10,6 +10,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Url
 import tv.caffeine.app.api.model.Message
+import tv.caffeine.app.stream.type.ContentRating
 
 interface Realtime {
 
@@ -56,7 +57,8 @@ class NewReyes {
         val capabilities: Capabilities,
         val hostableAddress: String,
         val externalAddress: String,
-        val stream: Stream
+        val stream: Stream,
+        val contentRating: ContentRating
     ) {
         enum class Role { primary, secondary }
         class Content(val id: String, val type: Type) {

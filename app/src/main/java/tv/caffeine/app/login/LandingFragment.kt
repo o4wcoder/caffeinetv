@@ -48,7 +48,6 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
-import android.widget.MediaController
 import tv.caffeine.app.R
 import tv.caffeine.app.util.getAssetFile
 
@@ -105,15 +104,15 @@ class LandingFragment @Inject constructor(
         args.message?.let {
             Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         loadSplashVideo()
     }
 
     private fun loadSplashVideo() {
         val videoView = binding.splashVideoView
-        val mediaController = MediaController(context)
-        mediaController.setAnchorView(videoView)
-        videoView.setMediaController(mediaController)
         val videoUri = activity?.getAssetFile(R.raw.caffeine_mobile_splash)
         videoView.setVideoURI(videoUri)
         videoView.start()

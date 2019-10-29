@@ -22,7 +22,7 @@ interface ContentGuideService {
     fun guide(): Deferred<Response<GuideList>>
 
     @GET("v1/featured")
-    fun featuredGuide(): Deferred<Response<FeaturedGuideList>>
+    suspend fun featuredGuide(): FeaturedGuideList
 }
 
 class BroadcastEnvelope(val broadcast: Broadcast)

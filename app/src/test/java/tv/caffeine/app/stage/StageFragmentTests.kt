@@ -38,7 +38,7 @@ private inline fun launchStageFragmentWithArgs(
     val arguments = StageFragmentArgs(broadcastUsername, canSwipe).toBundle()
     val navController = mockk<NavController>(relaxed = true)
     val scenario = launchFragmentInContainer(arguments, R.style.AppTheme) {
-        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), mockk(relaxed = true)).also {
+        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), mockk(), mockk(relaxed = true)).also {
             it.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                 if (viewLifecycleOwner != null) {
                     // The fragment’s view has just been created
@@ -167,11 +167,11 @@ class StageFragmentVisibilityTests {
     }
 
     @Test
-    fun `showing overlays on an offline stage does not show avatar username container`() {
+    fun `showing overlays on an offline stage does show avatar username container`() {
         subject.stageViewModel.updateStageIsLive(false)
         subject.stageViewModel.isReleaseDesign.set(true)
         subject.showOverlays()
-        assertFalse(subject.binding.avatarUsernameContainer.isVisible)
+        assertTrue(subject.binding.avatarUsernameContainer.isVisible)
     }
 
     @Test

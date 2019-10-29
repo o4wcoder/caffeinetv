@@ -114,6 +114,11 @@ class SettingsFragment @Inject constructor(
         super.onStop()
     }
 
+    override fun onResume() {
+        super.onResume()
+        myProfileViewModel.load()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         callbackManager.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)

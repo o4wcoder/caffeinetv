@@ -2,13 +2,14 @@ package tv.caffeine.app.util
 
 import kotlinx.coroutines.Dispatchers
 import tv.caffeine.app.api.model.Broadcast
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.Game
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 
 val TestDispatchConfig = DispatchConfig(Dispatchers.Unconfined, Dispatchers.Unconfined)
 
-fun makeGenericUser() = User("caid", "username", "name", "email",
+fun makeGenericUser(caid: CAID = "caid") = User(caid, "username", "name", "email",
     "/avatarImagePath", 0, 0, false, false,
     "broadcastId", "stageId", mapOf(), mapOf(), 21, "bio", "countryCode",
     "countryName", "gender", false, false, null,

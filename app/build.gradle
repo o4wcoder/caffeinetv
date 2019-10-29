@@ -130,8 +130,8 @@ dependencies {
     kapt "androidx.databinding:databinding-compiler:${versions.android_plugin}"
 
     // Retrofit, okhttp
-    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.okhttp3:okhttp:3.14.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
 
@@ -179,11 +179,14 @@ dependencies {
     compileOnly 'org.jetbrains:annotations:16.0.1'
     testCompileOnly 'org.jetbrains:annotations:16.0.1'
 
+    // After Effects animations
+    implementation 'com.airbnb.android:lottie:3.1.0'
+
     // Legal, etc.
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
     // Social
-    implementation 'com.facebook.android:facebook-android-sdk:5.1.0'
+    implementation 'com.facebook.android:facebook-android-sdk:5.8.0'
 
     // recaptcha
     implementation 'com.google.android.gms:play-services-safetynet:17.0.0'

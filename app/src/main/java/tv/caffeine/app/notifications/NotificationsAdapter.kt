@@ -34,12 +34,11 @@ import tv.caffeine.app.ui.FollowButtonDecorator.Style
 import tv.caffeine.app.ui.FollowListAdapter
 import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
-import tv.caffeine.app.ui.configureUserIcon
-import tv.caffeine.app.ui.loadAvatar
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.configureUsernameAndAvatar
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -190,15 +189,7 @@ class FollowNotificationViewHolder(
         job = scope.launch {
             val user = followManager.userDetails(caidRecord.caid) ?: return@launch
             val userProfile = profileRepository.getUserProfile(user.username)
-            binding.avatarImageView.loadAvatar(user.avatarImageUrl, false, R.dimen.avatar_size)
-            binding.usernameTextView.apply {
-                text = user.username
-                configureUserIcon(when {
-                    user.isVerified -> R.drawable.verified
-                    user.isCaster -> R.drawable.caster
-                    else -> 0
-                })
-            }
+            user.configureUsernameAndAvatar(binding.avatarImageView, binding.usernameTextView)
             userProfile?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it.isLive }
 
             if (caidRecord !is CaidRecord.IgnoreRecord) {
@@ -246,15 +237,7 @@ class ReceivedDigitalItemNotificationViewHolder(
         job = scope.launch {
             val user = followManager.userDetails(caid) ?: return@launch
             val userProfile = profileRepository.getUserProfile(user.username)
-            binding.avatarImageView.loadAvatar(user.avatarImageUrl, false, R.dimen.avatar_size)
-            binding.usernameTextView.apply {
-                text = user.username
-                configureUserIcon(when {
-                    user.isVerified -> R.drawable.verified
-                    user.isCaster -> R.drawable.caster
-                    else -> 0
-                })
-            }
+            user.configureUsernameAndAvatar(binding.avatarImageView, binding.usernameTextView)
             userProfile?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it.isLive }
 
             val digitalItemName = if (item.digitalItem.quantity == 1) item.digitalItem.name else item.digitalItem.pluralName

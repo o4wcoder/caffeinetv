@@ -76,12 +76,6 @@
         tools:layout="@layout/fragment_lobby">
     </fragment>
     <fragment
-        android:id="@+id/trendingLobbyFragment"
-        android:name="tv.caffeine.app.lobby.TrendingLobbyFragment"
-        android:label="@string/trending_lobby"
-        tools:layout="@layout/fragment_lobby">
-    </fragment>
-    <fragment
         android:id="@+id/lobbyDetailFragment"
         android:name="tv.caffeine.app.lobby.LobbyDetailFragment"
         android:label="@string/lobby"
@@ -190,8 +184,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/biographyFragment"
-        android:name="tv.caffeine.app.stage.biography.BiographyFragment">
+        android:id="@+id/aboutFragment"
+        android:name="tv.caffeine.app.stage.AboutFragment">
         <argument
             android:name="caid"
             app:argType="string" />
@@ -562,9 +556,6 @@
             <action
                 android:id="@+id/action_signUpFragment_to_arkoseFragment"
                 app:destination="@+id/arkoseFragment" />
-            <action
-                android:id="@+id/action_signUpFragment_to_welcomeFragment"
-                app:destination="@+id/welcomeFragment" />
             <argument
                 android:name="possibleUsername"
                 android:defaultValue="@null"
@@ -581,16 +572,6 @@
                 app:argType="string"
                 app:nullable="true" />
         </fragment>
-
-        <fragment
-            android:id="@+id/welcomeFragment"
-            android:name="tv.caffeine.app.login.WelcomeFragment"
-            tools:layout="@layout/fragment_welcome">
-            <argument
-                android:name="email"
-                app:argType="string"/>
-        </fragment>
-
         <fragment
             android:id="@+id/arkoseFragment"
             android:name="tv.caffeine.app.login.ArkoseFragment"

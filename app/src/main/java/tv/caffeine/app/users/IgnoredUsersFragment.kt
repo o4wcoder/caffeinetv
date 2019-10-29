@@ -2,6 +2,7 @@ package tv.caffeine.app.users
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,9 +33,11 @@ class IgnoredUsersFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = UserListFragmentBinding.bind(view)
+        binding.loadingIndicator.isVisible = true
         caidListAdapter.setUsernameFollowStarColor(ThemeColor.LIGHT)
         binding.userListRecyclerView.adapter = caidListAdapter
         viewModel.ignoredUsers.observe(viewLifecycleOwner, Observer {
+            binding.loadingIndicator.isVisible = false
             caidListAdapter.submitList(it)
         })
     }

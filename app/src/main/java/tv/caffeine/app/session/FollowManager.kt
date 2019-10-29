@@ -1,15 +1,17 @@
 package tv.caffeine.app.session
 
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import timber.log.Timber
+import tv.caffeine.app.api.BatchUserFetchBody
 import tv.caffeine.app.api.BroadcastsService
-import tv.caffeine.app.api.MAX_PAGE_LIMIT
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.Broadcast
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.UserContainer
 import tv.caffeine.app.api.model.UserUpdateBody
@@ -33,6 +35,8 @@ class FollowManager @Inject constructor(
     private val userDetails: MutableMap<CAID, User> = mutableMapOf()
     private val usernameToCAID: MutableMap<String, CAID> = mutableMapOf()
 
+    val followResult: MutableLiveData<Event<CaffeineEmptyResult>> = MutableLiveData()
+
     fun followers() = tokenStore.caid?.let { followedUsers[it] } ?: setOf()
 
     fun isFollowing(caidFollower: CAID) = tokenStore.caid?.let { followedUsers[it]?.contains(caidFollower) } ?: false
@@ -47,13 +51,12 @@ class FollowManager @Inject constructor(
     fun followersLoaded() = tokenStore.caid?.let { followedUsers.containsKey(it) } == true
 
     suspend fun refreshFollowedUsers() {
-        tokenStore.caid?.let { caid ->
-            val result = usersService.listFollowing(caid, MAX_PAGE_LIMIT).awaitAndParseErrors(gson)
-            when (result) {
-                is CaffeineResult.Success -> followedUsers[caid] = result.value.following.map { it.caid }.toSet()
-                is CaffeineResult.Error -> Timber.e("Error loading following list ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
-            }
+        val caid = tokenStore.caid ?: return
+        try {
+            val result = usersService.legacyListFollowing(caid)
+            followedUsers[caid] = result.map { it.caid }.toSet()
+        } catch(e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -64,6 +67,7 @@ class FollowManager @Inject constructor(
             followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
             callback?.onUserFollowed()
         }
+        followResult.value = Event(result)
         refreshFollowedUsers()
         return result
     }
@@ -87,6 +91,19 @@ class FollowManager @Inject constructor(
         }
         userDetails[caid]?.let { return it }
         return loadUserDetails(userHandle)
+    }
+
+    suspend fun loadMultipleUserDetails(userIDs: List<CAID>): List<User>? {
+        return try {
+            val users = usersService.multipleUserDetails(BatchUserFetchBody(userIDs))
+            users.forEach {
+                userDetails[it.caid] = it
+            }
+            users
+        } catch (e: Exception) {
+            Timber.e(e)
+            null
+        }
     }
 
     // / can be called with CAID or username

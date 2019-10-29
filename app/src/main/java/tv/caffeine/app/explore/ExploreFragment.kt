@@ -31,8 +31,12 @@ class ExploreFragment @Inject constructor(
         val isReleaseDesign = releaseDesignConfig.isReleaseDesignActive()
         binding.searchEditTextClassic.isVisible = !isReleaseDesign
         binding.searchEditTextRelease.isVisible = isReleaseDesign
+        binding.loadingIndicator.isVisible = true
+
+        observeFollowEvents()
 
         viewModel.data.observe(viewLifecycleOwner, Observer { result ->
+            binding.loadingIndicator.isVisible = false
             handle(result) { findings ->
                 val adapter: UsersAdapter
                 when (findings) {

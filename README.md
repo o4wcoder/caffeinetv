@@ -26,7 +26,7 @@ The Android app for Caffeine.
 4. Install ktlint, pre-commit hook, and apply to IDE:
   ```
   brew install ktlint
-  ktlint --install-git-pre-commit-hook
+  ktlint installGitPreCommitHook
   ```
 5. Run unit tests:
   ```
@@ -79,7 +79,7 @@ The Android app for Caffeine.
 
 The following command was used to configure code style:
 ```
-ktlint --apply-to-idea-project --android
+ktlint applyToIDEAProject
 ```
 
 It affects the following files:

@@ -93,7 +93,7 @@ class StagePagerFragmentTests {
         val arguments = StagePagerFragmentArgs(broadcasterUsername, broadcasters).toBundle()
         val navController = mockk<NavController>(relaxed = true)
         val scenario = launchFragmentInContainer(arguments, R.style.AppTheme) {
-            StagePagerFragment(mockk(), adapterFactory, followManager, releaseDesignConfig).also {
+            StagePagerFragment(mockk(), adapterFactory, followManager, releaseDesignConfig, mockk(relaxed = true)).also {
                 it.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                     if (viewLifecycleOwner != null) {
                         // The fragment’s view has just been created

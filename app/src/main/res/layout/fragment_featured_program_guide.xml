@@ -31,6 +31,16 @@
                 tools:listitem="@layout/featured_guide_listing_item"/>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        <com.airbnb.lottie.LottieAnimationView
+            style="@style/AnimatedLoadingIndicator"
+            android:id="@+id/guide_loading_indicator"
+            android:layout_width="@dimen/animated_loading_indicator_size"
+            android:layout_height="@dimen/animated_loading_indicator_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <TextView
             android:id="@+id/empty_message_text_view"
             android:layout_width="0dp"

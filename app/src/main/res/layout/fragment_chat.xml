@@ -79,8 +79,6 @@
             android:id="@+id/chat_button_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -90,17 +88,17 @@
                 android:id="@+id/gift_button"
                 android:layout_width="@dimen/stage_bottom_icon"
                 android:layout_height="@dimen/stage_bottom_icon"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/stage_chat_controls_internal_margin"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/gift_button_content_description"
                 android:tint="@{viewModel.bottomButtonTint}"
                 android:visibility="@{viewModel.giftButtonVisibility}"
+                android:src="@{viewModel.digitalItemsIcon}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/react_button"
                 app:layout_constraintStart_toEndOf="@+id/chat_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_digital_items" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 style="@style/ChatReactButtonText"
@@ -120,16 +118,16 @@
                 android:id="@+id/share_button"
                 android:layout_width="@dimen/stage_bottom_icon"
                 android:layout_height="@dimen/stage_bottom_icon"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/stage_chat_controls_internal_margin"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/share_button_content_description"
                 android:paddingBottom="4dp"
                 android:tint="@{viewModel.bottomButtonTint}"
+                android:src="@{viewModel.shareIcon}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/react_button"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_share_dark" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <ImageButton
@@ -157,6 +155,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/friends_watching_button_content_description"
                 android:padding="@dimen/avatar_toolbar_padding"
+                android:layout_marginEnd="@dimen/stage_chat_controls_internal_margin"
                 android:scaleType="centerCrop"
                 android:tint="@color/white"
                 android:visibility="@{viewModel.friendsWatchingButtonVisibility}"

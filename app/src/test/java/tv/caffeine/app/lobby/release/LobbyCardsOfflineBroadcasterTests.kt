@@ -1,8 +1,6 @@
 package tv.caffeine.app.lobby.release
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -17,33 +15,28 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.LooperMode
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.LobbyImpressionAnalytics
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.lobby.PreviousBroadcast
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.test.observeForTesting
+import tv.caffeine.app.util.CoroutinesTestRule
 import tv.caffeine.app.util.makeGenericUser
 import tv.caffeine.app.util.makeOfflineBroadcast
-import tv.caffeine.app.test.observeForTesting
 
-@RunWith(RobolectricTestRunner::class)
-@LooperMode(LooperMode.Mode.PAUSED)
 class LobbyCardsOfflineBroadcasterTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutinesTestRule = CoroutinesTestRule()
 
-    lateinit var context: Context
-    lateinit var previousBroadcast: PreviousBroadcast
+    private lateinit var previousBroadcast: PreviousBroadcast
     @MockK lateinit var followManager: FollowManager
     @MockK lateinit var lobbyImpressionAnalytics: LobbyImpressionAnalytics
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        context = InstrumentationRegistry.getInstrumentation().context
         previousBroadcast = makePreviousBroadcast()
         every { followManager.isSelf(any()) } returns false
         coEvery { lobbyImpressionAnalytics.sendImpressionEventData(any()) } just Runs
@@ -109,17 +102,14 @@ class LobbyCardsOfflineBroadcasterTests {
         val offlineBroadcast = makeOfflineBroadcast()
         val broadcaster = Lobby.Broadcaster("2", "OnlineBroadcaster", genericUser, "tag", null, offlineBroadcast,
             listOf(), 0, 0, null, null, null)
-        val previousBroadcast = PreviousBroadcast("1", broadcaster)
-        return previousBroadcast
+        return PreviousBroadcast("1", broadcaster)
     }
 
-    private fun makeOfflineBroadcaster(previousBroadcast: PreviousBroadcast): OfflineBroadcaster {
-        val offlineBroadcaster = OfflineBroadcaster(
+    private fun makeOfflineBroadcaster(previousBroadcast: PreviousBroadcast) =
+        OfflineBroadcaster(
             followManager,
             previousBroadcast.broadcaster,
             lobbyImpressionAnalytics,
             GlobalScope
         )
-        return offlineBroadcaster
-    }
 }

@@ -25,7 +25,7 @@
                 android:id="@+id/title_text_view"
                 android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_in_margin_top"
+                android:layout_marginTop="@dimen/sign_in_title_margin_top"
                 android:text="@string/forgot_password_no_worries"/>
 
             <TextView
@@ -51,7 +51,7 @@
                 style="@style/LoginButton"
                 android:id="@+id/send_email_button"
                 android:layout_marginTop="@dimen/forgot_margin_subtitle_top"
-                android:text="@string/send_email_button"
+                android:text="@string/forgot_password_button"
                 android:layout_gravity="center"
                 android:enabled="false"
                 />

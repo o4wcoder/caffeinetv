@@ -9,9 +9,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.R
 import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.repository.ProfileRepository
+import tv.caffeine.app.session.FollowManager
 import javax.inject.Inject
 
 class FollowersFragment @Inject constructor(
@@ -34,16 +33,19 @@ class FollowersViewModel @Inject constructor(
     context: Context,
     val gson: Gson,
     val usersService: UsersService,
+    val followManager: FollowManager,
     val profileRepository: ProfileRepository
 ) : FollowListViewModel(context, profileRepository) {
 
     override fun loadFollowList() {
         viewModelScope.launch {
-            val result = usersService.listFollowers(caid).awaitAndParseErrors(gson)
-            when (result) {
-                is CaffeineResult.Success -> setFollowList(result.value.followers)
-                is CaffeineResult.Error -> Timber.e("Error loading followers list ${result.error}")
-                is CaffeineResult.Failure -> Timber.e(result.throwable)
+            try {
+                val result = usersService.listFollowers(caid)
+                val userIDs = result.followers.subList(0, 20).map { it.caid }.distinct()
+                val followerDetails = followManager.loadMultipleUserDetails(userIDs)
+                setFollowList(result.followers)
+            } catch(e: Exception) {
+                Timber.e(e)
             }
         }
     }

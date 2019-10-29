@@ -13,7 +13,6 @@ import tv.caffeine.app.login.ArkoseViewModel
 import tv.caffeine.app.login.LegalAgreementViewModel
 import tv.caffeine.app.login.SignInViewModel
 import tv.caffeine.app.login.SignUpViewModel
-import tv.caffeine.app.login.WelcomeViewModel
 import tv.caffeine.app.notifications.NotificationCountViewModel
 import tv.caffeine.app.notifications.NotificationsViewModel
 import tv.caffeine.app.profile.DeleteAccountViewModel
@@ -33,7 +32,7 @@ import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.FriendsWatchingViewModel
 import tv.caffeine.app.stage.SendDigitalItemViewModel
-import tv.caffeine.app.stage.StageBroadcastProfilePagerViewModel
+import tv.caffeine.app.ui.AlertDialogViewModel
 import tv.caffeine.app.users.FollowersViewModel
 import tv.caffeine.app.users.FollowingViewModel
 import tv.caffeine.app.users.IgnoredUsersViewModel
@@ -198,16 +197,11 @@ abstract class ViewModelBinds {
 
     @Binds
     @IntoMap
-    @ViewModelKey(StageBroadcastProfilePagerViewModel::class)
-    abstract fun bindStageBroadcastDetailsPagerViewModel(viewModel: StageBroadcastProfilePagerViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(NotificationCountViewModel::class)
     abstract fun bindNotificationCountViewModel(viewModel: NotificationCountViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(WelcomeViewModel::class)
-    abstract fun bindWelcomeViewModel(viewModel: WelcomeViewModel): ViewModel
+    @ViewModelKey(AlertDialogViewModel::class)
+    abstract fun bindAlertDialogViewModel(viewModel: AlertDialogViewModel): ViewModel
 }

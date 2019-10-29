@@ -18,6 +18,7 @@
     <dimen name="avatar_toolbar_padding">12dp</dimen>
     <dimen name="avatar_rim_size_large">4dp</dimen>
     <dimen name="avatar_rim_size_regular">2dp</dimen>
+    <dimen name="avatar_rim_size_small">1dp</dimen>
     <dimen name="avatar_no_rim">0dp</dimen>
     <dimen name="avatar_rim_size_not_following">1dp</dimen>
     <dimen name="avatar_rim_size_threshold_on_avatar_size">150dp</dimen>
@@ -85,6 +86,8 @@
     <dimen name="stage_loading_indicator_size">48dp</dimen>
     <dimen name="twitter_auth_web_view_height">0dp</dimen>
 
+    <dimen name="animated_loading_indicator_size">120dp</dimen>
+
     <dimen name="no_network_screen_icon_size">56dp</dimen>
     <dimen name="no_network_indicator_size">65dp</dimen>
 
@@ -99,6 +102,8 @@
     <dimen name="stage_profile_button_margin">32dp</dimen>
     <dimen name="stage_profile_avatar_size">128dp</dimen>
     <dimen name="stage_bottom_sheet_min_height">300dp</dimen>
+    <dimen name="stage_chat_controls_internal_margin">16dp</dimen>
+    <dimen name="stage_badge_height">40dp</dimen>
 
     <dimen name="broadcast_username">14sp</dimen>
     <dimen name="broadcast_username_mini">13sp</dimen>
@@ -157,8 +162,7 @@
     <dimen name="forgot_subtitle_margin_top">56dp</dimen>
     <dimen name="forgot_margin_subtitle_top">124dp</dimen>
 
-    <dimen name="welcome_subtitle_one_margin_top">60dp</dimen>
-    <dimen name="welcome_subtitle_two_margin_top">80dp</dimen>
-    <dimen name="welcome_email_link_margin_top">20dp</dimen>
-    <dimen name="welcome_button_margin_top">166dp</dimen>
+    <dimen name="live_badge_horizontal_margin">16dp</dimen>
+    <dimen name="avatar_friends_watching_overlap_start">30dp</dimen>
+    <dimen name="live_badge_small_title_start_margin">8dp</dimen>
 </resources>

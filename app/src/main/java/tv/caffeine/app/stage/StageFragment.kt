@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -22,31 +21,23 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.threeten.bp.Clock
 import org.webrtc.EglRenderer
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
-import timber.log.Timber
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.NewReyes
-import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.databinding.FragmentStageBinding
-import tv.caffeine.app.lobby.formatFriendsWatchingShortString
 import tv.caffeine.app.profile.ProfileViewModel
 import tv.caffeine.app.profile.UserProfile
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
-import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
-import tv.caffeine.app.ui.formatHtmlText
-import tv.caffeine.app.ui.FollowStarViewModel
 import tv.caffeine.app.ui.formatUsernameAsHtml
-import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.inTransaction
-import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
@@ -61,9 +52,10 @@ class StageFragment @Inject constructor(
     private val surfaceViewRendererTuner: SurfaceViewRendererTuner,
     private val followManager: FollowManager,
     private val picasso: Picasso,
+    private val clock: Clock,
     @VisibleForTesting
     val releaseDesignConfig: ReleaseDesignConfig
-) : CaffeineFragment(R.layout.fragment_stage), StageBroadcastProfilePagerFragment.Callback {
+) : CaffeineFragment(R.layout.fragment_stage), ChatActionCallback {
 
     @Inject lateinit var stageBroadcastProfilePagerFragmentProvider: Provider<StageBroadcastProfilePagerFragment>
 
@@ -74,11 +66,12 @@ class StageFragment @Inject constructor(
     private lateinit var poorConnectionPulseAnimator: PulseAnimator
     private val canSwipe: Boolean by lazy { args.canSwipe }
     private val renderers: MutableMap<NewReyes.Feed.Role, SurfaceViewRenderer> = mutableMapOf()
-    private val loadingIndicators: MutableMap<NewReyes.Feed.Role, ProgressBar> = mutableMapOf()
+    private val loadingIndicators: MutableMap<NewReyes.Feed.Role, View> = mutableMapOf()
     private var newReyesController: NewReyesController? = null
     private val videoTracks: MutableMap<String, VideoTrack> = mutableMapOf()
     private var feeds: Map<String, NewReyes.Feed> = mapOf()
     private lateinit var stageId: String
+    private var hasFriendsWatching: Boolean = false
 
     private val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
     private val profileViewModel: ProfileViewModel by viewModels { viewModelFactory }
@@ -89,7 +82,6 @@ class StageFragment @Inject constructor(
     private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting
     var haveSetupBottomSection = false
-    private lateinit var stageProfileOverlayViewModel: StageProfileOverlayViewModel
     private var isProfileShowing = false
 
     @VisibleForTesting
@@ -105,6 +97,7 @@ class StageFragment @Inject constructor(
 
     fun connectStage() {
         if (connectStageJob == null) {
+
             loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = true
             connectStageJob = launch {
                 val userDetails = followManager.userDetails(broadcasterUsername) ?: return@launch
@@ -151,15 +144,17 @@ class StageFragment @Inject constructor(
         binding.lifecycleOwner = viewLifecycleOwner
         stageViewModel = StageViewModel(releaseDesignConfig, ::onAvatarButtonClick)
         binding.viewModel = stageViewModel
+
+        observeFollowEvents()
+
         stageViewModel.showPoorConnectionAnimation.observe(viewLifecycleOwner, Observer {
             if (it) poorConnectionPulseAnimator.startPulse() else poorConnectionPulseAnimator.stopPulse()
         })
 
-        stageProfileOverlayViewModel = StageProfileOverlayViewModel(context!!, ::onProfileToggleButtonClick)
-
         // TODO: When release design goes live, remove this and just update styles
         if (releaseDesignConfig.isReleaseDesignActive()) {
             TextViewCompat.setTextAppearance(binding.broadcastTitleTextView, R.style.BroadcastTitle_Night_Release)
+            TextViewCompat.setTextAppearance(binding.usernameTextView, R.style.BroadcasterUsername_Night_Release)
         }
 
         configureFriendsWatchingIndicator()
@@ -176,11 +171,6 @@ class StageFragment @Inject constructor(
 
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
-            binding.stageProfileOverlay?.followStarViewModel = FollowStarViewModel(context!!, ThemeColor.DARK, ::onFollowButtonClick)
-            val isSelf = followManager.isSelf(userProfile.caid)
-            binding.stageProfileOverlay?.followStarViewModel?.bind(userProfile.caid, userProfile.isFollowed, isSelf)
-            stageProfileOverlayViewModel.bind(userProfile.caid)
-            binding.stageProfileOverlay?.viewModel = stageProfileOverlayViewModel
             binding.showIsOverTextView.formatUsernameAsHtml(
                 picasso,
                 getString(R.string.broadcaster_show_is_over, userProfile.username)
@@ -210,7 +200,7 @@ class StageFragment @Inject constructor(
 
             stageViewModel.updateIsMe(userProfile.isMe)
             binding.root.setOnClickListener { toggleOverlayVisibility() }
-            setupClassicFollowClickListener(userProfile)
+            setupFollowClickListener(userProfile)
             updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
 
@@ -228,26 +218,13 @@ class StageFragment @Inject constructor(
         configureButtons()
     }
 
-    private fun setupClassicFollowClickListener(userProfile: UserProfile) {
+    private fun setupFollowClickListener(userProfile: UserProfile) {
         // TODO: extract to VM
         val followListener = View.OnClickListener {
             if (userProfile.isFollowed) {
                 profileViewModel.unfollow(userProfile.caid)
             } else {
-                profileViewModel.follow(userProfile.caid).observe(this, Observer { result ->
-                    when (result) {
-                        is CaffeineEmptyResult.Error -> {
-                            if (result.error.isMustVerifyEmailError()) {
-                                val fragment =
-                                    AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                                fragment.maybeShow(fragmentManager, "verifyEmail")
-                            } else {
-                                Timber.e("Couldn't follow user ${result.error}")
-                            }
-                        }
-                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                    }
-                })
+                profileViewModel.follow(userProfile.caid)
             }
         }
         binding.followButtonText.setOnClickListener(followListener)
@@ -277,13 +254,13 @@ class StageFragment @Inject constructor(
     }
 
     @VisibleForTesting
-    fun updateBottomFragment(bottomContainerType: BottomContainerType, caid: String = "") {
+    fun updateBottomFragment(bottomContainerType: BottomContainerType, caid: String = "", chatAction: ChatAction? = null) {
         stageViewModel.updateIsViewProfile(bottomContainerType == BottomContainerType.PROFILE)
         updateAvatarImageViewBackground()
         binding.bottomFragmentContainer?.let {
             val fragment = when (bottomContainerType) {
                 BottomContainerType.CHAT -> {
-                    ChatFragment.newInstance(broadcasterUsername, releaseDesignConfig.isReleaseDesignActive())
+                    ChatFragment.newInstance(broadcasterUsername, releaseDesignConfig.isReleaseDesignActive(), chatAction)
                 }
                 BottomContainerType.PROFILE -> {
                     stageBroadcastProfilePagerFragmentProvider.get().apply {
@@ -303,18 +280,12 @@ class StageFragment @Inject constructor(
         if (!haveSetupBottomSection) {
             haveSetupBottomSection = true
             if (releaseDesignConfig.isReleaseDesignActive() && !userProfile.isLive) {
+                isProfileShowing = true
                 updateBottomFragment(BottomContainerType.PROFILE, userProfile.caid)
             } else {
                 updateBottomFragment(BottomContainerType.CHAT)
             }
         }
-    }
-
-    override fun returnToChat() {
-        // Need to click the profile toggle button so it switches to the correct state/color
-        stageProfileOverlayViewModel.onProfileToggleClick()
-        updateBottomFragment(BottomContainerType.CHAT)
-        isProfileShowing = false
     }
 
     override fun onDestroyView() {
@@ -347,9 +318,14 @@ class StageFragment @Inject constructor(
             surfaceViewRendererTuner.configure(renderer)
             feeds.values.firstOrNull { it.role == key }?.let { feed ->
                 configureRenderer(renderer, feed, videoTracks[feed.stream.id])
+                setFeedContentRating()
             }
             renderer.setOnClickListener { toggleOverlayVisibility() }
         }
+    }
+
+    private fun setFeedContentRating() {
+        feeds.values.firstOrNull()?.let { stageViewModel.contentRating = it.contentRating }
     }
 
     private var overlayVisibilityJob: Job? = null
@@ -388,11 +364,11 @@ class StageFragment @Inject constructor(
         binding.avatarUsernameContainer.isVisible = stageViewModel.getAvatarUsernameContainerVisibility()
         binding.liveIndicatorAndAvatarContainer.isVisible = stageViewModel.getLiveIndicatorAndAvatarContainerVisibility()
         binding.gameLogoImageView.isVisible = stageViewModel.getGameLogoVisibility()
-        binding.liveIndicator.isInvisible = !stageViewModel.getLiveIndicatorVisibility()
+        binding.avatarOverlapLiveBadge.isInvisible = !stageViewModel.getAvatarOverlapLiveBadgeVisibility()
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
-        binding.friendsWatchingIndicator.isVisible = stageViewModel.getFriendsWatchingIndicatorVisiblility()
         binding.swipeButton.isVisible = stageViewModel.getSwipeButtonVisibility()
+        binding.contentRatingTextView.isVisible = stageViewModel.getAgeRestrictionVisibility()
     }
 
     fun updateAvatarImageViewBackground() {
@@ -419,21 +395,18 @@ class StageFragment @Inject constructor(
 
     private fun configureFriendsWatchingIndicator() {
         friendsWatchingViewModel.friendsWatching.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) stageViewModel.updateHasFriendsWatching(true) else stageViewModel.updateHasFriendsWatching(false)
-            val friendsWatchingString = context?.let { context -> formatFriendsWatchingShortString(context, it) }
-            if (friendsWatchingString != null) {
-                binding.friendsWatchingIndicator.formatHtmlText(friendsWatchingString)
-            } else {
-                stageViewModel.updateHasFriendsWatching(false)
-            }
+            hasFriendsWatching = it.isNotEmpty()
+            binding.avatarOverlapLiveBadge.stageFollowers = it
         })
 
-        binding.friendsWatchingIndicator.setOnClickListener {
-            val action =
-                StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(
-                    stageId
-                )
-            findNavController().safeNavigate(action)
+        binding.avatarOverlapLiveBadge.setOnClickListener {
+            if (hasFriendsWatching) {
+                val action =
+                    StagePagerFragmentDirections.actionStagePagerFragmentToFriendsWatchingFragment(
+                        stageId
+                    )
+                findNavController().safeNavigate(action)
+            }
         }
     }
 
@@ -468,6 +441,8 @@ class StageFragment @Inject constructor(
             val activeRoles = feeds.values.filter { it.capabilities.video }.map { it.role }.toList()
             renderers[NewReyes.Feed.Role.primary]?.isVisible = NewReyes.Feed.Role.primary in activeRoles
             renderers[NewReyes.Feed.Role.secondary]?.isVisible = NewReyes.Feed.Role.secondary in activeRoles
+
+            setFeedContentRating()
         }
     }
 
@@ -565,24 +540,27 @@ class StageFragment @Inject constructor(
         renderers.clear()
     }
 
-    fun onFollowButtonClick(caid: CAID, isFollowing: Boolean) {
-        if (isFollowing) {
-            profileViewModel.unfollow(caid)
-        } else {
-            profileViewModel.follow(caid).observe(this, Observer { result ->
-                when (result) {
-                    is CaffeineEmptyResult.Error -> {
-                        if (result.error.isMustVerifyEmailError()) {
-                            val fragment =
-                                AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.maybeShow(fragmentManager, "verifyEmail")
-                        } else {
-                            Timber.e("Couldn't follow user ${result.error}")
-                        }
-                    }
-                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
-                }
-            })
+    override fun processChatAction(type: ChatAction) {
+        when (type) {
+            ChatAction.DIGITAL_ITEM, ChatAction.MESSAGE -> {
+                updateBottomFragment(BottomContainerType.CHAT, chatAction = type)
+                isProfileShowing = false
+            }
+            ChatAction.SHARE -> shareBroadcast()
+        }
+    }
+
+    private fun shareBroadcast() {
+        binding.userProfile?.let {
+            val sharerId = followManager.currentUserDetails()?.caid
+            startActivity(
+                StageShareIntentBuilder(
+                    it,
+                    sharerId,
+                    resources,
+                    clock
+                ).build()
+            )
         }
     }
 }

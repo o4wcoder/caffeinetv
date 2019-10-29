@@ -14,7 +14,6 @@ import tv.caffeine.app.lobby.HomeLobbyFragment
 import tv.caffeine.app.lobby.LobbyDetailFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
-import tv.caffeine.app.lobby.TrendingLobbyFragment
 import tv.caffeine.app.login.ArkoseFragment
 import tv.caffeine.app.login.ConfirmEmailFragment
 import tv.caffeine.app.login.ForgotFragment
@@ -81,11 +80,6 @@ abstract class FragmentBindingModule {
     @IntoMap
     @FragmentKey(HomeLobbyFragment::class)
     abstract fun bindHomeLobbyFragment(fragment: HomeLobbyFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(TrendingLobbyFragment::class)
-    abstract fun bindTrendingLobbyFragment(fragment: TrendingLobbyFragment): Fragment
 
     @Binds
     @IntoMap

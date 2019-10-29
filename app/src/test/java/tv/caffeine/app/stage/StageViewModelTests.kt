@@ -12,7 +12,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import tv.caffeine.app.CaffeineConstants
+import tv.caffeine.app.R
 import tv.caffeine.app.settings.ReleaseDesignConfig
+import tv.caffeine.app.stream.type.ContentRating
 
 class StageViewModelTests {
     @get:Rule
@@ -32,60 +35,30 @@ class StageViewModelTests {
     }
 
     @Test
-    fun `showing overlays on a live stage with good quality shows live indicator`() {
+    fun `showing overlays on a live stage with good quality shows avatar overlap live badge`() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
         subject.updateIsMe(false)
-        assertTrue(subject.getLiveIndicatorVisibility())
+        assertTrue(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
     @Test
-    fun `showing overlays on a live stage with poor quality shows live indicator`() {
+    fun `showing overlays on a live stage with poor quality shows avatar overlap live badge`() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.POOR)
         subject.updateStageIsLive(true)
         subject.updateIsMe(false)
-        assertTrue(subject.getLiveIndicatorVisibility())
+        assertTrue(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
     @Test
-    fun `showing overlays on an offline stage does not show live indicator`() {
+    fun `showing overlays on an offline stage does not show avatar overlap live badge`() {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
         subject.updateIsMe(false)
-        assertFalse(subject.getLiveIndicatorVisibility())
-    }
-
-    @Test
-    fun `showing overlays with no friends watching on shows the live indicator`() {
-        subject.updateOverlayIsVisible(true, true)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(true)
-        subject.updateHasFriendsWatching(false)
-        subject.updateIsMe(false)
-        assertTrue(subject.getLiveIndicatorVisibility())
-    }
-
-    @Test
-    fun `showing overlays with friends watching on live stage does not show live indicator`() {
-        subject.updateOverlayIsVisible(true, true)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(true)
-        subject.updateHasFriendsWatching(true)
-        subject.updateIsMe(false)
-        assertFalse(subject.getLiveIndicatorVisibility())
-    }
-
-    @Test
-    fun `showing overlays with friends watching on shows the friends watching indicator`() {
-        subject.updateOverlayIsVisible(true, true)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(true)
-        subject.updateHasFriendsWatching(true)
-        subject.updateIsMe(false)
-        assertTrue(subject.getFriendsWatchingIndicatorVisiblility())
+        assertFalse(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
     @Test
@@ -208,23 +181,12 @@ class StageViewModelTests {
     }
 
     @Test
-    fun `showing overlays on an classic offline stage shows avatar username container`() {
-        subject.isReleaseDesign.set(false)
+    fun `showing overlays on an offline stage shows avatar username container`() {
         subject.updateOverlayIsVisible(true, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
         subject.updateIsMe(false)
         assertTrue(subject.getAvatarUsernameContainerVisibility())
-    }
-
-    @Test
-    fun `showing overlays on an offline stage does not show avatar username container`() {
-        subject.isReleaseDesign.set(true)
-        subject.updateOverlayIsVisible(true, false)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
-        assertFalse(subject.getAvatarUsernameContainerVisibility())
     }
 
     @Test
@@ -291,5 +253,137 @@ class StageViewModelTests {
     fun `not showing offline profile overlay when stage is live`() {
         subject.isProfileOverlayVisible = false
         assertEquals(subject.getProfileOverlayVisibility(), View.GONE)
+    }
+
+    @Test
+    fun `show user avatar when not showing the profile section`() {
+        subject.updateIsViewProfile(false)
+        assertEquals(subject.getAvatarVisibility(), View.VISIBLE)
+    }
+
+    @Test
+    fun `do not show user avatar when showing the profile section`() {
+        subject.updateIsViewProfile(true)
+        assertEquals(subject.getAvatarVisibility(), View.INVISIBLE)
+    }
+
+    @Test
+    fun `show chat toggle when showing the profile section`() {
+        subject.updateIsViewProfile(true)
+        assertEquals(subject.getChatToggleVisibility(), View.VISIBLE)
+    }
+
+    @Test
+    fun `do not show chat toggle when not showing the profile section`() {
+        subject.updateIsViewProfile(false)
+        assertEquals(subject.getChatToggleVisibility(), View.INVISIBLE)
+    }
+
+    @Test
+    fun `show age restriction indicator if content rating is seventeen plus for release design`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertTrue(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `don not show age restriction if overlay is not visible for release design`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateOverlayIsVisible(false, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(true)
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `don not show age restriction if feed quality is bad for release design`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.BAD)
+        subject.updateStageIsLive(true)
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `don not show age restriction if stage is not live for release design`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateOverlayIsVisible(false, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(false)
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `do not show age restriction indicator if content rating is everyone for release design`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.EVERYONE
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `do not show age restriction indicator if content rating is seventeen plus for classic design`() {
+        subject.isReleaseDesign.set(false)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `do not show age restriction indicator if content rating is everyone for classic design`() {
+        subject.isReleaseDesign.set(false)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.EVERYONE
+        assertFalse(subject.getAgeRestrictionVisibility())
+    }
+
+    @Test
+    fun `show seventeen plus text when content rating is seventeen plus`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.SEVENTEEN_PLUS
+        assertEquals(subject.getAgeRestriction(), CaffeineConstants.RATING_SEVENTEEN_PLUS_TEXT)
+    }
+
+    @Test
+    fun `do not show any text on seventeen plus indicator when rating is everyone`() {
+        subject.isReleaseDesign.set(true)
+        turnOnBasicIndicatorVisibility()
+        subject.contentRating = ContentRating.EVERYONE
+        assertEquals(subject.getAgeRestriction(), "")
+    }
+
+    @Test
+    fun `when release design show release version of avatar background ring`() {
+        subject.isReleaseDesign.set(true)
+        subject.updateAvatarImageBackground()
+        assertEquals(subject.avatarImageBackground, R.drawable.circle_white_with_stage_avatar_white_rim)
+    }
+
+    @Test
+    fun `when classic design show and user is fllowed show blue avatar background ring`() {
+        subject.isReleaseDesign.set(false)
+        subject.updateIsFollowed(true)
+        subject.updateAvatarImageBackground()
+        assertEquals(subject.avatarImageBackground, R.drawable.circle_white_with_blue_rim)
+    }
+
+    @Test
+    fun `when classic design show and user is not fllowed show white avatar background ring`() {
+        subject.isReleaseDesign.set(false)
+        subject.updateIsFollowed(false)
+        subject.updateAvatarImageBackground()
+        assertEquals(subject.avatarImageBackground, R.drawable.circle_white)
+    }
+
+    private fun turnOnBasicIndicatorVisibility() {
+        subject.updateOverlayIsVisible(true, true)
+        subject.updateFeedQuality(FeedQuality.GOOD)
+        subject.updateStageIsLive(true)
+
     }
 }

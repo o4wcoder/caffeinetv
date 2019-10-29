@@ -108,3 +108,21 @@ fun User.configure(
         setTextAppearance(theme.usernameTextAppearance)
     }
 }
+
+fun User.configureUsernameAndAvatar(
+    avatarImageView: ImageView,
+    usernameTextView: TextView
+) {
+
+    avatarImageView.loadAvatar(avatarImageUrl, false, R.dimen.avatar_size)
+    usernameTextView.apply {
+        text = username
+        configureUserIcon(
+            when {
+                isVerified -> R.drawable.verified
+                isCaster -> R.drawable.caster
+                else -> 0
+            }
+        )
+    }
+}

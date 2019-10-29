@@ -37,6 +37,7 @@ abstract class LobbyV5Fragment constructor(
         configure(binding)
         this.binding = binding
         observeNotificationsCount()
+        observeFollowEvents()
     }
 
     abstract fun loadLobby()

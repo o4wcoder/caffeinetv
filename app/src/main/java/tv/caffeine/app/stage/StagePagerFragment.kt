@@ -13,12 +13,16 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import org.threeten.bp.Clock
 import tv.caffeine.app.R
+import tv.caffeine.app.analytics.FirebaseEvent
+import tv.caffeine.app.analytics.logEvent
+import tv.caffeine.app.analytics.logScreen
 import tv.caffeine.app.api.ApiErrorResult
 import tv.caffeine.app.api.VersionCheckError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
@@ -31,6 +35,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.session.SessionCheckViewModel
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.ui.ViewPagerLogOnPageChangeListener
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.broadcasterUsername
 import tv.caffeine.app.util.isNetworkAvailable
@@ -44,7 +49,8 @@ class StagePagerFragment @Inject constructor(
     private val isVersionSupportedCheckUseCase: IsVersionSupportedCheckUseCase,
     private val adapterFactory: StagePagerAdapter.Factory,
     private val followManager: FollowManager,
-    private val releaseDesignConfig: ReleaseDesignConfig
+    private val releaseDesignConfig: ReleaseDesignConfig,
+    private val firebaseAnalytics: FirebaseAnalytics
 ) : CaffeineFragment(R.layout.fragment_stage_pager) {
 
     @VisibleForTesting var binding: FragmentStagePagerBinding? = null
@@ -74,11 +80,13 @@ class StagePagerFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        firebaseAnalytics.logScreen(this)
         binding = FragmentStagePagerBinding.bind(view)
         val swipeButtonOnClickListener = View.OnClickListener {
             binding?.stageViewPager?.apply {
                 if (currentItem + 1 < adapter?.count ?: 0) {
                     setCurrentItem(currentItem + 1, true)
+                    firebaseAnalytics.logEvent(FirebaseEvent.StageSwipeButtonClicked)
                 }
             }
         }
@@ -114,8 +122,10 @@ class StagePagerFragment @Inject constructor(
                     args.broadcasterUsername(), allDistinctLiveBroadcasters.toList()
                 )
                 setBroadcastersAndAdapter(configuredBroadcasters, swipeButtonOnClickListener, index)
+                binding?.stageViewPager?.addOnPageChangeListener(ViewPagerLogOnPageChangeListener(index, firebaseAnalytics))
             } else {
                 loadAndSetBroadcastersAndAdapter(swipeButtonOnClickListener)
+                binding?.stageViewPager?.addOnPageChangeListener(ViewPagerLogOnPageChangeListener(0, firebaseAnalytics))
             }
         }
     }
@@ -243,7 +253,7 @@ class StagePagerAdapter @AssistedInject constructor(
 
     override fun getItem(position: Int): Fragment {
         val stageFragment = StageFragment(
-            factory, surfaceViewRendererTuner, followManager, picasso, releaseDesignConfig)
+            factory, surfaceViewRendererTuner, followManager, picasso, clock, releaseDesignConfig)
         val canSwipe = count > 1 && position < count - 1
         stageFragment.arguments = StageFragmentArgs(broadcasters[position], canSwipe).toBundle()
         stageFragment.swipeButtonOnClickListener = swipeButtonOnClickListener

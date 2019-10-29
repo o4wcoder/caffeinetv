@@ -32,6 +32,7 @@ import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.UsernameTheming
 import tv.caffeine.app.util.compactNumberFormat
 import tv.caffeine.app.util.configure
+import tv.caffeine.app.util.configureUsernameAndAvatar
 import tv.caffeine.app.util.safeNavigate
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -146,11 +147,7 @@ class ReleaseUserViewHolder(
         val isSelf = followManager.isSelf(item.id)
         binding.followStarViewModel!!.bind(item.user.caid, isFollowing, isSelf)
         binding.executePendingBindings()
-
-        item.user.configure(
-            binding.avatarImageView, binding.usernameTextView, followButton, followManager, true, followHandler,
-            R.dimen.avatar_explore, UsernameTheming.STANDARD)
-
+        item.user.configureUsernameAndAvatar(binding.avatarImageView, binding.usernameTextView)
         item.user.isBroadcasting?.let { binding.liveStatusIndicatorViewModel?.isUserLive = it }
         itemView.setOnClickListener {
             val action = MainNavDirections.actionGlobalStagePagerFragment(item.user.username)

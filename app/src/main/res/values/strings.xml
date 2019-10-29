@@ -3,7 +3,6 @@
     <string name="landing">Landing</string>
     <string name="lobby">Lobby</string>
     <string name="for_you_lobby">For You</string>
-    <string name="trending_lobby">Trending</string>
     <string name="featured_program_guide">Featured Program Guide</string>
     <string name="stage">Stage</string>
     <string name="confirm_email">Confirm Email</string>
@@ -30,18 +29,18 @@
     <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
     <string name="sign_up_email_hint">Email Address</string>
     <string name="sign_up_password_hint">Create a Password</string>
-    <string name="sign_up_password_length_hint">Passwords needs to be at least 7 characters</string>
+    <string name="sign_up_password_length_hint">Passwords need to be at least 7 characters</string>
     <string name="sign_up_username_hint">Create a Username</string>
     <string name="sign_up_birthdate_hint">Birthdate</string>
     <string name="sign_in_with_username">log in</string>
     <string name="sign_in_failure">Could not sign in. Please try again later.</string>
-
+    <string name="sign_in_button">log in</string>
     <string name="unauth_hint_username">Username</string>
     <string name="unauth_hint_email">Email Address</string>
     <string name="unauth_hint_password">Password</string>
-    <string name="sign_in_button">Sign in</string>
-    <string name="forget_password">Forget password?</string>
+    <string name="forgot_password">Forgot Password?</string>
     <string name="forgot_password_no_worries">Forgot your\npassword?\n\nNo worries.</string>
+    <string name="forgot_password_button">reset password</string>
     <string name="help_is_on_the_way">Help is on the way</string>
     <string name="reset_password_button">reset password</string>
     <string name="back_to_login_button">back to login</string>
@@ -49,7 +48,6 @@
     <string name="sign_up_button">Sign up</string>
     <string name="i_agree_to_legal"><![CDATA[By continuing, you agree to Caffeine\'s <a href="https://www.caffeine.tv/tos.html"><b>Terms of Service</b></a>, <a href="https://www.caffeine.tv/privacy.html"><b>Privacy Policy</b></a>, and <a href="https://www.caffeine.tv/guidelines.html"><b>Community Guidelines</b></a>.]]></string>
     <string name="must_agree_to_legal"><![CDATA[Caffeine requires your consent to personalize your experience based on your relationships and activities. We have new <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>. Please read them and agree to them to continue using Caffeine.]]></string>
-    <string name="send_email_button">Send email</string>
     <string name="caffeine_logo_content_description">Caffeine logo</string>
     <string name="sign_in_title">Welcome\nback</string>
     <string name="reset_your_password_description">We\'ll send you an email with a link to reset your password.</string>
@@ -66,12 +64,6 @@
     <string name="delete_account_button">Delete Account</string>
     <string name="account_deleted">Account Deleted</string>
     <string name="get_notified">get notified</string>
-    <string name="welcome_title">Welcome to\nCaffeine</string>
-    <string name="welcome_subtitle_one">Get ready to watch, react\nand follow you faves to\nyour heart\'s content</string>
-    <string name="welcome_subtitle_two">But before you do, check your\nemail to confirm your account</string>
-    <string name="welcome_resend_email">Resend Email</string>
-    <string name="welcome_lets_go_button">let\'s go</string>
-    <string name="welcome_email_sent_to">Email sent to</string>
 
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
@@ -141,10 +133,10 @@
         <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/> and one other are watching]]></item>
         <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s <img src=\"caster\"/> and %3$s others are watching]]></item>
     </plurals>
-    <string name="user_watching_short"><![CDATA[<img src=\"%2$s\"> %1$s]]></string>
+    <string name="user_watching_short"><![CDATA[%1$s]]></string>
     <plurals name="user_and_friends_watching_short">
-        <item quantity="one"><![CDATA[<img src=\"%2$s\"> %1$s + 1]]></item>
-        <item quantity="other"><![CDATA[<img src=\"%2$s\"> %1$s + %3$s]]></item>
+        <item quantity="one"><![CDATA[%1$s + 1]]></item>
+        <item quantity="other"><![CDATA[%1$s + %2$s]]></item>
     </plurals>
     <plurals name="number_of_followers">
         <item quantity="one"><![CDATA[<b>1</b>]]> follower</item>
@@ -318,7 +310,7 @@
     <string name="gift_button_content_description">Send a digital item</string>
     <string name="friends_watching_button_content_description">Friends watching this broadcast</string>
     <string name="game_logo_content_description">Game logo</string>
-    <string name="stage_broadcast_biography_tab">\u00A0 Biography \u00A0</string>
+    <string name="stage_broadcast_about_tab">\u00A0 About \u00A0</string>
     <string name="stage_broadcast_followers_tab">\u00A0 Followers \u00A0</string>
     <string name="stage_broadcast_following_tab">\u00A0 Following \u00A0</string>
     <string name="stage_profile_empty_biography">%1$s does not have a bio available.</string>
@@ -365,4 +357,10 @@
     <!-- Dev options -->
     <string name="dev_options_fragment_title" translatable="false">Dev Options</string>
     <string name="dev_options_version" translatable="false">version: <xliff:g example="0.20" id="versionName">%s</xliff:g></string>
+
+    <!--  Verify Email  -->
+    <string name="resend_email_dialog_button">Resend Email</string>
+    <string name="verify_email_dialog_title">Confirm Your Account</string>
+    <string name="verify_email_dialog_subtitle">Confirm your account to buy gold, react and give to your faves.</string>
+    <string name="verify_email_success_dialog_title">Confirmation Email Sent</string>
 </resources>

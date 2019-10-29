@@ -67,6 +67,7 @@
     </style>
 
     <!-- Container -->
+
     <style name="NoBarScrollView">
         <item name="android:scrollbars">none</item>
     </style>
@@ -391,6 +392,12 @@
     <style name="BroadcasterUsername.Night">
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="BroadcasterUsername.Night.Release">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="BroadcastTitle" parent="CaffeineText">
         <item name="android:textSize">@dimen/broadcast_title</item>
         <item name="android:textColor">@color/almost_black</item>
@@ -403,7 +410,8 @@
     </style>
 
     <style name="BroadcastTitle.Night.Release">
-        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="FollowText" parent="CaffeineText">
@@ -479,6 +487,17 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="VerifyEmailDialogTitleText" parent="CaffeineText.Medium">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="VerifyEmailDialogSubtitleText" parent="CaffeineText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <!-- Design approved - End -->
 
     <style name="ScreenCaption" parent="@style/TextAppearance.MaterialComponents.Caption"/>
@@ -496,6 +515,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.MainActivity" parent="AppTheme.NoActionBar"/>
 
     <style name="ActionBarTitle" parent="@style/TextAppearance.MaterialComponents.Headline6"/>
     <style name="ActionBarActionText" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
@@ -721,6 +742,13 @@
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
 
+    <!-- Caffeine animated loading indicator -->
+    <style name="AnimatedLoadingIndicator">
+        <item name="lottie_rawRes">@raw/spinner_color_together</item>
+        <item name="lottie_autoPlay">true</item>
+        <item name="lottie_loop">true</item>
+    </style>
+
     <!-- Login  -->
     <style name="LoginText" parent="CaffeineText.DarkMode" />
 
@@ -749,7 +777,7 @@
     </style>
 
     <style name="SignUpText.SubTitle" parent="CaffeineText.Medium">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="SignUpErrorText" parent="FormErrorText.LightMode" />
@@ -758,11 +786,6 @@
 
     <style name="SignUpBodyText" parent="CaffeineText.Light">
         <item name="android:textColor">@color/dark_gray</item>
-    </style>
-
-    <style name="SignUpLinkText" parent="CaffeineText.Release">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/pure_blue</item>
     </style>
 
 </resources>

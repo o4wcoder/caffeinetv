@@ -7,15 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import tv.caffeine.app.R
 import tv.caffeine.app.api.SearchUserItem
-import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.notifications.FollowNotification
 import tv.caffeine.app.session.FollowManager
-import tv.caffeine.app.util.maybeShow
 import javax.inject.Inject
 
 abstract class FollowListAdapter<T, VH : RecyclerView.ViewHolder> (diffCallback: DiffUtil.ItemCallback<T>) : ListAdapter<T, VH>(diffCallback),
@@ -30,14 +27,7 @@ abstract class FollowListAdapter<T, VH : RecyclerView.ViewHolder> (diffCallback:
                 val result = followManager.followUser(caid)
                 when (result) {
                     is CaffeineEmptyResult.Success -> updateItem(caid)
-                    is CaffeineEmptyResult.Error -> {
-                        if (result.error.isMustVerifyEmailError()) {
-                            val fragment = AlertDialogFragment.withMessage(R.string.verify_email_to_follow_more_users)
-                            fragment.maybeShow(fragmentManager, "verifyEmail")
-                        } else {
-                            Timber.e("Couldn't follow user ${result.error}")
-                        }
-                    }
+                    is CaffeineEmptyResult.Error -> Timber.e("Couldn't follow user ${result.error}")
                     is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
                 }
             }

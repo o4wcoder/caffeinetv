@@ -13,9 +13,6 @@
             name="viewModel"
             type="tv.caffeine.app.stage.StageViewModel"/>
 
-        <variable
-            name="stageProfileOverlayViewModel"
-            type="tv.caffeine.app.stage.StageProfileOverlayViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,11 +46,11 @@
             app:layout_constraintTop_toTopOf="@id/secondary_view_renderer"
             tools:visibility="visible"/>
 
-        <ProgressBar
+        <com.airbnb.lottie.LottieAnimationView
+            style="@style/AnimatedLoadingIndicator"
             android:id="@+id/primary_loading_indicator"
-            android:layout_width="@dimen/stage_loading_indicator_size"
-            android:layout_height="@dimen/stage_loading_indicator_size"
-            android:indeterminate="true"
+            android:layout_width="@dimen/animated_loading_indicator_size"
+            android:layout_height="@dimen/animated_loading_indicator_size"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/primary_view_renderer"
             app:layout_constraintEnd_toEndOf="@id/primary_view_renderer"
@@ -148,12 +145,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="@{viewModel.profileOverlayVisibility}"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            bind:userProfile="@{userProfile}"
-            bind:viewModel="@{stageProfileOverlayViewModel}"/>
+            app:layout_constraintTop_toTopOf="parent"
+            bind:userProfile="@{userProfile}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/live_indicator_and_avatar_container"
@@ -226,27 +222,35 @@
                     android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/avatar_overlap_live_badge"/>
 
-                <ImageView
-                    android:id="@+id/live_indicator"
+                <tv.caffeine.app.ui.AvatarOverlapLiveBadge
+                    style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+                    android:id="@+id/avatar_overlap_live_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/stage_badge_height"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintEnd_toStartOf="@id/content_rating_text_view"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/live_indicator_barrier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/pure_blue"
-                    android:src="@drawable/ic_live_indicator"
-                    android:contentDescription="@string/live_indicator_lowercase"
-                    android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:barrierDirection="end"
+                    app:constraint_referenced_ids="avatar_overlap_live_badge" />
 
                 <TextView
-                    style="@style/LobbyCardLiveBadge"
-                    android:id="@+id/friends_watching_indicator"
+                    style="@style/LobbyCardContentRating"
+                    android:id="@+id/content_rating_text_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="@dimen/stage_badge_height"
+                    android:text="@{viewModel.ageRestriction}"
                     android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/live_indicator_barrier"
+                    app:layout_constraintBottom_toBottomOf="@id/avatar_overlap_live_badge"/>
 
                 <ImageView
                     android:id="@+id/swipe_button"
@@ -256,7 +260,7 @@
                     android:contentDescription="@string/stage_swipe_image_content_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@+id/live_indicator"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/avatar_overlap_live_badge"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -296,6 +300,7 @@
                     android:onClick="@{() -> viewModel.onLandscapeAvatarClick()}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:roundedImageUrl="@{userProfile.avatarImageUrl}"
                     app:placeholder="@{@drawable/default_avatar_round}"
                     tools:background="@drawable/circle_white_with_blue_rim"
@@ -335,9 +340,9 @@
                     android:layout_marginEnd="16dp"
                     android:background="@{userProfile.shouldShowFollow ? @drawable/star_outline : @drawable/star_filled}"
                     android:text="@string/follow_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
                     app:layout_constraintEnd_toStartOf="@id/avatar_image_view"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/avatar_image_view"
                     tools:background="@drawable/ic_star_border_24dp"/>
 
                 <TextView
@@ -349,7 +354,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="10dp"
                     android:maxLines="1"
-                    android:text="@{userProfile.broadcastName}"
+                    android:text="@{userProfile.isLive ? userProfile.broadcastName : userProfile.name}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/follow_button_image"

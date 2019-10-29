@@ -21,13 +21,12 @@ import tv.caffeine.app.R
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
 import tv.caffeine.app.profile.UserProfile
-import tv.caffeine.app.stage.biography.BiographyFragment
 
 @RunWith(RobolectricTestRunner::class)
-class BiographyFragmentTests {
+class AboutFragmentTests {
 
     private lateinit var context: Context
-    lateinit var subject: BiographyFragment
+    lateinit var subject: AboutFragment
 
     @MockK lateinit var userProfile: UserProfile
 
@@ -41,7 +40,7 @@ class BiographyFragmentTests {
         val testComponent = DaggerTestComponent.factory().create(app)
         app.setApplicationInjector(testComponent)
         val navController = mockk<NavController>(relaxed = true)
-        val scenario = launchFragmentInContainer<BiographyFragment>(bundleOf("caid" to "caid"))
+        val scenario = launchFragmentInContainer<AboutFragment>(bundleOf("caid" to "caid"))
         scenario.onFragment { fragment ->
             Navigation.setViewNavController(fragment.view!!, navController)
             subject = fragment

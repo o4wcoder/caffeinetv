@@ -15,6 +15,7 @@ import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.PaginatedFollowers
 import tv.caffeine.app.api.model.PaginatedFollowing
 import tv.caffeine.app.api.model.SignedUserToken
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.UserContainer
 import tv.caffeine.app.api.model.UserUpdateBody
 
@@ -23,10 +24,13 @@ const val MAX_PAGE_LIMIT = 500
 
 interface UsersService {
     @GET("v2/users/{caid}/followers")
-    fun listFollowers(@Path("caid") userId: CAID): Deferred<Response<PaginatedFollowers>>
+    suspend fun listFollowers(@Path("caid") userId: CAID): PaginatedFollowers
 
     @GET("v2/users/{caid}/following")
-    fun listFollowing(@Path("caid") userId: CAID, @Query("limit") limit: Int = DEFAULT_PAGE_LIMIT): Deferred<Response<PaginatedFollowing>>
+    suspend fun listFollowing(@Path("caid") userId: CAID, @Query("limit") limit: Int = DEFAULT_PAGE_LIMIT): PaginatedFollowing
+
+    @GET("v1/users/{caid}/following")
+    suspend fun legacyListFollowing(@Path("caid") userId: CAID): List<CaidRecord.FollowRecord>
 
     @POST("v1/users/{caid1}/follow/{caid2}")
     fun follow(@Path("caid1") follower: CAID, @Path("caid2") toFollow: CAID): Deferred<Response<Void>>
@@ -60,9 +64,14 @@ interface UsersService {
 
     @PATCH("v1/users/{caid}/notifications-viewed")
     fun notificationsViewed(@Path("caid") userId: CAID): Deferred<Response<UserContainer>>
+
+    @POST("v1/users/list")
+    suspend fun multipleUserDetails(@Body batchUserFetchBody: BatchUserFetchBody): List<User>
 }
 
 class ReportUserBody(val reason: String, val description: String?)
+
+class BatchUserFetchBody(val identifiers: List<String>)
 
 enum class ReasonKey {
     HARASSMENT_OR_TROLLING,

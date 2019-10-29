@@ -5,7 +5,7 @@ working_directory: &working_directory ~/repo
 defaults: &defaults
   working_directory: *working_directory
   docker:
-    - image: circleci/android:api-28-node
+    - image: circleci/android:api-28
   environment:
     JAVA_TOOL_OPTIONS: "-Xmx2048m"
     GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy=in-process"
@@ -56,10 +56,7 @@ jobs:
       - run:
           name: Run Unit Tests
           command: ./gradlew testDebugUnitTestCoverage -PdisablePreDex --stacktrace
-#      - persist_to_workspace:
-#          root: *working_directory
-#          paths:
-#            - .
+          no_output_timeout: 15m
       - run:
           name: Save test, coverage and detekt results
           command: |
@@ -115,7 +112,10 @@ jobs:
           path: ~/apk
 
   danger:
-    <<: *defaults
+    docker:
+      - image: circleci/node:9.9.0
+    environment:
+      TERM: dumb
     steps:
       - checkout
       - restore_cache:

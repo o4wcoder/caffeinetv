@@ -11,6 +11,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import com.squareup.picasso.Picasso
 import timber.log.Timber
+import tv.caffeine.app.CaffeineConstants.TAG_DIGITAL_ITEM
+import tv.caffeine.app.CaffeineConstants.TAG_SEND_MESSAGE
+import tv.caffeine.app.CaffeineConstants.TAG_UNFOLLOW_USER
+import tv.caffeine.app.CaffeineConstants.TAG_VERIFICATION_SENT
 import tv.caffeine.app.MainNavDirections
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
@@ -111,14 +115,14 @@ fun FragmentManager.navigateToUnfollowUserDialog(caid: CAID, username: String, c
     UnfollowUserDialogFragment().apply {
         positiveClickListener = DialogInterface.OnClickListener { _, _ -> callback.unfollow(caid) }
         arguments = MainNavDirections.actionGlobalUnfollowUserDialogFragment(username).arguments
-        show(this@navigateToUnfollowUserDialog, "unfollowUser")
+        show(this@navigateToUnfollowUserDialog, TAG_UNFOLLOW_USER)
     }
 }
 
 fun FragmentManager.navigateToSendingVerificationEmailDialog(email: String) {
     SendingVerificationEmailDialogFragment().apply {
         arguments = MainNavDirections.actionGlobalSendingVerificationEmailDialogFragment(email).arguments
-        show(this@navigateToSendingVerificationEmailDialog, "verificationEmailSent")
+        show(this@navigateToSendingVerificationEmailDialog, TAG_VERIFICATION_SENT)
     }
 }
 
@@ -127,7 +131,7 @@ fun FragmentManager.navigateToSendMessage(callingFragment: Fragment, isMe: Boole
         val action = StagePagerFragmentDirections.actionStagePagerFragmentToSendMessageFragment(message, !isMe)
         arguments = action.arguments
         setTargetFragment(callingFragment, SEND_MESSAGE)
-        show(this@navigateToSendMessage, "sendMessage")
+        show(this@navigateToSendMessage, TAG_SEND_MESSAGE)
     }
 }
 
@@ -145,6 +149,6 @@ fun FragmentManager.navigateToDigitalItemWithMessage(
         )
         arguments = action.arguments
         setTargetFragment(callingFragment, PICK_DIGITAL_ITEM)
-        show(this@navigateToDigitalItemWithMessage, "digitalItem")
+        show(this@navigateToDigitalItemWithMessage, TAG_DIGITAL_ITEM)
     }
 }

@@ -101,6 +101,10 @@ class MyProfileFragment @Inject constructor(
         binding.avatarImageView.setOnClickListener { chooseNewAvatarImage() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.load()
+    }
     private fun chooseNewAvatarImage() {
         val galleryIntent = Intent(Intent.ACTION_PICK).apply {
             type = "image/*"

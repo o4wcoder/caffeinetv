@@ -15,7 +15,7 @@ class UsersRepository @Inject constructor(
     private val usersService: UsersService,
     private val gson: Gson
 ) {
-    suspend fun getFollowersList(caid: CAID): CaffeineResult<PaginatedFollowers> = usersService.listFollowers(caid).awaitAndParseErrors(gson)
+    suspend fun getFollowersList(caid: CAID): PaginatedFollowers = usersService.listFollowers(caid)
 
     suspend fun markNotificationsViewed(caid: CAID): CaffeineResult<UserContainer> = usersService.notificationsViewed(caid).awaitAndParseErrors(gson)
 

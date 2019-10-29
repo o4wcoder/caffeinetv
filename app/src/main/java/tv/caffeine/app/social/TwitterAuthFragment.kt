@@ -18,6 +18,7 @@ import tv.caffeine.app.api.OAuthService
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.awaitAndParseErrors
+import tv.caffeine.app.api.shouldRetryRequest
 import tv.caffeine.app.ui.CaffeineFragment
 import javax.inject.Inject
 
@@ -99,6 +100,10 @@ abstract class TwitterAuthFragment(
     }
 
     private fun shouldRetry(result: CaffeineResult<OAuthCallbackResult>?): Boolean {
-        return result is CaffeineResult.Failure && result.throwable is StreamResetException
+        return when (result) {
+            is CaffeineResult.Success -> result.value.shouldRetryRequest()
+            is CaffeineResult.Failure -> result.throwable is StreamResetException
+            else -> false
+        }
     }
 }

@@ -57,7 +57,9 @@ class KochavaAnalytics @Inject constructor(
         Log.d("Caffeine", "Kochava initialized: $attributionString")
         try {
             val attribution = gson.fromJson(attributionString, DeeplinkAttribution::class.java)
-            if (attribution.attribution == true) {
+            // Kochava returns "attribution":"false" if the attribution doesn't exist,
+            // but it doesn't return the "attribution" field at all if the attribution exists.
+            if (attribution.attribution != false) {
                 if (attribution.user != null && attribution.page == PAGE_STAGE) {
                     navDirections = MainNavDirections.actionGlobalStagePagerFragment(attribution.user)
                 }
