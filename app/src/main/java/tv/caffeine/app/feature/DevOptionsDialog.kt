@@ -56,12 +56,17 @@ class DevOptionsDialog : BottomSheetDialog {
     }
 
     private fun load(sharedPreferences: SharedPreferences) {
-        setSwitchValue(binding.releaseUiSwitch, "release_design", sharedPreferences)
+        setSwitchValue(binding.releaseUiSwitch, "release_design", sharedPreferences, true)
         setSwitchValue(binding.autoplayPreviewAllSwitch, "play_all", sharedPreferences)
     }
 
-    private fun setSwitchValue(switch: Switch, featureName: String, sharedPreferences: SharedPreferences) {
-        val value = sharedPreferences.getBoolean(featureName, false)
+    private fun setSwitchValue(
+        switch: Switch,
+        featureName: String,
+        sharedPreferences: SharedPreferences,
+        defaultValue: Boolean = false
+    ) {
+        val value = sharedPreferences.getBoolean(featureName, defaultValue)
         switchMap[switch] = value
         switch.isChecked = value
         switch.tag = featureName

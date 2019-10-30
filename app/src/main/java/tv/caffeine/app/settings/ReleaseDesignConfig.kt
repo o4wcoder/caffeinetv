@@ -15,9 +15,9 @@ class ReleaseDesignConfig @Inject constructor(
         return if (featureConfig.isFeatureEnabled(Feature.DEV_OPTIONS)) {
             isReleaseDesignSettingEnabled()
         } else {
-            featureConfig.isFeatureEnabled(Feature.RELEASE_DESIGN) && isReleaseDesignSettingEnabled()
+            true
         }
     }
 
-    private fun isReleaseDesignSettingEnabled() = sharedPreferences.getBoolean("release_design", false)
+    private fun isReleaseDesignSettingEnabled() = sharedPreferences.getBoolean("release_design", true)
 }
