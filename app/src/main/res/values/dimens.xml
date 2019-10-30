@@ -104,6 +104,7 @@
     <dimen name="stage_bottom_sheet_min_height">300dp</dimen>
     <dimen name="stage_chat_controls_internal_margin">16dp</dimen>
     <dimen name="stage_badge_height">40dp</dimen>
+    <dimen name="stage_off_air_indicator_width">72dp</dimen>
 
     <dimen name="broadcast_username">14sp</dimen>
     <dimen name="broadcast_username_mini">13sp</dimen>

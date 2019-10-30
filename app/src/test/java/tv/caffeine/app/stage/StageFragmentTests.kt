@@ -325,6 +325,30 @@ class StageFragmentVisibilityTests {
             subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
         assertNotNull(chatFragment)
     }
+
+    @Test
+    fun `when stage is offline and profile overlay is showing then show off air indicator`() {
+        subject.stageViewModel.isProfileOverlayVisible = true
+        assertTrue(subject.binding.offAirIndicator.isVisible)
+    }
+
+    @Test
+    fun `when stage is live and profile overlay is not showing then do not show off air indicator`() {
+        subject.stageViewModel.isProfileOverlayVisible = false
+        assertFalse(subject.binding.offAirIndicator.isVisible)
+    }
+
+    @Test
+    fun `offline stage will show app bar on setup`() {
+        subject.setupOverlays(false)
+        assertTrue(subject.binding.stageAppbar.isVisible)
+    }
+
+    @Test
+    fun `live stage will not show app bar on setup`() {
+        subject.setupOverlays(true)
+        assertFalse(subject.binding.stageAppbar.isVisible)
+    }
 }
 
 @RunWith(RobolectricTestRunner::class)

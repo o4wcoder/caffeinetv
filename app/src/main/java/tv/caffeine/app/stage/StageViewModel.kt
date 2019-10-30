@@ -24,13 +24,13 @@ class StageViewModel(
     private var appbarIsVisible = false
     private var isFollowed = false
     private var isViewingProfile = false
+    private var _showPoorConnectionAnimation = MutableLiveData(false)
 
+    var showPoorConnectionAnimation = _showPoorConnectionAnimation.map { it }
     val isReleaseDesign = ObservableBoolean(releaseDesignConfig.isReleaseDesignActive())
     var usernameTextColor = R.color.white
     var avatarImageBackground = R.drawable.circle_white
-
-    private var _showPoorConnectionAnimation = MutableLiveData(false)
-    var showPoorConnectionAnimation = _showPoorConnectionAnimation.map { it }
+    var shouldShowInitialOverlays = true
 
     var isProfileOverlayVisible = false
         set(value) {

@@ -316,7 +316,7 @@
     <string name="stage_profile_empty_biography">%1$s does not have a bio available.</string>
     <string name="stage_profile_empty_followers">%1$s has no followers.</string>
     <string name="stage_profile_empty_following">%1$s is not following anyone.</string>
-
+    <string name="stage_off_air_content_description">off air</string>
     <!-- Feature Program Guide -->
     <string name="fpg_empty_message">There are currently no scheduled events.\nCheck back soon!</string>
     <string name="featured_event_image_content_description">Featured event image</string>

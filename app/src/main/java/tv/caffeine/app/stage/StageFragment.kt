@@ -79,7 +79,6 @@ class StageFragment @Inject constructor(
     lateinit var stageViewModel: StageViewModel
 
     private val args by navArgs<StageFragmentArgs>()
-    private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting
     var haveSetupBottomSection = false
     private var isProfileShowing = false
@@ -197,25 +196,35 @@ class StageFragment @Inject constructor(
                     }
                 }
             }
-
             stageViewModel.updateIsMe(userProfile.isMe)
-            binding.root.setOnClickListener { toggleOverlayVisibility() }
             setupFollowClickListener(userProfile)
             updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
-
-            if (shouldShowOverlayOnProfileLoaded) {
-                shouldShowOverlayOnProfileLoaded = false
-                toggleOverlayVisibility(
-                    !userProfile.isLive,
-                    false) // hide on the first frame instead of a timeout if live
-            }
+            setupOverlays(userProfile.isLive)
         })
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
         poorConnectionPulseAnimator = PulseAnimator(binding.poorConnectionPulseImageView)
         initSurfaceViewRenderer()
         configureButtons()
+    }
+
+    @VisibleForTesting
+    fun setupOverlays(isLive: Boolean) {
+        if (isLive) {
+            binding.root.setOnClickListener { toggleOverlayVisibility() }
+            // Only want to setup the overlay toggle once or the overlays will flash on and off
+            if (stageViewModel.shouldShowInitialOverlays) {
+                stageViewModel.shouldShowInitialOverlays = false
+                // hide app bar on the first frame instead of a timeout if live
+                toggleOverlayVisibility(
+                    true,
+                    false) // hide on the first frame instead of a timeout if live
+            }
+        } else {
+            // Always show overlays on offline stage
+            showOverlays(true)
+        }
     }
 
     private fun setupFollowClickListener(userProfile: UserProfile) {
@@ -295,8 +304,6 @@ class StageFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        val isStreamConnected = newReyesController != null // true after screen rotation
-        shouldShowOverlayOnProfileLoaded = !isStreamConnected
         connectStage()
     }
 

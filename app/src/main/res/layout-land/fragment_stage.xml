@@ -213,6 +213,16 @@
                 app:layout_constraintTop_toBottomOf="@id/weak_connection_container"
                 app:layout_constraintStart_toStartOf="parent">
 
+                <ImageView
+                    android:id="@+id/off_air_indicator"
+                    android:layout_width="@dimen/stage_off_air_indicator_width"
+                    android:layout_height="@dimen/stage_badge_height"
+                    android:src="@drawable/ic_offair_badge"
+                    android:contentDescription="@string/stage_off_air_content_description"
+                    android:visibility="@{viewModel.profileOverlayVisibility}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     style="@style/LiveIndicator"
                     android:id="@+id/classic_live_indicator_text_view"
