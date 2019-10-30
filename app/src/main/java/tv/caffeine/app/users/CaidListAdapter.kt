@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -58,7 +58,7 @@ class CaidListAdapter @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = dispatchConfig.main + job + exceptionHandler
 
-    private var navController: NavController? = null
+    private var userNavigationCallback: UserNavigationCallback? = null
     private var usernameThemeColor: ThemeColor = ThemeColor.DARK
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -74,10 +74,9 @@ class CaidListAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
-        if (holder is ClassicCaidViewHolder) {
-            holder.bind(item, followManager)
-        } else {
-            (holder as ReleaseCaidViewHolder).bind(item, followManager, profileRepository, navController)
+        when (holder) {
+            is ClassicCaidViewHolder -> holder.bind(item, followManager, userNavigationCallback)
+            is ReleaseCaidViewHolder -> holder.bind(item, followManager, profileRepository, userNavigationCallback)
         }
     }
 
@@ -86,8 +85,8 @@ class CaidListAdapter @Inject constructor(
         job.cancel()
     }
 
-    fun setNavController(navController: NavController?) {
-        this.navController = navController
+    fun setUserNavigationCallback(callback: UserNavigationCallback) {
+        userNavigationCallback = callback
     }
 
     fun setUsernameFollowStarColor(color: ThemeColor) {
@@ -96,14 +95,17 @@ class CaidListAdapter @Inject constructor(
 }
 
 class ClassicCaidViewHolder(itemView: View, private val followHandler: FollowManager.FollowHandler, private val scope: CoroutineScope) :
-    RecyclerView.ViewHolder(itemView) {
-    private val avatarImageView: ImageView = itemView.findViewById(R.id.avatar_image_view)
-    private val usernameTextView: TextView = itemView.findViewById(R.id.username_text_view)
-    private val followButton: Button = itemView.findViewById(R.id.follow_button)
+    RecyclerView.ViewHolder(itemView), UserNavigable {
+    private lateinit var avatarImageView: ImageView
+    private lateinit var usernameTextView: TextView
+    private lateinit var followButton: Button
 
     var job: Job? = null
 
-    fun bind(item: CaidRecord, followManager: FollowManager) {
+    fun bind(item: CaidRecord, followManager: FollowManager, userNavigationCallback: UserNavigationCallback?) {
+        avatarImageView = itemView.findViewById(R.id.avatar_image_view)
+        usernameTextView = itemView.findViewById(R.id.username_text_view)
+        followButton = itemView.findViewById(R.id.follow_button)
         job?.cancel()
         clear()
         job = scope.launch {
@@ -113,9 +115,9 @@ class ClassicCaidViewHolder(itemView: View, private val followHandler: FollowMan
             user.configure(avatarImageView, usernameTextView, maybeFollowButton, followManager, true, followHandler, R.dimen.avatar_size,
                     UsernameTheming.STANDARD)
         }
-        itemView.setOnClickListener {
+        itemView.setOnClickListener { view ->
             val action = MainNavDirections.actionGlobalProfileFragment(item.caid)
-            itemView.findNavController().safeNavigate(action)
+            performUserNavigation(action, userNavigationCallback, view)
         }
     }
 
@@ -137,7 +139,7 @@ class ReleaseCaidViewHolder(
     private val usernameThemeColor: ThemeColor,
     onFollowStarClick: (caid: CAID, isFollowing: Boolean) -> Unit
 ) :
-    RecyclerView.ViewHolder(binding.root) {
+    RecyclerView.ViewHolder(binding.root), UserNavigable {
     @VisibleForTesting
     var followButton: Button? = null
 
@@ -152,7 +154,12 @@ class ReleaseCaidViewHolder(
     If this adapter is being used in a BottomSheetDialogFragment, then it wont have a navController and the navController from the dialog's
     activity will have to be passed to this bind function.
      */
-    fun bind(item: CaidRecord, followManager: FollowManager, profileRepository: ProfileRepository, navController: NavController? = null) {
+    fun bind(
+        item: CaidRecord,
+        followManager: FollowManager,
+        profileRepository: ProfileRepository,
+        userNavigationCallback: UserNavigationCallback?
+    ) {
         job?.cancel()
         clear()
         job = scope.launch {
@@ -184,11 +191,10 @@ class ReleaseCaidViewHolder(
                 binding.followStarViewModel!!.bind(user.caid, isFollowing, isSelf)
                 binding.executePendingBindings()
             }
-            itemView.setOnClickListener {
-                userProfile?.username?.let {
-                    val action = MainNavDirections.actionGlobalStagePagerFragment(userProfile.username)
-                    navController?.let { it.safeNavigate(action) }
-                        ?: itemView.findNavController().safeNavigate(action)
+            itemView.setOnClickListener { view ->
+                userProfile?.username?.let { username ->
+                    val action = MainNavDirections.actionGlobalStagePagerFragment(username)
+                    performUserNavigation(action, userNavigationCallback, view)
                 }
             }
         }
@@ -200,5 +206,28 @@ class ReleaseCaidViewHolder(
         binding.followStarViewModel?.hide()
         binding.liveStatusIndicatorViewModel?.isUserLive = false
         binding.root.setOnClickListener(null)
+    }
+}
+
+/**
+ * Use the callback on screens where the nav controller is not supported.
+ * E.g., [FriendsWatchingFragment] is a DialogFragment. Only [NavHostFragment] is supported.
+ */
+interface UserNavigationCallback {
+    fun onUserNavigation(action: NavDirections) {
+    }
+}
+
+/**
+ * An interface to encapsulate the logic to a user stage or profile.
+ * @see [UserNavigationCallback].
+ */
+interface UserNavigable {
+    fun performUserNavigation(
+        action: NavDirections,
+        userNavigationCallback: UserNavigationCallback?,
+        view: View
+    ) {
+        userNavigationCallback?.onUserNavigation(action) ?: view.findNavController().safeNavigate(action)
     }
 }
