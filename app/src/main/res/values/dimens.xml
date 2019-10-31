@@ -43,7 +43,7 @@
     <dimen name="verified_icon_padding">4dp</dimen>
     <dimen name="list_item_spacing">8dp</dimen>
     <dimen name="list_item_spacing_half">4dp</dimen>
-    <dimen name="coin_size">10dp</dimen>
+    <dimen name="coin_size">12dp</dimen>
     <dimen name="checkmark_size">12dp</dimen>
     <dimen name="caster_width">15dp</dimen>
     <dimen name="caster_height">12dp</dimen>
