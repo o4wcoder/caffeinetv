@@ -8,12 +8,16 @@
             type="tv.caffeine.app.lobby.release.AbstractBroadcaster" />
     </data>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/follow_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/follow_star_touchable_size"
+        android:layout_height="@dimen/follow_star_touchable_size"
+        android:padding="12dp"
+        android:cropToPadding="true"
+        android:translationX="-12dp"
         android:onClick="@{() -> viewModel.followClicked()}"
         android:src="@{viewModel.isFollowing() ? @drawable/star_filled : @drawable/star_outline, default=@drawable/star_outline}"
+        android:background="@color/transparent"
         android:tint="@color/black"
         android:contentDescription="@{viewModel.isFollowing() ? @string/unfollow_button : @string/follow_button}"
         android:visibility="@{viewModel.isSelf ? View.GONE : View.VISIBLE}"/>

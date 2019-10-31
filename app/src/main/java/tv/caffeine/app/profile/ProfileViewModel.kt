@@ -23,6 +23,9 @@ class ProfileViewModel @Inject constructor(
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile> = _userProfile.map { it }
 
+    private val _isFollowing = MutableLiveData<Boolean>()
+    val isFollowing: LiveData<Boolean> = _isFollowing.map { it }
+
     fun load(userHandle: String) = viewModelScope.launch {
         val userDetails = followManager.userDetails(userHandle) ?: return@launch
         val broadcastDetails = followManager.broadcastDetails(userDetails)
@@ -42,10 +45,19 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun configure(userDetails: User, broadcastDetails: Broadcast?) {
-        _userProfile.value = UserProfile(userDetails, broadcastDetails, numberFormat, followManager)
+        val profile = UserProfile(userDetails, broadcastDetails, numberFormat, followManager)
+        _userProfile.value = profile
+        // TODO: shouldShowFollow is legacy from classic UI where we hid the follow button when followed
+        // TODO: shouldShowFollow == true == NOT FOLLOWING
+        // TODO: when classic UI goes away change this name
+        val isFollowingUser = !profile.shouldShowFollow
+        if (_isFollowing.value == null || _isFollowing.value != isFollowingUser) {
+            _isFollowing.value = isFollowingUser
+        }
     }
 
     fun follow(caid: CAID): LiveData<CaffeineEmptyResult> {
+        _isFollowing.value = true
         val liveData = MutableLiveData<CaffeineEmptyResult>()
         viewModelScope.launch {
             val result = followManager.followUser(caid)
@@ -56,6 +68,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun unfollow(caid: CAID) = viewModelScope.launch {
+        _isFollowing.value = false
         followManager.unfollowUser(caid)
         forceLoad(caid)
     }

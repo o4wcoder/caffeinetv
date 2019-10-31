@@ -168,6 +168,10 @@ class StageFragment @Inject constructor(
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
 
+        profileViewModel.isFollowing.observe(viewLifecycleOwner, Observer {
+            binding.releaseIsFollowing = it
+        })
+
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
             binding.showIsOverTextView.formatUsernameAsHtml(

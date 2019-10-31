@@ -1,36 +1,51 @@
 package tv.caffeine.app.session
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import retrofit2.Response
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.isCAID
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.util.CoroutinesTestRule
 import tv.caffeine.app.util.makeGenericUser
 
 class FollowManagerTests {
     lateinit var followManager: FollowManager
 
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutinesTestRule = CoroutinesTestRule()
+
     @MockK(relaxed = true) lateinit var gson: Gson
     @MockK(relaxed = true) lateinit var usersService: UsersService
     @MockK(relaxed = true) lateinit var broadcastsService: BroadcastsService
     @MockK(relaxed = true) lateinit var tokenStore: TokenStore
+    @MockK private lateinit var fakeSuccessResponse: Deferred<Response<Void>>
+    @MockK private lateinit var fakeErrorResponse: Deferred<Response<Void>>
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        coEvery { fakeSuccessResponse.await() } returns Response.success(null)
+        coEvery { fakeErrorResponse.await() } returns Response.error(404, ResponseBody.create(MediaType.parse("text/json"), "{}"))
         followManager = FollowManager(gson, usersService, broadcastsService, tokenStore)
     }
 
@@ -54,6 +69,64 @@ class FollowManagerTests {
             else -> false
         }
         assertTrue("Expected to get failure", success)
+    }
+
+    @Test
+    fun `is following is correct after follow user success`() {
+        val caid = "CAID1"
+        coEvery { usersService.follow(any(), any()) } returns fakeSuccessResponse
+        runBlocking {
+            followManager.followUser(caid)
+        }
+
+        assertTrue(followManager.isFollowing(caid))
+    }
+
+    @Test
+    fun `is following is correct after follow user error`() {
+        val caid = "CAID1"
+        coEvery { usersService.follow(any(), any()) } returns fakeErrorResponse
+        runBlocking {
+            followManager.followUser(caid)
+        }
+
+        assertFalse(followManager.isFollowing(caid))
+    }
+
+    @Test
+    fun `is following is correct after unfollow user success`() {
+        val caid = "CAID1"
+
+        coEvery { usersService.follow(any(), any()) } returns fakeSuccessResponse
+        runBlocking {
+            followManager.followUser(caid)
+        }
+        assertTrue(followManager.isFollowing(caid)) // pre-condition
+
+        coEvery { usersService.unfollow(any(), any()) } returns fakeSuccessResponse
+        runBlocking {
+            followManager.unfollowUser(caid)
+        }
+
+        assertFalse(followManager.isFollowing(caid))
+    }
+
+    @Test
+    fun `is following is correct after unfollow user error`() {
+        val caid = "CAID1"
+
+        coEvery { usersService.follow(any(), any()) } returns fakeSuccessResponse
+        runBlocking {
+            followManager.followUser(caid)
+        }
+        assertTrue(followManager.isFollowing(caid)) // pre-condition
+
+        coEvery { usersService.unfollow(any(), any()) } returns fakeErrorResponse
+        runBlocking {
+            followManager.unfollowUser(caid)
+        }
+
+        assertTrue(followManager.isFollowing(caid))
     }
 
     @Test

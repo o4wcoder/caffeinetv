@@ -23,31 +23,32 @@ abstract class FollowListAdapter<T, VH : RecyclerView.ViewHolder> (diffCallback:
     var fragmentManager: FragmentManager? = null
     val callback = object : FollowManager.Callback() {
         override fun follow(caid: CAID) {
+            updateItem(caid)
             launch {
                 val result = followManager.followUser(caid)
-                when (result) {
-                    is CaffeineEmptyResult.Success -> updateItem(caid)
-                    is CaffeineEmptyResult.Error -> Timber.e("Couldn't follow user ${result.error}")
-                    is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+                if (result !is CaffeineEmptyResult.Success) {
+                    updateItem(caid)
+                    when (result) {
+                        is CaffeineEmptyResult.Error -> Timber.e("Couldn't follow user ${result.error}")
+                        is CaffeineEmptyResult.Failure -> Timber.e(result.throwable)
+                    }
                 }
             }
         }
         override fun unfollow(caid: CAID) {
+            updateItem(caid)
             launch {
-                if (followManager.unfollowUser(caid) is CaffeineEmptyResult.Success) {
-                    updateItem(caid)
-                }
+                val result = followManager.unfollowUser(caid)
+                if (result !is CaffeineEmptyResult.Success) updateItem(caid)
             }
         }
 
         private fun updateItem(caid: CAID) {
             for (i in 0 until itemCount) {
-                if ((getItem(i) as? CaidRecord)?.caid == caid) {
-                    notifyItemChanged(i)
-                } else if ((getItem(i) as? SearchUserItem)?.user?.caid == caid) {
-                    notifyItemChanged(i)
-                } else if ((getItem(i) as? FollowNotification)?.caid?.caid == caid) {
-                    notifyItemChanged(i)
+                when (caid) {
+                    (getItem(i) as? CaidRecord)?.caid -> notifyItemChanged(i)
+                    (getItem(i) as? SearchUserItem)?.user?.caid -> notifyItemChanged(i)
+                    (getItem(i) as? FollowNotification)?.caid?.caid -> notifyItemChanged(i)
                 }
             }
         }

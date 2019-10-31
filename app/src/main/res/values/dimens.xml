@@ -166,4 +166,6 @@
     <dimen name="live_badge_horizontal_margin">16dp</dimen>
     <dimen name="avatar_friends_watching_overlap_start">30dp</dimen>
     <dimen name="live_badge_small_title_start_margin">8dp</dimen>
+
+    <dimen name="follow_star_touchable_size">48dp</dimen>
 </resources>

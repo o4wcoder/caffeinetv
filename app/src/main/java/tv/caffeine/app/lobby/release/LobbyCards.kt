@@ -54,6 +54,7 @@ abstract class AbstractBroadcaster(
     }
 
     open fun followClicked() {
+        isFollowing.value = !followManager.isFollowing(caid)
         coroutineScope.launch {
             if (followManager.isFollowing(caid)) {
                 followManager.unfollowUser(caid)
@@ -61,7 +62,9 @@ abstract class AbstractBroadcaster(
                 followManager.followUser(caid)
             }
             withContext(Dispatchers.Main) {
-                isFollowing.value = followManager.isFollowing(caid)
+                if (isFollowing.value != followManager.isFollowing(caid)) {
+                    isFollowing.value = followManager.isFollowing(caid)
+                }
             }
         }
     }
