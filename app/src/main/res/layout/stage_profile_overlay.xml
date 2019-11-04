@@ -16,32 +16,24 @@
         android:id="@+id/profile_overlay_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black">
+        android:background="@drawable/offair_stage_bg">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/margin"
-            android:paddingTop="@dimen/margin"
-            android:paddingEnd="@dimen/margin"
+        <ImageView
+            android:id="@+id/avatar_image_view"
+            android:layout_width="@dimen/stage_profile_avatar_size"
+            android:layout_height="@dimen/stage_profile_avatar_size"
+            android:contentDescription="@string/user_avatar_content_description"
+            android:padding="@dimen/avatar_rim_size_large"
+            android:src="@drawable/default_avatar_round"
+            android:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:placeholder="@{@drawable/default_avatar_round}"
+            app:roundedImageUrl="@{userProfile.avatarImageUrl}"
+            tools:background="@drawable/circle_white_with_blue_rim"
+            tools:src="@drawable/default_avatar_round" />
 
-            <ImageView
-                android:id="@+id/avatar_image_view"
-                android:layout_width="@dimen/stage_profile_avatar_size"
-                android:layout_height="@dimen/stage_profile_avatar_size"
-                android:contentDescription="@string/user_avatar_content_description"
-                android:padding="@dimen/avatar_rim_size_large"
-                android:src="@drawable/default_avatar_round"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:placeholder="@{@drawable/default_avatar_round}"
-                app:roundedImageUrl="@{userProfile.avatarImageUrl}"
-                tools:background="@drawable/circle_white_with_blue_rim"
-                tools:src="@drawable/default_avatar_round" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
