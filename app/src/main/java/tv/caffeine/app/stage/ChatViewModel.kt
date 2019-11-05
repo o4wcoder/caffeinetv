@@ -90,15 +90,11 @@ class ChatViewModel @Inject constructor(
 
     @Bindable
     fun getShareIcon() = ContextCompat.getDrawable(context, if (releaseDesignConfig.isReleaseDesignActive())
-            R.drawable.ic_chat_share else R.drawable.ic_share_dark)
+            R.drawable.ic_share else R.drawable.ic_share_white)
 
     @Bindable
     fun getDigitalItemsIcon() = ContextCompat.getDrawable(context, if (releaseDesignConfig.isReleaseDesignActive())
-            R.drawable.ic_gifts else R.drawable.ic_digital_items)
-
-    @Bindable
-    fun getBottomButtonTint() = ContextCompat.getColor(context,
-        if (releaseDesignConfig.isReleaseDesignActive()) R.color.medium_gray else R.color.white)
+            R.drawable.ic_give else R.drawable.ic_digital_items_white)
 
     @Bindable
     fun getGiftButtonVisibility() = getButtonVisibility()

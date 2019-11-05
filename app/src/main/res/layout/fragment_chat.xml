@@ -91,7 +91,6 @@
                 android:layout_marginEnd="@dimen/stage_chat_controls_internal_margin"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/gift_button_content_description"
-                android:tint="@{viewModel.bottomButtonTint}"
                 android:visibility="@{viewModel.giftButtonVisibility}"
                 android:src="@{viewModel.digitalItemsIcon}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -100,14 +99,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <ImageButton
                 style="@style/ChatReactButtonText"
                 android:id="@+id/react_button"
-                android:layout_width="@dimen/chat_react_button_width"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:background="@drawable/ic_btn_react"
-                android:text="@string/chat_react_button"
+                android:background="@drawable/ic_chat_react"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/share_button"
                 app:layout_constraintStart_toEndOf="@+id/gift_button"
@@ -121,9 +119,8 @@
                 android:layout_marginStart="@dimen/stage_chat_controls_internal_margin"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/share_button_content_description"
-                android:paddingBottom="4dp"
-                android:tint="@{viewModel.bottomButtonTint}"
                 android:src="@{viewModel.shareIcon}"
+                android:paddingTop="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/react_button"
