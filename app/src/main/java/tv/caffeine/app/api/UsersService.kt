@@ -19,15 +19,20 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.UserContainer
 import tv.caffeine.app.api.model.UserUpdateBody
 
-const val DEFAULT_PAGE_LIMIT = 500
-const val MAX_PAGE_LIMIT = 500
-
 interface UsersService {
     @GET("v2/users/{caid}/followers")
-    suspend fun listFollowers(@Path("caid") userId: CAID): PaginatedFollowers
+    suspend fun listFollowers(
+        @Path("caid") userId: CAID,
+        @Query("limit") limit: Int? = null,
+        @Query("offset") offset: Int? = null
+    ): PaginatedFollowers
 
     @GET("v2/users/{caid}/following")
-    suspend fun listFollowing(@Path("caid") userId: CAID, @Query("limit") limit: Int = DEFAULT_PAGE_LIMIT): PaginatedFollowing
+    suspend fun listFollowing(
+        @Path("caid") userId: CAID,
+        @Query("limit") limit: Int? = null,
+        @Query("offset") offset: Int? = null
+    ): PaginatedFollowing
 
     @GET("v1/users/{caid}/following")
     suspend fun legacyListFollowing(@Path("caid") userId: CAID): List<CaidRecord.FollowRecord>

@@ -62,20 +62,20 @@ class ProfileFragment : CaffeineFragment(R.layout.fragment_profile) {
                 visibility = View.VISIBLE
                 FollowButtonDecorator(if (userProfile.isFollowed) Style.FOLLOWING else Style.FOLLOW).decorate(this)
             }
+            binding.followingContainer.setOnClickListener { showFollowingList(userProfile.username) }
+            binding.followerContainer.setOnClickListener { showFollowersList(userProfile.username) }
         })
         observeFollowEvents()
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.followingContainer.setOnClickListener { showFollowingList() }
-        binding.followerContainer.setOnClickListener { showFollowersList() }
     }
 
-    private fun showFollowingList() {
-        val action = ProfileFragmentDirections.actionProfileFragmentToFollowingFragment(caid, false)
+    private fun showFollowingList(username: String) {
+        val action = ProfileFragmentDirections.actionProfileFragmentToFollowingFragment(caid, username, false)
         findNavController().safeNavigate(action)
     }
 
-    private fun showFollowersList() {
-        val action = ProfileFragmentDirections.actionProfileFragmentToFollowersFragment(caid, false)
+    private fun showFollowersList(username: String) {
+        val action = ProfileFragmentDirections.actionProfileFragmentToFollowersFragment(caid, username, false)
         findNavController().safeNavigate(action)
     }
 

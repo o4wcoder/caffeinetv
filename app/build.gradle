@@ -126,6 +126,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:${versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 
+    // Paging
+    implementation "androidx.paging:paging-runtime-ktx:${versions.paging}"
+    testImplementation "androidx.paging:paging-common-ktx:${versions.paging}"
+
     // Data binding
     kapt "androidx.databinding:databinding-compiler:${versions.android_plugin}"
 

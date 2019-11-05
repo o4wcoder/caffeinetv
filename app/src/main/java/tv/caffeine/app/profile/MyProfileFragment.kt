@@ -13,6 +13,7 @@ import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
@@ -96,8 +97,10 @@ class MyProfileFragment @Inject constructor(
         viewModel.signOutComplete.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let { signOutComplete -> if (signOutComplete) findNavController().navigateToLanding() }
         })
-        binding.followingContainer.setOnClickListener { showFollowingList() }
-        binding.followerContainer.setOnClickListener { showFollowersList() }
+        viewModel.userProfile.observe(viewLifecycleOwner) { userProfile ->
+            binding.followingContainer.setOnClickListener { showFollowingList(userProfile.username) }
+            binding.followerContainer.setOnClickListener { showFollowersList(userProfile.username) }
+        }
         binding.avatarImageView.setOnClickListener { chooseNewAvatarImage() }
     }
 
@@ -187,15 +190,15 @@ class MyProfileFragment @Inject constructor(
         return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
     }
 
-    private fun showFollowingList() {
+    private fun showFollowingList(username: String) {
         val caid = tokenStore.caid ?: return
-        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment(caid, false)
+        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowingFragment(caid, username, false)
         findNavController().safeNavigate(action)
     }
 
-    private fun showFollowersList() {
+    private fun showFollowersList(username: String) {
         val caid = tokenStore.caid ?: return
-        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment(caid, false)
+        val action = MyProfileFragmentDirections.actionMyProfileFragmentToFollowersFragment(caid, username, false)
         findNavController().safeNavigate(action)
     }
 

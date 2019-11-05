@@ -362,6 +362,9 @@
             android:name="caid"
             app:argType="string"/>
         <argument
+            android:name="username"
+            app:argType="string"/>
+        <argument
             android:name="isDarkMode"
             app:argType="boolean"/>
     </fragment>
@@ -371,6 +374,9 @@
         android:label="@string/following">
         <argument
             android:name="caid"
+            app:argType="string"/>
+        <argument
+            android:name="username"
             app:argType="string"/>
         <argument
             android:name="isDarkMode"
