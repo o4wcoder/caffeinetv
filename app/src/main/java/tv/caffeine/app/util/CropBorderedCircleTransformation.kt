@@ -9,14 +9,9 @@ import android.graphics.Shader
 import androidx.annotation.ColorInt
 import com.squareup.picasso.Transformation
 
-class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float) : Transformation {
-    private val borderPaint = Paint().apply {
-        this.color = color
-        style = Paint.Style.STROKE
-        isAntiAlias = true
-        this.strokeWidth = strokeWidth
-    }
-
+class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float, @ColorInt gapColor: Int? = null) : Transformation {
+    private val borderPaint = buildBorderPaint(color, strokeWidth)
+    private val gapBorderPaint = gapColor?.let { buildBorderPaint(it, strokeWidth) }
     private val key = "CropBorderedCircleTransformation($color,$strokeWidth)"
 
     override fun transform(source: Bitmap): Bitmap {
@@ -42,6 +37,11 @@ class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float)
         val r = size / 2f
         canvas.drawCircle(r, r, r, paint)
 
+        // draw gap
+        gapBorderPaint?.let {
+            canvas.drawCircle(r, r, (r - it.strokeWidth * 1.5).toFloat(), it)
+        }
+
         // draw border
         canvas.drawCircle(r, r, r - borderPaint.strokeWidth / 2, borderPaint)
 
@@ -51,4 +51,11 @@ class CropBorderedCircleTransformation(@ColorInt color: Int, strokeWidth: Float)
     }
 
     override fun key(): String = key
+
+    private fun buildBorderPaint(@ColorInt color: Int, strokeWidth: Float) = Paint().apply {
+        this.color = color
+        style = Paint.Style.STROKE
+        isAntiAlias = true
+        this.strokeWidth = strokeWidth
+    }
 }

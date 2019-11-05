@@ -42,7 +42,8 @@ class BottomNavigationAvatar(val context: Context, val menuItem: MenuItem) {
         requestCreator
             .transform(CropBorderedCircleTransformation(
                 ContextCompat.getColor(context, R.color.purple),
-                context.resources.getDimension(R.dimen.avatar_rim_size_small)))
+                context.resources.getDimension(R.dimen.avatar_rim_size_small),
+                ContextCompat.getColor(context, R.color.white)))
             .into(unselectedImageView, object : Callback {
                 override fun onSuccess() {
                     unselectedAvatarDrawable = unselectedImageView.drawable
@@ -56,8 +57,9 @@ class BottomNavigationAvatar(val context: Context, val menuItem: MenuItem) {
 
         requestCreator
             .transform(CropBorderedCircleTransformation(
-                ContextCompat.getColor(context, R.color.almost_black),
-                context.resources.getDimension(R.dimen.avatar_rim_size_small)))
+                ContextCompat.getColor(context, R.color.pure_blue),
+                context.resources.getDimension(R.dimen.avatar_rim_size_small),
+                ContextCompat.getColor(context, R.color.white)))
             .into(selectedImageView, object : Callback {
                 override fun onSuccess() {
                     selectedAvatarDrawable = selectedImageView.drawable
