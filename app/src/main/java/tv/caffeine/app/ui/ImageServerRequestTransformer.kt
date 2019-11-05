@@ -38,8 +38,7 @@ sealed class ImageServer(protected val baseUri: Uri) {
 
     object Factory {
         fun makeRequestBuilder(uri: Uri, serverConfig: ServerConfig): ImageServer? = when (uri.host) {
-            "assets.caffeine.tv" -> ImageServer.Fastly(serverConfig.normalizeImageUri(uri))
-            "images.caffeine.tv" -> ImageServer.Imgix(serverConfig.normalizeImageUri(uri))
+            "assets.caffeine.tv", "images.caffeine.tv" -> Fastly(serverConfig.normalizeImageUri(uri))
             else -> null
         }
     }
@@ -56,7 +55,7 @@ sealed class ImageServer(protected val baseUri: Uri) {
 
     class Fastly(baseUri: Uri) : ImageServer(baseUri) {
         override fun buildUri(): Uri = baseUri.buildUpon().apply {
-            appendQueryParameter("optimize", "true")
+            appendQueryParameter("fit", "crop") // https://docs.fastly.com/api/imageopto/fit
             width?.let { appendQueryParameter("width", it.toString()) }
             height?.let { appendQueryParameter("height", it.toString()) }
         }.build()

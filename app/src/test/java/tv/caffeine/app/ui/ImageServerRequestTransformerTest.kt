@@ -79,11 +79,11 @@ class ImageServerTests {
     }
 
     @Test
-    fun `images requests are processed via imgix`() {
+    fun `images requests are processed via fastly`() {
         val serverConfig = ServerConfig(InMemorySettingsStorage(environment = null))
         val uri = Uri.parse("https://images.caffeine.tv/random.png")
         val imageServer = ImageServer.Factory.makeRequestBuilder(uri, serverConfig)
-        assertTrue(imageServer is ImageServer.Imgix)
+        assertTrue(imageServer is ImageServer.Fastly)
     }
 
     @Test
@@ -116,11 +116,11 @@ class FastlyTests {
     }
 
     @Test
-    fun `requests with resize include the optimize parameter`() {
+    fun `requests with resize include the fit parameter`() {
         val subject = ImageServer.Fastly(Uri.parse("https://assets.caffeine.tv/random.png"))
         subject.resize(1, 1)
         val uri = subject.buildUri()
-        assertTrue(uri.queryParameterNames.contains("optimize"))
+        assertTrue(uri.queryParameterNames.contains("fit"))
     }
 
     @Test
@@ -128,7 +128,7 @@ class FastlyTests {
         val subject = ImageServer.Fastly(Uri.parse("https://assets.caffeine.tv/random.png"))
         subject.resize(1, 1)
         val uri = subject.buildUri()
-        assertEquals("https://assets.caffeine.tv/random.png?optimize=true&width=1&height=1", uri.toString())
+        assertEquals("https://assets.caffeine.tv/random.png?fit=crop&width=1&height=1", uri.toString())
     }
 }
 
