@@ -37,6 +37,7 @@ import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.PulseAnimator
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.inTransaction
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
@@ -390,7 +391,7 @@ class StageFragment @Inject constructor(
     fun updateBroadcastOnlineState(broadcastIsOnline: Boolean) {
         stageViewModel.updateStageIsLive(broadcastIsOnline)
         if (!broadcastIsOnline) {
-            loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = false
+            loadingIndicators[NewReyes.Feed.Role.primary]?.fadeOutLoadingIndicator()
         }
 
         if (releaseDesignConfig.isReleaseDesignActive()) {
@@ -506,7 +507,7 @@ class StageFragment @Inject constructor(
                     frameListener = EglRenderer.FrameListener {
                         launch(Dispatchers.Main) {
                             renderer.removeFrameListener(frameListener)
-                            loadingIndicators[feedInfo.role]?.isVisible = false
+                            loadingIndicators[feedInfo.role]?.fadeOutLoadingIndicator()
                             hideOverlays()
                         }
                     }

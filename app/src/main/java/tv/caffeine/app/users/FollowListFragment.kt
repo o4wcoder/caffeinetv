@@ -10,6 +10,7 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.ThemeColor
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.setItemDecoration
 
 abstract class FollowListFragment(private val caidListAdapter: CaidListAdapter) :
@@ -35,7 +36,7 @@ abstract class FollowListFragment(private val caidListAdapter: CaidListAdapter) 
 
         viewModel.caid = getCAID()
         viewModel.followList.observe(viewLifecycleOwner, Observer {
-            binding.loadingIndicator.isVisible = false
+            binding.loadingIndicator.fadeOutLoadingIndicator()
             viewModel.isEmptyFollowList = it.isEmpty()
             if (it.isEmpty()) {
                 viewModel.loadUserProfile(getCAID())

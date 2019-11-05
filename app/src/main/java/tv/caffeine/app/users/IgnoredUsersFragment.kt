@@ -22,6 +22,7 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.ThemeColor
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import javax.inject.Inject
 
 class IgnoredUsersFragment @Inject constructor(
@@ -37,7 +38,7 @@ class IgnoredUsersFragment @Inject constructor(
         caidListAdapter.setUsernameFollowStarColor(ThemeColor.LIGHT)
         binding.userListRecyclerView.adapter = caidListAdapter
         viewModel.ignoredUsers.observe(viewLifecycleOwner, Observer {
-            binding.loadingIndicator.isVisible = false
+            binding.loadingIndicator.fadeOutLoadingIndicator()
             caidListAdapter.submitList(it)
         })
     }

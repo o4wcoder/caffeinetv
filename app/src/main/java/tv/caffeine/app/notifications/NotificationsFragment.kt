@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class NotificationsFragment @Inject constructor(
             setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
         viewModel.notifications.observe(viewLifecycleOwner, Observer {
-            binding.loadingIndicator.isVisible = false
+            binding.loadingIndicator.fadeOutLoadingIndicator()
             notificationsAdapter.submitList(it)
             viewModel.markNotificationsViewed()
         })

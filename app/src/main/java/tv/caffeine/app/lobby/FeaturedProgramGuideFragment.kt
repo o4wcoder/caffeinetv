@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentFeaturedProgramGuideBinding
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import javax.inject.Inject
 
 class FeaturedProgramGuideFragment @Inject constructor(
@@ -47,7 +48,7 @@ class FeaturedProgramGuideFragment @Inject constructor(
             viewModel.load()
         }
         viewModel.listings.observe(viewLifecycleOwner, Observer {
-            binding.guideLoadingIndicator.isVisible = false
+            binding.guideLoadingIndicator.fadeOutLoadingIndicator()
             binding.guideSwipeRefreshLayout.isRefreshing = false
             binding.emptyMessageTextView.isVisible = it.isEmpty()
             guideAdapter.submitList(it)

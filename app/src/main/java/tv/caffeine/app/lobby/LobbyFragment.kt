@@ -24,6 +24,7 @@ import tv.caffeine.app.lobby.release.LargeOnlineBroadcasterCard
 import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.navigateToSendingVerificationEmailDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -87,7 +88,7 @@ class LobbyFragment @Inject constructor(
             handle(result) { lobby ->
                 val items = LobbyItem.parse(lobby, separateOffline)
                 lobbyAdapter.submitList(items, lobby.tags, lobby.content, lobby.payloadId)
-                binding.lobbyLoadingIndicator.isVisible = false
+                binding.lobbyLoadingIndicator.fadeOutLoadingIndicator()
             }
         })
         if (isReleaseDesign) {

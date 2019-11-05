@@ -744,6 +744,7 @@
 
     <!-- Caffeine animated loading indicator -->
     <style name="AnimatedLoadingIndicator">
+        <item name="android:elevation">1dp</item>
         <item name="lottie_rawRes">@raw/spinner_color_together</item>
         <item name="lottie_autoPlay">true</item>
         <item name="lottie_loop">true</item>
