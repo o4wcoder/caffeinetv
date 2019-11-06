@@ -25,6 +25,14 @@ class ImageServerRequestTransformer(
             imageServer.resize(request.targetWidth, request.targetHeight)
             newRequest.clearResize()
         }
+        if (request.centerInside) {
+            imageServer.centerInside = true
+            newRequest.clearCenterInside()
+        }
+        if (request.centerCrop) {
+            imageServer.centerCrop = true
+            newRequest.clearCenterCrop()
+        }
 
         val updatedUri = imageServer.buildUri()
         newRequest.setUri(updatedUri)
@@ -45,6 +53,8 @@ sealed class ImageServer(protected val baseUri: Uri) {
 
     var width: Int? = null
     var height: Int? = null
+    var centerInside: Boolean = false
+    var centerCrop: Boolean = false
 
     abstract fun buildUri(): Uri
 
@@ -55,7 +65,15 @@ sealed class ImageServer(protected val baseUri: Uri) {
 
     class Fastly(baseUri: Uri) : ImageServer(baseUri) {
         override fun buildUri(): Uri = baseUri.buildUpon().apply {
-            appendQueryParameter("fit", "crop") // https://docs.fastly.com/api/imageopto/fit
+            // required for assets
+            appendQueryParameter("optimize", "true")
+            // https://docs.fastly.com/api/imageopto/fit
+            if (centerInside) {
+                appendQueryParameter("fit", "bounds")
+            }
+            if (centerCrop) {
+                appendQueryParameter("fit", "crop")
+            }
             width?.let { appendQueryParameter("width", it.toString()) }
             height?.let { appendQueryParameter("height", it.toString()) }
         }.build()
