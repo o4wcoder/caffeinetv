@@ -452,8 +452,9 @@
 
     <style name="SearchEditText" parent="CaffeineText.Medium">
         <item name="android:padding">6dp</item>
-        <item name="android:drawableStart">@drawable/ic_search_light_gray</item>
+        <item name="android:drawableStart">@drawable/ic_search_release</item>
         <item name="android:drawablePadding">@dimen/search_drawable_margin</item>
+        <item name="android:drawableTint">@color/medium_gray</item>
         <item name="android:textColorHint">@color/medium_gray</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/gray_rounded_rect_filled</item>

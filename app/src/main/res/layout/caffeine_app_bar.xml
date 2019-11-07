@@ -10,7 +10,7 @@
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
         android:paddingStart="0dp"
-        android:paddingEnd="16dp"
+        android:paddingEnd="4dp"
         app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,6 +36,7 @@
                 android:id="@+id/releaseSearchButton"
                 android:layout_width="@dimen/lobby_toolbar_icon"
                 android:layout_height="@dimen/lobby_toolbar_icon"
+                android:translationX="-12dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/search_button_content_description"
                 app:srcCompat="@drawable/ic_search_release"
