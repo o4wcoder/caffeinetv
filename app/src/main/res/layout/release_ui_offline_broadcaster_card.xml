@@ -56,11 +56,11 @@
             tools:text="@sample/usernames" />
 
         <include
-            layout="@layout/broadcaster_follow_button_black"
+            layout="@layout/broadcaster_follow_button_center"
             android:id="@+id/follow_button_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/lobby_card_side_padding_release"
+            android:layout_marginEnd="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
