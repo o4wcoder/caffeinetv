@@ -215,8 +215,8 @@
 
                 <ImageView
                     android:id="@+id/off_air_indicator"
-                    android:layout_width="@dimen/stage_off_air_indicator_width"
-                    android:layout_height="@dimen/stage_badge_height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/ic_offair_badge"
                     android:contentDescription="@string/stage_off_air_content_description"
                     android:visibility="@{viewModel.profileOverlayVisibility}"
