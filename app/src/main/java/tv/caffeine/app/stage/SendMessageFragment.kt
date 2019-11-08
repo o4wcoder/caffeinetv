@@ -68,7 +68,10 @@ class SendMessageFragment : CaffeineBottomSheetDialogFragment() {
             isVisible = args.canSendDI
             setOnClickListener { sendDigitalItem() }
             if (releaseDesignConfig.isReleaseDesignActive()) {
-                imageTintList = ContextCompat.getColorStateList(context, R.color.white)
+                setImageResource(R.drawable.ic_give)
+            } else {
+                setImageResource(R.drawable.ic_digital_items)
+                imageTintList = ContextCompat.getColorStateList(context, R.color.caffeine_blue)
             }
         }
     }
