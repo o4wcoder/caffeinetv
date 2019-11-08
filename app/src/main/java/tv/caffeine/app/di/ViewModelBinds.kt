@@ -11,6 +11,7 @@ import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.login.ArkoseViewModel
 import tv.caffeine.app.login.LegalAgreementViewModel
+import tv.caffeine.app.login.ResetPasswordViewModel
 import tv.caffeine.app.login.SignInViewModel
 import tv.caffeine.app.login.SignUpViewModel
 import tv.caffeine.app.notifications.NotificationCountViewModel
@@ -204,4 +205,9 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(AlertDialogViewModel::class)
     abstract fun bindAlertDialogViewModel(viewModel: AlertDialogViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ResetPasswordViewModel::class)
+    abstract fun bindResetPasswordViewModel(viewModel: ResetPasswordViewModel): ViewModel
 }

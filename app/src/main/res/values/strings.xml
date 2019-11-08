@@ -42,7 +42,6 @@
     <string name="forgot_password_no_worries">Forgot your\npassword?\n\nNo worries.</string>
     <string name="forgot_password_button">reset password</string>
     <string name="help_is_on_the_way">Help is on the way</string>
-    <string name="reset_password_button">reset password</string>
     <string name="back_to_login_button">back to login</string>
     <string name="check_your_email">Check your email to reset your password</string>
     <string name="sign_up_button">Sign up</string>
@@ -65,6 +64,15 @@
     <string name="account_deleted">Account Deleted</string>
     <string name="get_notified">get notified</string>
 
+    <string name="reset_password_title">Reset\nPassword</string>
+    <string name="reset_password_message">Enter a new password for\nyour account</string>
+    <string name="reset_password_button">reset password</string>
+    <string name="reset_password_new_password_hint">New Password</string>
+    <string name="reset_password_confirm_password_hint">Confirm Password</string>
+    <string name="reset_password_error">The passwords provided do not match. Try again?</string>
+    <string name="reset_password_success_title">All good\nto go</string>
+    <string name="reset_password_success_message">Your password has been successfully reset</string>
+    <string name="reset_password_success_button">log into caffeine</string>
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
     <string name="camera2_api_not_supported">Your device does not support the camera APIs necessary for broadcasting</string>

@@ -31,15 +31,32 @@
             android:id="@+id/deepLink5b"
             app:uri="https://www.caffeine.tv/rules.html" />
         <deepLink
-            android:id="@+id/deepLink6"
-            app:uri="https://www.caffeine.tv/account/reset-password{rest}" />
-        <deepLink
             android:id="@+id/deepLink7"
             app:uri="https://www.caffeine.tv/account/claim-gold/{rest}" />
         <deepLink
             android:id="@+id/deepLink8"
             app:uri="https://www.caffeine.tv/auth/{rest}" />
     </fragment>
+
+    <!-- Reset Password Link -->
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="tv.caffeine.app.login.ResetPasswordFragment"
+        android:label="@string/reset_password_title"
+        tools:layout="@layout/fragment_reset_password">
+        <deepLink
+            android:id="@+id/deepLink10"
+            app:uri="https://www.caffeine.tv/account/reset-password{rest}" />
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_resetPasswordSuccessFragment"
+            app:destination="@id/resetPasswordSuccessFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordSuccessFragment"
+        android:name="tv.caffeine.app.login.ResetPasswordSuccessFragment"
+        android:label="@string/reset_password_success_title"
+        tools:layout="@layout/fragment_reset_password_success"/>
 
     <!-- Unauth -->
     <action

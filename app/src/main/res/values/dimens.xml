@@ -113,7 +113,6 @@
     <dimen name="broadcast_title_mini">14sp</dimen>
     <dimen name="live_badge_text">12sp</dimen>
     <dimen name="live_badge_text_mini">10sp</dimen>
-
     <dimen name="two_step_auth_padding">16dp</dimen>
     <dimen name="two_step_auth_top_padding">32dp</dimen>
     <dimen name="two_step_auth_top_margin">32dp</dimen>
@@ -121,7 +120,6 @@
     <dimen name="two_step_auth_code_text_size">20sp</dimen>
     <dimen name="two_step_auth_done_image_size">120dp</dimen>
     <dimen name="two_step_auth_login_bottom_margin">132dp</dimen>
-    <dimen name="two_step_auth_login_subtitle_top_margin">56dp</dimen>
     <dimen name="two_step_auth_login_code_input_top_margin">56dp</dimen>
     <dimen name="two_step_auth_login_button_top_margin">156dp</dimen>
 
@@ -148,16 +146,22 @@
     <dimen name="sign_in_flow_start_padding">36dp</dimen>
     <dimen name="sign_in_flow_end_padding">40dp</dimen>
     <dimen name="sign_in_form_error_margin_top">132dp</dimen>
-    <dimen name="sign_in_margin_top">44dp</dimen>
-    <dimen name="sign_in_username_margin_top">88dp</dimen>
-    <dimen name="sign_in_title_margin_top">70dp</dimen>
+    <dimen name="sign_in_edit_text_one_margin_top">62dp</dimen>
+    <dimen name="sign_in_edit_text_secondary_top">30dp</dimen>
+    <dimen name="sign_in_title_margin_top">40dp</dimen>
     <dimen name="sign_in_button_top_margin">12dp</dimen>
+    <dimen name="sign_in_subtitle_top_margin">28dp</dimen>
+    <dimen name="sign_in_button_margin_bottom">24dp</dimen>
+    <dimen name="sign_in_error_margin_bottom">12dp</dimen>
 
     <dimen name="sign_up_edit_text_margin_top">36dp</dimen>
     <dimen name="sign_up_title_margin_top">20dp</dimen>
     <dimen name="sign_up_button_top_margin">16dp</dimen>
     <dimen name="sign_up_form_error_margin_top">32dp</dimen>
     <dimen name="sign_up_form_error_text_width">160dp</dimen>
+
+    <dimen name="reset_password_error_top_margin">52dp</dimen>
+    <dimen name="reset_password_success_button_top_margin">196dp</dimen>
     
     <dimen name="login_mfa_resend_code_text_margin_top">40dp</dimen>
     <dimen name="reset_password_title_margin_top">72dp</dimen>

@@ -38,7 +38,7 @@
                 android:id="@+id/mfa_code_subtitle"
                 android:layout_width="@dimen/big_button_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/two_step_auth_login_subtitle_top_margin"
+                android:layout_marginTop="@dimen/sign_in_subtitle_top_margin"
                 android:text="@string/two_step_auth_login_subtitle" />
 
 

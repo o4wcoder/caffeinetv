@@ -28,6 +28,10 @@ interface AccountsService {
     @Headers("No-Authentication: true")
     fun forgotPassword(@Body forgotPasswordBody: ForgotPasswordBody): Deferred<Response<Void>>
 
+    @POST("v1/account/reset-password")
+    @Headers("No-Authentication: true")
+    fun resetPassword(@Body resetPasswordBody: ResetPasswordBody): Deferred<Response<Void>>
+
     @DELETE("v1/account/token")
     fun signOut(): Deferred<Response<Any>>
 
@@ -80,7 +84,7 @@ class RefreshTokenResult(val credentials: CaffeineCredentials, val next: NextAcc
 class CaffeineCredentials(val accessToken: String, val caid: CAID, val credential: String, val refreshToken: String)
 
 class ForgotPasswordBody(val email: String)
-
+class ResetPasswordBody(val code: String, val password: String)
 class SignUpBody(val account: SignUpAccount, val iid: String?, val tos: Boolean, val recaptchaToken: String?, val arkoseToken: String?)
 class SignUpAccount(val username: String, val password: String, val email: String, val dob: String, val countryCode: String)
 class SignUpResult(val credentials: CaffeineCredentials, val next: NextAccountAction)

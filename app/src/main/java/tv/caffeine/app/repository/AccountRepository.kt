@@ -8,6 +8,7 @@ import tv.caffeine.app.api.AccountUpdateResult
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.ApiError
 import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.ResetPasswordBody
 import tv.caffeine.app.api.SignUpBody
 import tv.caffeine.app.api.UpdateAccountBody
 import tv.caffeine.app.api.model.CaffeineEmptyResult
@@ -55,5 +56,10 @@ class AccountRepository @Inject constructor(
             tokenStore.storeCredentials(result.value.credentials)
         }
         return result
+    }
+
+    suspend fun resetPassword(code: String, password: String): CaffeineEmptyResult {
+        val update = ResetPasswordBody(code, password)
+        return accountsService.resetPassword(update).awaitEmptyAndParseErrors(gson)
     }
 }

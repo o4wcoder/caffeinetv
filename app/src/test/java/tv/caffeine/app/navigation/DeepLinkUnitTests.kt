@@ -36,8 +36,8 @@ class DeepLinkUnitTests(private val url: String, @IdRes private val destination:
         @ParameterizedRobolectricTestRunner.Parameters(name = "{0}")
         fun data() = listOf(
                 arrayOf("https://www.caffeine.tv/account/claim-gold/index.html?id=token", R.id.caffeineLinksFragment),
-                arrayOf("https://www.caffeine.tv/account/reset-password/?code=code", R.id.caffeineLinksFragment),
-                arrayOf("https://www.caffeine.tv/account/reset-password?code=code", R.id.caffeineLinksFragment),
+                arrayOf("https://www.caffeine.tv/account/reset-password/?code=code", R.id.resetPasswordFragment),
+                arrayOf("https://www.caffeine.tv/account/reset-password?code=code", R.id.resetPasswordFragment),
                 arrayOf("https://www.caffeine.tv/account/email-confirmation/index.html", R.id.confirmEmailFragment),
                 arrayOf("https://www.caffeine.tv/account/email-confirmation/index.html?code=code&caid=caid", R.id.confirmEmailFragment),
                 arrayOf("https://www.caffeine.tv/FoxSports", R.id.stagePagerFragment),
