@@ -88,7 +88,8 @@ private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.friendsWatchingFragment,
     R.id.sendDigitalItemFragment,
     R.id.confirmEmailFragment,
-    R.id.velvetRopeFragment
+    R.id.velvetRopeFragment,
+    R.id.twitterAuthFragment
 )
 
 private val destinationsLoginWithDarkMode = arrayOf(
@@ -377,8 +378,6 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             bottomNavigationAvatar.loadAvatar(userProfile.avatarImageUrl)
         })
     }
-
-    fun reloadMyProfileViewModelOnSign() = myProfileViewModel.load()
 
     override fun hearShake() {
         if (!isDevOptionsOpen) {
