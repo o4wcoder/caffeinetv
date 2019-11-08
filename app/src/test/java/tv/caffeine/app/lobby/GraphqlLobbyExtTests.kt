@@ -159,7 +159,7 @@ class GraphqlLobbyExtTests {
                 LobbyQuery.Cluster(
                     "", LobbyQuery.Cluster.Fragments(
                         ClusterData(
-                            "", "name", listOf(
+                            "", "name", null, listOf(
                                 ClusterData.CardList(
                                     "", ClusterData.AsLiveBroadcastCardList(
                                         "", "cardListId", 2, cards

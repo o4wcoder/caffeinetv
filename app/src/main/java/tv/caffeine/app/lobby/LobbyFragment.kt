@@ -167,15 +167,14 @@ class ReleaseLobbyItemDecoration(
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val itemType = view.tag as? LobbyItem.Type ?: return
         val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
-        val cardTopMargin = if (itemPosition == 0) 0 else cardMargin / 2
-        val cardBottomMargin = cardMargin / 2
+        val cardTopMargin = if (itemPosition == 0) 0 else cardMargin
         when (itemType) {
             LobbyItem.Type.LIVE_BROADCAST_CARD,
             LobbyItem.Type.LIVE_BROADCAST_WITH_FRIENDS_CARD,
-            LobbyItem.Type.CARD_LIST -> outRect.set(0, cardTopMargin, 0, cardBottomMargin)
+            LobbyItem.Type.CARD_LIST,
             LobbyItem.Type.SINGLE_CATEGORY_CARD,
-            LobbyItem.Type.DOUBLE_CATEGORY_CARD,
-            LobbyItem.Type.CATEGORY_CARD_LIST -> outRect.set(0, 0, 0, cardBottomMargin)
+            LobbyItem.Type.CATEGORY_CARD_LIST -> outRect.set(0, cardTopMargin, 0, 0)
+            LobbyItem.Type.DOUBLE_CATEGORY_CARD -> outRect.set(0, cardTopMargin / 2, 0, 0)
             else -> outRect.set(0, 0, 0, 0)
         }
     }

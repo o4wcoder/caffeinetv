@@ -20,6 +20,7 @@ import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.ReleaseUiDoubleCategoryCardBinding
+import tv.caffeine.app.databinding.ReleaseUiEmptyJoinYourFriendsCardBinding
 import tv.caffeine.app.databinding.ReleaseUiHeaderBinding
 import tv.caffeine.app.databinding.ReleaseUiOfflineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiOnlineBroadcasterCardBinding
@@ -112,6 +113,7 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
             LobbyItem.Type.SINGLE_CATEGORY_CARD -> singleCategoryCard(inflater, parent, isMiniStyle)
             LobbyItem.Type.DOUBLE_CATEGORY_CARD -> doubleCategoryCard(inflater, parent)
             LobbyItem.Type.CATEGORY_CARD_LIST -> listCard(inflater, parent)
+            LobbyItem.Type.EMPTY_JOIN_YOUR_FRIENDS -> emptyJoinYourFriendsCard(inflater, parent)
             else -> EmptyCard(View(parent.context))
         }
     }
@@ -158,6 +160,9 @@ class ReleaseLobbyAdapter @AssistedInject constructor(
 
     private fun doubleCategoryCard(inflater: LayoutInflater, parent: ViewGroup) =
         DoubleCategoryCard(ReleaseUiDoubleCategoryCardBinding.inflate(inflater, parent, false))
+
+    private fun emptyJoinYourFriendsCard(inflater: LayoutInflater, parent: ViewGroup) =
+        EmptyJoinYourFriendsCard(ReleaseUiEmptyJoinYourFriendsCardBinding.inflate(inflater, parent, false))
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         val item = getItem(position)

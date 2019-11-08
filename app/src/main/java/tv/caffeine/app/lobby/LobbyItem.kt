@@ -2,6 +2,7 @@ package tv.caffeine.app.lobby
 
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.lobby.fragment.ClusterData
+import tv.caffeine.app.lobby.type.ClusterType
 
 interface LobbyItem {
     val id: String
@@ -10,7 +11,8 @@ interface LobbyItem {
     enum class Type {
         AVATAR_CARD, FOLLOW_PEOPLE_CARD, HEADER, SUBTITLE, LIVE_BROADCAST_CARD, LIVE_BROADCAST_WITH_FRIENDS_CARD,
         PREVIOUS_BROADCAST_CARD, CARD_LIST, UPCOMING_BUTTON_CARD,
-        SINGLE_CATEGORY_CARD, DOUBLE_CATEGORY_CARD, CATEGORY_CARD_LIST
+        SINGLE_CATEGORY_CARD, DOUBLE_CATEGORY_CARD, CATEGORY_CARD_LIST,
+        EMPTY_JOIN_YOUR_FRIENDS
     }
 
     // An interface may not implement a method of 'Any'
@@ -62,7 +64,9 @@ interface LobbyItem {
         private fun parse(clusters: List<ClusterData>): List<LobbyItem> {
             val lobbyItems = mutableListOf<LobbyItem>()
             for (cluster in clusters) {
-                if (cluster.name != null) {
+                if (cluster.type == ClusterType.EMPTY_JOIN_YOUR_FRIENDS) {
+                    lobbyItems.add(EmptyJoinYourFriends(cluster.type.name))
+                } else if (cluster.name != null) {
                     lobbyItems.add(Header(cluster.name, cluster.name))
                 }
                 cluster.cardLists.forEach { genericCardList ->
@@ -139,4 +143,7 @@ data class DoubleCategory(override val id: String, val categoryCardList: Cluster
 }
 data class CategoryCardList(override val id: String, val categoryCards: List<SingleCategory>) : LobbyItem {
     override val itemType = LobbyItem.Type.CATEGORY_CARD_LIST
+}
+data class EmptyJoinYourFriends(override val id: String) : LobbyItem {
+    override val itemType = LobbyItem.Type.EMPTY_JOIN_YOUR_FRIENDS
 }

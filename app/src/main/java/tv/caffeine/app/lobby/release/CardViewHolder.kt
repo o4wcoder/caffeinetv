@@ -19,6 +19,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.databinding.CardListBinding
 import tv.caffeine.app.databinding.ReleaseUiDoubleCategoryCardBinding
+import tv.caffeine.app.databinding.ReleaseUiEmptyJoinYourFriendsCardBinding
 import tv.caffeine.app.databinding.ReleaseUiHeaderBinding
 import tv.caffeine.app.databinding.ReleaseUiOfflineBroadcasterCardBinding
 import tv.caffeine.app.databinding.ReleaseUiOnlineBroadcasterCardBinding
@@ -213,6 +214,10 @@ class DoubleCategoryCard(
         binding.viewModel2 = categoryCardViewModels[1]
     }
 }
+
+class EmptyJoinYourFriendsCard(
+    val binding: ReleaseUiEmptyJoinYourFriendsCardBinding
+) : CardViewHolder(binding.root)
 
 class EmptyCard(itemView: View) : CardViewHolder(itemView) {
     fun bind(lobbyItem: LobbyItem) {

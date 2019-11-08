@@ -191,6 +191,9 @@
     <string name="velvet_rope_section2">Want to know when we\'re ready for you? Turn on notifications.</string>
     <string name="velvet_rope_label" translatable="false">Velvet rope</string> <!-- for logging only -->
 
+    <string name="empty_join_your_friends_card_title">Join your friends</string>
+    <string name="empty_join_your_friends_card_description">Follow your favorite people to see shows they\'re watching or broadcasting.</string>
+
     <!-- Gold and Credits -->
     <string name="gold_and_credits_button">Gold and credits</string>
     <string name="gold_and_credits_title">Gold and Credits</string>

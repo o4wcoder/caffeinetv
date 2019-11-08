@@ -73,6 +73,7 @@
     <dimen name="release_lobby_card_title">30sp</dimen>
     <dimen name="release_lobby_card_title_mini">20sp</dimen>
     <dimen name="release_lobby_card_username_mini">12sp</dimen>
+    <dimen name="release_lobby_special_card_star_size">32dp</dimen>
     <dimen name="lobby_category_overlay_image_single_width">200dp</dimen>
     <dimen name="lobby_category_overlay_image_single_height">100dp</dimen>
     <dimen name="lobby_category_overlay_image_double_width">100dp</dimen>
