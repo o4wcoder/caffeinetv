@@ -315,7 +315,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/avatar_overlap_live_badge"/>
 
                 <tv.caffeine.app.ui.AvatarOverlapLiveBadge
-                    style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+                    style="@style/LobbyCardLiveBadge"
                     android:id="@+id/avatar_overlap_live_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/stage_badge_height"

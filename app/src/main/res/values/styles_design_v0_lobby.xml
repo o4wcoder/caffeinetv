@@ -20,13 +20,9 @@
     <style name="LobbyCardLiveBadge" parent="LobbyCardText">
         <item name="android:layout_height">@dimen/release_lobby_card_badge_height</item>
         <item name="android:background">@color/pure_blue</item>
-        <item name="android:paddingStart">@dimen/lobby_card_side_padding_release</item>
-        <item name="android:paddingEnd">@dimen/lobby_card_side_padding_release</item>
         <item name="android:gravity">center_vertical</item>
     </style>
     <style name="LobbyCardLiveBadge.LiveIndicatorOnly">
-        <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
     </style>
     <style name="LobbyCardContentRating" parent="LobbyCardLiveBadge">
         <item name="android:background">@color/black</item>
