@@ -6,7 +6,6 @@ import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import tv.caffeine.app.CaffeineConstants.RATING_SEVENTEEN_PLUS_TEXT
 import tv.caffeine.app.R
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stream.type.ContentRating
@@ -54,10 +53,11 @@ class StageViewModel(
         isReleaseDesign.get() &&
             getBasicIndicatorVisibility()
 
+    @Bindable
     fun getAgeRestrictionVisibility() =
-        isReleaseDesign.get() &&
+        if (isReleaseDesign.get() &&
             contentRating == ContentRating.SEVENTEEN_PLUS &&
-            getBasicIndicatorVisibility()
+            getBasicIndicatorVisibility()) View.VISIBLE else View.GONE
 
     fun getLiveIndicatorAndAvatarContainerVisibility() = overlayIsVisible
 
@@ -70,8 +70,6 @@ class StageViewModel(
     fun getBadConnectionOverlayVisibility() = feedQuality == FeedQuality.BAD
 
     fun getSwipeButtonVisibility() = overlayIsVisible
-
-    fun getAgeRestriction() = if (contentRating == ContentRating.SEVENTEEN_PLUS) RATING_SEVENTEEN_PLUS_TEXT else ""
 
     fun updateFeedQuality(quality: FeedQuality) {
         feedQuality = quality
@@ -90,6 +88,7 @@ class StageViewModel(
         overlayIsVisible = isVisible
         appbarIsVisible = shouldIncludeAppBar
         updatePoorConnectionAnimation()
+        notifyChange()
     }
 
     fun updateIsFollowed(isFollowed: Boolean) {

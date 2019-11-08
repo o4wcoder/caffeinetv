@@ -384,7 +384,6 @@ class StageFragment @Inject constructor(
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
         binding.swipeButton.isVisible = stageViewModel.getSwipeButtonVisibility()
-        binding.contentRatingTextView.isVisible = stageViewModel.getAgeRestrictionVisibility()
     }
 
     fun updateAvatarImageViewBackground() {
