@@ -31,7 +31,7 @@ import java.io.File
 enum class LegalDoc(@StringRes val title: Int, @StringRes val url: Int) : Parcelable {
     TOS(R.string.terms_of_service, R.string.url_tos),
     PrivacyPolicy(R.string.privacy_policy, R.string.url_privacy),
-    CommunityGuidelines(R.string.community_guidelines, R.string.url_guidelines)
+    CommunityRules(R.string.community_rules, R.string.url_community_rules)
 }
 
 class LegalDocsFragment : WebViewFragment() {

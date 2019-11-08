@@ -206,8 +206,8 @@ class SettingsFragment @Inject constructor(
         findPreference("privacy")?.setOnPreferenceClickListener {
             openLegalDoc(LegalDoc.PrivacyPolicy)
         }
-        findPreference("guidelines")?.setOnPreferenceClickListener {
-            openLegalDoc(LegalDoc.CommunityGuidelines)
+        findPreference("community_rules")?.setOnPreferenceClickListener {
+            openLegalDoc(LegalDoc.CommunityRules)
         }
     }
 

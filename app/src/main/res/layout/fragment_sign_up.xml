@@ -94,7 +94,7 @@
                 android:layout_margin="16dp"
                 android:textAlignment="center"
                 android:textColorLink="@color/dark_gray"
-                tools:text="By continuing, you agree to Caffeine's Terms of Service, Privacy Policy and Community Guidelines"/>
+                tools:text="By continuing, you agree to Caffeine's Terms of Service, Privacy Policy and Community Rules"/>
         </LinearLayout>
     </ScrollView>
 </layout>

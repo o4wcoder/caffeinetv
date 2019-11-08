@@ -28,6 +28,9 @@
             android:id="@+id/deepLink5"
             app:uri="https://www.caffeine.tv/guidelines.html" />
         <deepLink
+            android:id="@+id/deepLink5b"
+            app:uri="https://www.caffeine.tv/rules.html" />
+        <deepLink
             android:id="@+id/deepLink6"
             app:uri="https://www.caffeine.tv/account/reset-password{rest}" />
         <deepLink

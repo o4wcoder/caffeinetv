@@ -22,7 +22,7 @@
     <string name="ignored_users">Ignored Users</string>
     <string name="terms_of_service">Terms of Service</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="community_guidelines">Community Guidelines</string>
+    <string name="community_rules">Community Rules</string>
     <string name="oss_licenses">Open Source Software Licenses</string>
     <string name="email_caffeine">Email Caffeine</string>
     <string name="category_social_accounts">Social Accounts</string>
@@ -40,5 +40,5 @@
     <string name="category_delete_account">Delete Account</string>
     <string name="url_tos">https://www.caffeine.tv/tos.html</string>
     <string name="url_privacy">https://www.caffeine.tv/privacy.html</string>
-    <string name="url_guidelines">https://www.caffeine.tv/guidelines.html</string>
+    <string name="url_community_rules">https://www.caffeine.tv/rules.html</string>
 </resources>
