@@ -11,14 +11,11 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.session.FollowManager
-import java.text.NumberFormat
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     val followManager: FollowManager
 ) : ViewModel() {
-
-    private val numberFormat = NumberFormat.getInstance()
 
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile> = _userProfile.map { it }
@@ -45,7 +42,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun configure(userDetails: User, broadcastDetails: Broadcast?) {
-        val profile = UserProfile(userDetails, broadcastDetails, numberFormat, followManager)
+        val profile = UserProfile(userDetails, broadcastDetails, followManager)
         _userProfile.value = profile
         // TODO: shouldShowFollow is legacy from classic UI where we hid the follow button when followed
         // TODO: shouldShowFollow == true == NOT FOLLOWING

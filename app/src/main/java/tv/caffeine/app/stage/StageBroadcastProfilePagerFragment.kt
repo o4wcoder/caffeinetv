@@ -36,11 +36,24 @@ class StageBroadcastProfilePagerFragment @Inject constructor(
         binding.giftButton.setOnClickListener { processChatAction(ChatAction.DIGITAL_ITEM) }
         binding.reactButton.setOnClickListener { processChatAction(ChatAction.MESSAGE) }
         binding.shareButton.setOnClickListener { processChatAction(ChatAction.SHARE) }
+        binding.tabLayout.getTabAt(1)?.text = getFollowersTabTitle()
+        binding.tabLayout.getTabAt(2)?.text = getFollowingTabTitle()
     }
 
     private fun processChatAction(chatAction: ChatAction) {
         (parentFragment as? StageFragment)?.processChatAction(chatAction)
     }
+
+    fun getFollowingTabTitle() =
+        args.followingCountString?.let { getString(R.string.numbered_stage_broadcast_following_tab, it) }
+            ?: getString(R.string.stage_broadcast_following_tab)
+
+    fun getFollowersTabTitle() =
+        args.followersCountString?.let {
+            val followersCount = if (it.toIntOrNull() == 1) 1 else 2
+            resources.getQuantityString(R.plurals.numbered_stage_broadcast_followers_tab, followersCount, it)
+        }
+            ?: getString(R.string.stage_broadcast_followers_tab)
 }
 
 class StageBroadcastProfilePagerAdapter @AssistedInject constructor(

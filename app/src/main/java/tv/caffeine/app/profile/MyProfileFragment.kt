@@ -71,6 +71,11 @@ class MyProfileFragment @Inject constructor(
         binding = FragmentMyProfileBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        viewModel.userProfile.observe(viewLifecycleOwner, Observer {
+            binding.userProfile = it
+        })
+
         binding.signOutButton.setOnClickListener { confirmSignOut() }
         binding.bioButton.setOnClickListener {
             val action = MyProfileFragmentDirections.actionMyProfileFragmentToEditBioFragment()

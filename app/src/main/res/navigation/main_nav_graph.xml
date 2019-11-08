@@ -181,6 +181,14 @@
         <argument
             android:name="caid"
             app:argType="string" />
+        <argument
+            android:name="followersCountString"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="followingCountString"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment

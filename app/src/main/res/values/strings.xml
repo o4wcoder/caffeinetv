@@ -316,6 +316,11 @@
     <string name="stage_broadcast_about_tab">\u00A0 About \u00A0</string>
     <string name="stage_broadcast_followers_tab">\u00A0 Followers \u00A0</string>
     <string name="stage_broadcast_following_tab">\u00A0 Following \u00A0</string>
+    <plurals name="numbered_stage_broadcast_followers_tab">
+        <item quantity="one">1 Follower</item>
+        <item quantity="other"><xliff:g id="follower_count" example="12M">%s</xliff:g> Followers</item>
+    </plurals>
+    <string name="numbered_stage_broadcast_following_tab"><xliff:g id="following_count" example="12M">%s</xliff:g> Following</string>
     <string name="stage_profile_empty_biography">%1$s does not have a bio available.</string>
     <string name="stage_profile_empty_followers">%1$s has no followers.</string>
     <string name="stage_profile_empty_following">%1$s is not following anyone.</string>

@@ -30,7 +30,7 @@ import tv.caffeine.app.ui.LiveStatusIndicatorViewModel
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.util.ThemeColor
 import tv.caffeine.app.util.UsernameTheming
-import tv.caffeine.app.util.compactNumberFormat
+import tv.caffeine.app.util.compactThousandsNumberFormat
 import tv.caffeine.app.util.configure
 import tv.caffeine.app.util.configureUsernameAndAvatar
 import tv.caffeine.app.util.safeNavigate
@@ -113,7 +113,7 @@ class ClassicUserViewHolder(
         followButton.isVisible = !followManager.isSelf(item.id)
         numberOfFollowersTextView?.apply {
             val followersCount = item.user.followersCount
-            val compactFollowersCount = compactNumberFormat(followersCount)
+            val compactFollowersCount = compactThousandsNumberFormat(followersCount)
             val string = itemView.resources.getQuantityString(
                 R.plurals.number_of_followers,
                 followersCount,

@@ -26,7 +26,6 @@ import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.SecureSettingsStorage
-import java.text.NumberFormat
 import javax.inject.Inject
 
 class MyProfileViewModel @Inject constructor(
@@ -40,8 +39,6 @@ class MyProfileViewModel @Inject constructor(
     private val featureConfig: FeatureConfig,
     private val gson: Gson
 ) : ViewModel() {
-
-    private val numberFormat = NumberFormat.getInstance()
 
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile> = _userProfile.map { it }
@@ -77,7 +74,7 @@ class MyProfileViewModel @Inject constructor(
     private suspend fun loadUserProfile(caid: CAID) = followManager.loadUserDetails(caid)
 
     private suspend fun updateViewModel(user: User) = withContext(Dispatchers.Main) {
-        _userProfile.value = UserProfile(user, null, numberFormat, followManager)
+        _userProfile.value = UserProfile(user, null, followManager)
     }
 
     fun updateName(name: String) {

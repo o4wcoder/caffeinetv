@@ -278,7 +278,11 @@ class StageFragment @Inject constructor(
                 }
                 BottomContainerType.PROFILE -> {
                     stageBroadcastProfilePagerFragmentProvider.get().apply {
-                        arguments = StageBroadcastProfilePagerFragmentArgs(broadcasterUsername, caid).toBundle()
+                        arguments = StageBroadcastProfilePagerFragmentArgs(
+                            broadcasterUsername,
+                            caid,
+                            binding.userProfile?.getFollowersString(),
+                            binding.userProfile?.getFollowingString()).toBundle()
                     }
                 }
             }
