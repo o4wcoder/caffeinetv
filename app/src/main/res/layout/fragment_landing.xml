@@ -40,16 +40,16 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="65dp"
+                android:layout_marginTop="@dimen/landing_margin_top"
                 android:contentDescription="@string/caffeine_logo_content_description"
-                app:srcCompat="@drawable/ic_logo_white"/>
+                app:srcCompat="@drawable/ic_logotype"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="20dp"
                 android:contentDescription="@string/caffeine_logo_content_description"
-                app:srcCompat="@drawable/ic_logotype"/>
+                app:srcCompat="@drawable/ic_logo_white"/>
 
             <androidx.legacy.widget.Space
                 android:layout_width="match_parent"
@@ -57,19 +57,19 @@
                 android:layout_weight="1"/>
 
             <Button
-                style="@style/Button.Big.FixedSize.Facebook"
+                style="@style/Button.VeryBig.FixedSize.Facebook"
                 android:id="@+id/facebook_sign_in_button"
                 android:layout_marginTop="36dp"
                 android:text="@string/continue_with_facebook" />
 
             <Button
-                style="@style/Button.Big.FixedSize.Twitter"
+                style="@style/Button.VeryBig.FixedSize.Twitter"
                 android:id="@+id/twitter_sign_in_button"
                 android:layout_marginTop="16dp"
                 android:text="@string/continue_with_twitter"/>
 
             <Button
-                style="@style/Button.Big.FixedSize.Email"
+                style="@style/Button.VeryBig.FixedSize.Email"
                 android:id="@+id/new_account_button"
                 android:layout_marginTop="16dp"
                 android:text="@string/sign_up_with_email"/>
