@@ -42,11 +42,13 @@ class UserListAdapter @Inject constructor(
     var usernameThemeColor = ThemeColor.LIGHT
     var userNavigationCallback: UserNavigationCallback? = null
 
+    var allowFollowing: Boolean = true
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val binding = DataBindingUtil.inflate<CaidItemBinding>(inflater, R.layout.caid_item, parent, false)
-        return UserViewHolder(binding, usernameThemeColor, ::onFollowStarClick)
+        return UserViewHolder(binding, usernameThemeColor, allowFollowing, ::onFollowStarClick)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {

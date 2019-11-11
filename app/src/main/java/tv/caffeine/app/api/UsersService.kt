@@ -14,6 +14,7 @@ import tv.caffeine.app.api.model.CaidRecord
 import tv.caffeine.app.api.model.IdentityProvider
 import tv.caffeine.app.api.model.PaginatedFollowers
 import tv.caffeine.app.api.model.PaginatedFollowing
+import tv.caffeine.app.api.model.PaginatedIgnoredUsers
 import tv.caffeine.app.api.model.SignedUserToken
 import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.UserContainer
@@ -58,8 +59,12 @@ interface UsersService {
     @GET("v1/users/{caid}/signed")
     fun signedUserDetails(@Path("caid") userId: CAID): Deferred<Response<SignedUserToken>>
 
-    @GET("v1/users/{caid}/ignores")
-    fun listIgnoredUsers(@Path("caid") userId: CAID): Deferred<Response<List<CaidRecord.IgnoreRecord>>>
+    @GET("v2/users/{caid}/ignores")
+    suspend fun listIgnoredUsers(
+        @Path("caid") userId: CAID,
+        @Query("limit") limit: Int? = null,
+        @Query("offset") offset: Int? = null
+    ): PaginatedIgnoredUsers
 
     @DELETE("v1/users/{caid}/identities/{socialUid},{identityProvider}")
     fun disconnectIdentity(@Path("caid") userId: CAID, @Path("socialUid") socialUid: String, @Path("identityProvider") identityProvider: IdentityProvider): Deferred<Response<Void>>

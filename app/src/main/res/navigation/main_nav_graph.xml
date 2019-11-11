@@ -675,7 +675,14 @@
         <fragment
             android:id="@+id/ignoredUsersFragment"
             android:name="tv.caffeine.app.users.IgnoredUsersFragment"
-            android:label="@string/ignored_users"/>
+            android:label="@string/ignored_users">
+            <argument
+                android:name="caid"
+                app:argType="string" />
+            <argument
+                android:name="username"
+                app:argType="string" />
+        </fragment>
         <fragment
             android:id="@+id/twoStepAuthFragment"
             android:name="tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragment"

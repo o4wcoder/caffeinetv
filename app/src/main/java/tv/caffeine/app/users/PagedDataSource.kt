@@ -119,3 +119,13 @@ class PagedFollowedUsersService @Inject constructor(
         return PagedResponse(paginatedFollowing.offset, userIdList)
     }
 }
+
+class PagedIgnoredUsersService @Inject constructor(
+    usersService: UsersService
+) : PagedUserListService(usersService) {
+    override suspend fun getUserIdList(userId: CAID, limit: Int?, offset: Int?): PagedResponse<CAID> {
+        val paginatedIgnoredUsers = usersService.listIgnoredUsers(userId, limit, offset)
+        val userIdList = paginatedIgnoredUsers.ignores.map { it.caid }
+        return PagedResponse(paginatedIgnoredUsers.offset, userIdList)
+    }
+}

@@ -19,10 +19,9 @@ import tv.caffeine.app.util.ThemeColor
 class UserViewHolder(
     private val binding: CaidItemBinding,
     private val usernameThemeColor: ThemeColor,
+    val allowFollowing: Boolean,
     onFollowStarClick: (caid: CAID, isFollowing: Boolean) -> Unit
-) :
-    RecyclerView.ViewHolder(binding.root),
-    UserNavigable {
+) : RecyclerView.ViewHolder(binding.root), UserNavigable {
     @VisibleForTesting
     var followButton: Button? = null
 
@@ -36,9 +35,6 @@ class UserViewHolder(
     }
 
     var job: Job? = null
-
-    //TODO: forbid following for Ignore lists
-    val allowFollowing: Boolean = true
 
     /*
     If this adapter is being used in a BottomSheetDialogFragment, then it wont have a navController and the navController from the dialog's
@@ -73,8 +69,10 @@ class UserViewHolder(
         if (allowFollowing) {
             val isSelf = followManager.isSelf(user.caid)
             val isFollowing = followManager.isFollowing(user.caid)
-            binding.followStarViewModel!!.bind(user.caid, isFollowing, isSelf)
+            binding.followStarViewModel?.bind(user.caid, isFollowing, isSelf)
             binding.executePendingBindings()
+        } else {
+            binding.followStarViewModel?.hide()
         }
         itemView.setOnClickListener { view ->
             val action =
