@@ -29,7 +29,7 @@
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/featured_event_image_content_description"
-            app:rawImageUrl="@{listing.detailImageUrl}"
+            app:imageUrl="@{listing.detailImageUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

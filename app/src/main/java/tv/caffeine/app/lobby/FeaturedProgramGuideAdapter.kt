@@ -231,7 +231,9 @@ class ListingItemViewHolder(
         binding.included.divider.isVisible = !hasDetailImage
         listingItem.listing.detailImageUrl?.let {
             picasso.load(it)
-                    .into(binding.included.detailImageView)
+                .fit()
+                .centerInside()
+                .into(binding.included.detailImageView)
         }
         binding.included.descriptionTextView.text = listingItem.listing.description
 
