@@ -1,11 +1,15 @@
 package tv.caffeine.app.stage
 
 import android.animation.LayoutTransition
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
@@ -39,8 +43,10 @@ import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.PulseAnimator
 import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.inTransaction
+import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.showSnackbar
 import tv.caffeine.app.util.transformToClassicUI
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
@@ -315,10 +321,13 @@ class StageFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
+            NetworkRequest.Builder().build(), networkCallback)
         connectStage()
     }
 
     override fun onPause() {
+        context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
         if (!isChangingConfigurations()) disconnectStage()
         super.onPause()
     }
@@ -581,6 +590,40 @@ class StageFragment @Inject constructor(
                     clock
                 ).build()
             )
+        }
+    }
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        private var wasNetworkLost = false
+
+        override fun onAvailable(network: Network?) {
+            super.onAvailable(network)
+            if (wasNetworkLost) {
+                wasNetworkLost = false
+                launch {
+                    connectStage()
+                }
+            }
+        }
+
+        /**
+         * 1. AP on, wifi off -> stage -> wifi on -> AP off -> isNetworkAvailable = true -> connectStage()
+         * 2. AP on, wifi on -> stage -> wifi off -> isNetworkAvailable = false -> onAvailable() -> connectStage()
+         * 3. Wifi on, AP on/off -> stage -> AP off/on -> no callbacks
+         *
+         * There is a potential Android bug in scenario #1 after the "wifi on" step.
+         * The data is still being funneled through AP, but Android thinks wifi is the active network.
+         * When we turn off AP, we need to disconnect the stage on AP and re-connect it on wifi.
+         */
+        override fun onLost(network: Network?) {
+            super.onLost(network)
+            wasNetworkLost = true
+            disconnectStage()
+            if (context?.isNetworkAvailable() == true) {
+                launch {
+                    connectStage()
+                }
+            }
         }
     }
 }
