@@ -261,8 +261,10 @@ class StageFragment @Inject constructor(
     @VisibleForTesting
     fun onProfileToggleButtonClick(isProfileShowing: Boolean, caid: CAID) {
         if (isProfileShowing) {
+            overlayVisibilityJob?.cancel()
             updateBottomFragment(BottomContainerType.PROFILE, caid)
         } else {
+            hideOverlays()
             updateBottomFragment(BottomContainerType.CHAT, caid)
         }
     }
@@ -361,6 +363,10 @@ class StageFragment @Inject constructor(
             }
         } else {
             hideOverlays()
+            if (isProfileShowing) {
+                isProfileShowing = !isProfileShowing
+                binding.userProfile?.let { updateBottomFragment(BottomContainerType.CHAT, it.caid) }
+            }
         }
     }
 
@@ -556,13 +562,12 @@ class StageFragment @Inject constructor(
     }
 
     override fun processChatAction(type: ChatAction) {
-        when (type) {
-            ChatAction.DIGITAL_ITEM, ChatAction.MESSAGE -> {
-                updateBottomFragment(BottomContainerType.CHAT, chatAction = type)
-                isProfileShowing = false
-            }
-            ChatAction.SHARE -> shareBroadcast()
-        }
+
+        updateBottomFragment(BottomContainerType.CHAT, chatAction = type)
+        hideOverlays()
+        isProfileShowing = false
+
+        if (type == ChatAction.SHARE) shareBroadcast()
     }
 
     private fun shareBroadcast() {
