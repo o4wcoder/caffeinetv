@@ -1,9 +1,7 @@
 package tv.caffeine.app.login
 
-import android.view.View
 import io.mockk.MockKAnnotations
 import io.mockk.mockk
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -23,19 +21,17 @@ class ResetPasswordViewModelTests {
     }
 
     @Test
-    fun `when passwords match no error is shown`() {
+    fun `when passwords match validatePasswords returns true`() {
         subject.password = "password"
         subject.confirmPassword = "password"
-        subject.validatePasswords()
-        assertEquals(subject.getErrorTextVisibility(), View.INVISIBLE)
+        assertTrue(subject.validatePasswords())
     }
 
     @Test
-    fun `when passwords do not match error is shown`() {
+    fun `when passwords do not match validatPasswords returns false`() {
         subject.password = "password"
         subject.confirmPassword = "wrongpassword"
-        subject.validatePasswords()
-        assertEquals(subject.getErrorTextVisibility(), View.VISIBLE)
+        assertFalse(subject.validatePasswords())
     }
 
     @Test

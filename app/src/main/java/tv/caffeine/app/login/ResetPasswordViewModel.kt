@@ -1,6 +1,5 @@
 package tv.caffeine.app.login
 
-import android.view.View
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,9 +29,6 @@ class ResetPasswordViewModel @Inject constructor(
             field = value
             notifyChange()
         }
-
-    @Bindable
-    fun getErrorTextVisibility() = if (isPasswordValid) View.INVISIBLE else View.VISIBLE
 
     @Bindable
     fun isResetPasswordButtonEnabled() = password.isNotEmpty() && confirmPassword.isNotEmpty()

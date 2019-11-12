@@ -69,10 +69,12 @@
     <string name="reset_password_button">reset password</string>
     <string name="reset_password_new_password_hint">New Password</string>
     <string name="reset_password_confirm_password_hint">Confirm Password</string>
-    <string name="reset_password_error">The passwords provided do not match. Try again?</string>
+    <string name="reset_password_match_error">The passwords provided do not match. Try again?</string>
     <string name="reset_password_success_title">All good\nto go</string>
     <string name="reset_password_success_message">Your password has been successfully reset</string>
     <string name="reset_password_success_button">log into caffeine</string>
+    <string name="reset_password_code_failure">Password reset time expired, please request another link.</string>
+    <string name="reset_password_general_failure">Something went wrong, please try again.</string>
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
     <string name="camera2_api_not_supported">Your device does not support the camera APIs necessary for broadcasting</string>
