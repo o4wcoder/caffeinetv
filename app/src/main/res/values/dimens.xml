@@ -146,13 +146,15 @@
     <dimen name="sign_in_flow_start_padding">36dp</dimen>
     <dimen name="sign_in_flow_end_padding">40dp</dimen>
     <dimen name="sign_in_form_error_margin_top">132dp</dimen>
-    <dimen name="sign_in_edit_text_one_margin_top">62dp</dimen>
-    <dimen name="sign_in_edit_text_secondary_top">30dp</dimen>
-    <dimen name="sign_in_title_margin_top">40dp</dimen>
+    <dimen name="sign_in_edit_text_one_margin_top">24dp</dimen>
+    <dimen name="sign_in_edit_text_secondary_top">25dp</dimen>
+    <dimen name="sign_in_title_margin_top">32dp</dimen>
     <dimen name="sign_in_button_top_margin">12dp</dimen>
     <dimen name="sign_in_subtitle_top_margin">28dp</dimen>
     <dimen name="sign_in_button_margin_bottom">24dp</dimen>
     <dimen name="sign_in_error_margin_bottom">12dp</dimen>
+    <dimen name="sign_in_text_align_start_padding">8dp</dimen>
+    <dimen name="sign_in_body_text_top_margin">40dp</dimen>
 
     <dimen name="sign_up_edit_text_margin_top">36dp</dimen>
     <dimen name="sign_up_title_margin_top">20dp</dimen>
