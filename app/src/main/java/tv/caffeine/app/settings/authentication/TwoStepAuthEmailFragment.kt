@@ -3,6 +3,7 @@ package tv.caffeine.app.settings.authentication
 import android.os.Bundle
 import android.text.style.URLSpan
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Observer
 import androidx.navigation.ActionOnlyNavDirections
@@ -16,6 +17,7 @@ import tv.caffeine.app.databinding.FragmentTwoStepAuthEmailBinding
 import tv.caffeine.app.ui.AlertDialogFragment
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.configureEmbeddedLink
+import tv.caffeine.app.ui.setOnAction
 import tv.caffeine.app.util.maybeShow
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showKeyboard
@@ -37,6 +39,7 @@ class TwoStepAuthEmailFragment : CaffeineFragment(R.layout.fragment_two_step_aut
             )
         }
         context?.showKeyboard(binding.verificationCodeEditText)
+        binding.verificationCodeEditText.setOnAction(EditorInfo.IME_ACTION_NEXT) { viewModel.onVerificationCodeButtonClick() }
 
         viewModel.sendVerificationCodeUpdate.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let { result ->
