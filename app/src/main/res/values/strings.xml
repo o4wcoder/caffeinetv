@@ -53,7 +53,8 @@
     <string name="reset_your_password_failure">Could not reset your password. Please try again later.</string>
     <string name="email_sent_message">Email Sent. Please check your inbox.</string>
     <string name="manage_mfa_coming_soon">Please manage two factor authentication on the web</string>
-    <string name="sign_out_button">sign out</string>
+    <string name="sign_out_button_lowercase">sign out</string>
+    <string name="sign_out_button">Sign out</string>
     <string name="sign_out_question">Sign out of account?</string>
     <string name="cancel">Cancel</string>
     <string name="delete_account_question">Delete Caffeine Account?</string>
