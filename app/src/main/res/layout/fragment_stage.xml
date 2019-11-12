@@ -14,6 +14,10 @@
             name="viewModel"
             type="tv.caffeine.app.stage.StageViewModel" />
 
+        <variable
+            name="releaseIsFollowing"
+            type="boolean" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -289,6 +293,16 @@
                 app:layout_constraintTop_toBottomOf="@id/weak_connection_container"
                 app:layout_constraintStart_toStartOf="parent">
 
+                <ImageView
+                    android:id="@+id/off_air_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{viewModel.profileOverlayVisibility}"
+                    android:src="@drawable/ic_offair_badge"
+                    android:contentDescription="@string/stage_off_air_content_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     style="@style/LiveIndicator"
                     android:id="@+id/classic_live_indicator_text_view"
@@ -301,13 +315,13 @@
                     app:layout_constraintBottom_toBottomOf="@id/avatar_overlap_live_badge"/>
 
                 <tv.caffeine.app.ui.AvatarOverlapLiveBadge
-                    style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+                    style="@style/LobbyCardLiveBadge"
                     android:id="@+id/avatar_overlap_live_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/stage_badge_height"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintEnd_toStartOf="@id/content_rating_text_view"
+                    app:layout_constraintEnd_toStartOf="@id/content_rating_badge"
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <androidx.constraintlayout.widget.Barrier
@@ -317,13 +331,12 @@
                     app:barrierDirection="end"
                     app:constraint_referenced_ids="avatar_overlap_live_badge" />
 
-                <TextView
-                    style="@style/LobbyCardContentRating"
-                    android:id="@+id/content_rating_text_view"
+                <ImageView
+                    android:id="@+id/content_rating_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/stage_badge_height"
-                    android:text="@{viewModel.ageRestriction}"
-                    android:visibility="gone"
+                    android:visibility="@{viewModel.ageRestrictionVisibility}"
+                    android:src="@drawable/seventeen_plus_badge"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/live_indicator_barrier"
                     app:layout_constraintBottom_toBottomOf="@id/avatar_overlap_live_badge"/>
@@ -332,7 +345,7 @@
                     android:id="@+id/swipe_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_swipe_stage"
+                    android:src="@{viewModel.isReleaseDesign ? @drawable/ic_swipe_stage : @drawable/ic_swipe_stage_classic}"
                     android:contentDescription="@string/stage_swipe_image_content_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -429,7 +442,7 @@
                     android:layout_width="@dimen/stage_offline_icon_size"
                     android:layout_height="@dimen/stage_offline_icon_size"
                     android:layout_marginEnd="16dp"
-                    android:background="@{userProfile.shouldShowFollow ? @drawable/star_outline : @drawable/star_filled}"
+                    android:background="@{releaseIsFollowing ? @drawable/star_filled : @drawable/star_outline}"
                     android:text="@string/follow_button"
                     app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
                     app:layout_constraintEnd_toStartOf="@id/avatar_image_view"

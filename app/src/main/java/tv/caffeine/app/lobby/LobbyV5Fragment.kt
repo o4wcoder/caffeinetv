@@ -19,6 +19,7 @@ import tv.caffeine.app.lobby.release.LargeOnlineBroadcasterCard
 import tv.caffeine.app.lobby.release.ReleaseLobbyAdapter
 import tv.caffeine.app.notifications.NotificationCountViewModel
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import java.util.concurrent.TimeUnit
 import javax.inject.Provider
 
@@ -62,7 +63,7 @@ abstract class LobbyV5Fragment constructor(
             handle(result) { lobby ->
                 val items = LobbyItem.parse(lobby)
                 lobbyAdapter.submitList(items, mapOf(), mapOf(), lobby.pagePayload.id)
-                binding.lobbyLoadingIndicator.isVisible = false
+                binding.lobbyLoadingIndicator.fadeOutLoadingIndicator()
             }
         })
         viewModel.lobbyDetail.observe(viewLifecycleOwner, Observer { result ->
@@ -70,7 +71,7 @@ abstract class LobbyV5Fragment constructor(
             handle(result) { detailPage ->
                 val items = LobbyItem.parse(detailPage)
                 lobbyAdapter.submitList(items, mapOf(), mapOf(), detailPage.pagePayload.id)
-                binding.lobbyLoadingIndicator.isVisible = false
+                binding.lobbyLoadingIndicator.fadeOutLoadingIndicator()
             }
         })
         viewModel.emailVerificationUser.observe(viewLifecycleOwner, Observer { user ->

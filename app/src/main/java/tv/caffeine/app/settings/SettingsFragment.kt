@@ -40,6 +40,7 @@ import tv.caffeine.app.api.OAuthCallbackResult
 import tv.caffeine.app.api.OAuthService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.isIdentityRateLimitExceeded
+import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.Event
@@ -206,15 +207,18 @@ class SettingsFragment @Inject constructor(
         findPreference("privacy")?.setOnPreferenceClickListener {
             openLegalDoc(LegalDoc.PrivacyPolicy)
         }
-        findPreference("guidelines")?.setOnPreferenceClickListener {
-            openLegalDoc(LegalDoc.CommunityGuidelines)
+        findPreference("community_rules")?.setOnPreferenceClickListener {
+            openLegalDoc(LegalDoc.CommunityRules)
         }
     }
 
     private fun configureIgnoredUsers() {
-        findPreference("ignored_users")?.setOnPreferenceClickListener {
-            openIgnoredUsers()
-        }
+        viewModel.userDetails.observe(this, Observer { user ->
+            val user = user ?: return@Observer
+            findPreference("ignored_users")?.setOnPreferenceClickListener {
+                openIgnoredUsers(user.caid, user.username)
+            }
+        })
     }
 
     private fun processTwitterOAuthResult(result: CaffeineResult<OAuthCallbackResult>) {
@@ -333,8 +337,9 @@ class SettingsFragment @Inject constructor(
         return true
     }
 
-    private fun openIgnoredUsers(): Boolean {
-        findNavController().safeNavigate(R.id.action_settingsFragment_to_ignoredUsersFragment)
+    private fun openIgnoredUsers(caid: CAID, username: String): Boolean {
+        val action = SettingsFragmentDirections.actionSettingsFragmentToIgnoredUsersFragment(caid, username)
+        findNavController().safeNavigate(action)
         return true
     }
 

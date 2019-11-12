@@ -1,8 +1,7 @@
 package tv.caffeine.app.util
 
-import android.os.Build
-import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -12,7 +11,7 @@ import tv.caffeine.app.ext.isNewer
 import tv.caffeine.app.lobby.notification.TestApp
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [Build.VERSION_CODES.O_MR1], application = TestApp::class)
+@Config(application = TestApp::class)
 class ZonedDateTimeExtTests {
 
     private val newDate = ZonedDateTime.now()

@@ -10,9 +10,10 @@ import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.databinding.UserListFragmentBinding
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.ThemeColor
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.setItemDecoration
 
-abstract class FollowListFragment(private val caidListAdapter: CaidListAdapter) :
+abstract class FollowListFragment(private val userListAdapter: UserListAdapter) :
     CaffeineFragment(R.layout.user_list_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -22,36 +23,34 @@ abstract class FollowListFragment(private val caidListAdapter: CaidListAdapter) 
         binding.viewModel = viewModel
         viewModel.isDarkMode = isDarkMode()
         binding.loadingIndicator.isVisible = true
-        caidListAdapter.fragmentManager = fragmentManager
-        val usernameThemeColor =
-            if (isDarkMode()) ThemeColor.DARK else ThemeColor.LIGHT
-        caidListAdapter.setUsernameFollowStarColor(usernameThemeColor)
+        userListAdapter.usernameThemeColor = if (isDarkMode()) ThemeColor.DARK else ThemeColor.LIGHT
         binding.userListRecyclerView.apply {
-            adapter = caidListAdapter
+            adapter = userListAdapter
             setItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         observeFollowEvents()
 
-        viewModel.caid = getCAID()
-        viewModel.followList.observe(viewLifecycleOwner, Observer {
-            binding.loadingIndicator.isVisible = false
-            viewModel.isEmptyFollowList = it.isEmpty()
-            if (it.isEmpty()) {
-                viewModel.loadUserProfile(getCAID())
-                    .observe(viewLifecycleOwner, Observer {
-                        binding.userListEmptyTextView.text =
-                            getString(getEmptyMessageResId(), it.username)
-                    })
-            } else {
-                caidListAdapter.submitList(it)
+        viewModel.init(getCAID())
+        viewModel.liveData?.observe(viewLifecycleOwner, Observer {
+            userListAdapter.submitList(it)
+        })
+        viewModel.isRefreshingState.observe(viewLifecycleOwner, Observer { isRefreshing ->
+            when {
+                isRefreshing -> binding.loadingIndicator.isVisible = true
+                else -> binding.loadingIndicator.fadeOutLoadingIndicator()
             }
+        })
+        viewModel.isEmptyState.observe(viewLifecycleOwner, Observer { isEmpty ->
+            binding.userListEmptyTextView.text = if (isEmpty) getString(getEmptyMessageResId(), getUsername()) else null
         })
     }
 
     abstract fun getFollowListViewModel(): FollowListViewModel
 
     abstract fun getCAID(): CAID
+
+    abstract fun getUsername(): String
 
     abstract fun isDarkMode(): Boolean
 

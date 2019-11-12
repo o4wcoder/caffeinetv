@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.annotation.VisibleForTesting
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,6 +20,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tv.caffeine.app.R
 import tv.caffeine.app.analytics.Analytics
 import tv.caffeine.app.analytics.AnalyticsEvent
 import tv.caffeine.app.analytics.FirebaseEvent
@@ -43,13 +45,13 @@ import tv.caffeine.app.api.usernameErrorsString
 import tv.caffeine.app.auth.AuthWatcher
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.databinding.FragmentLandingBinding
+import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.social.TwitterAuthViewModel
 import tv.caffeine.app.ui.CaffeineFragment
+import tv.caffeine.app.util.getAssetFile
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
 import javax.inject.Inject
-import tv.caffeine.app.R
-import tv.caffeine.app.util.getAssetFile
 
 class LandingFragment @Inject constructor(
     private val accountsService: AccountsService,
@@ -66,6 +68,7 @@ class LandingFragment @Inject constructor(
     private lateinit var callbackManager: CallbackManager
     private val args by navArgs<LandingFragmentArgs>()
     private val twitterAuth: TwitterAuthViewModel by navGraphViewModels(R.id.login) { viewModelFactory }
+    val myProfileViewModel: MyProfileViewModel by activityViewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -221,6 +224,7 @@ class LandingFragment @Inject constructor(
     private fun onSuccess(credentials: CaffeineCredentials) {
         val navController = findNavController()
         tokenStore.storeCredentials(credentials)
+        myProfileViewModel.load()
         navController.popBackStack(R.id.landingFragment, true)
         navController.safeNavigate(R.id.lobbySwipeFragment)
         authWatcher.onSignIn()
@@ -230,6 +234,7 @@ class LandingFragment @Inject constructor(
     private fun onSuccess(signInResult: SignInResult) {
         val navController = findNavController()
         tokenStore.storeSignInResult(signInResult)
+        myProfileViewModel.load()
         navController.popBackStack(R.id.landingFragment, true)
         navController.safeNavigate(R.id.lobbySwipeFragment)
         authWatcher.onSignIn()

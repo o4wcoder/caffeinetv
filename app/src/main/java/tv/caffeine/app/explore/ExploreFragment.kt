@@ -13,6 +13,7 @@ import tv.caffeine.app.databinding.FragmentExploreBinding
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.clearItemDecoration
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.setItemDecoration
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class ExploreFragment @Inject constructor(
         observeFollowEvents()
 
         viewModel.data.observe(viewLifecycleOwner, Observer { result ->
-            binding.loadingIndicator.isVisible = false
+            binding.loadingIndicator.fadeOutLoadingIndicator()
             handle(result) { findings ->
                 val adapter: UsersAdapter
                 when (findings) {

@@ -10,9 +10,12 @@ fun ConstraintLayout.transformToClassicUI() {
     val constraintSet = ConstraintSet()
     constraintSet.clone(this)
 
+    val dp4 = (4 * resources.displayMetrics.density).toInt()
+    val dp8 = (8 * resources.displayMetrics.density).toInt()
+
     when (this.id) {
         R.id.avatar_username_container -> {
-            val dp8 = (8 * resources.displayMetrics.density).toInt()
+
             constraintSet.setHorizontalBias(this.id, 0f)
             constraintSet.setVisibility(R.id.follow_button_image, ConstraintSet.GONE)
             constraintSet.clear(R.id.follow_button_image)
@@ -39,6 +42,7 @@ fun ConstraintLayout.transformToClassicUI() {
             constraintSet.connect(R.id.share_button, ConstraintSet.END, R.id.chat_button, ConstraintSet.START)
             constraintSet.connect(R.id.share_button, ConstraintSet.START, this.id, ConstraintSet.START)
             constraintSet.connect(R.id.share_button, ConstraintSet.TOP, this.id, ConstraintSet.TOP)
+            constraintSet.setMargin(R.id.share_button, ConstraintSet.BOTTOM, dp4)
 
             constraintSet.connect(R.id.chat_button, ConstraintSet.END, R.id.gift_button, ConstraintSet.START)
             constraintSet.connect(R.id.chat_button, ConstraintSet.START, R.id.share_button, ConstraintSet.END)

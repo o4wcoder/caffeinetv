@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/very_very_light_purple_gray"
+        android:paddingStart="@dimen/lobby_card_side_padding_release"
+        android:paddingEnd="@dimen/lobby_card_side_padding_release"
+        android:paddingTop="32dp"
+        android:paddingBottom="40dp">
+
+        <TextView
+            style="@style/LobbySpecialCardTitle"
+            android:id="@+id/title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@string/empty_join_your_friends_card_title"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/star_image_view"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            style="@style/LobbySpecialCardDescription"
+            android:id="@+id/description_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/empty_join_your_friends_card_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/star_image_view"
+            app:layout_constraintTop_toBottomOf="@+id/title_text_view"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/star_image_view"
+            android:layout_width="@dimen/release_lobby_special_card_star_size"
+            android:layout_height="@dimen/release_lobby_special_card_star_size"
+            android:src="@drawable/star_filled"
+            android:tint="@color/dark_purple_gray"
+            android:contentDescription="@string/following_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title_text_view"
+            app:layout_constraintBottom_toBottomOf="@id/title_text_view"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

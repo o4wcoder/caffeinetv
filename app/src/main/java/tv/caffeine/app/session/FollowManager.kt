@@ -55,17 +55,21 @@ class FollowManager @Inject constructor(
         try {
             val result = usersService.legacyListFollowing(caid)
             followedUsers[caid] = result.map { it.caid }.toSet()
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
 
     suspend fun followUser(caid: CAID, callback: FollowCompletedCallback? = null): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
+        followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
         val result = usersService.follow(self, caid).awaitEmptyAndParseErrors(gson)
-        if (result is CaffeineEmptyResult.Success) {
-            followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
-            callback?.onUserFollowed()
+        when (result) {
+            is CaffeineEmptyResult.Success -> callback?.onUserFollowed()
+            else -> {
+                followedUsers[self] = followedUsers[self]?.toMutableSet()?.apply { remove(caid) }?.toSet() ?: setOf()
+                callback?.onUserFollowed()
+            }
         }
         followResult.value = Event(result)
         refreshFollowedUsers()
@@ -74,9 +78,12 @@ class FollowManager @Inject constructor(
 
     suspend fun unfollowUser(caid: CAID): CaffeineEmptyResult {
         val self = tokenStore.caid ?: return CaffeineEmptyResult.Failure(Exception("Not logged in"))
+        followedUsers[self] = followedUsers[self]?.toMutableSet()?.apply { remove(caid) }?.toSet() ?: setOf()
         val result = usersService.unfollow(self, caid).awaitEmptyAndParseErrors(gson)
-        if (result is CaffeineEmptyResult.Success) {
-            followedUsers[self] = followedUsers[self]?.toMutableSet()?.apply { remove(caid) }?.toSet() ?: setOf()
+        when (result) {
+            is CaffeineEmptyResult.Error, is CaffeineEmptyResult.Failure -> {
+                followedUsers[self] = (followedUsers[self]?.toMutableSet() ?: mutableSetOf()).apply { add(caid) }.toSet()
+            }
         }
         refreshFollowedUsers()
         return result

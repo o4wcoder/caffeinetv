@@ -17,7 +17,9 @@
     <color name="warning_red">#ff0000</color>
     <color name="notification_blue">#00fffd</color>
     <color name="cyan">#00ffff</color>
+    <color name="very_very_light_purple_gray">#f3f3ff</color>
     <color name="purple">#9696be</color>
+    <color name="dark_purple_gray">#646482</color>
 
     <color name="text_shadow">#33000000</color>
     <color name="fpg_card_gradient_top">#22000000</color>

@@ -1,12 +1,8 @@
 package tv.caffeine.app.stage
 
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.VisibleForTesting
-import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -38,8 +34,6 @@ import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.ViewPagerLogOnPageChangeListener
 import tv.caffeine.app.update.IsVersionSupportedCheckUseCase
 import tv.caffeine.app.util.broadcasterUsername
-import tv.caffeine.app.util.isNetworkAvailable
-import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import javax.inject.Inject
 
@@ -97,17 +91,6 @@ class StagePagerFragment @Inject constructor(
             // The view pager restores the index.
             stagePagerAdapter = adapterFactory.create(childFragmentManager, broadcasters, swipeButtonOnClickListener)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
-            NetworkRequest.Builder().build(), networkCallback)
-    }
-
-    override fun onPause() {
-        context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
-        super.onPause()
     }
 
     @VisibleForTesting fun setupAdapter(swipeButtonOnClickListener: View.OnClickListener) {
@@ -184,48 +167,6 @@ class StagePagerFragment @Inject constructor(
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(BUNDLE_KEY_BROADCASTERS, ArrayList(broadcasters))
     }
-
-    private fun connectStage() {
-        stagePagerAdapter?.currentStage?.connectStage()
-    }
-
-    private fun disconnectStage() {
-        stagePagerAdapter?.currentStage?.disconnectStage()
-    }
-
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        private var wasNetworkLost = false
-
-        override fun onAvailable(network: Network?) {
-            super.onAvailable(network)
-            if (wasNetworkLost) {
-                wasNetworkLost = false
-                launch {
-                    connectStage()
-                }
-            }
-        }
-
-        /**
-         * 1. AP on, wifi off -> stage -> wifi on -> AP off -> isNetworkAvailable = true -> connectStage()
-         * 2. AP on, wifi on -> stage -> wifi off -> isNetworkAvailable = false -> onAvailable() -> connectStage()
-         * 3. Wifi on, AP on/off -> stage -> AP off/on -> no callbacks
-         *
-         * There is a potential Android bug in scenario #1 after the "wifi on" step.
-         * The data is still being funneled through AP, but Android thinks wifi is the active network.
-         * When we turn off AP, we need to disconnect the stage on AP and re-connect it on wifi.
-         */
-        override fun onLost(network: Network?) {
-            super.onLost(network)
-            wasNetworkLost = true
-            disconnectStage()
-            if (context?.isNetworkAvailable() == true) {
-                launch {
-                    connectStage()
-                }
-            }
-        }
-    }
 }
 
 class StagePagerAdapter @AssistedInject constructor(
@@ -249,15 +190,12 @@ class StagePagerAdapter @AssistedInject constructor(
         ): StagePagerAdapter
     }
 
-    var currentStage: StageFragment? = null
-
     override fun getItem(position: Int): Fragment {
         val stageFragment = StageFragment(
             factory, surfaceViewRendererTuner, followManager, picasso, clock, releaseDesignConfig)
         val canSwipe = count > 1 && position < count - 1
         stageFragment.arguments = StageFragmentArgs(broadcasters[position], canSwipe).toBundle()
         stageFragment.swipeButtonOnClickListener = swipeButtonOnClickListener
-        currentStage = stageFragment
         return stageFragment
     }
 

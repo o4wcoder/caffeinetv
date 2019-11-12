@@ -3,7 +3,6 @@ package tv.caffeine.app.navigation
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
-import android.os.Build.VERSION_CODES.O_MR1
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
 import androidx.navigation.findDestination
@@ -16,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
-import org.robolectric.annotation.Config
 import tv.caffeine.app.MainActivity
 import tv.caffeine.app.R
 import tv.caffeine.app.di.DaggerTestComponent
@@ -28,7 +26,6 @@ import tv.caffeine.app.di.InjectionActivityTestRule
  * TODO: AND-140 to try the latest Robolectric library.
  */
 @RunWith(ParameterizedRobolectricTestRunner::class)
-@Config(sdk = [O_MR1])
 class DeepLinkUnitTests(private val url: String, @IdRes private val destination: Int) {
     private lateinit var navController: NavController
     private lateinit var resources: Resources
@@ -39,8 +36,8 @@ class DeepLinkUnitTests(private val url: String, @IdRes private val destination:
         @ParameterizedRobolectricTestRunner.Parameters(name = "{0}")
         fun data() = listOf(
                 arrayOf("https://www.caffeine.tv/account/claim-gold/index.html?id=token", R.id.caffeineLinksFragment),
-                arrayOf("https://www.caffeine.tv/account/reset-password/?code=code", R.id.caffeineLinksFragment),
-                arrayOf("https://www.caffeine.tv/account/reset-password?code=code", R.id.caffeineLinksFragment),
+                arrayOf("https://www.caffeine.tv/account/reset-password/?code=code", R.id.resetPasswordFragment),
+                arrayOf("https://www.caffeine.tv/account/reset-password?code=code", R.id.resetPasswordFragment),
                 arrayOf("https://www.caffeine.tv/account/email-confirmation/index.html", R.id.confirmEmailFragment),
                 arrayOf("https://www.caffeine.tv/account/email-confirmation/index.html?code=code&caid=caid", R.id.confirmEmailFragment),
                 arrayOf("https://www.caffeine.tv/FoxSports", R.id.stagePagerFragment),
@@ -49,6 +46,8 @@ class DeepLinkUnitTests(private val url: String, @IdRes private val destination:
                 arrayOf("https://www.caffeine.tv/caffeine?bst=sharing", R.id.stagePagerFragment),
                 arrayOf("https://www.caffeine.tv/caffeine/profile", R.id.profileFragment),
                 arrayOf("https://www.caffeine.tv/privacy.html", R.id.caffeineLinksFragment),
+                arrayOf("https://www.caffeine.tv/rules.html", R.id.caffeineLinksFragment),
+                arrayOf("https://www.caffeine.tv/guidelines.html", R.id.caffeineLinksFragment),
                 arrayOf("https://www.caffeine.tv/tos.html", R.id.caffeineLinksFragment)
         )
     }

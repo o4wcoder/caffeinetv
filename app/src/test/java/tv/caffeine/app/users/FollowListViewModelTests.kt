@@ -3,21 +3,17 @@ package tv.caffeine.app.users
 import android.content.Context
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.gson.Gson
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tv.caffeine.app.R
-import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.repository.ProfileRepository
-import tv.caffeine.app.session.FollowManager
 
 @RunWith(RobolectricTestRunner::class)
 class FollowListViewModelTests {
@@ -25,32 +21,33 @@ class FollowListViewModelTests {
     lateinit var subject: FollowListViewModel
     lateinit var context: Context
 
-    @MockK lateinit var followManager: FollowManager
-    @MockK lateinit var profileRepository: ProfileRepository
-    @MockK lateinit var usersService: UsersService
-    @MockK lateinit var gson: Gson
+    @MockK lateinit var pagedFollowersService: PagedFollowersService
+    val isEmptyState = MutableLiveData<Boolean>()
+    val isRefreshingState = MutableLiveData<Boolean>()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        every { pagedFollowersService.isEmptyState } returns isEmptyState
+        every { pagedFollowersService.isRefreshingState } returns isRefreshingState
         context = InstrumentationRegistry.getInstrumentation().context
-        subject = FollowersViewModel(context, gson, usersService, followManager, profileRepository)
+        subject = FollowersViewModel(context, pagedFollowersService)
     }
 
     @Test
     fun `when empty follow list show empty message text`() {
-        val emptyCaidList = listOf<CaidRecord>()
-        subject.isEmptyFollowList = emptyCaidList.isEmpty()
-        assertEquals(subject.getEmptyMessageVisibility(), View.VISIBLE)
+        isEmptyState.value = true
+        subject.getEmptyMessageVisibility().observeForever { visibility ->
+            assertEquals(View.VISIBLE, visibility)
+        }
     }
 
     @Test
     fun `when non-empty follow list do not show empty message text`() {
-        var caidList = mutableListOf<CaidRecord>()
-        val mockCaidRecord = mockk<CaidRecord>()
-        caidList.add(mockCaidRecord)
-        subject.isEmptyFollowList = caidList.isEmpty()
-        assertEquals(subject.getEmptyMessageVisibility(), View.GONE)
+        isEmptyState.value = false
+        subject.getEmptyMessageVisibility().observeForever { visibility ->
+            assertEquals(View.GONE, visibility)
+        }
     }
 
     @Test

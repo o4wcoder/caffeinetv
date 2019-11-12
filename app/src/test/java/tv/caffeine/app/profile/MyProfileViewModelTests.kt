@@ -51,7 +51,8 @@ class MyProfileViewModelTests {
     companion object {
         private const val FOLLOWING_COUNT = 42
         private const val FOLLOWERS_COUNT = 1000
-        private const val FOLLOWERS_COUNT_FORMATTED = "1,000"
+        private const val FOLLOWERS_COUNT_FORMATTED_SHORT = "1K"
+        private const val FOLLOWERS_COUNT_FORMATTED_LONG = "1,000"
         private const val AGE = 99
     }
 
@@ -81,14 +82,16 @@ class MyProfileViewModelTests {
     fun `followers count is loaded correctly`() {
         assertNotEquals(FOLLOWERS_COUNT, FOLLOWING_COUNT)
         subject.userProfile.observeForTesting { userProfile ->
-            assertEquals(FOLLOWERS_COUNT_FORMATTED, userProfile.followersCount)
+            assertEquals(FOLLOWERS_COUNT_FORMATTED_SHORT, userProfile.getFollowersString())
+            assertEquals(FOLLOWERS_COUNT_FORMATTED_LONG, userProfile.getMyFollowersString())
         }
     }
 
     @Test
     fun `following count is loaded correctly`() {
         subject.userProfile.observeForTesting { userProfile ->
-            assertEquals(FOLLOWING_COUNT.toString(), userProfile.followingCount)
+            assertEquals(FOLLOWING_COUNT.toString(), userProfile.getFollowingString())
+            assertEquals(FOLLOWING_COUNT.toString(), userProfile.getMyFollowingString())
         }
     }
 

@@ -5,12 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!--
+    The toolbar has an extra 16dp start padding that we need to account for.
+    The design requires 4dp of start and end padding. That's why we have -12dp translationX
+    on the search icon, and an extra 8dp of end margin on the caffeine logo to keep it centered.
+    -->
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
         android:paddingStart="0dp"
-        android:paddingEnd="16dp"
+        android:paddingEnd="4dp"
         app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +26,6 @@
                 android:id="@+id/caffeine_wordmark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/caffeine_logo_content_description"
                 android:tint="@color/black"
@@ -36,6 +40,7 @@
                 android:id="@+id/releaseSearchButton"
                 android:layout_width="@dimen/lobby_toolbar_icon"
                 android:layout_height="@dimen/lobby_toolbar_icon"
+                android:translationX="-12dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/search_button_content_description"
                 app:srcCompat="@drawable/ic_search_release"

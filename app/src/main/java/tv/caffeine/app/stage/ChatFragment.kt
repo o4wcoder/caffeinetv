@@ -22,6 +22,7 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stage.classic.ClassicChatFragment
 import tv.caffeine.app.stage.release.ReleaseChatFragment
+import tv.caffeine.app.ui.AlertDialogViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.navigateToDigitalItemWithMessage
 import tv.caffeine.app.util.navigateToSendMessage
@@ -209,7 +210,7 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
                 isMe
             )
         } else {
-            showVerifyEmailDialog()
+            showVerifyEmailDialog(AlertDialogViewModel.VerificationType.React)
         }
     }
 }

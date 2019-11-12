@@ -1,5 +1,6 @@
 package tv.caffeine.app.ui
 
+import androidx.annotation.StringRes
 import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -10,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import tv.caffeine.app.CaffeineConstants.TAG_VERIFY_EMAIL
+import tv.caffeine.app.R
 import tv.caffeine.app.api.isMustVerifyEmailError
 import tv.caffeine.app.api.model.CaffeineEmptyResult
 import tv.caffeine.app.repository.AccountRepository
@@ -27,6 +29,13 @@ class AlertDialogViewModel @Inject constructor(
     private var user = followManager.currentUserDetails()
     private var fragmentManager: FragmentManager? = null
 
+    enum class VerificationType(@StringRes val messageResId: Int) {
+        Follow(R.string.confirm_account_to_follow_faves),
+        React(R.string.confirm_account_to_react_and_give_to_faves),
+        BuyGold(R.string.confirm_account_to_buy_gold),
+        Give(R.string.confirm_account_to_give_and_react_to_faves)
+    }
+
     init {
         // Do not make a user detail API call if the user's email is verified.
         if (user?.emailVerified != true) {
@@ -40,9 +49,9 @@ class AlertDialogViewModel @Inject constructor(
 
     fun isUserVerified() = user?.emailVerified ?: false
 
-    fun showVerifyEmailDialog(fragment: Fragment, fragmentManager: FragmentManager?) {
+    fun showVerifyEmailDialog(fragment: Fragment, fragmentManager: FragmentManager?, verificationType: VerificationType) {
         this.fragmentManager = fragmentManager
-        AlertDialogFragment.verifyEmail().also {
+        AlertDialogFragment.verifyEmailWithMessage(verificationType.messageResId).also {
             it.setTargetFragment(fragment, REQUEST_SHOW_EMAIL_VERIFICATION_DIALOG)
             it.maybeShow(fragmentManager, TAG_VERIFY_EMAIL)
         }
@@ -65,7 +74,7 @@ class AlertDialogViewModel @Inject constructor(
                 when (it) {
                     is CaffeineEmptyResult.Error -> {
                         if (it.error.isMustVerifyEmailError()) {
-                            showVerifyEmailDialog(fragment, fragment.fragmentManager)
+                            showVerifyEmailDialog(fragment, fragment.fragmentManager, VerificationType.Follow)
                         } else {
                             Timber.e("Couldn't follow user ${it.error}")
                         }

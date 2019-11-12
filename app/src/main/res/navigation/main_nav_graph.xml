@@ -28,8 +28,8 @@
             android:id="@+id/deepLink5"
             app:uri="https://www.caffeine.tv/guidelines.html" />
         <deepLink
-            android:id="@+id/deepLink6"
-            app:uri="https://www.caffeine.tv/account/reset-password{rest}" />
+            android:id="@+id/deepLink5b"
+            app:uri="https://www.caffeine.tv/rules.html" />
         <deepLink
             android:id="@+id/deepLink7"
             app:uri="https://www.caffeine.tv/account/claim-gold/{rest}" />
@@ -37,6 +37,26 @@
             android:id="@+id/deepLink8"
             app:uri="https://www.caffeine.tv/auth/{rest}" />
     </fragment>
+
+    <!-- Reset Password Link -->
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="tv.caffeine.app.login.ResetPasswordFragment"
+        android:label="@string/reset_password_title"
+        tools:layout="@layout/fragment_reset_password">
+        <deepLink
+            android:id="@+id/deepLink10"
+            app:uri="https://www.caffeine.tv/account/reset-password{rest}" />
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_resetPasswordSuccessFragment"
+            app:destination="@id/resetPasswordSuccessFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordSuccessFragment"
+        android:name="tv.caffeine.app.login.ResetPasswordSuccessFragment"
+        android:label="@string/reset_password_success_title"
+        tools:layout="@layout/fragment_reset_password_success"/>
 
     <!-- Unauth -->
     <action
@@ -181,6 +201,14 @@
         <argument
             android:name="caid"
             app:argType="string" />
+        <argument
+            android:name="followersCountString"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="followingCountString"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -362,6 +390,9 @@
             android:name="caid"
             app:argType="string"/>
         <argument
+            android:name="username"
+            app:argType="string"/>
+        <argument
             android:name="isDarkMode"
             app:argType="boolean"/>
     </fragment>
@@ -371,6 +402,9 @@
         android:label="@string/following">
         <argument
             android:name="caid"
+            app:argType="string"/>
+        <argument
+            android:name="username"
             app:argType="string"/>
         <argument
             android:name="isDarkMode"
@@ -641,7 +675,14 @@
         <fragment
             android:id="@+id/ignoredUsersFragment"
             android:name="tv.caffeine.app.users.IgnoredUsersFragment"
-            android:label="@string/ignored_users"/>
+            android:label="@string/ignored_users">
+            <argument
+                android:name="caid"
+                app:argType="string" />
+            <argument
+                android:name="username"
+                app:argType="string" />
+        </fragment>
         <fragment
             android:id="@+id/twoStepAuthFragment"
             android:name="tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragment"

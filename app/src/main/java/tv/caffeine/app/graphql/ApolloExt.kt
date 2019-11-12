@@ -9,6 +9,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 fun <T> ApolloSubscriptionCall<T>.asFlow(): Flow<Response<T>> = callbackFlow {
@@ -18,7 +19,11 @@ fun <T> ApolloSubscriptionCall<T>.asFlow(): Flow<Response<T>> = callbackFlow {
         }
 
         override fun onResponse(response: Response<T>) {
-            offer(response)
+            try {
+                offer(response)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
 
         override fun onFailure(e: ApolloException) {

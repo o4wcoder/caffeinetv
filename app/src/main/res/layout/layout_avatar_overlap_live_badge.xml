@@ -54,7 +54,7 @@
             app:constraint_referenced_ids="avatar_1,avatar_2" />
 
         <TextView
-            style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+            style="@style/LobbyCardLiveBadge"
             android:id="@+id/title_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,16 +70,18 @@
             tools:text="Baaaaaaad + 1" />
 
         <ImageView
-            style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+            style="@style/LobbyCardLiveBadge"
             android:id="@+id/live_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:contentDescription="@string/live_indicator_lowercase"
             android:visibility="@{viewModel.liveBadgeVisibility}"
             android:src="@drawable/ic_live_indicator"
-            app:layout_constraintDimensionRatio="V,100:56"
+            app:layout_constraintDimensionRatio="V,72:40"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

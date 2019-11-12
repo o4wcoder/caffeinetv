@@ -5,26 +5,20 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import tv.caffeine.app.api.model.CAID
-import tv.caffeine.app.api.model.CaidRecord
-import tv.caffeine.app.profile.UserProfile
-import tv.caffeine.app.repository.ProfileRepository
+import tv.caffeine.app.api.model.User
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.ThemeColor
 
 abstract class FollowListViewModel(
     val context: Context,
-    private val profileRepository: ProfileRepository
+    val pagedUserListService: PagedUserListService
 ) : CaffeineViewModel() {
-
-    private val _followList = MutableLiveData<List<CaidRecord.FollowRecord>>()
-    val followList: LiveData<List<CaidRecord.FollowRecord>> = _followList.map { it }
-    private val _userProfile = MutableLiveData<UserProfile>()
-    val userProfile: LiveData<UserProfile> = _userProfile.map { it }
 
     var isEmptyFollowList = false
         set(value) {
@@ -38,31 +32,30 @@ abstract class FollowListViewModel(
             notifyChange()
         }
 
-    var caid: CAID = ""
-        set(value) {
-            field = value
-            loadFollowList()
-        }
+    var liveData: LiveData<PagedList<User>>? = null
+        private set
 
-    abstract fun loadFollowList()
+    val isEmptyState: LiveData<Boolean> = pagedUserListService.isEmptyState.map { it }
+    val isRefreshingState: LiveData<Boolean> = pagedUserListService.isRefreshingState.map { it }
+
+    fun init(userId: CAID) {
+        val config = PagedList.Config.Builder()
+            .setInitialLoadSizeHint(75)
+            .setPageSize(25)
+            .setEnablePlaceholders(false)
+            .build()
+        val dataSourceFactory = object : DataSource.Factory<Int, User>() {
+            override fun create(): DataSource<Int, User> {
+                return PagedDataSource(userId, viewModelScope, pagedUserListService)
+            }
+        }
+        liveData = LivePagedListBuilder<Int, User>(dataSourceFactory, config).build()
+    }
 
     @Bindable
-    fun getEmptyMessageVisibility() = if (isEmptyFollowList) View.VISIBLE else View.GONE
+    fun getEmptyMessageVisibility() = pagedUserListService.isEmptyState.map { if (it) View.VISIBLE else View.GONE }
 
     @Bindable
     fun getEmptyMessageTextColor() = ContextCompat.getColor(
         context, if (isDarkMode) ThemeColor.DARK.color else ThemeColor.LIGHT.color)
-
-    fun loadUserProfile(caid: CAID): LiveData<UserProfile> {
-        viewModelScope.launch {
-            val result = profileRepository.getUserProfile(caid)
-            _userProfile.value = result
-            notifyChange()
-        }
-        return _userProfile
-    }
-
-    fun setFollowList(followList: List<CaidRecord.FollowRecord>) {
-        _followList.value = followList
-    }
 }

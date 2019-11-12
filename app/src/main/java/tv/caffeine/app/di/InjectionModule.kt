@@ -18,6 +18,8 @@ import tv.caffeine.app.login.ForgotFragment
 import tv.caffeine.app.login.LandingFragment
 import tv.caffeine.app.login.LegalAgreementFragment
 import tv.caffeine.app.login.MfaCodeFragment
+import tv.caffeine.app.login.ResetPasswordSuccessFragment
+import tv.caffeine.app.login.ResetPasswordFragment
 import tv.caffeine.app.login.SignInFragment
 import tv.caffeine.app.login.SignUpFragment
 import tv.caffeine.app.notifications.CaffeineFirebaseMessagingService
@@ -119,4 +121,6 @@ abstract class InjectionModule {
     @ContributesAndroidInjector abstract fun stageBroadcastProfilePagerFragment(): StageBroadcastProfilePagerFragment
     @ContributesAndroidInjector abstract fun aboutFragment(): AboutFragment
     @ContributesAndroidInjector abstract fun velvetRopeFragment(): VelvetRopeFragment
+    @ContributesAndroidInjector abstract fun resetFragment(): ResetPasswordFragment
+    @ContributesAndroidInjector abstract fun resetSuccessFragment(): ResetPasswordSuccessFragment
 }

@@ -37,6 +37,8 @@ class MessageViewModelTests {
         every { user.caid } returns "caid123"
         every { user.username } returns "username123"
         every { user.avatarImageUrl } returns "https://avatar.com/image.jpg"
+        every { user.isVerified } returns false
+        every { user.isCaster } returns false
         every { message.publisher } returns user
         every { message.body.text } returns "text"
         every { message.body.digitalItem } returns null
@@ -267,6 +269,38 @@ class MessageViewModelTests {
         subject.updateMessage(message)
         assertEquals("x3", subject.digitalItemCountText)
         assertEquals(View.VISIBLE, subject.digitalItemCountTextVisibility)
+    }
+
+    @Test
+    fun `the verified badge is shown if the user is a verified user and caster`() {
+        every { user.isVerified } returns true
+        every { user.isCaster } returns true
+        subject.updateMessage(message)
+        assertEquals(R.drawable.verified, subject.userIcon)
+    }
+
+    @Test
+    fun `the verified badge is shown if the user is a verified user`() {
+        every { user.isVerified } returns true
+        every { user.isCaster } returns false
+        subject.updateMessage(message)
+        assertEquals(R.drawable.verified, subject.userIcon)
+    }
+
+    @Test
+    fun `the caster badge is shown if the user is a caster`() {
+        every { user.isVerified } returns false
+        every { user.isCaster } returns true
+        subject.updateMessage(message)
+        assertEquals(R.drawable.caster, subject.userIcon)
+    }
+
+    @Test
+    fun `no badge is shown if the user is neither a verified user or a caster`() {
+        every { user.isVerified } returns false
+        every { user.isCaster } returns false
+        subject.updateMessage(message)
+        assertEquals(0, subject.userIcon)
     }
 
     private fun getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(context, colorRes)

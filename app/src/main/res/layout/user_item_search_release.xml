@@ -16,8 +16,9 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_search"
-        android:layout_marginEnd="@dimen/margin_list">
+        android:paddingStart="@dimen/margin_search"
+        android:paddingEnd="@dimen/margin_list"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             style="@style/CaffeineText.Medium"

@@ -5,17 +5,18 @@ import android.view.View
 import androidx.annotation.UiThread
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.isInvisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
-import tv.caffeine.app.MainActivity
 import tv.caffeine.app.R
 import tv.caffeine.app.analytics.FirebaseEvent
 import tv.caffeine.app.analytics.logEvent
 import tv.caffeine.app.databinding.FragmentSignInBinding
+import tv.caffeine.app.profile.MyProfileViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.util.safeNavigate
 import tv.caffeine.app.util.showSnackbar
@@ -29,6 +30,7 @@ class SignInFragment @Inject constructor(
     lateinit var binding: FragmentSignInBinding
 
     private val signInViewModel: SignInViewModel by viewModels { viewModelFactory }
+    val myProfileViewModel: MyProfileViewModel by activityViewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSignInBinding.bind(view)
@@ -76,7 +78,7 @@ class SignInFragment @Inject constructor(
     @UiThread
     private fun onSuccess() {
         firebaseAnalytics.logEvent(FirebaseEvent.SignInSuccess)
-        (activity as MainActivity).reloadMyProfileViewModelOnSign()
+        myProfileViewModel.load()
         val navController = findNavController()
         navController.popBackStack(R.id.landingFragment, true)
         navController.safeNavigate(R.id.lobbySwipeFragment)

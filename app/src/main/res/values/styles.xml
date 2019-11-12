@@ -132,14 +132,12 @@
         <item name="backgroundTint">@color/light_mode_button_background</item>
         <item name="android:textColor">@color/light_mode_button_text</item>
     </style>
-    <style name="Button.Big.FixedSize">
+    <style name="Button.Big.FixedSize" >
         <item name="android:layout_height">@dimen/big_button_height</item>
         <item name="android:layout_width">@dimen/big_button_width</item>
     </style>
-    <style name="Button.VeryBig" parent="Button.Big">
-        <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textSize">24sp</item>
-        <item name="cornerRadius">40dp</item>
+    <style name="Button.VeryBig" parent="Button.Big.ReleaseUI">
+        <item name="android:textSize">16sp</item>
     </style>
     <style name="Button.VeryBig.FixedSize">
         <item name="android:layout_width">@dimen/very_big_button_width</item>
@@ -160,15 +158,15 @@
         <item name="android:layout_height">90dp</item>
     </style>
 
-    <style name="Button.Big.FixedSize.Facebook">
+    <style name="Button.VeryBig.FixedSize.Facebook">
         <item name="android:backgroundTint">#4267b2</item>
     </style>
 
-    <style name="Button.Big.FixedSize.Twitter">
+    <style name="Button.VeryBig.FixedSize.Twitter">
         <item name="android:backgroundTint">#1da1f2</item>
     </style>
 
-    <style name="Button.Big.FixedSize.Email">
+    <style name="Button.VeryBig.FixedSize.Email">
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:textColor">@color/black</item>
     </style>
@@ -452,8 +450,9 @@
 
     <style name="SearchEditText" parent="CaffeineText.Medium">
         <item name="android:padding">6dp</item>
-        <item name="android:drawableStart">@drawable/ic_search_light_gray</item>
+        <item name="android:drawableStart">@drawable/ic_search_release</item>
         <item name="android:drawablePadding">@dimen/search_drawable_margin</item>
+        <item name="android:drawableTint">@color/medium_gray</item>
         <item name="android:textColorHint">@color/medium_gray</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/gray_rounded_rect_filled</item>
@@ -744,6 +743,7 @@
 
     <!-- Caffeine animated loading indicator -->
     <style name="AnimatedLoadingIndicator">
+        <item name="android:elevation">1dp</item>
         <item name="lottie_rawRes">@raw/spinner_color_together</item>
         <item name="lottie_autoPlay">true</item>
         <item name="lottie_loop">true</item>

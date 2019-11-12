@@ -62,6 +62,12 @@ class PaginatedFollowing(
     val following: List<CaidRecord.FollowRecord>
 )
 
+class PaginatedIgnoredUsers(
+    val limit: Int? = 100,
+    val offset: Int? = 0,
+    val ignores: List<CaidRecord.IgnoreRecord>
+)
+
 sealed class CaidRecord(val caid: CAID) {
     class FriendWatching(caid: CAID) : CaidRecord(caid)
     class FollowRecord(caid: CAID, val followedAt: ZonedDateTime?) : CaidRecord(caid)

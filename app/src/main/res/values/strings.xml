@@ -42,11 +42,10 @@
     <string name="forgot_password_no_worries">Forgot your\npassword?\n\nNo worries.</string>
     <string name="forgot_password_button">reset password</string>
     <string name="help_is_on_the_way">Help is on the way</string>
-    <string name="reset_password_button">reset password</string>
     <string name="back_to_login_button">back to login</string>
     <string name="check_your_email">Check your email to reset your password</string>
     <string name="sign_up_button">Sign up</string>
-    <string name="i_agree_to_legal"><![CDATA[By continuing, you agree to Caffeine\'s <a href="https://www.caffeine.tv/tos.html"><b>Terms of Service</b></a>, <a href="https://www.caffeine.tv/privacy.html"><b>Privacy Policy</b></a>, and <a href="https://www.caffeine.tv/guidelines.html"><b>Community Guidelines</b></a>.]]></string>
+    <string name="i_agree_to_legal"><![CDATA[By continuing, you agree to Caffeine\'s <a href="https://www.caffeine.tv/tos.html"><b>Terms of Service</b></a>, <a href="https://www.caffeine.tv/privacy.html"><b>Privacy Policy</b></a>, and <a href="https://www.caffeine.tv/rules.html"><b>Community Rules</b></a>.]]></string>
     <string name="must_agree_to_legal"><![CDATA[Caffeine requires your consent to personalize your experience based on your relationships and activities. We have new <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>. Please read them and agree to them to continue using Caffeine.]]></string>
     <string name="caffeine_logo_content_description">Caffeine logo</string>
     <string name="sign_in_title">Welcome\nback</string>
@@ -65,6 +64,15 @@
     <string name="account_deleted">Account Deleted</string>
     <string name="get_notified">get notified</string>
 
+    <string name="reset_password_title">Reset\nPassword</string>
+    <string name="reset_password_message">Enter a new password for\nyour account</string>
+    <string name="reset_password_button">reset password</string>
+    <string name="reset_password_new_password_hint">New Password</string>
+    <string name="reset_password_confirm_password_hint">Confirm Password</string>
+    <string name="reset_password_error">The passwords provided do not match. Try again?</string>
+    <string name="reset_password_success_title">All good\nto go</string>
+    <string name="reset_password_success_message">Your password has been successfully reset</string>
+    <string name="reset_password_success_button">log into caffeine</string>
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
     <string name="camera2_api_not_supported">Your device does not support the camera APIs necessary for broadcasting</string>
@@ -110,6 +118,7 @@
     <string name="ignore_user_dialog_option"><![CDATA[<font color=\"#FF0000\">Ignore <xliff:g example="randomUser" id="username">%1$s</xliff:g>]]></string>
     <string name="user_ignored">User ignored.</string>
     <string name="failed_to_ignore_the_user">Failed to ignore the user.</string>
+    <string name="empty_ignored_users_list">You won\'t see broadcasts or reactions from people you ignore, and no one will see their reactions in your broadcast.</string>
     <string name="user_reported">User reported.</string>
     <string name="failed_to_report_the_user">Failed to report the user.</string>
     <string name="submit">Submit</string>
@@ -191,6 +200,9 @@
     <string name="velvet_rope_section2">Want to know when we\'re ready for you? Turn on notifications.</string>
     <string name="velvet_rope_label" translatable="false">Velvet rope</string> <!-- for logging only -->
 
+    <string name="empty_join_your_friends_card_title">Join your friends</string>
+    <string name="empty_join_your_friends_card_description">Follow your favorite people to see shows they\'re watching or broadcasting.</string>
+
     <!-- Gold and Credits -->
     <string name="gold_and_credits_button">Gold and credits</string>
     <string name="gold_and_credits_title">Gold and Credits</string>
@@ -205,7 +217,7 @@
     <string name="credits_formatted"><![CDATA[<img src=\"purplecoin\">]]> <xliff:g example="42" id="credits_amount">%s</xliff:g></string>
     <string name="gold_coin_content_description">gold coin</string>
 
-    <string name="bio_button">Biography</string>
+    <string name="bio_button">About</string>
     <string name="transaction_history">Transaction History</string>
     <string name="legal_documents">Legal Documents</string>
 
@@ -226,7 +238,7 @@
     <string name="transaction_history_deleted_account">Caffeine User</string>
     <string name="credits_available">Available</string>
     <string name="credits_lifetime">Lifetime</string>
-    <string name="edit_bio_title">Biography</string>
+    <string name="edit_bio_title">About</string>
     <string name="gold_bundles_title">Gold Bundles</string>
     <string name="update_email_title">Update Email</string>
     <string name="update_email_hint_email">New Email Address</string>
@@ -313,10 +325,15 @@
     <string name="stage_broadcast_about_tab">\u00A0 About \u00A0</string>
     <string name="stage_broadcast_followers_tab">\u00A0 Followers \u00A0</string>
     <string name="stage_broadcast_following_tab">\u00A0 Following \u00A0</string>
+    <plurals name="numbered_stage_broadcast_followers_tab">
+        <item quantity="one">1 Follower</item>
+        <item quantity="other"><xliff:g id="follower_count" example="12M">%s</xliff:g> Followers</item>
+    </plurals>
+    <string name="numbered_stage_broadcast_following_tab"><xliff:g id="following_count" example="12M">%s</xliff:g> Following</string>
     <string name="stage_profile_empty_biography">%1$s does not have a bio available.</string>
     <string name="stage_profile_empty_followers">%1$s has no followers.</string>
     <string name="stage_profile_empty_following">%1$s is not following anyone.</string>
-
+    <string name="stage_off_air_content_description">off air</string>
     <!-- Feature Program Guide -->
     <string name="fpg_empty_message">There are currently no scheduled events.\nCheck back soon!</string>
     <string name="featured_event_image_content_description">Featured event image</string>
@@ -361,6 +378,13 @@
     <!--  Verify Email  -->
     <string name="resend_email_dialog_button">Resend Email</string>
     <string name="verify_email_dialog_title">Confirm Your Account</string>
+    <string name="confirm_account_to_follow_user"> Confirm your account to follow <xliff:g example="randomUser" id="username">%1$s</xliff:g> and more</string>
+    <string name="confirm_account_to_follow_faves"> Confirm your account to follow your faves and more</string>
+    <string name="confirm_account_to_react_and_give_to_user"> Confirm your account to react and give to <xliff:g example="randomUser" id="username">%1$s</xliff:g></string>
+    <string name="confirm_account_to_react_and_give_to_faves"> Confirm your account to react and give to your faves</string>
+    <string name="confirm_account_to_buy_gold"> Confirm your account to buy gold and give to your faves</string>
+    <string name="confirm_account_to_give_and_react_to_user"> Confirm your account to give and react to <xliff:g example="randomUser" id="username">%1$s</xliff:g></string>
+    <string name="confirm_account_to_give_and_react_to_faves"> Confirm your account to give and react to your faves</string>
     <string name="verify_email_dialog_subtitle">Confirm your account to buy gold, react and give to your faves.</string>
     <string name="verify_email_success_dialog_title">Confirmation Email Sent</string>
 </resources>

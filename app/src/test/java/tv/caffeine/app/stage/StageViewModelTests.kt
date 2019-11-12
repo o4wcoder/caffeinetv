@@ -12,7 +12,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import tv.caffeine.app.CaffeineConstants
 import tv.caffeine.app.R
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stream.type.ContentRating
@@ -284,17 +283,17 @@ class StageViewModelTests {
         subject.isReleaseDesign.set(true)
         turnOnBasicIndicatorVisibility()
         subject.contentRating = ContentRating.SEVENTEEN_PLUS
-        assertTrue(subject.getAgeRestrictionVisibility())
+        assertEquals(subject.getAgeRestrictionVisibility(), View.VISIBLE)
     }
 
     @Test
-    fun `don not show age restriction if overlay is not visible for release design`() {
+    fun `do not not show age restriction if overlay is not visible for release design`() {
         subject.isReleaseDesign.set(true)
         subject.updateOverlayIsVisible(false, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
         subject.contentRating = ContentRating.SEVENTEEN_PLUS
-        assertFalse(subject.getAgeRestrictionVisibility())
+        assertEquals(subject.getAgeRestrictionVisibility(), View.GONE)
     }
 
     @Test
@@ -304,7 +303,7 @@ class StageViewModelTests {
         subject.updateFeedQuality(FeedQuality.BAD)
         subject.updateStageIsLive(true)
         subject.contentRating = ContentRating.SEVENTEEN_PLUS
-        assertFalse(subject.getAgeRestrictionVisibility())
+        assertEquals(subject.getAgeRestrictionVisibility(), View.GONE)
     }
 
     @Test
@@ -314,7 +313,7 @@ class StageViewModelTests {
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
         subject.contentRating = ContentRating.SEVENTEEN_PLUS
-        assertFalse(subject.getAgeRestrictionVisibility())
+        assertEquals(subject.getAgeRestrictionVisibility(), View.GONE)
     }
 
     @Test
@@ -322,7 +321,7 @@ class StageViewModelTests {
         subject.isReleaseDesign.set(true)
         turnOnBasicIndicatorVisibility()
         subject.contentRating = ContentRating.EVERYONE
-        assertFalse(subject.getAgeRestrictionVisibility())
+        assertEquals(subject.getAgeRestrictionVisibility(), View.GONE)
     }
 
     @Test
@@ -330,7 +329,7 @@ class StageViewModelTests {
         subject.isReleaseDesign.set(false)
         turnOnBasicIndicatorVisibility()
         subject.contentRating = ContentRating.SEVENTEEN_PLUS
-        assertFalse(subject.getAgeRestrictionVisibility())
+        assertEquals(subject.getAgeRestrictionVisibility(), View.GONE)
     }
 
     @Test
@@ -338,23 +337,7 @@ class StageViewModelTests {
         subject.isReleaseDesign.set(false)
         turnOnBasicIndicatorVisibility()
         subject.contentRating = ContentRating.EVERYONE
-        assertFalse(subject.getAgeRestrictionVisibility())
-    }
-
-    @Test
-    fun `show seventeen plus text when content rating is seventeen plus`() {
-        subject.isReleaseDesign.set(true)
-        turnOnBasicIndicatorVisibility()
-        subject.contentRating = ContentRating.SEVENTEEN_PLUS
-        assertEquals(subject.getAgeRestriction(), CaffeineConstants.RATING_SEVENTEEN_PLUS_TEXT)
-    }
-
-    @Test
-    fun `do not show any text on seventeen plus indicator when rating is everyone`() {
-        subject.isReleaseDesign.set(true)
-        turnOnBasicIndicatorVisibility()
-        subject.contentRating = ContentRating.EVERYONE
-        assertEquals(subject.getAgeRestriction(), "")
+        assertEquals(subject.getAgeRestrictionVisibility(), View.GONE)
     }
 
     @Test
@@ -384,6 +367,5 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-
     }
 }

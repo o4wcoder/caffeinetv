@@ -68,7 +68,9 @@ private val destinationsWithCustomToolbar = arrayOf(
     R.id.friendsWatchingFragment,
     R.id.sendDigitalItemFragment,
     R.id.confirmEmailFragment,
-    R.id.velvetRopeFragment
+    R.id.velvetRopeFragment,
+    R.id.resetPasswordFragment,
+    R.id.resetPasswordSuccessFragment
 )
 
 private val destinationWithReleaseToolbar = arrayOf(
@@ -88,14 +90,19 @@ private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.friendsWatchingFragment,
     R.id.sendDigitalItemFragment,
     R.id.confirmEmailFragment,
-    R.id.velvetRopeFragment
+    R.id.velvetRopeFragment,
+    R.id.twitterAuthFragment,
+    R.id.resetPasswordFragment,
+    R.id.resetPasswordSuccessFragment
 )
 
 private val destinationsLoginWithDarkMode = arrayOf(
     R.id.landingFragment,
     R.id.signInFragment,
     R.id.forgotFragment,
-    R.id.mfaCodeFragment
+    R.id.mfaCodeFragment,
+    R.id.resetPasswordFragment,
+    R.id.resetPasswordSuccessFragment
 )
 
 // TODO: fill this in with login screens that use light mode
@@ -115,7 +122,9 @@ private val destinationInPortrait = arrayOf(
     R.id.signUpFragment,
     R.id.signInFragment,
     R.id.forgotFragment,
-    R.id.mfaCodeFragment
+    R.id.mfaCodeFragment,
+    R.id.resetPasswordFragment,
+    R.id.resetPasswordSuccessFragment
 )
 
 private val destinationInImmersiveMode = arrayOf(
@@ -377,8 +386,6 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
             bottomNavigationAvatar.loadAvatar(userProfile.avatarImageUrl)
         })
     }
-
-    fun reloadMyProfileViewModelOnSign() = myProfileViewModel.load()
 
     override fun hearShake() {
         if (!isDevOptionsOpen) {

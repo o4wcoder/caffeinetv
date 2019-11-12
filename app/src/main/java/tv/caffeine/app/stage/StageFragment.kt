@@ -1,11 +1,15 @@
 package tv.caffeine.app.stage
 
 import android.animation.LayoutTransition
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
@@ -37,9 +41,12 @@ import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.PulseAnimator
+import tv.caffeine.app.util.fadeOutLoadingIndicator
 import tv.caffeine.app.util.inTransaction
+import tv.caffeine.app.util.isNetworkAvailable
 import tv.caffeine.app.util.navigateToReportOrIgnoreDialog
 import tv.caffeine.app.util.safeNavigate
+import tv.caffeine.app.util.safeUnregisterNetworkCallback
 import tv.caffeine.app.util.showSnackbar
 import tv.caffeine.app.util.transformToClassicUI
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
@@ -79,7 +86,6 @@ class StageFragment @Inject constructor(
     lateinit var stageViewModel: StageViewModel
 
     private val args by navArgs<StageFragmentArgs>()
-    private var shouldShowOverlayOnProfileLoaded = true
     @VisibleForTesting
     var haveSetupBottomSection = false
     private var isProfileShowing = false
@@ -169,6 +175,10 @@ class StageFragment @Inject constructor(
             layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING)
         }
 
+        profileViewModel.isFollowing.observe(viewLifecycleOwner, Observer {
+            binding.releaseIsFollowing = it
+        })
+
         profileViewModel.userProfile.observe(viewLifecycleOwner, Observer { userProfile ->
             binding.userProfile = userProfile
             binding.showIsOverTextView.formatUsernameAsHtml(
@@ -197,25 +207,35 @@ class StageFragment @Inject constructor(
                     }
                 }
             }
-
             stageViewModel.updateIsMe(userProfile.isMe)
-            binding.root.setOnClickListener { toggleOverlayVisibility() }
             setupFollowClickListener(userProfile)
             updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
-
-            if (shouldShowOverlayOnProfileLoaded) {
-                shouldShowOverlayOnProfileLoaded = false
-                toggleOverlayVisibility(
-                    !userProfile.isLive,
-                    false) // hide on the first frame instead of a timeout if live
-            }
+            setupOverlays(userProfile.isLive)
         })
         val navController = findNavController()
         binding.stageToolbar.setupWithNavController(navController, null)
         poorConnectionPulseAnimator = PulseAnimator(binding.poorConnectionPulseImageView)
         initSurfaceViewRenderer()
         configureButtons()
+    }
+
+    @VisibleForTesting
+    fun setupOverlays(isLive: Boolean) {
+        if (isLive) {
+            binding.root.setOnClickListener { toggleOverlayVisibility() }
+            // Only want to setup the overlay toggle once or the overlays will flash on and off
+            if (stageViewModel.shouldShowInitialOverlays) {
+                stageViewModel.shouldShowInitialOverlays = false
+                // hide app bar on the first frame instead of a timeout if live
+                toggleOverlayVisibility(
+                    true,
+                    false) // hide on the first frame instead of a timeout if live
+            }
+        } else {
+            // Always show overlays on offline stage
+            showOverlays(true)
+        }
     }
 
     private fun setupFollowClickListener(userProfile: UserProfile) {
@@ -247,8 +267,10 @@ class StageFragment @Inject constructor(
     @VisibleForTesting
     fun onProfileToggleButtonClick(isProfileShowing: Boolean, caid: CAID) {
         if (isProfileShowing) {
+            overlayVisibilityJob?.cancel()
             updateBottomFragment(BottomContainerType.PROFILE, caid)
         } else {
+            hideOverlays()
             updateBottomFragment(BottomContainerType.CHAT, caid)
         }
     }
@@ -264,7 +286,11 @@ class StageFragment @Inject constructor(
                 }
                 BottomContainerType.PROFILE -> {
                     stageBroadcastProfilePagerFragmentProvider.get().apply {
-                        arguments = StageBroadcastProfilePagerFragmentArgs(broadcasterUsername, caid).toBundle()
+                        arguments = StageBroadcastProfilePagerFragmentArgs(
+                            broadcasterUsername,
+                            caid,
+                            binding.userProfile?.getFollowersString(),
+                            binding.userProfile?.getFollowingString()).toBundle()
                     }
                 }
             }
@@ -295,12 +321,13 @@ class StageFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        val isStreamConnected = newReyesController != null // true after screen rotation
-        shouldShowOverlayOnProfileLoaded = !isStreamConnected
+        context?.getSystemService<ConnectivityManager>()?.registerNetworkCallback(
+            NetworkRequest.Builder().build(), networkCallback)
         connectStage()
     }
 
     override fun onPause() {
+        context?.getSystemService<ConnectivityManager>()?.safeUnregisterNetworkCallback(networkCallback)
         if (!isChangingConfigurations()) disconnectStage()
         super.onPause()
     }
@@ -345,6 +372,10 @@ class StageFragment @Inject constructor(
             }
         } else {
             hideOverlays()
+            if (isProfileShowing) {
+                isProfileShowing = !isProfileShowing
+                binding.userProfile?.let { updateBottomFragment(BottomContainerType.CHAT, it.caid) }
+            }
         }
     }
 
@@ -368,7 +399,6 @@ class StageFragment @Inject constructor(
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
         binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
         binding.swipeButton.isVisible = stageViewModel.getSwipeButtonVisibility()
-        binding.contentRatingTextView.isVisible = stageViewModel.getAgeRestrictionVisibility()
     }
 
     fun updateAvatarImageViewBackground() {
@@ -379,7 +409,7 @@ class StageFragment @Inject constructor(
     fun updateBroadcastOnlineState(broadcastIsOnline: Boolean) {
         stageViewModel.updateStageIsLive(broadcastIsOnline)
         if (!broadcastIsOnline) {
-            loadingIndicators[NewReyes.Feed.Role.primary]?.isVisible = false
+            loadingIndicators[NewReyes.Feed.Role.primary]?.fadeOutLoadingIndicator()
         }
 
         if (releaseDesignConfig.isReleaseDesignActive()) {
@@ -495,7 +525,7 @@ class StageFragment @Inject constructor(
                     frameListener = EglRenderer.FrameListener {
                         launch(Dispatchers.Main) {
                             renderer.removeFrameListener(frameListener)
-                            loadingIndicators[feedInfo.role]?.isVisible = false
+                            loadingIndicators[feedInfo.role]?.fadeOutLoadingIndicator()
                             hideOverlays()
                         }
                     }
@@ -541,13 +571,12 @@ class StageFragment @Inject constructor(
     }
 
     override fun processChatAction(type: ChatAction) {
-        when (type) {
-            ChatAction.DIGITAL_ITEM, ChatAction.MESSAGE -> {
-                updateBottomFragment(BottomContainerType.CHAT, chatAction = type)
-                isProfileShowing = false
-            }
-            ChatAction.SHARE -> shareBroadcast()
-        }
+
+        updateBottomFragment(BottomContainerType.CHAT, chatAction = type)
+        hideOverlays()
+        isProfileShowing = false
+
+        if (type == ChatAction.SHARE) shareBroadcast()
     }
 
     private fun shareBroadcast() {
@@ -561,6 +590,40 @@ class StageFragment @Inject constructor(
                     clock
                 ).build()
             )
+        }
+    }
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        private var wasNetworkLost = false
+
+        override fun onAvailable(network: Network?) {
+            super.onAvailable(network)
+            if (wasNetworkLost) {
+                wasNetworkLost = false
+                launch {
+                    connectStage()
+                }
+            }
+        }
+
+        /**
+         * 1. AP on, wifi off -> stage -> wifi on -> AP off -> isNetworkAvailable = true -> connectStage()
+         * 2. AP on, wifi on -> stage -> wifi off -> isNetworkAvailable = false -> onAvailable() -> connectStage()
+         * 3. Wifi on, AP on/off -> stage -> AP off/on -> no callbacks
+         *
+         * There is a potential Android bug in scenario #1 after the "wifi on" step.
+         * The data is still being funneled through AP, but Android thinks wifi is the active network.
+         * When we turn off AP, we need to disconnect the stage on AP and re-connect it on wifi.
+         */
+        override fun onLost(network: Network?) {
+            super.onLost(network)
+            wasNetworkLost = true
+            disconnectStage()
+            if (context?.isNetworkAvailable() == true) {
+                launch {
+                    connectStage()
+                }
+            }
         }
     }
 }

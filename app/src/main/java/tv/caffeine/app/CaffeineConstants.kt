@@ -10,4 +10,7 @@ object CaffeineConstants {
     const val TAG_SEND_MESSAGE = "sendMessage"
     const val TAG_VERIFY_EMAIL = "verifyEmail"
     const val TAG_DIGITAL_ITEM = "digitalItem"
+
+    // Intent query keys
+    const val QUERY_KEY_CODE = "code"
 }

@@ -2,19 +2,13 @@ package tv.caffeine.app.users
 
 import android.content.Context
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
-import com.google.gson.Gson
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import tv.caffeine.app.R
-import tv.caffeine.app.api.UsersService
-import tv.caffeine.app.repository.ProfileRepository
 import javax.inject.Inject
 
 class FollowingFragment @Inject constructor(
-    caidListAdapter: CaidListAdapter
-) : FollowListFragment(caidListAdapter) {
+    userListAdapter: UserListAdapter
+) : FollowListFragment(userListAdapter) {
 
     private val viewModel: FollowingViewModel by viewModels { viewModelFactory }
     private val args by navArgs<FollowingFragmentArgs>()
@@ -22,6 +16,7 @@ class FollowingFragment @Inject constructor(
     override fun getFollowListViewModel() = viewModel
 
     override fun getCAID() = args.caid
+    override fun getUsername() = args.username
 
     override fun isDarkMode() = args.isDarkMode
 
@@ -30,19 +25,5 @@ class FollowingFragment @Inject constructor(
 
 class FollowingViewModel @Inject constructor(
     context: Context,
-    val gson: Gson,
-    val usersService: UsersService,
-    val profileRepository: ProfileRepository
-) : FollowListViewModel(context, profileRepository) {
-
-    override fun loadFollowList() {
-        viewModelScope.launch {
-            try {
-                val result = usersService.listFollowing(caid)
-                setFollowList(result.following)
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-        }
-    }
-}
+    pagedFollowedUsersService: PagedFollowedUsersService
+) : FollowListViewModel(context, pagedFollowedUsersService)

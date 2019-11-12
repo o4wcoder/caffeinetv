@@ -35,15 +35,15 @@
     <dimen name="medium_button_height">40dp</dimen>
     <dimen name="big_button_width">280dp</dimen>
     <dimen name="big_button_height">60dp</dimen>
-    <dimen name="very_big_button_width">280dp</dimen>
-    <dimen name="very_big_button_height">80dp</dimen>
+    <dimen name="very_big_button_width">240dp</dimen>
+    <dimen name="very_big_button_height">60dp</dimen>
     <dimen name="action_button_height">36dp</dimen>
     <dimen name="action_button_radius">18dp</dimen>
     <dimen name="info_screen_icon">96dp</dimen>
     <dimen name="verified_icon_padding">4dp</dimen>
     <dimen name="list_item_spacing">8dp</dimen>
     <dimen name="list_item_spacing_half">4dp</dimen>
-    <dimen name="coin_size">10dp</dimen>
+    <dimen name="coin_size">12dp</dimen>
     <dimen name="checkmark_size">12dp</dimen>
     <dimen name="caster_width">15dp</dimen>
     <dimen name="caster_height">12dp</dimen>
@@ -72,6 +72,8 @@
     <dimen name="release_lobby_card_more_button_width_mini">32dp</dimen>
     <dimen name="release_lobby_card_title">30sp</dimen>
     <dimen name="release_lobby_card_title_mini">20sp</dimen>
+    <dimen name="release_lobby_card_username_mini">12sp</dimen>
+    <dimen name="release_lobby_special_card_star_size">32dp</dimen>
     <dimen name="lobby_category_overlay_image_single_width">200dp</dimen>
     <dimen name="lobby_category_overlay_image_single_height">100dp</dimen>
     <dimen name="lobby_category_overlay_image_double_width">100dp</dimen>
@@ -111,7 +113,6 @@
     <dimen name="broadcast_title_mini">14sp</dimen>
     <dimen name="live_badge_text">12sp</dimen>
     <dimen name="live_badge_text_mini">10sp</dimen>
-
     <dimen name="two_step_auth_padding">16dp</dimen>
     <dimen name="two_step_auth_top_padding">32dp</dimen>
     <dimen name="two_step_auth_top_margin">32dp</dimen>
@@ -119,7 +120,6 @@
     <dimen name="two_step_auth_code_text_size">20sp</dimen>
     <dimen name="two_step_auth_done_image_size">120dp</dimen>
     <dimen name="two_step_auth_login_bottom_margin">132dp</dimen>
-    <dimen name="two_step_auth_login_subtitle_top_margin">56dp</dimen>
     <dimen name="two_step_auth_login_code_input_top_margin">56dp</dimen>
     <dimen name="two_step_auth_login_button_top_margin">156dp</dimen>
 
@@ -146,16 +146,22 @@
     <dimen name="sign_in_flow_start_padding">36dp</dimen>
     <dimen name="sign_in_flow_end_padding">40dp</dimen>
     <dimen name="sign_in_form_error_margin_top">132dp</dimen>
-    <dimen name="sign_in_margin_top">44dp</dimen>
-    <dimen name="sign_in_username_margin_top">88dp</dimen>
-    <dimen name="sign_in_title_margin_top">70dp</dimen>
+    <dimen name="sign_in_edit_text_one_margin_top">62dp</dimen>
+    <dimen name="sign_in_edit_text_secondary_top">30dp</dimen>
+    <dimen name="sign_in_title_margin_top">40dp</dimen>
     <dimen name="sign_in_button_top_margin">12dp</dimen>
+    <dimen name="sign_in_subtitle_top_margin">28dp</dimen>
+    <dimen name="sign_in_button_margin_bottom">24dp</dimen>
+    <dimen name="sign_in_error_margin_bottom">12dp</dimen>
 
     <dimen name="sign_up_edit_text_margin_top">36dp</dimen>
     <dimen name="sign_up_title_margin_top">20dp</dimen>
     <dimen name="sign_up_button_top_margin">16dp</dimen>
     <dimen name="sign_up_form_error_margin_top">32dp</dimen>
     <dimen name="sign_up_form_error_text_width">160dp</dimen>
+
+    <dimen name="reset_password_error_top_margin">52dp</dimen>
+    <dimen name="reset_password_success_button_top_margin">196dp</dimen>
     
     <dimen name="login_mfa_resend_code_text_margin_top">40dp</dimen>
     <dimen name="reset_password_title_margin_top">72dp</dimen>
@@ -165,4 +171,7 @@
     <dimen name="live_badge_horizontal_margin">16dp</dimen>
     <dimen name="avatar_friends_watching_overlap_start">30dp</dimen>
     <dimen name="live_badge_small_title_start_margin">8dp</dimen>
+
+    <dimen name="follow_star_touchable_size">48dp</dimen>
+    <dimen name="landing_margin_top">74dp</dimen>
 </resources>

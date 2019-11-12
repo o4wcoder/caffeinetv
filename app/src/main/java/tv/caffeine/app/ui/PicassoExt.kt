@@ -25,8 +25,8 @@ fun ImageView.loadImage(imageUrl: String?, placeholder: Drawable? = null, corner
     val picasso = context.getPicasso()
     picasso
             .load(imageUrl)
-            .centerCrop()
             .fit()
+            .centerInside()
             .maybePlaceholder(placeholder)
             .maybeRoundedCorners(cornerRadius)
             .into(this)

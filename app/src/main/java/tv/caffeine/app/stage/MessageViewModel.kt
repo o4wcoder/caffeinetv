@@ -31,6 +31,7 @@ class MessageViewModel(
     var messageBackgroundColor = getColor(R.color.chat_bubble_dark_gray_not_follow); private set
     var username = ""; private set
     var usernameTextColor = getColor(R.color.chat_username_not_follow); private set
+    var userIcon = 0; private set
     var avatarImageUrl = ""; private set
     var upvoteText = ""; private set
     var upvoteTextViewVisibility = View.GONE; private set
@@ -54,6 +55,11 @@ class MessageViewModel(
         message.publisher.let {
             username = it.username
             avatarImageUrl = it.avatarImageUrl
+            userIcon = when {
+                it.isVerified -> R.drawable.verified
+                it.isCaster -> R.drawable.caster
+                else -> 0
+            }
         }
         message.body.digitalItem?.let {
             digitalItemImageUrl = it.previewImageUrl

@@ -30,7 +30,7 @@
                 android:id="@+id/username_edit_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_in_username_margin_top"
+                android:layout_marginTop="@dimen/sign_in_edit_text_one_margin_top"
                 android:hint="@string/unauth_hint_username"
                 android:imeOptions="actionNext"
                 android:inputType="text"
@@ -41,7 +41,7 @@
                 android:id="@+id/password_edit_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_in_margin_top"
+                android:layout_marginTop="@dimen/sign_in_edit_text_secondary_top"
                 android:hint="@string/unauth_hint_password"
                 android:imeOptions="actionGo"
                 android:inputType="textPassword"
@@ -52,7 +52,7 @@
                 android:id="@+id/reset_password_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_in_margin_top"
+                android:layout_marginTop="@dimen/sign_in_edit_text_secondary_top"
                 android:text="@string/forgot_password" />
 
             <TextView

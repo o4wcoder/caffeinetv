@@ -12,6 +12,7 @@ import tv.caffeine.app.api.model.Lobby
 import tv.caffeine.app.lobby.fragment.ClusterData
 import tv.caffeine.app.lobby.fragment.UserData
 import tv.caffeine.app.lobby.type.AgeRestriction
+import tv.caffeine.app.lobby.type.ClusterType
 
 @RunWith(RobolectricTestRunner::class)
 class LobbyItemTests {
@@ -149,6 +150,14 @@ class LobbyItemTests {
         assertEquals(3, (lobbyItems[1] as CategoryCardList).categoryCards.size)
     }
 
+    @Test
+    fun `show the emtpy join your friends card if that is the type of the cluster`() {
+        val data = buildLobbyV5WithSpecialCards()
+        val lobbyItems = LobbyItem.parse(data)
+        assertTrue(lobbyItems[0] is EmptyJoinYourFriends)
+        assertEquals(1, lobbyItems.size)
+    }
+
     private fun buildLobbyV5WithLiveCards(
         cards: List<ClusterData.LiveBroadcastCard>,
         maxLargeCardDisplayCount: Int?
@@ -158,7 +167,7 @@ class LobbyItemTests {
                 LobbyQuery.Cluster(
                     "", LobbyQuery.Cluster.Fragments(
                         ClusterData(
-                            "", "name", listOf(
+                            "", "name", null, listOf(
                                 ClusterData.CardList(
                                     "", ClusterData.AsLiveBroadcastCardList(
                                         "", "cardListId", maxLargeCardDisplayCount, cards
@@ -180,7 +189,7 @@ class LobbyItemTests {
                 LobbyQuery.Cluster(
                     "", LobbyQuery.Cluster.Fragments(
                         ClusterData(
-                            "", "name", listOf(
+                            "", "name", null, listOf(
                                 ClusterData.CardList("", ClusterData.AsCategoryCardList(
                                     "", "cardListId", cards
                                 ))
@@ -191,6 +200,21 @@ class LobbyItemTests {
             )
         )
     )
+
+    private fun buildLobbyV5WithSpecialCards() =
+        LobbyQuery.Data(
+            LobbyQuery.PagePayload(
+                "", "", listOf(
+                    LobbyQuery.Cluster(
+                        "", LobbyQuery.Cluster.Fragments(
+                            ClusterData(
+                                "", "name", ClusterType.EMPTY_JOIN_YOUR_FRIENDS, listOf()
+                            )
+                        )
+                    )
+                )
+            )
+        )
 
     private fun buildLiveCard(index: Int, name: String? = null): ClusterData.LiveBroadcastCard {
         val userFragment = UserData(

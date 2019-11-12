@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -18,14 +19,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="@string/send"
-            android:tint="@color/caffeine_blue"
             android:backgroundTint="@color/transparent"
             android:contentDescription="@string/send_with_digital_item"
-            app:srcCompat="@drawable/ic_digital_items"
             app:layout_constraintTop_toTopOf="@+id/message_edit_text"
             app:layout_constraintBottom_toBottomOf="@+id/message_edit_text"
             app:layout_constraintEnd_toStartOf="@id/message_edit_text"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            tools:srcCompat="@drawable/ic_give"/>
 
         <EditText
             android:id="@+id/message_edit_text"

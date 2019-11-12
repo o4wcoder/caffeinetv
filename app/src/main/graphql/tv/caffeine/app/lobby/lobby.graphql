@@ -19,6 +19,7 @@ query DetailPage($cardId: ID!) {
 
 fragment ClusterData on Cluster {
     name
+    type
     cardLists{
         ... on LiveBroadcastCardList {
             id

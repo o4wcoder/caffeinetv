@@ -25,7 +25,7 @@
             android:layout_height="0dp"
             android:keepScreenOn="true"
             android:visibility="gone"
-            android:foreground="@drawable/gradient_overlay"
+            android:foreground="@drawable/gradient_overlay_top_margin_40"
             app:layout_constraintStart_toStartOf="@id/preview_image_view"
             app:layout_constraintEnd_toEndOf="@id/preview_image_view"
             app:layout_constraintBottom_toBottomOf="@id/preview_image_view"
@@ -36,7 +36,7 @@
             android:id="@+id/preview_image_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:foreground="@drawable/gradient_overlay"
+            android:foreground="@drawable/gradient_overlay_top_margin_40"
             android:scaleType="centerCrop"
             app:imageUrl="@{viewModel.mainPreviewImageUrl}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -66,29 +66,33 @@
             app:layout_constraintVertical_bias="1.0"/>
 
         <tv.caffeine.app.ui.AvatarOverlapLiveBadge
-            style="@style/LobbyCardLiveBadge.LiveIndicatorOnly"
+            style="@style/LobbyCardLiveBadge"
             android:id="@+id/avatar_overlap_live_badge"
             android:layout_width="wrap_content"
             android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintEnd_toStartOf="@id/content_rating_text_view"
+            app:layout_constraintEnd_toStartOf="@id/content_rating_badge"
             app:layout_constraintTop_toTopOf="parent"
             app:lobbyBroadcaster="@{viewModel}"/>
 
-        <TextView
-            style="@style/LobbyCardContentRating"
-            android:id="@+id/content_rating_text_view"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/live_indicator_barrier"
             android:layout_width="wrap_content"
-            android:layout_height="@{isMiniStyle ? @dimen/release_lobby_card_badge_height_mini : @dimen/release_lobby_card_badge_height}"
-            android:text="@{viewModel.ageRestriction}"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="avatar_overlap_live_badge" />
+
+        <ImageView
+            android:id="@+id/content_rating_badge"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:visibility="@{viewModel.ageRestrictionVisibility}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/preview_image_view"
-            app:layout_constraintEnd_toStartOf="@+id/more_button"
+            android:src="@drawable/seventeen_plus_badge"
+            app:layout_constraintDimensionRatio="V,40:40"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="17+"
+            app:layout_constraintStart_toEndOf="@id/live_indicator_barrier"
+            app:layout_constraintBottom_toBottomOf="@id/avatar_overlap_live_badge"
             tools:visibility="visible"/>
 
         <ImageView
@@ -125,6 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/lobby_card_side_padding_release"
             android:text="@{viewModel.username}"
+            android:textAppearance="@{isMiniStyle ? R.style.LobbyCardUsername_Mini : R.style.LobbyCardUsername}"
             app:userIcon="@{viewModel.userIcon}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/avatar_image_view"

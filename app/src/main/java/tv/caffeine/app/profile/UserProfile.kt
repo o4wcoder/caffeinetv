@@ -8,7 +8,8 @@ import tv.caffeine.app.api.model.User
 import tv.caffeine.app.api.model.iconImageUrl
 import tv.caffeine.app.api.model.isOnline
 import tv.caffeine.app.session.FollowManager
-import java.text.NumberFormat
+import tv.caffeine.app.util.compactThousandsNumberFormat
+import tv.caffeine.app.util.longFormThousandsNumberFormat
 
 data class UserProfile(
     val caid: CAID,
@@ -16,8 +17,8 @@ data class UserProfile(
     val name: String?,
     val email: String?,
     val emailVerified: Boolean?,
-    val followersCount: String,
-    val followingCount: String,
+    private val followersCount: Int,
+    private val followingCount: Int,
     val bio: String?,
     val isFollowed: Boolean,
     val isVerified: Boolean,
@@ -36,7 +37,6 @@ data class UserProfile(
     constructor(
         user: User,
         broadcastDetails: Broadcast?,
-        numberFormat: NumberFormat,
         followManager: FollowManager
     ) : this(
             user.caid,
@@ -44,8 +44,8 @@ data class UserProfile(
             user.name,
             user.email,
             user.emailVerified,
-            numberFormat.format(user.followersCount),
-            numberFormat.format(user.followingCount),
+            user.followersCount,
+            user.followingCount,
             user.bio,
             followManager.isFollowing(user.caid),
             user.isVerified,
@@ -66,4 +66,9 @@ data class UserProfile(
     }
 
     fun isMfaEnabled() = mfaMethod != MfaMethod.NONE
+
+    fun getFollowersString() = compactThousandsNumberFormat(followersCount)
+    fun getMyFollowersString() = longFormThousandsNumberFormat(followersCount)
+    fun getFollowingString() = compactThousandsNumberFormat(followingCount)
+    fun getMyFollowingString() = longFormThousandsNumberFormat(followingCount)
 }
