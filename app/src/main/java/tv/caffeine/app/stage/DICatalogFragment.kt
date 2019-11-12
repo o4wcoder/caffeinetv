@@ -48,7 +48,7 @@ class DICatalogFragment @Inject constructor(
                     callback?.digitalItemSelected(digitalItem, message)
                     dismiss()
                 } else {
-                    alertDialogViewModel.showVerifyEmailDialog(this@DICatalogFragment, fragmentManager)
+                    alertDialogViewModel.showVerifyEmailDialog(this@DICatalogFragment, fragmentManager, AlertDialogViewModel.VerificationType.Give)
                 }
             }
         })
@@ -96,7 +96,7 @@ class DICatalogFragment @Inject constructor(
             fragment.arguments = action.arguments
             fragment.maybeShow(fragmentManager, "buyGold")
         } else {
-            alertDialogViewModel.showVerifyEmailDialog(this, fragmentManager)
+            alertDialogViewModel.showVerifyEmailDialog(this, fragmentManager, AlertDialogViewModel.VerificationType.BuyGold)
         }
     }
 

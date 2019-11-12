@@ -68,7 +68,8 @@ abstract class CaffeineFragment(@LayoutRes contentLayoutId: Int) : Fragment(cont
 
     fun isUserEmailVerified() = alertDialogViewModel.isUserVerified()
 
-    fun showVerifyEmailDialog() = alertDialogViewModel.showVerifyEmailDialog(this, fragmentManager)
+    fun showVerifyEmailDialog(verificationType: AlertDialogViewModel.VerificationType) =
+        alertDialogViewModel.showVerifyEmailDialog(this, fragmentManager, verificationType)
 
     inline fun <T> handle(result: CaffeineResult<T>, crossinline block: (value: T) -> Unit) {
         when (result) {

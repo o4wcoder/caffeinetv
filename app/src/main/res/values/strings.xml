@@ -378,6 +378,13 @@
     <!--  Verify Email  -->
     <string name="resend_email_dialog_button">Resend Email</string>
     <string name="verify_email_dialog_title">Confirm Your Account</string>
+    <string name="confirm_account_to_follow_user"> Confirm your account to follow <xliff:g example="randomUser" id="username">%1$s</xliff:g> and more</string>
+    <string name="confirm_account_to_follow_faves"> Confirm your account to follow your faves and more</string>
+    <string name="confirm_account_to_react_and_give_to_user"> Confirm your account to react and give to <xliff:g example="randomUser" id="username">%1$s</xliff:g></string>
+    <string name="confirm_account_to_react_and_give_to_faves"> Confirm your account to react and give to your faves</string>
+    <string name="confirm_account_to_buy_gold"> Confirm your account to buy gold and give to your faves</string>
+    <string name="confirm_account_to_give_and_react_to_user"> Confirm your account to give and react to <xliff:g example="randomUser" id="username">%1$s</xliff:g></string>
+    <string name="confirm_account_to_give_and_react_to_faves"> Confirm your account to give and react to your faves</string>
     <string name="verify_email_dialog_subtitle">Confirm your account to buy gold, react and give to your faves.</string>
     <string name="verify_email_success_dialog_title">Confirmation Email Sent</string>
 </resources>

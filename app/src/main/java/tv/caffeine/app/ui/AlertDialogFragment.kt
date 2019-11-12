@@ -36,10 +36,11 @@ class AlertDialogFragment : DialogFragment() {
                     }
                 }
 
-        fun verifyEmail() =
+        fun verifyEmailWithMessage(@StringRes messageResId: Int) =
             AlertDialogFragment().apply {
                 arguments = Bundle().apply {
                     putInt(DIALOG_TYPE, Type.Verify.ordinal)
+                    putInt(MESSAGE_STRING_RES_ID, messageResId)
                 }
             }
 
@@ -74,9 +75,13 @@ class AlertDialogFragment : DialogFragment() {
                     .create()
             }
             Type.Verify -> {
+                val messageResId = arguments?.getInt(MESSAGE_STRING_RES_ID) ?: IllegalArgumentException("message missing").let {
+                    Timber.e(it)
+                    throw it
+                }
                 AlertDialog.Builder(activity)
                     .setTitle(R.string.verify_email_dialog_title)
-                    .setMessage(R.string.verify_email_dialog_subtitle)
+                    .setMessage(messageResId)
                     .setPositiveButton(R.string.resend_email_dialog_button) { _, _ ->
                         if (targetFragment is Callbacks) (targetFragment as Callbacks).onResendEmail()
                     }

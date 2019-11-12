@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.parcel.Parcelize
 import tv.caffeine.app.R
 import tv.caffeine.app.databinding.FragmentGoldAndCreditsBinding
+import tv.caffeine.app.ui.AlertDialogViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.ui.formatUsernameAsHtml
 import tv.caffeine.app.util.safeNavigate
@@ -52,7 +53,7 @@ class GoldAndCreditsFragment @Inject constructor(
             val action = GoldAndCreditsFragmentDirections.actionGoldAndCreditsFragmentToGoldBundlesFragment(buyGoldOption, false)
             findNavController().safeNavigate(action)
         } else {
-            showVerifyEmailDialog()
+            showVerifyEmailDialog(AlertDialogViewModel.VerificationType.BuyGold)
         }
     }
 }
