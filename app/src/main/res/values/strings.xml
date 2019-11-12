@@ -25,6 +25,8 @@
     <!-- Sign Up/In -->
 
     <string name="sign_up_title">Let\'s get\nstarted</string>
+    <string name="sign_up_something_went_wrong_try_email">Something went wrong. Try email?</string>
+    <string name="sign_up_something_went_wrong_button_text">let\'s go</string>
     <string name="sign_up_description">Create an account to watch and create live broadcasts on Caffeine.</string>
     <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
     <string name="sign_up_email_hint">Email Address</string>

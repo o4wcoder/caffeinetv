@@ -64,7 +64,7 @@ class SignUpFragment @Inject constructor(
     private val firebaseAnalytics: FirebaseAnalytics
 ) : CaffeineFragment(R.layout.fragment_sign_up), DatePickerDialog.OnDateSetListener {
 
-    private lateinit var binding: FragmentSignUpBinding
+    lateinit var binding: FragmentSignUpBinding
     private val viewModel: SignUpViewModel by viewModels { viewModelFactory }
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val args by navArgs<SignUpFragmentArgs>()
@@ -100,6 +100,10 @@ class SignUpFragment @Inject constructor(
         arguments?.let {
             args.possibleUsername?.let { binding.usernameEditText.text = it }
             args.email?.let { binding.emailEditText.text = it }
+            binding.signUpTitleText.text =
+                if (args.showErrorText) getString(R.string.sign_up_something_went_wrong_try_email) else getString(R.string.sign_up_title)
+            binding.signUpButton.text =
+                if (args.showErrorText) getString(R.string.sign_up_something_went_wrong_button_text) else getString(R.string.sign_up_button)
         }
 
         arkoseViewModel.arkoseToken.observe(viewLifecycleOwner, Observer { event ->
