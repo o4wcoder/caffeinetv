@@ -67,6 +67,7 @@ play {
     resolutionStrategy = "auto"
     outputProcessor {
         versionNameOverride = "$versionNameOverride ($versionCode)"
+        file("app_version.txt").text = versionNameOverride
     }
 }
 
