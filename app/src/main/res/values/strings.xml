@@ -261,6 +261,7 @@
     <string name="send_lowercase">send</string>
     <string name="send_with_digital_item">Send with digital item</string>
     <string name="digital_item_quantity">x<xliff:g example="2" id="digital_item_quantity">%d</xliff:g></string>
+    <string name="new_terms_of_service">New Terms\nof Service</string>
     <string name="must_accept_terms_error">You must accept terms and conditions</string>
     <string name="i_agree_button">I Agree</string>
     <string name="unfollow_question">Unfollow %s?</string>
@@ -275,13 +276,14 @@
     <string name="upcoming_broadcasts_empty_message">No scheduled upcoming broadcasts.</string>
 
     <!-- Version Check -->
-    <string name="take_me_to_play_store_button">Sweet! Take me to the Play Store to update.</string>
+    <string name="update_now_button">update now</string>
+    <string name="its_time_to_update">It\'s time\nto update</string>
     <string name="time_to_update">Time to Update</string>
-    <string name="new_version_awaits">A shiny new version of the app awaits you.</string>
+    <string name="new_version_awaits">A better version of Caffeine\nis ready for you.</string>
 
     <!-- Connectivity / No Network -->
-    <string name="no_network_data">No Network Data</string>
-    <string name="check_your_wifi_or_cellular">Check your wi-fi or cellular settings.</string>
+    <string name="you_are_off_air">You\'re\noff-air</string>
+    <string name="check_your_wifi_or_cellular">Looks like your network is unavailable. Check your internet connection and try again.</string>
     <string name="peer_connection_error_message">Failed to connect to the stream. Please try again later.</string>
     <string name="the_broadcast_will_resume_when_your_connection_improves">The broadcast will resume when your connection improves.</string>
     <string name="poor_connection">Poor Connection</string>

@@ -339,16 +339,6 @@
         <item name="fontFamily">@font/poppins</item>
     </style>
 
-    <style name="NoNetworkTitle" parent="CaffeineText.Light">
-        <item name="android:textSize">30sp</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="NoNetworkBody" parent="CaffeineText.Light">
-        <item name="android:textSize">17sp</item>
-        <item name="android:textColor">@color/dark_gray</item>
-    </style>
-
     <style name="FullscreenModalTitle" parent="CaffeineText.Bold">
         <item name="android:textSize">24sp</item>
     </style>
@@ -787,5 +777,24 @@
     <style name="SignUpBodyText" parent="CaffeineText.Light">
         <item name="android:textColor">@color/dark_gray</item>
     </style>
+
+    <!-- Full Screen Errors -->
+    <style name="FullScreenError" parent="CaffeineText.Release"/>
+
+    <style name="FullScreenError.Title" parent="CaffeineText.Bold">
+        <item name="android:textSize">48sp</item>
+        <item name="android:lineSpacingMultiplier">0.75</item>
+    </style>
+
+    <style name="FullScreenError.Title.Small">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="FullScreenError.SubTitle" parent="CaffeineText.Medium">
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">start</item>
+    </style>
+
+    <style name="FullScreenErrorButton" parent="Button.Big.LightMode"/>
 
 </resources>

@@ -499,7 +499,7 @@
     <fragment
         android:id="@+id/noNetworkFragment"
         android:name="tv.caffeine.app.util.NoNetworkFragment"
-        android:label="@string/no_network_data"
+        android:label="@string/you_are_off_air"
         tools:layout="@layout/fragment_no_network"/>
     <action
         android:id="@+id/action_global_noNetworkFragment"

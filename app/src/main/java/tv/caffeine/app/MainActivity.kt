@@ -58,6 +58,8 @@ import javax.inject.Inject
 
 private val destinationsWithCustomToolbar = arrayOf(
     R.id.lobbySwipeFragment,
+    R.id.legalAgreementFragment,
+    R.id.noNetworkFragment,
     R.id.landingFragment,
     R.id.signInFragment,
     R.id.signUpFragment,
@@ -81,6 +83,8 @@ private val destinationWithReleaseToolbar = arrayOf(
 
 private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.landingFragment,
+    R.id.legalAgreementFragment,
+    R.id.noNetworkFragment,
     R.id.signInFragment,
     R.id.signUpFragment,
     R.id.forgotFragment,
