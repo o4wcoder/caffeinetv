@@ -164,7 +164,11 @@ jobs:
       - run:
           name: Report success
           command: |
-              curl -X POST --data-urlencode "payload={\"channel\": \"#android-builds\", \"username\": \"Play Store\", \"text\": \"Published to internal track:\n`cat app/src/main/play/release-notes/en-US/internal.txt`\", \"icon_emoji\": \":android:\"}" https://hooks.slack.com/services/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
+              APP_VERSION=$(<app/app_version.txt)
+              RELEASE_NOTES=$(<app/src/main/play/release-notes/en-US/internal.txt)
+              SLACK_MESSAGE="payload={\"channel\": \"#android-builds\", \"username\": \"Gradle Play Publisher\", \"text\": \"Version $APP_VERSION published to internal track:\n$RELEASE_NOTES\", \"icon_emoji\": \":android:\"}"
+              SLACK_URL=https://hooks.slack.com/services/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
+              curl -X POST --data-urlencode "$SLACK_MESSAGE" $SLACK_URL
 
 workflows:
   version: 2

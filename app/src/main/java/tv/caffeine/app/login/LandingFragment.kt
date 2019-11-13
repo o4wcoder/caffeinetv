@@ -200,18 +200,20 @@ class LandingFragment @Inject constructor(
         val result = accountsService.signIn(signInBody).awaitAndParseErrors(gson)
         when (result) {
             is CaffeineResult.Success -> onSuccess(result.value)
-            is CaffeineResult.Error -> onError(result.error)
+            is CaffeineResult.Error -> continueToSignUp(oauthCallbackResult, showErrorText = true)
             is CaffeineResult.Failure -> handleFailure(result)
         }
     }
 
-    private fun continueToSignUp(oauthCallbackResult: OAuthCallbackResult) {
-        val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment(oauthCallbackResult.possibleUsername, oauthCallbackResult.oauth?.email, oauthCallbackResult.oauth?.iid)
+    private fun continueToSignUp(oauthCallbackResult: OAuthCallbackResult, showErrorText: Boolean = false) {
+        val action = LandingFragmentDirections.actionLandingFragmentToSignUpFragment(oauthCallbackResult.possibleUsername,
+            oauthCallbackResult.oauth?.email, oauthCallbackResult.oauth?.iid, showErrorText)
         findNavController().safeNavigate(action)
     }
 
     private fun continueToMfaCode(oauthCallbackResult: OAuthCallbackResult) {
-        val action = LandingFragmentDirections.actionLandingFragmentToMfaCodeFragment(null, null, oauthCallbackResult.caid, oauthCallbackResult.loginToken)
+        val action = LandingFragmentDirections.actionLandingFragmentToMfaCodeFragment(null, null,
+            oauthCallbackResult.caid, oauthCallbackResult.loginToken)
         findNavController().safeNavigate(action)
     }
 

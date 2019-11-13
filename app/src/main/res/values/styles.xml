@@ -246,6 +246,9 @@
     <style name="CaffeineText.Release">
         <item name="android:fontFamily">@font/poppins</item>
     </style>
+    <style name="CaffeineText.Black">
+        <item name="android:fontFamily">@font/poppins_black</item>
+    </style>
     <style name="CaffeineText.Bold">
         <item name="android:fontFamily">@font/poppins_bold</item>
         <item name="android:textStyle">bold</item> <!-- poppins_bold is not bold with the normal text style on Android M -->
@@ -337,16 +340,6 @@
     <style name="ScreenTitle.Stage">
         <item name="android:textColor">@color/white</item>
         <item name="fontFamily">@font/poppins</item>
-    </style>
-
-    <style name="NoNetworkTitle" parent="CaffeineText.Light">
-        <item name="android:textSize">30sp</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="NoNetworkBody" parent="CaffeineText.Light">
-        <item name="android:textSize">17sp</item>
-        <item name="android:textColor">@color/dark_gray</item>
     </style>
 
     <style name="FullscreenModalTitle" parent="CaffeineText.Bold">
@@ -786,6 +779,26 @@
 
     <style name="SignUpBodyText" parent="CaffeineText.Light">
         <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">12sp</item>
     </style>
+
+    <!-- Full Screen Errors -->
+    <style name="FullScreenError" parent="CaffeineText.Release"/>
+
+    <style name="FullScreenError.Title" parent="CaffeineText.Bold">
+        <item name="android:textSize">48sp</item>
+        <item name="android:lineSpacingMultiplier">0.75</item>
+    </style>
+
+    <style name="FullScreenError.Title.Small">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="FullScreenError.SubTitle" parent="CaffeineText.Medium">
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">start</item>
+    </style>
+
+    <style name="FullScreenErrorButton" parent="Button.Big.LightMode"/>
 
 </resources>

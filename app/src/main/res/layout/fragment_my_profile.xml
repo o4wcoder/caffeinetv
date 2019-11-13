@@ -62,7 +62,7 @@
                 tools:text="Winnie the Pooh" />
 
             <TextView
-                style="@style/CaffeineText.Release"
+                style="@style/CaffeineText.Black"
                 android:id="@+id/username_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/my_profile_signout_top_margin"
                     android:textColor="@color/warning_red"
-                    android:text="@string/sign_out_button" />
+                    android:text="@string/sign_out_button_lowercase" />
 
             </FrameLayout>
 

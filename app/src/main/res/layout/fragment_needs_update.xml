@@ -6,50 +6,54 @@
 
     <Button
         android:id="@+id/play_store_button"
-        style="@style/Button.TextButton"
-        android:layout_width="wrap_content"
+        style="@style/FullScreenErrorButton"
+        android:layout_width="204dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/take_me_to_play_store_button"
+        android:layout_marginBottom="78dp"
+        android:text="@string/update_now_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/caffeine_logo_image_view"
-        android:layout_width="@dimen/info_screen_icon"
-        android:layout_height="@dimen/info_screen_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:tint="@color/black"
         android:contentDescription="@string/caffeine_logo_content_description"
-        app:srcCompat="@drawable/caffeine_logo_80"
-        app:layout_constraintBottom_toTopOf="@+id/title_text_view"
+        app:srcCompat="@drawable/caffeine_wordmark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        style="@style/FullScreenError.Title"
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginEnd="44dp"
         android:drawablePadding="@dimen/verified_icon_padding"
-        android:text="@string/time_to_update"
+        android:text="@string/its_time_to_update"
         android:textAppearance="@style/ScreenTitle"
-        app:layout_constraintBottom_toTopOf="@+id/subtitle_text_view"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/caffeine_logo_image_view" />
 
     <TextView
+        style="@style/FullScreenError.SubTitle"
         android:id="@+id/subtitle_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/verified_icon_padding"
-        android:gravity="center"
+        android:layout_marginStart="44dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginTop="44dp"
+        android:gravity="start"
         android:text="@string/new_version_awaits"
         android:textAppearance="@style/ScreenCaption"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_text_view" />

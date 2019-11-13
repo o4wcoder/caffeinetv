@@ -41,8 +41,14 @@ class SignUpViewModel @Inject constructor(
             notifyChange()
         }
 
+    var passwordIsValid = false
+        set(value) {
+            field = value
+            notifyChange()
+        }
+
     @Bindable
-    fun isSignUpButtonEnabled() = email.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() && birthdate.isNotEmpty()
+    fun isSignUpButtonEnabled() = email.isNotEmpty() && username.isNotEmpty() && passwordIsValid && birthdate.isNotEmpty()
 
     fun signIn(dob: String, recaptchaToken: String?, arkoseToken: String?, iid: String?): LiveData<Event<CaffeineResult<SignUpResult>>> {
         viewModelScope.launch {

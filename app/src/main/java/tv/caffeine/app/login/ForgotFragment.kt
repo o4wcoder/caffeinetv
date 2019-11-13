@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.UiThread
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
@@ -65,7 +64,8 @@ class ForgotFragment @Inject constructor(
     private fun onSuccess() {
         hasEmailBeenSent = true
         binding.emailEditTextLayout.isVisible = false
-        binding.subtitleTextView.isInvisible = false
+        binding.subtitleTextView.isVisible = true
+        binding.titleTextView.setText(R.string.help_is_on_the_way)
         binding.sendEmailButton.setText(R.string.back_to_login_button)
     }
 

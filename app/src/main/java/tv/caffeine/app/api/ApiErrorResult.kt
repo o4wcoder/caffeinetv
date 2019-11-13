@@ -16,6 +16,7 @@ fun ApiErrorResult.isEmailError() = errors?.email?.isNullOrEmpty() == false
 fun ApiErrorResult.isUsernameError() = errors?.username?.isNullOrEmpty() == false
 fun ApiErrorResult.isPasswordError() = errors?.password?.isNullOrEmpty() == false
 fun ApiErrorResult.isBirtdateError() = errors?.dob?.isNullOrEmpty() == false
+fun ApiErrorResult.isPasswordResetCodeError() = errors?.code?.isNullOrEmpty() == false
 fun RefreshTokenMissingError() = ApiErrorResult(ApiError(_token = listOf("Refresh token missing")))
 
 data class ApiError(

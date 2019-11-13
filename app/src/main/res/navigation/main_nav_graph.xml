@@ -156,16 +156,18 @@
             app:argType="string[]"
             app:nullable="true"/>
         <deepLink
-            android:id="@+id/deepLink"
             app:uri="caffeine.tv/{broadcastLink}"/>
         <deepLink
-            android:id="@+id/deepLink2"
             app:uri="www.caffeine.tv/{broadcastLink}"/>
         <deepLink
             android:autoVerify="true"
             app:uri="applink.caffeine.tv/{broadcastLink}"/>
         <deepLink
             app:uri="preview.caffeine.tv/{broadcastLink}"/>
+        <deepLink
+            app:uri="caffeine.tv/{broadcastLink}/profile"/>
+        <deepLink
+            app:uri="www.caffeine.tv/{broadcastLink}/profile"/>
         <action
             android:id="@+id/action_stagePagerFragment_to_friendsWatchingFragment"
             app:destination="@+id/friendsWatchingFragment"/>
@@ -333,12 +335,6 @@
         android:name="tv.caffeine.app.profile.ProfileFragment"
         android:label="@string/profile"
         tools:layout="@layout/fragment_profile">
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="caffeine.tv/{caid}/profile"/>
-        <deepLink
-            android:id="@+id/deepLink2"
-            app:uri="www.caffeine.tv/{caid}/profile"/>
         <argument
             android:name="caid"
             app:argType="string"/>
@@ -499,7 +495,7 @@
     <fragment
         android:id="@+id/noNetworkFragment"
         android:name="tv.caffeine.app.util.NoNetworkFragment"
-        android:label="@string/no_network_data"
+        android:label="@string/you_are_off_air"
         tools:layout="@layout/fragment_no_network"/>
     <action
         android:id="@+id/action_global_noNetworkFragment"
@@ -605,6 +601,10 @@
                 android:defaultValue="@null"
                 app:argType="string"
                 app:nullable="true" />
+            <argument
+                android:name="showErrorText"
+                android:defaultValue="false"
+                app:argType="boolean" />
         </fragment>
         <fragment
             android:id="@+id/arkoseFragment"

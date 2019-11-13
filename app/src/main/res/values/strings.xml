@@ -25,9 +25,10 @@
     <!-- Sign Up/In -->
 
     <string name="sign_up_title">Let\'s get\nstarted</string>
+    <string name="sign_up_something_went_wrong_try_email">Something went wrong. Try email?</string>
+    <string name="sign_up_something_went_wrong_button_text">let\'s go</string>
     <string name="sign_up_description">Create an account to watch and create live broadcasts on Caffeine.</string>
     <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
-    <string name="sign_up_email_hint">Email Address</string>
     <string name="sign_up_password_hint">Create a Password</string>
     <string name="sign_up_password_length_hint">Passwords need to be at least 7 characters</string>
     <string name="sign_up_username_hint">Create a Username</string>
@@ -44,7 +45,7 @@
     <string name="help_is_on_the_way">Help is on the way</string>
     <string name="back_to_login_button">back to login</string>
     <string name="check_your_email">Check your email to reset your password</string>
-    <string name="sign_up_button">Sign up</string>
+    <string name="sign_up_button">sign up</string>
     <string name="i_agree_to_legal"><![CDATA[By continuing, you agree to Caffeine\'s <a href="https://www.caffeine.tv/tos.html"><b>Terms of Service</b></a>, <a href="https://www.caffeine.tv/privacy.html"><b>Privacy Policy</b></a>, and <a href="https://www.caffeine.tv/rules.html"><b>Community Rules</b></a>.]]></string>
     <string name="must_agree_to_legal"><![CDATA[Caffeine requires your consent to personalize your experience based on your relationships and activities. We have new <a href="https://www.caffeine.tv/tos.html">Terms of Service</a>, <a href="https://www.caffeine.tv/privacy.html">Privacy Policy</a> and <a href="https://www.caffeine.tv/guidelines.html">Community Guidelines</a>. Please read them and agree to them to continue using Caffeine.]]></string>
     <string name="caffeine_logo_content_description">Caffeine logo</string>
@@ -53,7 +54,8 @@
     <string name="reset_your_password_failure">Could not reset your password. Please try again later.</string>
     <string name="email_sent_message">Email Sent. Please check your inbox.</string>
     <string name="manage_mfa_coming_soon">Please manage two factor authentication on the web</string>
-    <string name="sign_out_button">sign out</string>
+    <string name="sign_out_button_lowercase">sign out</string>
+    <string name="sign_out_button">Sign out</string>
     <string name="sign_out_question">Sign out of account?</string>
     <string name="cancel">Cancel</string>
     <string name="delete_account_question">Delete Caffeine Account?</string>
@@ -69,10 +71,12 @@
     <string name="reset_password_button">reset password</string>
     <string name="reset_password_new_password_hint">New Password</string>
     <string name="reset_password_confirm_password_hint">Confirm Password</string>
-    <string name="reset_password_error">The passwords provided do not match. Try again?</string>
+    <string name="reset_password_match_error">The passwords provided do not match. Try again?</string>
     <string name="reset_password_success_title">All good\nto go</string>
     <string name="reset_password_success_message">Your password has been successfully reset</string>
     <string name="reset_password_success_button">log into caffeine</string>
+    <string name="reset_password_code_failure">Password reset time expired, please request another link.</string>
+    <string name="reset_password_general_failure">Something went wrong, please try again.</string>
     <!-- Broadcasting -->
     <string name="camera_microphone_permissions_rationale">Camera and microphone permissions are necessary to broadcast from your phone.</string>
     <string name="camera2_api_not_supported">Your device does not support the camera APIs necessary for broadcasting</string>
@@ -261,6 +265,7 @@
     <string name="send_lowercase">send</string>
     <string name="send_with_digital_item">Send with digital item</string>
     <string name="digital_item_quantity">x<xliff:g example="2" id="digital_item_quantity">%d</xliff:g></string>
+    <string name="new_terms_of_service">New Terms\nof Service</string>
     <string name="must_accept_terms_error">You must accept terms and conditions</string>
     <string name="i_agree_button">I Agree</string>
     <string name="unfollow_question">Unfollow %s?</string>
@@ -275,13 +280,14 @@
     <string name="upcoming_broadcasts_empty_message">No scheduled upcoming broadcasts.</string>
 
     <!-- Version Check -->
-    <string name="take_me_to_play_store_button">Sweet! Take me to the Play Store to update.</string>
+    <string name="update_now_button">update now</string>
+    <string name="its_time_to_update">It\'s time\nto update</string>
     <string name="time_to_update">Time to Update</string>
-    <string name="new_version_awaits">A shiny new version of the app awaits you.</string>
+    <string name="new_version_awaits">A better version of Caffeine\nis ready for you.</string>
 
     <!-- Connectivity / No Network -->
-    <string name="no_network_data">No Network Data</string>
-    <string name="check_your_wifi_or_cellular">Check your wi-fi or cellular settings.</string>
+    <string name="you_are_off_air">You\'re\noff-air</string>
+    <string name="check_your_wifi_or_cellular">Looks like your network is unavailable. Check your internet connection and try again.</string>
     <string name="peer_connection_error_message">Failed to connect to the stream. Please try again later.</string>
     <string name="the_broadcast_will_resume_when_your_connection_improves">The broadcast will resume when your connection improves.</string>
     <string name="poor_connection">Poor Connection</string>
@@ -359,7 +365,7 @@
     <string name="two_step_auth_login_title">2-Step\nVerification</string>
     <string name="two_step_auth_login_subtitle">Enter the verification code sent to your email.</string>
     <string name="two_step_auth_login_resend_link">Send Another Code</string>
-    <string name="two_step_auth_login_continue_button">Continue</string>
+    <string name="two_step_auth_login_continue_button">continue</string>
     <string name="enter_code_title">Enter Code</string>
     <string name="mfa_code_hint">Verification Code</string>
     <string name="submit_mfa_code">Submit</string>

@@ -11,6 +11,7 @@ import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
@@ -58,6 +59,8 @@ import javax.inject.Inject
 
 private val destinationsWithCustomToolbar = arrayOf(
     R.id.lobbySwipeFragment,
+    R.id.legalAgreementFragment,
+    R.id.noNetworkFragment,
     R.id.landingFragment,
     R.id.signInFragment,
     R.id.signUpFragment,
@@ -81,6 +84,8 @@ private val destinationWithReleaseToolbar = arrayOf(
 
 private val destinationsWithoutBottomNavBar = arrayOf(
     R.id.landingFragment,
+    R.id.legalAgreementFragment,
+    R.id.noNetworkFragment,
     R.id.signInFragment,
     R.id.signUpFragment,
     R.id.forgotFragment,
@@ -130,6 +135,15 @@ private val destinationInPortrait = arrayOf(
 private val destinationInImmersiveMode = arrayOf(
     R.id.stagePagerFragment,
     R.id.landingFragment
+)
+
+private val destinationsKeyboardWithFixedViews = arrayOf(
+    R.id.signUpFragment,
+    R.id.signInFragment,
+    R.id.forgotFragment,
+    R.id.mfaCodeFragment,
+    R.id.resetPasswordFragment,
+    R.id.resetPasswordSuccessFragment
 )
 
 private const val OPEN_NO_NETWORK_FRAGMENT_DELAY_MS = 5000L
@@ -251,6 +265,8 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
         updateImmersiveMode(destinationId)
 
         updateLoginTheme(destinationId)
+
+        updateKeyboardMode(destinationId)
     }
 
     private fun createNotificationChannel() {
@@ -378,6 +394,17 @@ class MainActivity : DaggerAppCompatActivity(), ShakeDetector.Listener {
     private fun updateLoginTheme(destinationId: Int) {
         if (destinationId in destinationsLoginWithDarkMode) {
             setDarkMode(true)
+        }
+    }
+
+    private fun updateKeyboardMode(destinationId: Int) {
+        val flags = if (destinationId in destinationsKeyboardWithFixedViews) {
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+        } else {
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        }
+        window?.apply {
+            setSoftInputMode(flags)
         }
     }
 
