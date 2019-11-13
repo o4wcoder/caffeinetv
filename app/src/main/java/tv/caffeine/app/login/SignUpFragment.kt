@@ -78,7 +78,11 @@ class SignUpFragment @Inject constructor(
         binding.viewModel = viewModel
         binding.emailEditText.afterTextChanged { viewModel.email = it }
         binding.usernameEditText.afterTextChanged { viewModel.username = it }
-        binding.passwordEditText.afterTextChanged { viewModel.password = it }
+        binding.passwordEditText.afterTextChanged {
+            viewModel.password = it
+            viewModel.passwordIsValid = binding.passwordEditText.passwordIsValid()
+            binding.passwordEditText.setPasswordBottomText()
+        }
         binding.dobEditText.afterTextChanged { viewModel.birthdate = it }
         binding.signUpButton.setOnClickListener { signUpClicked() }
         binding.agreeToLegalTextView.apply {

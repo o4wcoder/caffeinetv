@@ -26,11 +26,18 @@ class SignUpViewModelTests {
         subject.username = "caffeineuser"
         subject.password = "password"
         subject.birthdate = "1/1/1970"
+        subject.passwordIsValid = true
     }
 
     @Test
-    fun `test sign up button is enabled if all fields contain data`() {
+    fun `test sign up button is enabled if all fields contain data and password is valid`() {
         assertTrue(subject.isSignUpButtonEnabled())
+    }
+
+    @Test
+    fun `test sign up button is disabled if all fields contain data and password is not valid`() {
+        subject.passwordIsValid = false
+        assertFalse(subject.isSignUpButtonEnabled())
     }
 
     @Test
@@ -42,12 +49,6 @@ class SignUpViewModelTests {
     @Test
     fun `test sign up button is disabled if username is missing`() {
         subject.username = ""
-        assertFalse(subject.isSignUpButtonEnabled())
-    }
-
-    @Test
-    fun `test sign up button is disabled if password is missing`() {
-        subject.password = ""
         assertFalse(subject.isSignUpButtonEnabled())
     }
 

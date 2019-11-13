@@ -20,6 +20,8 @@ import tv.caffeine.app.R
 import tv.caffeine.app.databinding.CaffeineEditTextLayoutBinding
 import tv.caffeine.app.util.addFilter
 
+const val MIN_PASSWORD_LENGTH = 7
+
 class CaffeineEditTextLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -113,6 +115,17 @@ class CaffeineEditTextLayout @JvmOverloads constructor(
                 afterTextChanged.invoke(editable.toString())
             }
         })
+    }
+
+    fun passwordIsValid() = layoutEditText.text.length >= MIN_PASSWORD_LENGTH
+
+    fun setPasswordBottomText() {
+        val bottomText =
+            when {
+                layoutEditText.text.isEmpty() || passwordIsValid() -> resources.getString(R.string.unauth_hint_password)
+                else -> resources.getString(R.string.sign_up_password_length_hint)
+            }
+        layoutViewModel.setBottomViewText(bottomText, isError = false)
     }
 
     private fun getColorResource(@ColorRes color: Int): Int {

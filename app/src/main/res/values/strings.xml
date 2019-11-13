@@ -29,7 +29,6 @@
     <string name="sign_up_something_went_wrong_button_text">let\'s go</string>
     <string name="sign_up_description">Create an account to watch and create live broadcasts on Caffeine.</string>
     <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
-    <string name="sign_up_email_hint">Email Address</string>
     <string name="sign_up_password_hint">Create a Password</string>
     <string name="sign_up_password_length_hint">Passwords need to be at least 7 characters</string>
     <string name="sign_up_username_hint">Create a Username</string>
