@@ -1,60 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-    </data>
+    <data></data>
 
-    <ScrollView
-        style="@style/NoBarScrollView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".login.ForgotFragment"
-        android:background="@color/black">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
+            style="@style/NoBarScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/sign_in_flow_start_padding"
-            android:paddingEnd="@dimen/sign_in_flow_end_padding"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            tools:context=".login.ForgotFragment">
 
-            <TextView
-                style="@style/LoginText.Title"
-                android:id="@+id/title_text_view"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_in_title_margin_top"
-                android:text="@string/forgot_password_no_worries"/>
-
-            <TextView
-                style="@style/LoginText.SubTitle"
-                android:id="@+id/subtitle_text_view"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/forgot_subtitle_margin_top"
-                android:text="@string/check_your_email"
-                android:visibility="invisible"/>
+                android:orientation="vertical"
+                android:paddingStart="@dimen/sign_in_flow_start_padding"
+                android:paddingEnd="@dimen/sign_in_flow_end_padding">
 
-            <tv.caffeine.app.ui.CaffeineEditTextLayout
-                android:id="@+id/email_edit_text_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/reset_password_title_margin_top"
-                android:hint="@string/unauth_hint_email"
-                android:inputType="textEmailAddress"
-                android:imeOptions="actionSend"
-                app:isDarkMode="true"/>
+                <TextView
+                    style="@style/LoginText.Title"
+                    android:id="@+id/title_text_view"
+                    android:layout_width="@dimen/big_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sign_in_title_margin_top"
+                    android:paddingStart="@dimen/sign_in_text_align_start_padding"
+                    android:text="@string/forgot_password_no_worries" />
 
-            <Button
-                style="@style/LoginButton"
-                android:id="@+id/send_email_button"
-                android:layout_marginTop="@dimen/forgot_margin_subtitle_top"
-                android:text="@string/forgot_password_button"
-                android:layout_gravity="center"
-                android:enabled="false"
-                />
-        </LinearLayout>
-    </ScrollView>
+                <TextView
+                    style="@style/LoginText.SubTitle"
+                    android:id="@+id/subtitle_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/forgot_subtitle_margin_top"
+                    android:paddingStart="@dimen/sign_in_text_align_start_padding"
+                    android:text="@string/check_your_email"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <tv.caffeine.app.ui.CaffeineEditTextLayout
+                    android:id="@+id/email_edit_text_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/reset_password_title_margin_top"
+                    android:hint="@string/unauth_hint_email"
+                    android:imeOptions="actionSend"
+                    android:inputType="textEmailAddress"
+                    app:isDarkMode="true" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            style="@style/LoginButton"
+            android:id="@+id/send_email_button"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/sign_in_button_margin_bottom"
+            android:enabled="false"
+            android:text="@string/forgot_password_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
