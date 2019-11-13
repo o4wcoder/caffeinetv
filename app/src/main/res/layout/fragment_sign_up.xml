@@ -9,93 +9,116 @@
             type="tv.caffeine.app.login.SignUpViewModel" />
     </data>
 
-    <ScrollView
-        style="@style/NoBarScrollView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".login.SignUpFragment">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
+            style="@style/NoBarScrollView"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".login.SignUpFragment">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/sign_in_flow_start_padding"
+                android:paddingEnd="@dimen/sign_in_flow_end_padding"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/SignUpText.Title"
+                    android:id="@+id/sign_up_title_text"
+                    android:layout_width="@dimen/big_button_width"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier=".8"
+                    android:layout_marginTop="@dimen/sign_up_title_margin_top"
+                    android:layout_marginStart="@dimen/sign_in_text_align_start_padding"
+                    android:text="@string/sign_up_title"/>
+
+                <tv.caffeine.app.ui.CaffeineEditTextLayout
+                    android:id="@+id/email_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sign_up_email_top_margin"
+                    android:hint="@string/unauth_hint_email"
+                    android:inputType="textEmailAddress"
+                    android:imeOptions="actionNext"/>
+
+                <tv.caffeine.app.ui.CaffeineEditTextLayout
+                    android:id="@+id/password_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
+                    android:hint="@string/sign_up_password_hint"
+                    android:inputType="textPassword"
+                    android:imeOptions="actionNext"
+                    app:bottomHint="@string/unauth_hint_password"/>
+
+                <tv.caffeine.app.ui.CaffeineEditTextLayout
+                    android:id="@+id/username_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
+                    android:hint="@string/sign_up_username_hint"
+                    android:inputType="text"
+                    android:maxLength="@integer/max_username_length"
+                    android:imeOptions="actionNext"
+                    app:bottomHint="@string/unauth_hint_username"/>
+
+                <tv.caffeine.app.ui.CaffeineEditTextLayout
+                    android:id="@+id/dob_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
+                    android:hint="@string/sign_up_birthdate_hint"
+                    android:inputType="none"
+                    android:textIsSelectable="false"
+                    android:imeOptions="actionNext"/>
+            </LinearLayout>
+
+        </ScrollView>
+
+        <TextView
+            style="@style/SignUpErrorText"
+            android:id="@+id/form_error_text_view"
+            android:layout_width="@dimen/sign_up_form_error_text_width"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/sign_in_flow_start_padding"
-            android:paddingEnd="@dimen/sign_in_flow_end_padding"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:gravity="bottom"
+            android:layout_marginBottom="12dp"
+            tools:text="Sorry you are not eligible to sign up at this time"
+            app:layout_constraintBottom_toTopOf="@id/sign_up_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-            <TextView
-                style="@style/SignUpText.Title"
-                android:id="@+id/sign_up_title_text"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_up_title_margin_top"
-                android:text="@string/sign_up_title"/>
+        <Button
+            style="@style/SignUpButton"
+            android:id="@+id/sign_up_button"
+            android:layout_marginTop="@dimen/sign_up_button_top_margin"
+            android:layout_gravity="center"
+            android:text="@string/sign_up_button"
+            android:enabled="@{viewModel.signUpButtonEnabled}"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toTopOf="@id/agree_to_legal_text_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-            <tv.caffeine.app.ui.CaffeineEditTextLayout
-                android:id="@+id/email_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/sign_up_email_hint"
-                android:inputType="textEmailAddress"
-                android:imeOptions="actionNext"/>
+        <TextView
+            style="@style/SignUpBodyText"
+            android:id="@+id/agree_to_legal_text_view"
+            android:layout_width="@dimen/sign_up_terms_text_width"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/sign_in_button_margin_bottom"
+            android:textAlignment="center"
+            android:textColorLink="@color/dark_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="By continuing, you agree to Caffeine's Terms of Service, Privacy Policy and Community Rules"/>
 
-            <tv.caffeine.app.ui.CaffeineEditTextLayout
-                android:id="@+id/password_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
-                android:hint="@string/sign_up_password_hint"
-                android:inputType="textPassword"
-                android:imeOptions="actionNext"
-                app:bottomHint="@string/sign_up_password_length_hint"/>
-
-            <tv.caffeine.app.ui.CaffeineEditTextLayout
-                android:id="@+id/username_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
-                android:hint="@string/sign_up_username_hint"
-                android:inputType="text"
-                android:maxLength="@integer/max_username_length"
-                android:imeOptions="actionNext"
-                app:bottomHint="@string/unauth_hint_username"/>
-
-            <tv.caffeine.app.ui.CaffeineEditTextLayout
-                android:id="@+id/dob_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_up_edit_text_margin_top"
-                android:hint="@string/sign_up_birthdate_hint"
-                android:inputType="none"
-                android:textIsSelectable="false"
-                android:imeOptions="actionNext"/>
-
-            <TextView
-                style="@style/SignUpErrorText"
-                android:id="@+id/form_error_text_view"
-                android:layout_width="@dimen/sign_up_form_error_text_width"
-                android:layout_height="66dp"
-                android:layout_gravity="center"
-                android:gravity="bottom"
-                tools:text="Sorry you are not eligible to sign up at this time"/>
-
-            <Button
-                style="@style/SignUpButton"
-                android:id="@+id/sign_up_button"
-                android:layout_marginTop="@dimen/sign_up_button_top_margin"
-                android:layout_gravity="center"
-                android:text="@string/sign_up_button"
-                android:enabled="@{viewModel.signUpButtonEnabled}"/>
-
-            <TextView
-                style="@style/SignUpBodyText"
-                android:id="@+id/agree_to_legal_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:textAlignment="center"
-                android:textColorLink="@color/dark_gray"
-                tools:text="By continuing, you agree to Caffeine's Terms of Service, Privacy Policy and Community Rules"/>
-        </LinearLayout>
-    </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

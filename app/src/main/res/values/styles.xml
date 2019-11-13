@@ -779,6 +779,7 @@
 
     <style name="SignUpBodyText" parent="CaffeineText.Light">
         <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <!-- Full Screen Errors -->

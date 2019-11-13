@@ -48,7 +48,7 @@ class SignUpFragmentTests {
 
     private val TITLE_TEXT = "Let's get\nstarted"
     private val TITLE_TEXT_FROM_SOCIAL_ERROR = "Something went wrong. Try email?"
-    private val BUTTON_TEXT = "Sign up"
+    private val BUTTON_TEXT = "sign up"
     private val BUTTON_TEXT_FROM_SOCIAL_ERROR = "let's go"
 
     private lateinit var fragment: SignUpFragment

@@ -157,7 +157,7 @@
     <dimen name="sign_in_body_text_top_margin">40dp</dimen>
 
     <dimen name="sign_up_edit_text_margin_top">36dp</dimen>
-    <dimen name="sign_up_title_margin_top">20dp</dimen>
+    <dimen name="sign_up_title_margin_top">36dp</dimen>
     <dimen name="sign_up_button_top_margin">16dp</dimen>
     <dimen name="sign_up_form_error_margin_top">32dp</dimen>
     <dimen name="sign_up_form_error_text_width">160dp</dimen>
@@ -176,4 +176,6 @@
 
     <dimen name="follow_star_touchable_size">48dp</dimen>
     <dimen name="landing_margin_top">74dp</dimen>
+    <dimen name="sign_up_terms_text_width">214dp</dimen>
+    <dimen name="sign_up_email_top_margin">28dp</dimen>
 </resources>
