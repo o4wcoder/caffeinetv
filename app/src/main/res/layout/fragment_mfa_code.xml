@@ -10,63 +10,77 @@
             type="tv.caffeine.app.settings.authentication.TwoStepAuthViewModel" />
     </data>
 
-    <ScrollView
-        style="@style/NoBarScrollView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black"
-        tools:context=".login.MfaCodeFragment">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
+            style="@style/NoBarScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/sign_in_flow_start_padding"
-            android:paddingEnd="@dimen/sign_in_flow_end_padding">
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".login.MfaCodeFragment">
 
-            <TextView
-                style="@style/LoginText.Title"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_in_title_margin_top"
-                android:text="@string/two_step_auth_login_title" />
-
-            <TextView
-                style="@style/LoginText.SubTitle"
-                android:id="@+id/mfa_code_subtitle"
-                android:layout_width="@dimen/big_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_in_subtitle_top_margin"
-                android:text="@string/two_step_auth_login_subtitle" />
-
-
-            <tv.caffeine.app.ui.CaffeineEditTextLayout
-                android:id="@+id/mfa_code_edit_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/two_step_auth_login_code_input_top_margin"
-                android:hint="@string/mfa_code_hint"
-                android:imeOptions="actionGo"
-                android:inputType="number"
-                app:isDarkMode="true" />
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/sign_in_flow_start_padding"
+                android:paddingEnd="@dimen/sign_in_flow_end_padding">
 
-            <TextView
-                style="@style/LoginText.Link"
-                android:id="@+id/mfa_code_resend_email_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/login_mfa_resend_code_text_margin_top"
-                android:text="@string/two_step_auth_login_resend_link" />
+                <TextView
+                    style="@style/LoginText.Title"
+                    android:layout_width="@dimen/big_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sign_in_title_margin_top"
+                    android:paddingStart="@dimen/sign_in_text_align_start_padding"
+                    android:text="@string/two_step_auth_login_title" />
 
-            <Button
-                android:id="@+id/submit_mfa_code_button"
-                style="@style/LoginButton"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/two_step_auth_login_button_top_margin"
-                android:enabled="@{viewModel.verificationCodeButtonEnabled}"
-                android:text="@string/two_step_auth_login_continue_button" />
-        </LinearLayout>
-    </ScrollView>
+                <TextView
+                    style="@style/LoginText.SubTitle"
+                    android:id="@+id/mfa_code_subtitle"
+                    android:layout_width="@dimen/big_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sign_in_subtitle_top_margin"
+                    android:paddingStart="@dimen/sign_in_text_align_start_padding"
+                    android:text="@string/two_step_auth_login_subtitle" />
+
+                <tv.caffeine.app.ui.CaffeineEditTextLayout
+                    android:id="@+id/mfa_code_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/two_step_auth_login_code_input_top_margin"
+                    android:hint="@string/mfa_code_hint"
+                    android:imeOptions="actionGo"
+                    android:inputType="number"
+                    app:isDarkMode="true" />
+
+                <TextView
+                    style="@style/LoginText.Link"
+                    android:id="@+id/mfa_code_resend_email_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/login_mfa_resend_code_text_margin_top"
+                    android:paddingStart="@dimen/sign_in_text_align_start_padding"
+                    android:text="@string/two_step_auth_login_resend_link" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            style="@style/LoginButton"
+            android:id="@+id/submit_mfa_code_button"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/sign_in_button_margin_bottom"
+            android:enabled="@{viewModel.verificationCodeButtonEnabled}"
+            android:text="@string/two_step_auth_login_continue_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

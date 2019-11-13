@@ -366,7 +366,7 @@
     <string name="two_step_auth_login_title">2-Step\nVerification</string>
     <string name="two_step_auth_login_subtitle">Enter the verification code sent to your email.</string>
     <string name="two_step_auth_login_resend_link">Send Another Code</string>
-    <string name="two_step_auth_login_continue_button">Continue</string>
+    <string name="two_step_auth_login_continue_button">continue</string>
     <string name="enter_code_title">Enter Code</string>
     <string name="mfa_code_hint">Verification Code</string>
     <string name="submit_mfa_code">Submit</string>
