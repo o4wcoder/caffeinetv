@@ -273,6 +273,23 @@ class NewReyesController @AssistedInject constructor(
                 }
         feeds = newFeeds
         diff
+            .mapNotNull { stateChange ->
+                when (stateChange) {
+                    is StateChange.FeedRoleChanged -> stateChange.newFeed
+                    else -> null
+                }
+            }
+            .forEach { feed ->
+                val streamId = feed.stream.id
+                val audioTrack = audioTracks[streamId] ?: return@forEach
+                if (feed.capabilities.audio) {
+                    audioTrack.setVolume(feed.volume)
+                    audioTrack.setEnabled(!muteAudio && requestAudioFocus())
+                } else {
+                    audioTrack.setEnabled(false)
+                }
+            }
+        diff
                 .mapNotNull { stateChange ->
                     when (stateChange) {
                         is StateChange.FeedAdded -> stateChange.feed
@@ -289,8 +306,8 @@ class NewReyesController @AssistedInject constructor(
                         peerConnections[stream.id] = connectionInfo.peerConnection
                         peerConnectionStreamLabels[stream.id] = feed.streamLabel()
                         connectionInfo.audioTrack?.let {
+                            audioTracks[stream.id] = it
                             if (feed.capabilities.audio) {
-                                audioTracks[stream.id] = it
                                 it.setVolume(feed.volume)
                                 it.setEnabled(!muteAudio && requestAudioFocus())
                             } else {

@@ -85,7 +85,7 @@ fun <T> Response<T>.asCaffeineResult(): CaffeineResult<T> {
 }
 
 fun StageSubscription.Data.toNewReyesFeeds(): Map<String, NewReyes.Feed> {
-    val feeds = stage?.stage?.feeds?.filterNotNull() ?: return mapOf()
+    val feeds = stage.stage.feeds
     val contentRating = stage.stage.contentRating
     return feeds
         .map {
