@@ -194,6 +194,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             android:visibility="gone"
+            android:background="@drawable/gradient_toolbar_stage"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -203,7 +204,6 @@
                 android:id="@+id/stage_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/black"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark">
 
@@ -289,7 +289,6 @@
                 android:paddingStart="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_overlay_stage_top"
                 app:layout_constraintTop_toBottomOf="@id/weak_connection_container"
                 app:layout_constraintStart_toStartOf="parent">
 
