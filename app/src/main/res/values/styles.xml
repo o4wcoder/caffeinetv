@@ -318,11 +318,11 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="CaffeineEditTextLayoutHint" parent="CaffeineText.Medium" >
+    <style name="CaffeineEditTextLayoutHint" parent="CaffeineText.SemiBold" >
         <item name="android:textSize">@dimen/caffeine_edit_text_layout_edit_text_text_size</item>
     </style>
 
-    <style name="CaffeineEditTextLayoutError" parent="CaffeineText.Medium">
+    <style name="CaffeineEditTextLayoutError" parent="CaffeineText.SemiBold">
         <item name="android:textSize">@dimen/caffeine_edit_text_layout_bottom_view_text_size</item>
     </style>
     <style name="BigEditText" parent="CaffeineText.Light">
@@ -758,6 +758,10 @@
     <style name="LoginText.Link" parent="CaffeineText.DarkMode.MediumFont">
         <item name="android:textColor">@color/dark_gray</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="LoginText.Link.Emphasize" parent="LoginText.Link">
+        <item name="android:textColor">@color/light_gray</item>
     </style>
 
     <style name="LoginButton" parent="Button.Big.ReleaseUI.Dark" />
