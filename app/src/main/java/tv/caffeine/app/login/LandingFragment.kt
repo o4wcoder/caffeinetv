@@ -99,7 +99,7 @@ class LandingFragment @Inject constructor(
         binding.twitterSignInButton.setOnClickListener {
             analytics.trackEvent(AnalyticsEvent.SocialSignInClicked(IdentityProvider.twitter))
             firebaseAnalytics.logEvent(FirebaseEvent.ContinueWithTwitterClicked)
-            findNavController().navigate(LandingFragmentDirections.actionLandingFragmentToTwitterAuthFragment())
+            findNavController().safeNavigate(LandingFragmentDirections.actionLandingFragmentToTwitterAuthFragment())
         }
         twitterAuth.oauthResult.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let { result -> processTwitterOAuthResult(result) }

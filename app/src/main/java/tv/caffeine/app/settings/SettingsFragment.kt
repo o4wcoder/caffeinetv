@@ -261,7 +261,7 @@ class SettingsFragment @Inject constructor(
                         fragment.setTargetFragment(this, DISCONNECT_IDENTITY)
                         fragment.maybeShow(fragmentManager, "disconnectTwitter")
                     } else {
-                        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToTwitterAuthFragment())
+                        findNavController().safeNavigate(SettingsFragmentDirections.actionSettingsFragmentToTwitterAuthFragment())
                     }
                     true
                 }
