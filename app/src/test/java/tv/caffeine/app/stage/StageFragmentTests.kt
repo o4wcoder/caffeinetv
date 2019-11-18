@@ -23,6 +23,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.setApplicationInjector
 import tv.caffeine.app.profile.UserProfile
+import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stage.classic.ClassicChatFragment
 import tv.caffeine.app.stage.release.ReleaseChatFragment
@@ -30,6 +31,7 @@ import tv.caffeine.app.stage.release.ReleaseChatFragment
 private inline fun launchStageFragmentWithArgs(
     broadcastUsername: String,
     canSwipe: Boolean,
+    stageViewModelFactory: StageViewModel.Factory,
     crossinline action: (StageFragment) -> Unit
 ) {
     val app = ApplicationProvider.getApplicationContext<CaffeineApplication>()
@@ -38,7 +40,7 @@ private inline fun launchStageFragmentWithArgs(
     val arguments = StageFragmentArgs(broadcastUsername, canSwipe).toBundle()
     val navController = mockk<NavController>(relaxed = true)
     val scenario = launchFragmentInContainer(arguments, R.style.AppTheme) {
-        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), mockk(), mockk(relaxed = true)).also {
+        StageFragment(mockk(), mockk(relaxed = true), mockk(), mockk(), mockk(), stageViewModelFactory, mockk(relaxed = true)).also {
             it.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                 if (viewLifecycleOwner != null) {
                     // The fragment’s view has just been created
@@ -57,7 +59,9 @@ class StageFragmentVisibilityTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK private lateinit var releaseDesignConfig: ReleaseDesignConfig
-    @MockK lateinit var userProfile: UserProfile
+    @MockK private lateinit var userProfile: UserProfile
+    @MockK private lateinit var stageViewModelFactory: StageViewModel.Factory
+    @MockK(relaxed = true) private lateinit var followManager: FollowManager
 
     lateinit var subject: StageFragment
 
@@ -66,9 +70,14 @@ class StageFragmentVisibilityTests {
         MockKAnnotations.init(this)
         every { releaseDesignConfig.isReleaseDesignActive() } returns true
         every { userProfile.caid } returns "CAID123"
-        launchStageFragmentWithArgs("username", true) {
+        val stageViewModel = StageViewModel("username", releaseDesignConfig, ::onAvatarButtonClick, followManager)
+        every { stageViewModelFactory.create(any(), any(), any()) } returns stageViewModel
+        launchStageFragmentWithArgs("username", true, stageViewModelFactory) {
             subject = it
         }
+    }
+
+    private fun onAvatarButtonClick() {
     }
 
     @Test
@@ -376,11 +385,14 @@ class StageFragmentSwipeNotAllowedTests {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     lateinit var subject: StageFragment
+    @MockK(relaxed = true) private lateinit var stageViewModel: StageViewModel
+    @MockK private lateinit var stageViewModelFactory: StageViewModel.Factory
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        launchStageFragmentWithArgs("ABC", false) {
+        every { stageViewModelFactory.create(any(), any(), any()) } returns stageViewModel
+        launchStageFragmentWithArgs("ABC", false, stageViewModelFactory) {
             subject = it
         }
     }

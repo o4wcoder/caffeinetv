@@ -442,6 +442,7 @@
                     android:layout_height="@dimen/stage_offline_icon_size"
                     android:layout_marginEnd="16dp"
                     android:background="@{releaseIsFollowing ? @drawable/star_filled : @drawable/star_outline}"
+                    android:visibility="@{viewModel.followButtonVisibility}"
                     android:text="@string/follow_button"
                     app:layout_constraintBottom_toBottomOf="@id/avatar_image_view"
                     app:layout_constraintEnd_toStartOf="@id/avatar_image_view"

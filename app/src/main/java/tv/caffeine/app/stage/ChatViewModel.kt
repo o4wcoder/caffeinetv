@@ -82,6 +82,7 @@ class ChatViewModel @Inject constructor(
     private val preferredPositions = (0 until maxVisibleReactions).toList()
     private val _messages = MutableLiveData<List<Message>>()
 
+    // TODO: [AND-669] Instantiate the ChatViewModel with the broadcaster username.
     private var broadcasterUserName = ""
 
     private val _userProfile = MutableLiveData<UserProfile>()
@@ -184,7 +185,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun getButtonVisibility() = if (userProfile.value?.isMe == true) View.GONE else View.VISIBLE
+    @VisibleForTesting fun getButtonVisibility() = if (followManager.isSelf(broadcasterUserName)) View.INVISIBLE else View.VISIBLE
 
     private val stageReducer = StageReducer()
 

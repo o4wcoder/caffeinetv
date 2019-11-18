@@ -60,8 +60,8 @@ class StageFragment @Inject constructor(
     private val followManager: FollowManager,
     private val picasso: Picasso,
     private val clock: Clock,
-    @VisibleForTesting
-    val releaseDesignConfig: ReleaseDesignConfig
+    private val stageViewModelFactory: StageViewModel.Factory,
+    @VisibleForTesting val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineFragment(R.layout.fragment_stage), ChatActionCallback {
 
     @Inject lateinit var stageBroadcastProfilePagerFragmentProvider: Provider<StageBroadcastProfilePagerFragment>
@@ -148,7 +148,7 @@ class StageFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentStageBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
-        stageViewModel = StageViewModel(releaseDesignConfig, ::onAvatarButtonClick)
+        stageViewModel = stageViewModelFactory.create(broadcasterUsername, releaseDesignConfig, ::onAvatarButtonClick)
         binding.viewModel = stageViewModel
 
         observeFollowEvents()
@@ -207,7 +207,6 @@ class StageFragment @Inject constructor(
                     }
                 }
             }
-            stageViewModel.updateIsMe(userProfile.isMe)
             setupFollowClickListener(userProfile)
             updateBottomFragmentForOnlineStatus(userProfile)
             updateBroadcastOnlineState(userProfile.isLive)
@@ -399,7 +398,7 @@ class StageFragment @Inject constructor(
         binding.gameLogoImageView.isVisible = stageViewModel.getGameLogoVisibility()
         binding.avatarOverlapLiveBadge.isInvisible = !stageViewModel.getAvatarOverlapLiveBadgeVisibility()
         binding.classicLiveIndicatorTextView.isInvisible = !stageViewModel.getClassicLiveIndicatorTextViewVisibility()
-        binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnnectionContainerVisibility()
+        binding.weakConnectionContainer.isVisible = stageViewModel.getWeakConnectionContainerVisibility()
         binding.swipeButton.isVisible = stageViewModel.getSwipeButtonVisibility()
     }
 

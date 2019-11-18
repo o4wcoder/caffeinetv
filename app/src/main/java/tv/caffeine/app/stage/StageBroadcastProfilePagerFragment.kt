@@ -3,6 +3,7 @@ package tv.caffeine.app.stage
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -12,6 +13,7 @@ import com.squareup.inject.assisted.AssistedInject
 import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.databinding.FragmentStageBroadcastProfilePagerBinding
+import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowersFragmentArgs
@@ -23,7 +25,8 @@ import javax.inject.Provider
 private const val NUM_DETAILS_TABS = 3
 
 class StageBroadcastProfilePagerFragment @Inject constructor(
-    private val adapterFactory: StageBroadcastProfilePagerAdapter.Factory
+    private val adapterFactory: StageBroadcastProfilePagerAdapter.Factory,
+    private val followManager: FollowManager
 ) : CaffeineFragment(R.layout.fragment_stage_broadcast_profile_pager) {
 
     private lateinit var binding: FragmentStageBroadcastProfilePagerBinding
@@ -33,6 +36,8 @@ class StageBroadcastProfilePagerFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStageBroadcastProfilePagerBinding.bind(view)
         binding.stageBroadcastDetailsViewPager.adapter = adapterFactory.create(childFragmentManager, args.caid, args.broadcastUsername)
+        // TODO: [AND-670] Create a view model in StageBroadcastProfilePagerFragment.
+        binding.giftButton.visibility = getGiftButtonVisibility()
         binding.giftButton.setOnClickListener { processChatAction(ChatAction.DIGITAL_ITEM) }
         binding.reactButton.setOnClickListener { processChatAction(ChatAction.MESSAGE) }
         binding.shareButton.setOnClickListener { processChatAction(ChatAction.SHARE) }
@@ -54,6 +59,8 @@ class StageBroadcastProfilePagerFragment @Inject constructor(
             resources.getQuantityString(R.plurals.numbered_stage_broadcast_followers_tab, followersCount, it)
         }
             ?: getString(R.string.stage_broadcast_followers_tab)
+
+    @VisibleForTesting fun getGiftButtonVisibility() = if (followManager.isSelf(args.caid)) View.INVISIBLE else View.VISIBLE
 }
 
 class StageBroadcastProfilePagerAdapter @AssistedInject constructor(
