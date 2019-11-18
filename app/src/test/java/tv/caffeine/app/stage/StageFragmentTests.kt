@@ -266,7 +266,7 @@ class StageFragmentVisibilityTests {
     fun `when profile is showing switch to chat section when profile toggle is clicked`() {
         every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
         val isProfileShowing = true
-        subject.onProfileToggleButtonClick(isProfileShowing, "CAID123")
+        subject.onProfileToggleButtonClick(true, isProfileShowing, "CAID123")
         val profileFragment =
             subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as StageBroadcastProfilePagerFragment
         assertNotNull(profileFragment)
@@ -276,10 +276,30 @@ class StageFragmentVisibilityTests {
     fun `when profile is not showing switch to profile section when profile toggle is clicked`() {
         every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
         val isProfileShowing = false
-        subject.onProfileToggleButtonClick(isProfileShowing, "CAID123")
+        subject.onProfileToggleButtonClick(true, isProfileShowing, "CAID123")
         val chatFragment =
             subject.childFragmentManager.findFragmentById(R.id.bottom_fragment_container) as ChatFragment
         assertNotNull(chatFragment)
+    }
+
+    @Test
+    fun `when profile is not showing and stage is offline overlays still visible when profile toggle is clicked`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        val isProfileShowing = false
+        val isLive = false
+        subject.setupOverlays(isLive)
+        subject.onProfileToggleButtonClick(isLive, isProfileShowing, "CAID123")
+        assertTrue(subject.binding.stageAppbar.isVisible)
+    }
+
+    @Test
+    fun `when profile is not showing and stage is live overlays are not visible when profile toggle is clicked`() {
+        every { subject.releaseDesignConfig.isReleaseDesignActive() } returns true
+        val isProfileShowing = false
+        val isLive = true
+        subject.setupOverlays(isLive)
+        subject.onProfileToggleButtonClick(isLive, isProfileShowing, "CAID123")
+        assertFalse(subject.binding.stageAppbar.isVisible)
     }
 
     @Test

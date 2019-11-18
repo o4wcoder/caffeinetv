@@ -255,7 +255,7 @@ class StageFragment @Inject constructor(
         binding.userProfile?.let {
             if (releaseDesignConfig.isReleaseDesignActive()) {
                 isProfileShowing = !isProfileShowing
-                onProfileToggleButtonClick(isProfileShowing, it.caid)
+                onProfileToggleButtonClick(it.isLive, isProfileShowing, it.caid)
             } else {
                 findNavController().safeNavigate(
                     MainNavDirections.actionGlobalProfileFragment(it.caid)
@@ -265,12 +265,14 @@ class StageFragment @Inject constructor(
     }
 
     @VisibleForTesting
-    fun onProfileToggleButtonClick(isProfileShowing: Boolean, caid: CAID) {
+    fun onProfileToggleButtonClick(isLive: Boolean, isProfileShowing: Boolean, caid: CAID) {
         if (isProfileShowing) {
             overlayVisibilityJob?.cancel()
             updateBottomFragment(BottomContainerType.PROFILE, caid)
         } else {
-            hideOverlays()
+            if (isLive) {
+                hideOverlays()
+            }
             updateBottomFragment(BottomContainerType.CHAT, caid)
         }
     }
