@@ -353,11 +353,11 @@
     <string name="two_step_auth_settings_message">Use Two-Step Authentication</string>
     <string name="two_step_auth_email_title">Code Emailed</string>
     <string name="two_step_auth_email_message">A verification code was emailed to %1$s. Please enter the code below or <![CDATA[<a href=resend_email>resend email</a>]]>.</string>
-    <string name="two_step_auth_email_button">Next</string>
+    <string name="two_step_auth_email_button">next</string>
     <string name="two_step_auth_email_code_error">Your code was incorrect. Please try again.</string>
     <string name="two_step_auth_done_title">Confirmed</string>
     <string name="two_step_auth_done_message">Two-Step Authentication is now enabled.</string>
-    <string name="two_step_auth_done_button">Done</string>
+    <string name="two_step_auth_done_button">done</string>
     <string name="two_step_auth_dialog_off_message">Are you sure you want to disable Two-Step Authentication?</string>
     <string name="two_step_auth_dialog_off_disable_button">Disable</string>
     <string name="two_step_auth_dialog_on_message">Do you want to enable Two-Step Authentication?</string>
