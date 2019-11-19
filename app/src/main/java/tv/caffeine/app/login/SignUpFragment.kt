@@ -23,6 +23,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.safetynet.SafetyNet
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -185,15 +186,15 @@ class SignUpFragment @Inject constructor(
         clearErrors()
         val dob = arkoseViewModel.signUpBdayApiDate ?: ""
         // TODO: better error handling before calling the API
-        viewModel.signIn(dob, recaptchaToken, arkoseToken, iid).observe(viewLifecycleOwner, Observer { event ->
-            event.getContentIfNotHandled()?.let { result ->
-                when (result) {
-                    is CaffeineResult.Success -> onSuccess(result.value.credentials)
-                    is CaffeineResult.Error -> onError(result.error)
-                    is CaffeineResult.Failure -> onFailure(result.throwable)
-                }
+        val signUpBody = viewModel.getSignUpBody(dob, recaptchaToken, arkoseToken, iid)
+        launch {
+            val result = viewModel.signIn(signUpBody)
+            when (result) {
+                is CaffeineResult.Success -> onSuccess(result.value.credentials)
+                is CaffeineResult.Error -> onError(result.error)
+                is CaffeineResult.Failure -> onFailure(result.throwable)
             }
-        })
+        }
     }
 
     @UiThread
