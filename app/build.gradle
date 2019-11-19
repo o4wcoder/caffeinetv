@@ -173,10 +173,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     // In-App Purchases
-    debugImplementation('com.pixiteapps.billingx:billingx:0.8.2') {
-        exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
-    }
-    releaseImplementation 'com.android.billingclient:billing:1.2'
+    implementation 'com.android.billingclient:billing:2.0.3'
 
     // GraphQL
     implementation 'com.apollographql.apollo:apollo-runtime:1.0.1'
