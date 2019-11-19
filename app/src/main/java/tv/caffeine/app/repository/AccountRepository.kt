@@ -8,6 +8,7 @@ import tv.caffeine.app.api.AccountUpdateResult
 import tv.caffeine.app.api.AccountsService
 import tv.caffeine.app.api.ApiError
 import tv.caffeine.app.api.ApiErrorResult
+import tv.caffeine.app.api.ConfirmEmailBody
 import tv.caffeine.app.api.ResetPasswordBody
 import tv.caffeine.app.api.SignUpBody
 import tv.caffeine.app.api.UpdateAccountBody
@@ -26,8 +27,17 @@ class AccountRepository @Inject constructor(
     private val resources: Resources,
     private val gson: Gson
 ) {
+
+    suspend fun confirmEmail(body: ConfirmEmailBody) =
+        accountsService.confirmEmail(body).awaitAndParseErrors(gson)
+
     suspend fun resendVerification(): CaffeineEmptyResult {
         return accountsService.resendVerification().awaitEmptyAndParseErrors(gson)
+    }
+
+    suspend fun resetPassword(code: String, password: String): CaffeineEmptyResult {
+        val update = ResetPasswordBody(code, password)
+        return accountsService.resetPassword(update).awaitEmptyAndParseErrors(gson)
     }
 
     suspend fun signUp(signUpBody: SignUpBody) =
@@ -56,10 +66,5 @@ class AccountRepository @Inject constructor(
             tokenStore.storeCredentials(result.value.credentials)
         }
         return result
-    }
-
-    suspend fun resetPassword(code: String, password: String): CaffeineEmptyResult {
-        val update = ResetPasswordBody(code, password)
-        return accountsService.resetPassword(update).awaitEmptyAndParseErrors(gson)
     }
 }

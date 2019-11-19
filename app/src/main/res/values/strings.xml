@@ -26,7 +26,7 @@
 
     <string name="sign_up_title">Let\'s get\nstarted</string>
     <string name="sign_up_something_went_wrong_try_email">Something went wrong. Try email?</string>
-    <string name="sign_up_something_went_wrong_button_text">let\'s go</string>
+    <string name="lets_go">let\'s go</string>
     <string name="sign_up_description">Create an account to watch and create live broadcasts on Caffeine.</string>
     <string name="sign_up_failure">A system error occurred, please try again to sign up</string>
     <string name="sign_up_password_hint">Create a Password</string>
@@ -297,7 +297,11 @@
 
     <!-- Confirm email -->
     <string name="ok">OK</string>
-    <string name="verifying_your_email">Verifying your email…</string>
+    <string name="success">Success!</string>
+    <string name="confirming_your_account">Confirming your account</string>
+    <string name="somethings_not_right">Something\'s\nnot right</string>
+    <string name="we_couldnt_confirm_your_account">We couldn\’t confirm your account.\nTry resending another\nconfirmation email.</string>
+    <string name="could_not_send_email">We couldn\'t send the email right now, please try again later.</string>
     <string name="continue_to_use_app">Continue</string>
     <string name="email_verification_success">Email verification succeeded</string>
     <string name="email_verification_record_not_found">Record not found</string>

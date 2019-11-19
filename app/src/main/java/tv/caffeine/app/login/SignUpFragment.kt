@@ -107,7 +107,7 @@ class SignUpFragment @Inject constructor(
             binding.signUpTitleText.text =
                 if (args.showErrorText) getString(R.string.sign_up_something_went_wrong_try_email) else getString(R.string.sign_up_title)
             binding.signUpButton.text =
-                if (args.showErrorText) getString(R.string.sign_up_something_went_wrong_button_text) else getString(R.string.sign_up_button)
+                if (args.showErrorText) getString(R.string.lets_go) else getString(R.string.sign_up_button)
         }
 
         arkoseViewModel.arkoseToken.observe(viewLifecycleOwner, Observer { event ->

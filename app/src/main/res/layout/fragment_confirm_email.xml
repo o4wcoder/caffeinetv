@@ -1,60 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        style="@style/Button.Big.FixedSize"
-        android:id="@+id/continue_button"
-        android:layout_marginBottom="24dp"
-        android:text="@string/continue_to_use_app"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible"/>
+    <data>
+
+        <variable
+            name="viewModel"
+            type="tv.caffeine.app.login.ConfirmEmailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/caffeine_wordmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/caffeine_logo_content_description"
+            android:layout_marginTop="@dimen/margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/caffeine_wordmark"/>
+
+        <TextView
+            style="@style/SignUpText.Title"
+            android:id="@+id/title_text_view"
+            android:layout_width="@dimen/big_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/email_confirm_margin_start"
+            android:layout_marginTop="@dimen/sign_up_title_margin_top"
+            android:text="@{viewModel.titleText}"
+            android:visibility="@{viewModel.titleVisiblity}"
+            app:layout_constraintTop_toBottomOf="@id/caffeine_wordmark"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/confirming_your_account"/>
+
+        <TextView
+            style="@style/ConfirmEmailSubtitle"
+            android:id="@+id/subtitle_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/email_confirm_margin_end"
+            android:layout_marginTop="@dimen/email_confirm_margin_end"
+            android:lineSpacingMultiplier=".8"
+            android:text="@{viewModel.subtitleText}"
+            android:visibility="@{viewModel.subtitleVisibility}"
+            app:layout_constraintTop_toBottomOf="@id/title_text_view"
+            app:layout_constraintStart_toStartOf="@id/title_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="@string/we_couldnt_confirm_your_account"
+            tools:visibility="visible"/>
+
+        <TextView
+            style="@style/ConfirmEmailSubtitle"
+            android:id="@+id/email_confirmation_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/email_confirm_margin_end"
+            android:layout_marginTop="@dimen/email_confirm_email_sent_margin_top"
+            android:lineSpacingMultiplier=".8"
+            android:visibility="@{viewModel.emailConfirmationVisibility}"
+            app:layout_constraintTop_toBottomOf="@id/subtitle_text_view"
+            app:layout_constraintStart_toStartOf="@id/title_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:emailAddress="@{viewModel.userEmailAddress}"
+            tools:text="@string/sending_verification_email_message"
+            tools:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/success_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/email_confirm_success_margin_top"
+            android:gravity="center"
+            android:visibility="@{viewModel.successVisibility}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                style="@style/SignUpText.Title"
+                android:id="@+id/success_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/success"/>
+
+            <ImageView
+                android:id="@+id/caffeine_logo_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/caffeine_logo_content_description"
+                app:srcCompat="@drawable/caffeine_logo_80"/>
+        </LinearLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            style="@style/AnimatedLoadingIndicator"
+            android:id="@+id/loading_indicator"
+            android:visibility="@{viewModel.loadingVisibility}"
+            android:layout_width="@dimen/animated_loading_indicator_size"
+            android:layout_height="@dimen/animated_loading_indicator_size"
+            android:layout_gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible"/>
+
+        <Button
+            style="@style/SignUpButton"
+            android:id="@+id/continue_button"
+            android:layout_marginBottom="@dimen/sign_in_button_margin_bottom"
+            android:text="@{viewModel.buttonText}"
+            android:visibility="@{viewModel.buttonVisibility}"
+            android:enabled="@{viewModel.buttonEnabled}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible"
+            tools:text="@string/lets_go"/>
 
 
-    <ImageView
-        android:id="@+id/caffeine_logo_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:contentDescription="@string/caffeine_logo_content_description"
-        app:srcCompat="@drawable/caffeine_logo_80"
-        app:layout_constraintBottom_toTopOf="@+id/title_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
 
-    <TextView
-        style="@style/UnauthScreenTitle"
-        android:id="@+id/title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/verified_icon_padding"
-        android:text="@string/verifying_your_email"
-        app:layout_constraintBottom_toTopOf="@+id/subtitle_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caffeine_logo_image_view" />
-
-    <TextView
-        style="@style/FormErrorText"
-        android:id="@+id/subtitle_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/verified_icon_padding"
-        android:gravity="center"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_text_view"
-        tools:text="Success! You can now follow more people!"
-        tools:visibility="visible"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>

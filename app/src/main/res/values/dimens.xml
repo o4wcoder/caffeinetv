@@ -178,4 +178,8 @@
     <dimen name="landing_margin_top">74dp</dimen>
     <dimen name="sign_up_terms_text_width">214dp</dimen>
     <dimen name="sign_up_email_top_margin">28dp</dimen>
+    <dimen name="email_confirm_margin_start">40dp</dimen>
+    <dimen name="email_confirm_margin_end">48dp</dimen>
+    <dimen name="email_confirm_email_sent_margin_top">56dp</dimen>
+    <dimen name="email_confirm_success_margin_top">160dp</dimen>
 </resources>

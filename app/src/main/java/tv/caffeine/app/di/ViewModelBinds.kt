@@ -10,6 +10,7 @@ import tv.caffeine.app.explore.ExploreViewModel
 import tv.caffeine.app.lobby.FeaturedProgramGuideViewModel
 import tv.caffeine.app.lobby.LobbyViewModel
 import tv.caffeine.app.login.ArkoseViewModel
+import tv.caffeine.app.login.ConfirmEmailViewModel
 import tv.caffeine.app.login.LegalAgreementViewModel
 import tv.caffeine.app.login.ResetPasswordViewModel
 import tv.caffeine.app.login.SignInViewModel
@@ -210,4 +211,9 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(ResetPasswordViewModel::class)
     abstract fun bindResetPasswordViewModel(viewModel: ResetPasswordViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ConfirmEmailViewModel::class)
+    abstract fun bindConfirmEmailViewModel(viewModel: ConfirmEmailViewModel): ViewModel
 }

@@ -745,6 +745,7 @@
 
     <style name="LoginText.Title" parent="CaffeineText.DarkMode.BoldFont">
         <item name="android:textSize">30sp</item>
+        <item name="android:lineSpacingMultiplier">0.8</item>
     </style>
 
     <style name="LoginText.SubTitle" parent="CaffeineText.DarkMode.MediumFont">
@@ -769,6 +770,7 @@
 
     <style name="SignUpText.Title" parent="CaffeineText.Bold">
         <item name="android:textSize">30sp</item>
+        <item name="android:lineSpacingMultiplier">0.8</item>
     </style>
 
     <style name="SignUpText.SubTitle" parent="CaffeineText.Medium">
@@ -799,6 +801,10 @@
     <style name="FullScreenError.SubTitle" parent="CaffeineText.Medium">
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">start</item>
+    </style>
+
+    <style name="ConfirmEmailSubtitle" parent="FullScreenError.SubTitle">
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="FullScreenErrorButton" parent="Button.Big.LightMode"/>
