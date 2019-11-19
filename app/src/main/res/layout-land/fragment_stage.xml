@@ -262,6 +262,7 @@
                     tools:visibility="visible"/>
 
                 <ImageView
+                    style="@style/StageActionButton"
                     android:id="@+id/swipe_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

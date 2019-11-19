@@ -341,6 +341,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/avatar_overlap_live_badge"/>
 
                 <ImageView
+                    style="@style/StageActionButton"
                     android:id="@+id/swipe_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

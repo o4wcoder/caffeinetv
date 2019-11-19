@@ -689,9 +689,9 @@
         <item name="android:textColor">@color/chat_bubble_text_light</item>
     </style>
 
-    <style name="ChatReactButtonText" parent="@style/CaffeineText.Release">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">12sp</item>
+    <style name="StageActionButton" parent="@android:style/Widget.Material.ActionButton">
+        <item name="android:theme">@android:style/ThemeOverlay.Material.Dark</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
     <style name="StageToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActionBarOverlay">true</item>

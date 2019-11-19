@@ -377,7 +377,7 @@
     <string name="mfa_status_off">Off</string>
 
     <!-- Chat -->
-    <string name="chat_react_button">react</string>
+    <string name="chat_react_button_content_description">react</string>
     <string name="upvote_button_content_description">upvote</string>
     <string name="reply_button_content_description">reply</string>
 
