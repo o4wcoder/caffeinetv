@@ -167,7 +167,10 @@ fun Fragment.showSnackbar(text: CharSequence) {
 
 fun DialogFragment.maybeShow(fragmentManager: FragmentManager?, tag: String) {
     if (fragmentManager == null) return
-    show(fragmentManager, tag)
+    fragmentManager.beginTransaction().apply {
+        add(this@maybeShow, tag)
+        commitNowAllowingStateLoss()
+    }
 }
 
 fun convertLinks(
