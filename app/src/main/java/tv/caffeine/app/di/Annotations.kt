@@ -46,10 +46,6 @@ annotation class ThemeNotFollowedChat
 @Retention(AnnotationRetention.RUNTIME)
 annotation class CaffeineApi(val api: Service)
 
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ClientType(val authorizationType: AuthorizationType)
-
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey

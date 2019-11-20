@@ -52,7 +52,12 @@ import tv.caffeine.app.webrtc.StageSurfaceViewRendererTuner
 import tv.caffeine.app.webrtc.SurfaceViewRendererTuner
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+private annotation class ClientType(val authorizationType: AuthorizationType)
 
 enum class Service {
     MainApi, RefreshToken, Payments, Realtime, Events, ContentGuide
