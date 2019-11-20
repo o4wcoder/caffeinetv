@@ -14,6 +14,7 @@ import tv.caffeine.app.R
 import tv.caffeine.app.api.model.CAID
 import tv.caffeine.app.databinding.FragmentStageBroadcastProfilePagerBinding
 import tv.caffeine.app.session.FollowManager
+import tv.caffeine.app.ui.AlertDialogViewModel
 import tv.caffeine.app.ui.CaffeineFragment
 import tv.caffeine.app.users.FollowersFragment
 import tv.caffeine.app.users.FollowersFragmentArgs
@@ -46,7 +47,11 @@ class StageBroadcastProfilePagerFragment @Inject constructor(
     }
 
     private fun processChatAction(chatAction: ChatAction) {
-        (parentFragment as? StageFragment)?.processChatAction(chatAction)
+        if (isUserEmailVerified() || chatAction != ChatAction.MESSAGE) {
+            (parentFragment as? StageFragment)?.processChatAction(chatAction)
+        } else {
+            showVerifyEmailDialog(AlertDialogViewModel.VerificationType.React)
+        }
     }
 
     fun getFollowingTabTitle() =
