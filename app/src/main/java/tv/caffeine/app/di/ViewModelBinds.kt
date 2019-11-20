@@ -30,7 +30,6 @@ import tv.caffeine.app.settings.SettingsViewModel
 import tv.caffeine.app.settings.TransactionHistoryViewModel
 import tv.caffeine.app.settings.authentication.TwoStepAuthViewModel
 import tv.caffeine.app.social.TwitterAuthViewModel
-import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.FriendsWatchingViewModel
 import tv.caffeine.app.stage.SendDigitalItemViewModel
@@ -151,11 +150,6 @@ abstract class ViewModelBinds {
     @IntoMap
     @ViewModelKey(UpdateProfileViewModel::class)
     abstract fun bindUpdateProfileViewModel(viewModel: UpdateProfileViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ChatViewModel::class)
-    abstract fun bindChatViewModel(viewModel: ChatViewModel): ViewModel
 
     @Binds
     @IntoMap

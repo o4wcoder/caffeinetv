@@ -55,6 +55,7 @@ class ChatViewModelTests {
         every { resources.getInteger(any()) } returns 2
         every { followManager.isSelf(any()) } returns false
         subject = ChatViewModel(
+            "broadcaster",
             context,
             tokenStore,
             getSignedUserDetailsUseCase,
