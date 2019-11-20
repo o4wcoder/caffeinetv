@@ -11,7 +11,7 @@
         <item name="android:paddingStart">@dimen/lobby_card_side_padding_release</item>
         <item name="android:paddingEnd">@dimen/lobby_card_side_padding_release</item>
         <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingBottom">4dp</item>
     </style>
     <style name="LobbySubtitleRelease" parent="LobbyHeaderRelease">
         <item name="android:fontFamily">@font/poppins_light</item>
