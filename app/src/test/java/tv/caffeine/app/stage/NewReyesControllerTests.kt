@@ -59,8 +59,6 @@ class NewReyesControllerTests {
             mockk(),
             mockk(),
             mockk(),
-            mockk(),
-            mockk(),
             "username",
             shouldMuteAudio)
         val audioTracks: MutableMap<String, AudioTrack> = ConcurrentHashMap()

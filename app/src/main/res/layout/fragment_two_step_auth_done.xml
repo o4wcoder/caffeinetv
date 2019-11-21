@@ -15,16 +15,17 @@
             android:tint="@color/caffeine_blue"
             app:srcCompat="@drawable/ic_check_black_24dp"/>
         <TextView
+            style="@style/CaffeineText.Release"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="@dimen/two_step_auth_top_margin"
             android:text="@string/two_step_auth_done_message"/>
         <Button
+            style="@style/Button.Big.LightMode"
             android:id="@+id/done_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
+            android:layout_gravity="center"
             android:text="@string/two_step_auth_done_button"/>
     </LinearLayout>
 </layout>

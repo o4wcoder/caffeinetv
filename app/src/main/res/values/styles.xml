@@ -13,7 +13,7 @@
     <style name="BaseAppTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
-        <item name="colorAccent">@color/color_accent</item>
+        <item name="colorAccent">@color/pure_blue</item>
         <item name="materialButtonStyle">@style/Button</item>
 
         <item name="android:statusBarColor">@color/status_bar</item>
@@ -25,17 +25,17 @@
 
         <item name="android:fragmentEnterTransition">@android:transition/slide_right</item>
         <item name="android:fragmentExitTransition">@android:transition/slide_left</item>
-    </style>
 
-    <style name="AppTheme" parent="BaseAppTheme"/>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
 
-    <style name="AppTheme.Release">
-        <item name="colorAccent">@color/pure_blue</item>
         <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textColorSecondary">@color/black</item> <!-- the back arrow in the toolbar -->
     </style>
+
+    <style name="AppTheme" parent="BaseAppTheme"/>
 
     <!-- Dialog -->
     <style name="AlertDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
@@ -318,11 +318,11 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="CaffeineEditTextLayoutHint" parent="CaffeineText.Medium" >
+    <style name="CaffeineEditTextLayoutHint" parent="CaffeineText.SemiBold" >
         <item name="android:textSize">@dimen/caffeine_edit_text_layout_edit_text_text_size</item>
     </style>
 
-    <style name="CaffeineEditTextLayoutError" parent="CaffeineText.Medium">
+    <style name="CaffeineEditTextLayoutError" parent="CaffeineText.SemiBold">
         <item name="android:textSize">@dimen/caffeine_edit_text_layout_bottom_view_text_size</item>
     </style>
     <style name="BigEditText" parent="CaffeineText.Light">
@@ -508,8 +508,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.MainActivity" parent="AppTheme.NoActionBar"/>
-
     <style name="ActionBarTitle" parent="@style/TextAppearance.MaterialComponents.Headline6"/>
     <style name="ActionBarActionText" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">@color/caffeine_blue</item>
@@ -691,9 +689,9 @@
         <item name="android:textColor">@color/chat_bubble_text_light</item>
     </style>
 
-    <style name="ChatReactButtonText" parent="@style/CaffeineText.Release">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">12sp</item>
+    <style name="StageActionButton" parent="@android:style/Widget.Material.ActionButton">
+        <item name="android:theme">@android:style/ThemeOverlay.Material.Dark</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
     <style name="StageToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActionBarOverlay">true</item>
@@ -747,6 +745,7 @@
 
     <style name="LoginText.Title" parent="CaffeineText.DarkMode.BoldFont">
         <item name="android:textSize">30sp</item>
+        <item name="android:lineSpacingMultiplier">0.8</item>
     </style>
 
     <style name="LoginText.SubTitle" parent="CaffeineText.DarkMode.MediumFont">
@@ -760,6 +759,10 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="LoginText.Link.Emphasize" parent="LoginText.Link">
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
+
     <style name="LoginButton" parent="Button.Big.ReleaseUI.Dark" />
 
     <!--Sign Up -->
@@ -767,6 +770,7 @@
 
     <style name="SignUpText.Title" parent="CaffeineText.Bold">
         <item name="android:textSize">30sp</item>
+        <item name="android:lineSpacingMultiplier">0.8</item>
     </style>
 
     <style name="SignUpText.SubTitle" parent="CaffeineText.Medium">
@@ -797,6 +801,10 @@
     <style name="FullScreenError.SubTitle" parent="CaffeineText.Medium">
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">start</item>
+    </style>
+
+    <style name="ConfirmEmailSubtitle" parent="FullScreenError.SubTitle">
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="FullScreenErrorButton" parent="Button.Big.LightMode"/>

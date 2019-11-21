@@ -15,7 +15,6 @@ import tv.caffeine.app.lobby.LobbyDetailFragment
 import tv.caffeine.app.lobby.LobbyFragment
 import tv.caffeine.app.lobby.LobbySwipeFragment
 import tv.caffeine.app.login.ArkoseFragment
-import tv.caffeine.app.login.ConfirmEmailFragment
 import tv.caffeine.app.login.ForgotFragment
 import tv.caffeine.app.login.LandingFragment
 import tv.caffeine.app.login.MfaCodeFragment
@@ -195,11 +194,6 @@ abstract class FragmentBindingModule {
     @IntoMap
     @FragmentKey(TwitterAuthForSettings::class)
     abstract fun bindTwitterAuthForSettings(fragment: TwitterAuthForSettings): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(ConfirmEmailFragment::class)
-    abstract fun bindConfirmEmailFragment(fragment: ConfirmEmailFragment): Fragment
 
     @Binds
     @IntoMap

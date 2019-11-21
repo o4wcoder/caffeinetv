@@ -34,7 +34,6 @@
                     android:id="@+id/sign_up_title_text"
                     android:layout_width="@dimen/big_button_width"
                     android:layout_height="wrap_content"
-                    android:lineSpacingMultiplier=".8"
                     android:layout_marginTop="@dimen/sign_up_title_margin_top"
                     android:layout_marginStart="@dimen/sign_in_text_align_start_padding"
                     android:text="@string/sign_up_title"/>

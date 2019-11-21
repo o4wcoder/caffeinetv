@@ -84,9 +84,9 @@
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginEnd="@dimen/margin"
                 android:orientation="vertical"
-                app:layout_constraintEnd_toStartOf="@id/follower_container"
+                app:layout_constraintStart_toEndOf="@id/follower_container"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_edit_text">
 
                 <TextView
@@ -113,9 +113,9 @@
                 android:layout_marginStart="@dimen/margin"
                 android:layout_marginTop="@dimen/margin"
                 android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@id/following_container"
+                app:layout_constraintEnd_toStartOf="@id/following_container"
                 app:layout_constraintTop_toBottomOf="@+id/name_edit_text">
 
                 <TextView

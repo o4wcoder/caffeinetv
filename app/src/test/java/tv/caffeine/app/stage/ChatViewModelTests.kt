@@ -53,7 +53,9 @@ class ChatViewModelTests {
         MockKAnnotations.init(this)
         every { context.resources } returns resources
         every { resources.getInteger(any()) } returns 2
+        every { followManager.isSelf(any()) } returns false
         subject = ChatViewModel(
+            "broadcaster",
             context,
             tokenStore,
             getSignedUserDetailsUseCase,
@@ -128,49 +130,29 @@ class ChatViewModelTests {
     }
 
     @Test
-    fun `user profile is me then hide gift button`() {
-        val mockUserProfile = mockk<UserProfile>()
-        every { mockUserProfile.isMe } returns true
-        coEvery { profileRepository.getUserProfile("username") } returns mockUserProfile
-        subject.loadUserProfile("username")
-        subject.userProfile.observeForTesting { userProfile ->
-            assertEquals(subject.getGiftButtonVisibility(), View.GONE)
-        }
+    fun `the gift button is visible if the broadcaster is not me`() {
+        every { followManager.isSelf(any()) } returns false
+        assertEquals(View.VISIBLE, subject.getGiftButtonVisibility())
     }
 
     @Test
-    fun `user profile is not me then show gift button`() {
-        val mockUserProfile = mockk<UserProfile>()
-        every { mockUserProfile.isMe } returns false
-        coEvery { profileRepository.getUserProfile("username") } returns mockUserProfile
-        subject.loadUserProfile("username")
-        subject.userProfile.observeForTesting { userProfile ->
-            assertEquals(subject.getGiftButtonVisibility(), View.VISIBLE)
-        }
+    fun `the gift button is invisible if the broadcaster is me`() {
+        every { followManager.isSelf(any()) } returns true
+        assertEquals(View.INVISIBLE, subject.getGiftButtonVisibility())
     }
 
     @Test
     fun `user profile is me and classic view is set then hide friends watching button`() {
-        val mockUserProfile = mockk<UserProfile>()
-        every { mockUserProfile.isMe } returns true
-        coEvery { profileRepository.getUserProfile("username") } returns mockUserProfile
+        every { followManager.isSelf(any()) } returns true
         every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
-        subject.loadUserProfile("username")
-        subject.userProfile.observeForTesting { userProfile ->
-            assertEquals(subject.getFriendsWatchingButtonVisibility(), View.GONE)
-        }
+        assertEquals(View.INVISIBLE, subject.getFriendsWatchingButtonVisibility())
     }
 
     @Test
     fun `user profile is not me and classic view is set then show friends watching button`() {
-        val mockUserProfile = mockk<UserProfile>()
-        every { mockUserProfile.isMe } returns false
-        coEvery { profileRepository.getUserProfile("username") } returns mockUserProfile
+        every { followManager.isSelf(any()) } returns false
         every { subject.releaseDesignConfig.isReleaseDesignActive() } returns false
-        subject.loadUserProfile("username")
-        subject.userProfile.observeForTesting { userProfile ->
-            assertEquals(subject.getFriendsWatchingButtonVisibility(), View.VISIBLE)
-        }
+        assertEquals(View.VISIBLE, subject.getFriendsWatchingButtonVisibility())
     }
 
     @Test

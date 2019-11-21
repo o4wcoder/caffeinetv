@@ -178,6 +178,7 @@ class StagePagerAdapter @AssistedInject constructor(
     private val followManager: FollowManager,
     private val picasso: Picasso,
     private val clock: Clock,
+    private val stageViewModelFactory: StageViewModel.Factory,
     private val releaseDesignConfig: ReleaseDesignConfig
 ) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
@@ -192,7 +193,7 @@ class StagePagerAdapter @AssistedInject constructor(
 
     override fun getItem(position: Int): Fragment {
         val stageFragment = StageFragment(
-            factory, surfaceViewRendererTuner, followManager, picasso, clock, releaseDesignConfig)
+            factory, surfaceViewRendererTuner, followManager, picasso, clock, stageViewModelFactory, releaseDesignConfig)
         val canSwipe = count > 1 && position < count - 1
         stageFragment.arguments = StageFragmentArgs(broadcasters[position], canSwipe).toBundle()
         stageFragment.swipeButtonOnClickListener = swipeButtonOnClickListener

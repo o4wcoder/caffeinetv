@@ -12,6 +12,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
@@ -38,11 +40,12 @@ sealed class PurchaseStatus {
     object CreditsSuccess : PurchaseStatus()
     object CanceledByUser : PurchaseStatus()
     data class Error(@StringRes val error: Int) : PurchaseStatus()
-    data class GooglePlayError(val responseCode: Int) : PurchaseStatus()
+    data class GooglePlayError(val billingResult: BillingResult) : PurchaseStatus()
 }
 
 class GoldBundlesViewModel @Inject constructor(
     context: Context,
+    billingClientFactory: BillingClientFactory,
     private val tokenStore: TokenStore,
     private val walletRepository: WalletRepository,
     private val loadGoldBundlesUseCase: LoadGoldBundlesUseCase,
@@ -63,28 +66,28 @@ class GoldBundlesViewModel @Inject constructor(
     }
 
     val wallet: LiveData<Wallet> = walletRepository.wallet.map { it }
-    private val billingClient: BillingClient = BillingClientFactory.createBillingClient(context,
-            PurchasesUpdatedListener { responseCode, purchases ->
-                Timber.d("Connected")
-                when (responseCode) {
-                    BillingClient.BillingResponse.OK -> when (purchases) {
-                        null -> Timber.e(Exception("Billing response OK, but purchase list is null"))
-                        else -> consumeInAppPurchases(purchases)
-                    }
-                    BillingClient.BillingResponse.USER_CANCELED -> {
-                        Timber.d("User canceled")
-                        postPurchaseStatus(PurchaseStatus.CanceledByUser)
-                    }
-                    BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
-                        Timber.e(Exception("Items already owned, processing"))
-                        processRecentlyCachedPurchases()
-                    }
-                    else -> {
-                        Timber.e(Exception("Billing client error $responseCode"))
-                        postPurchaseStatus(PurchaseStatus.GooglePlayError(responseCode))
-                    }
+    private val billingClient: BillingClient = billingClientFactory.createBillingClient(context,
+        PurchasesUpdatedListener { billingResult, purchases ->
+            Timber.d("Connected")
+            when (billingResult.responseCode) {
+                BillingClient.BillingResponseCode.OK -> when (purchases) {
+                    null -> Timber.e(Exception("Billing response OK, but purchase list is null"))
+                    else -> consumeInAppPurchases(purchases)
                 }
-            })
+                BillingClient.BillingResponseCode.USER_CANCELED -> {
+                    Timber.d("User canceled")
+                    postPurchaseStatus(PurchaseStatus.CanceledByUser)
+                }
+                BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
+                    Timber.e(Exception("Items already owned, processing"))
+                    processRecentlyCachedPurchases()
+                }
+                else -> {
+                    Timber.e(Exception("Billing client error $billingResult"))
+                    postPurchaseStatus(PurchaseStatus.GooglePlayError(billingResult))
+                }
+            }
+        })
 
     init {
         load()
@@ -99,8 +102,9 @@ class GoldBundlesViewModel @Inject constructor(
         if (!billingClient.isReady) billingClient.startConnection(this)
     }
 
-    override fun onBillingSetupFinished(responseCode: Int) {
-        if (responseCode == BillingClient.BillingResponse.OK) {
+    override fun onBillingSetupFinished(billingResult: BillingResult) {
+        val responseCode = billingResult.responseCode
+        if (responseCode == BillingClient.BillingResponseCode.OK) {
             Timber.d("Successfully started billing connection")
             loadGoldBundles()
             processRecentlyCachedPurchases()
@@ -116,11 +120,11 @@ class GoldBundlesViewModel @Inject constructor(
     private fun loadGoldBundles() {
         viewModelScope.launch {
             val allGoldBundles = loadGoldBundlesUseCase()
-                    .map { it.payload.goldBundles.state }
+                .map { it.payload.goldBundles.state }
             withContext(Dispatchers.Main) {
                 _goldBundlesUsingCredits.value = allGoldBundles.map { getGoldBundlesUsingCredits(it) }
                 _goldBundlesUsingPlayStore.value = allGoldBundles.map {
-                    lookupSkuDetails(getGoldBundlesUsingPlayStore(it))
+                    intersectWithPlayStoreProducts(getGoldBundlesUsingPlayStore(it))
                 }
             }
         }
@@ -141,28 +145,28 @@ class GoldBundlesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun lookupSkuDetails(list: List<GoldBundle>): List<GoldBundle> {
+    private suspend fun intersectWithPlayStoreProducts(list: List<GoldBundle>): List<GoldBundle> {
         val skuList = list.mapNotNull { it.usingInAppBilling }.map { it.productId }
         val params = SkuDetailsParams.newBuilder()
-                .setSkusList(skuList)
-                .setType(BillingClient.SkuType.INAPP)
-                .build()
+            .setSkusList(skuList)
+            .setType(BillingClient.SkuType.INAPP)
+            .build()
         val skuDetailsList = billingClient.querySkuDetails(params)
         Timber.d("Results: $skuDetailsList")
         list.forEach { goldBundle ->
             goldBundle.skuDetails = skuDetailsList.find { it.sku == goldBundle.usingInAppBilling?.productId }
         }
-        return list
+        return list.filter { it.skuDetails != null }
     }
 
     private suspend fun BillingClient.querySkuDetails(
         params: SkuDetailsParams
     ): List<SkuDetails> = suspendCancellableCoroutine { continuation ->
-        querySkuDetailsAsync(params) { responseCode, skuDetailsList ->
-            when (responseCode) {
-                BillingClient.BillingResponse.OK -> continuation.resume(skuDetailsList)
+        querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
+            when (billingResult.responseCode) {
+                BillingClient.BillingResponseCode.OK -> continuation.resume(skuDetailsList)
                 else -> {
-                    Timber.e(Exception("Error loading SKU details $responseCode"))
+                    Timber.e(Exception("Error loading SKU details $billingResult"))
                     continuation.resume(listOf())
                 }
             }
@@ -178,35 +182,38 @@ class GoldBundlesViewModel @Inject constructor(
     }
 
     private fun consumeInAppPurchase(purchase: Purchase) {
-        billingClient.consumeAsync(purchase.purchaseToken) { responseCode, purchaseToken ->
-            when (responseCode) {
-                BillingClient.BillingResponse.OK -> {
+        val consumeParams = ConsumeParams.newBuilder()
+            .setPurchaseToken(purchase.purchaseToken)
+            .setDeveloperPayload(tokenStore.caid)
+            .build()
+        billingClient.consumeAsync(consumeParams) { billingResult, purchaseToken ->
+            when (billingResult.responseCode) {
+                BillingClient.BillingResponseCode.OK -> {
                     processInAppPurchase(purchase, purchaseToken)
                     Timber.d("Successfully consumed the purchase $purchaseToken")
                 }
-                BillingClient.BillingResponse.USER_CANCELED -> {
+                BillingClient.BillingResponseCode.USER_CANCELED -> {
                     Timber.d("User canceled purchase")
                     postPurchaseStatus(PurchaseStatus.CanceledByUser)
                 }
-                BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
+                BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
                     Timber.e(Exception("Item already owned, processing purchase"))
                     processInAppPurchase(purchase, purchaseToken)
                 }
                 else -> {
-                    Timber.e(Exception("Failed to consume the purchase $responseCode, $purchaseToken"))
-                    postPurchaseStatus(PurchaseStatus.GooglePlayError(responseCode))
+                    Timber.e(Exception("Failed to consume the purchase $billingResult, $purchaseToken"))
+                    postPurchaseStatus(PurchaseStatus.GooglePlayError(billingResult))
                 }
             }
         }
     }
 
     fun purchaseGoldBundleUsingPlayStore(activity: Activity, goldBundle: GoldBundle) {
-        val sku = goldBundle.skuDetails?.sku ?: return postPurchaseStatus(PurchaseStatus.Error(R.string.error_missing_sku))
+        val sku = goldBundle.skuDetails ?: return postPurchaseStatus(PurchaseStatus.Error(R.string.error_missing_sku))
         val params = BillingFlowParams.newBuilder()
-                .setSku(sku)
-                .setAccountId(tokenStore.caid)
-                .setType(BillingClient.SkuType.INAPP)
-                .build()
+            .setSkuDetails(sku)
+            .setAccountId(tokenStore.caid)
+            .build()
         billingClient.launchBillingFlow(activity, params)
     }
 
@@ -229,7 +236,7 @@ class GoldBundlesViewModel @Inject constructor(
     private fun processRecentlyCachedPurchases() {
         val purchaseResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
         when (purchaseResult.responseCode) {
-            BillingClient.BillingResponse.OK -> consumeInAppPurchases(purchaseResult.purchasesList)
+            BillingClient.BillingResponseCode.OK -> consumeInAppPurchases(purchaseResult.purchasesList)
             else -> Timber.e(Exception("Error querying recent purchases ${purchaseResult.responseCode}"))
         }
     }

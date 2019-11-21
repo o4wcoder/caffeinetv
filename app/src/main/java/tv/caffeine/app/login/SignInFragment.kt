@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.UiThread
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.isInvisible
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -42,9 +43,15 @@ class SignInFragment @Inject constructor(
             binding.resetPasswordTextView.setOnClickListener(it)
         }
         binding.signInButton.setOnClickListener { login() }
-        binding.usernameEditTextLayout.afterTextChanged { validate() }
+        binding.usernameEditTextLayout.afterTextChanged {
+            binding.usernameEditTextLayout.clearError()
+            validate()
+        }
         binding.passwordEditTextLayout.setOnActionGo { login() }
-        binding.passwordEditTextLayout.afterTextChanged { validate() }
+        binding.passwordEditTextLayout.afterTextChanged {
+            binding.passwordEditTextLayout.clearError()
+            validate()
+        }
         signInViewModel.signInOutcome.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let { outcome ->
                 when (outcome) {
@@ -61,7 +68,21 @@ class SignInFragment @Inject constructor(
     private fun clearErrors() {
         binding.formErrorTextView.isInvisible = true
         binding.usernameEditTextLayout.clearError()
+        binding.passwordEditTextLayout.clearError()
+        setNormalLinkStyle()
     }
+
+    fun onSignInError() {
+        binding.usernameEditTextLayout.clearFocus()
+        binding.passwordEditTextLayout.clearFocus()
+        setEmphasizedLinkStyle()
+    }
+
+    private fun setNormalLinkStyle() =
+        TextViewCompat.setTextAppearance(binding.resetPasswordTextView, R.style.LoginText_Link)
+
+    private fun setEmphasizedLinkStyle() =
+        TextViewCompat.setTextAppearance(binding.resetPasswordTextView, R.style.LoginText_Link_Emphasize)
 
     private fun login() {
         clearErrors()
@@ -116,11 +137,15 @@ class SignInFragment @Inject constructor(
             binding.usernameEditTextLayout.showError(null)
             binding.passwordEditTextLayout.showError(null)
         }
+        binding.signInButton.isEnabled = false
+        onSignInError()
     }
 
     @UiThread
     private fun onFailure(t: Throwable) {
         Timber.e(t, "sign in failure")
+        binding.signInButton.isEnabled = false
+        onSignInError()
         showSnackbar(R.string.sign_in_failure)
     }
 }

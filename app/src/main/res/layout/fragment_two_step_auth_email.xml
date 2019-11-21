@@ -15,6 +15,7 @@
         tools:context="tv.caffeine.app.settings.authentication.TwoStepAuthEmailFragment">
 
         <TextView
+            style="@style/CaffeineText.Release"
             android:id="@+id/verification_message_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,23 +24,25 @@
             tools:text="@string/two_step_auth_email_message"/>
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/CaffeineEditTextLayoutHint"
                 android:id="@+id/verification_code_edit_text"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/medium_button_width"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:imeOptions="actionNext"
                 android:textAlignment="center"
                 android:textSize="@dimen/two_step_auth_code_text_size"
                 android:gravity="center"
+                android:layout_gravity="center"
                 android:onTextChanged="@{(text, start, before, count) -> viewModel.onVerificationCodeTextChanged(text)}"
                 tools:text="123456">
                 <requestFocus/>
             </com.google.android.material.textfield.TextInputEditText>
         <Button
+            style="@style/Button.Big.LightMode"
             android:id="@+id/verification_code_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
+            android:layout_gravity="center"
             android:enabled="@{viewModel.verificationCodeButtonEnabled}"
             android:onClick="@{() -> viewModel.onVerificationCodeButtonClick()}"
             android:text="@string/two_step_auth_email_button"/>

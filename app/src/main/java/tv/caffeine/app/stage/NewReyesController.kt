@@ -34,8 +34,6 @@ import tv.caffeine.app.api.StatsSnippet
 import tv.caffeine.app.api.isOutOfCapacityError
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.api.model.awaitAndParseErrors
-import tv.caffeine.app.feature.Feature
-import tv.caffeine.app.feature.FeatureConfig
 import tv.caffeine.app.settings.SettingsStorage
 import tv.caffeine.app.util.DispatchConfig
 import tv.caffeine.app.webrtc.SimplePeerConnectionObserver
@@ -75,8 +73,6 @@ class NewReyesController @AssistedInject constructor(
     private val eventsService: EventsService,
     private val peerConnectionFactory: PeerConnectionFactory,
     private val settingsStorage: SettingsStorage,
-    private val featureConfig: FeatureConfig,
-    private val classicStageStateLooper: ClassicStageDirector,
     private val graphqlStageDirector: GraphqlStageDirector,
     private val audioManager: AudioManager,
     @Assisted private val username: String,
@@ -123,13 +119,7 @@ class NewReyesController @AssistedInject constructor(
 
     @ExperimentalCoroutinesApi
     private fun connectStage() = launch {
-        val stageDirector: StageDirector = if (featureConfig.isFeatureEnabled(Feature.REYES_V5)) {
-            Timber.d("Using the new stage director")
-            graphqlStageDirector
-        } else {
-            Timber.d("Using the classic stage director")
-            classicStageStateLooper
-        }
+        val stageDirector: StageDirector = graphqlStageDirector
 
         val uuid = getClientId()
         stageDirector.stageConfiguration(username, uuid).collect { result ->
@@ -273,6 +263,23 @@ class NewReyesController @AssistedInject constructor(
                 }
         feeds = newFeeds
         diff
+            .mapNotNull { stateChange ->
+                when (stateChange) {
+                    is StateChange.FeedRoleChanged -> stateChange.newFeed
+                    else -> null
+                }
+            }
+            .forEach { feed ->
+                val streamId = feed.stream.id
+                val audioTrack = audioTracks[streamId] ?: return@forEach
+                if (feed.capabilities.audio) {
+                    audioTrack.setVolume(feed.volume)
+                    audioTrack.setEnabled(!muteAudio && requestAudioFocus())
+                } else {
+                    audioTrack.setEnabled(false)
+                }
+            }
+        diff
                 .mapNotNull { stateChange ->
                     when (stateChange) {
                         is StateChange.FeedAdded -> stateChange.feed
@@ -289,8 +296,8 @@ class NewReyesController @AssistedInject constructor(
                         peerConnections[stream.id] = connectionInfo.peerConnection
                         peerConnectionStreamLabels[stream.id] = feed.streamLabel()
                         connectionInfo.audioTrack?.let {
+                            audioTracks[stream.id] = it
                             if (feed.capabilities.audio) {
-                                audioTracks[stream.id] = it
                                 it.setVolume(feed.volume)
                                 it.setEnabled(!muteAudio && requestAudioFocus())
                             } else {

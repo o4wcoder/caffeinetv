@@ -1,15 +1,8 @@
 package tv.caffeine.app.login
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import tv.caffeine.app.api.SignUpAccount
 import tv.caffeine.app.api.SignUpBody
-import tv.caffeine.app.api.SignUpResult
-import tv.caffeine.app.api.model.CaffeineResult
-import tv.caffeine.app.api.model.Event
 import tv.caffeine.app.repository.AccountRepository
 import tv.caffeine.app.ui.CaffeineViewModel
 import javax.inject.Inject
@@ -17,8 +10,6 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val accountRepository: AccountRepository
 ) : CaffeineViewModel() {
-
-    private val _signUpUpdate = MutableLiveData<Event<CaffeineResult<SignUpResult>>>()
 
     var email = ""
         set(value) {
@@ -50,14 +41,12 @@ class SignUpViewModel @Inject constructor(
     @Bindable
     fun isSignUpButtonEnabled() = email.isNotEmpty() && username.isNotEmpty() && passwordIsValid && birthdate.isNotEmpty()
 
-    fun signIn(dob: String, recaptchaToken: String?, arkoseToken: String?, iid: String?): LiveData<Event<CaffeineResult<SignUpResult>>> {
-        viewModelScope.launch {
-            val countryCode = "US"
-            val account = SignUpAccount(username, password, email, dob, countryCode)
-            val signUpBody = SignUpBody(account, iid, true, recaptchaToken, arkoseToken)
-            val result = accountRepository.signUp(signUpBody)
-            _signUpUpdate.value = Event(result)
-        }
-        return _signUpUpdate
+    suspend fun signIn(signUpBody: SignUpBody) =
+        accountRepository.signUp(signUpBody)
+
+    fun getSignUpBody(dob: String, recaptchaToken: String?, arkoseToken: String?, iid: String?): SignUpBody {
+        val countryCode = "US"
+        val account = SignUpAccount(username, password, email, dob, countryCode)
+        return SignUpBody(account, iid, true, recaptchaToken, arkoseToken)
     }
 }

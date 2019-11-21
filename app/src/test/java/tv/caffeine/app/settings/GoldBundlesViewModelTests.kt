@@ -1,19 +1,33 @@
 package tv.caffeine.app.settings
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.PriceChangeConfirmationListener
+import com.android.billingclient.api.PriceChangeFlowParams
 import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchaseHistoryResponseListener
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.RewardLoadParams
+import com.android.billingclient.api.RewardResponseListener
 import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.util.BillingHelper
+import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.SkuDetailsResponseListener
 import com.google.gson.Gson
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -31,13 +45,13 @@ import tv.caffeine.app.api.PaymentsClientService
 import tv.caffeine.app.api.PurchaseOption
 import tv.caffeine.app.api.model.CaffeineResult
 import tv.caffeine.app.auth.TokenStore
+import tv.caffeine.app.di.BillingClientFactory
 import tv.caffeine.app.di.DaggerTestComponent
 import tv.caffeine.app.di.InjectionActivityTestRule
+import tv.caffeine.app.test.observeForTesting
 import tv.caffeine.app.util.CoroutinesTestRule
 import tv.caffeine.app.util.TestDispatchConfig
-import tv.caffeine.app.test.observeForTesting
 import tv.caffeine.app.wallet.WalletRepository
-import java.util.Date
 
 class GoldBundlesViewModelTests {
 
@@ -47,15 +61,15 @@ class GoldBundlesViewModelTests {
         @get:Rule val coroutinesTestRule = CoroutinesTestRule()
 
         private lateinit var subject: GoldBundlesViewModel
-        private lateinit var billingClientBroadcastHelper: BillingClientBroadcastHelper
         @MockK private lateinit var processPlayStorePurchaseUseCase: ProcessPlayStorePurchaseUseCase
+        @MockK private lateinit var billingClientFactory: BillingClientFactory
+        private lateinit var billingClient: TestBillingClient
         private val activityTestRule = InjectionActivityTestRule(MainActivity::class.java, DaggerTestComponent.factory())
         private val mainActivity = activityTestRule.launchActivity(Intent())
 
         @Before
         fun setup() {
             MockKAnnotations.init(this)
-            billingClientBroadcastHelper = BillingClientBroadcastHelper(mainActivity)
             val settingsStorage = InMemorySettingsStorage(caid = "random")
             val secureSettingsStorage = InMemorySecureSettingsStorage()
             val gson = Gson()
@@ -64,8 +78,16 @@ class GoldBundlesViewModelTests {
             val loadGoldBundlesUseCase = LoadGoldBundlesUseCase(paymentsClientService, gson)
             val purchaseGoldBundleUseCase = PurchaseGoldBundleUseCase(paymentsClientService, gson)
             coEvery { processPlayStorePurchaseUseCase.invoke(any(), any()) } returns CaffeineResult.Success("random")
+            val slot = slot<PurchasesUpdatedListener>()
+            billingClient = TestBillingClient()
+            every { billingClientFactory.createBillingClient(any(), capture(slot)) } answers {
+                billingClient.also {
+                    it.purchasesUpdatedListener = slot.captured
+                }
+            }
             subject = GoldBundlesViewModel(
                 mainActivity.applicationContext,
+                billingClientFactory,
                 TokenStore(settingsStorage, secureSettingsStorage),
                 walletRepository,
                 loadGoldBundlesUseCase,
@@ -77,6 +99,7 @@ class GoldBundlesViewModelTests {
         @Test
         fun `attempting to purchase a bundle with invalid SKU report an error`() {
             val bundle = GoldBundle("a", 1, 1, null, null, PurchaseOption.PurchaseUsingInAppBilling("b", true), null, null)
+            billingClient.billingResult = BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ITEM_UNAVAILABLE).build()
             subject.purchaseGoldBundleUsingPlayStore(mainActivity, bundle)
             subject.events.observeForTesting { event ->
                 val purchaseStatus = event.getContentIfNotHandled()
@@ -92,9 +115,11 @@ class GoldBundlesViewModelTests {
         fun `attempting to purchase a bundle with a valid SKU is successful`() = coroutinesTestRule.testDispatcher.runBlockingTest {
             val skuDetails = SkuDetails("{\"productId\":\"1\"}")
             val bundle = GoldBundle("a", 1, 1, null, null, PurchaseOption.PurchaseUsingInAppBilling("b", true), null, skuDetails)
+            billingClient.billingResult = BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK).build()
+            billingClient.purchases = listOf(mockk(relaxed = true))
+            billingClient.consumeBillingResult = BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK).build()
+            billingClient.purchaseToken = "aha"
             subject.purchaseGoldBundleUsingPlayStore(mainActivity, bundle)
-
-            billingClientBroadcastHelper.broadcastPurchaseSuccess(skuDetails)
 
             subject.events.observeForTesting { event ->
                 val purchaseStatus = event.getContentIfNotHandled() ?: Assert.fail("Expected to have an unprocessed event")
@@ -110,8 +135,8 @@ class GoldBundlesViewModelTests {
         fun `user canceling the purchase flow is reported`() {
             val skuDetails = SkuDetails("{\"productId\":\"1\"}")
             val bundle = GoldBundle("a", 1, 1, null, null, PurchaseOption.PurchaseUsingInAppBilling("b", true), null, skuDetails)
+            billingClient.billingResult = BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.USER_CANCELED).build()
             subject.purchaseGoldBundleUsingPlayStore(mainActivity, bundle)
-            billingClientBroadcastHelper.broadcastUserCanceled()
             subject.events.observeForTesting { event ->
                 val purchaseStatus = event.getContentIfNotHandled() ?: Assert.fail("Expected to have an unprocessed event")
                 when (purchaseStatus) {
@@ -144,42 +169,75 @@ class GoldBundlesViewModelTests {
         }
     }
 
-    class BillingClientBroadcastHelper(private val context: Context) {
-        // helper code from BillingX
+    class TestBillingClient: BillingClient() {
+        var purchasesUpdatedListener: PurchasesUpdatedListener? = null
+        var billingResult: BillingResult? = null
+        var purchases: List<Purchase>? = null
+        var consumeBillingResult: BillingResult? = null
+        var purchaseToken: String? = null
 
-        companion object {
-            private const val RESPONSE_INTENT_ACTION = "proxy_activity_response_intent_action"
-            private const val RESPONSE_CODE = "response_code_key"
-            private const val RESPONSE_BUNDLE = "response_bundle_key"
+        override fun isFeatureSupported(feature: String?): BillingResult {
+            return BillingResult.newBuilder().setResponseCode(BillingResponseCode.OK).build()
         }
 
-        fun broadcastPurchaseSuccess(item: SkuDetails) {
-            val skuType = BillingClient.SkuType.INAPP
-            broadcastResult(BillingClient.BillingResponse.OK, buildResultBundle(item.toPurchaseData(context, skuType)))
+        override fun endConnection() {
         }
 
-        fun broadcastUserCanceled() {
-            broadcastResult(BillingClient.BillingResponse.USER_CANCELED, Bundle())
+        override fun launchPriceChangeConfirmationFlow(
+            activity: Activity?,
+            params: PriceChangeFlowParams?,
+            listener: PriceChangeConfirmationListener
+        ) {
         }
 
-        private fun SkuDetails.toPurchaseData(context: Context, @BillingClient.SkuType skuType: String): Purchase {
-            val json = """{"orderId":"$sku..0","packageName":"${context.packageName}","productId":"$sku","autoRenewing":true,"purchaseTime":"${Date().time}","purchaseToken":"0987654321"}""".trimMargin()
-            return Purchase(json, "debug-signature-$sku-$skuType")
+        override fun startConnection(listener: BillingClientStateListener) {
         }
 
-        private fun broadcastResult(responseCode: Int, resultBundle: Bundle) {
-            val intent = Intent(RESPONSE_INTENT_ACTION)
-            intent.putExtra(RESPONSE_CODE, responseCode)
-            intent.putExtra(RESPONSE_BUNDLE, resultBundle)
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+        override fun consumeAsync(
+            consumeParams: ConsumeParams?,
+            listener: ConsumeResponseListener
+        ) {
+            listener.onConsumeResponse(consumeBillingResult, purchaseToken)
         }
 
-        private fun buildResultBundle(purchase: Purchase): Bundle {
-            return Bundle().apply {
-                putInt(BillingHelper.RESPONSE_CODE, BillingClient.BillingResponse.OK)
-                putStringArrayList(BillingHelper.RESPONSE_INAPP_PURCHASE_DATA_LIST, arrayListOf(purchase.originalJson))
-                putStringArrayList(BillingHelper.RESPONSE_INAPP_SIGNATURE_LIST, arrayListOf(purchase.signature))
+        override fun queryPurchaseHistoryAsync(
+            skuType: String?,
+            listener: PurchaseHistoryResponseListener
+        ) {
+        }
+
+        override fun launchBillingFlow(
+            activity: Activity?,
+            params: BillingFlowParams?
+        ): BillingResult {
+            purchasesUpdatedListener?.let {
+                it.onPurchasesUpdated(billingResult, purchases)
             }
+            return BillingResult.newBuilder().setResponseCode(BillingResponseCode.OK).build()
+        }
+
+        override fun querySkuDetailsAsync(
+            params: SkuDetailsParams?,
+            listener: SkuDetailsResponseListener
+        ) {
+        }
+
+        override fun isReady() = true
+
+        override fun loadRewardedSku(params: RewardLoadParams?, listener: RewardResponseListener) {
+        }
+
+        override fun acknowledgePurchase(
+            params: AcknowledgePurchaseParams?,
+            listener: AcknowledgePurchaseResponseListener?
+        ) {
+        }
+
+        override fun queryPurchases(skuType: String?): Purchase.PurchasesResult {
+            return Purchase.PurchasesResult(
+                BillingResult.newBuilder().setResponseCode(BillingResponseCode.OK).build(),
+                listOf()
+            )
         }
     }
 }

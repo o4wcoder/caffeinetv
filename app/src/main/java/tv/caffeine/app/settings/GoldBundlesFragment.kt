@@ -84,7 +84,7 @@ class GoldBundlesFragment @Inject constructor(
                     showSnackbar(R.string.success_buying_gold_using_in_app_billing)
                 }
                 is PurchaseStatus.GooglePlayError -> {
-                    Timber.e(Exception("Error purchasing gold via Google Play ${purchaseStatus.responseCode}"))
+                    Timber.e(Exception("Error purchasing gold via Google Play response code: ${purchaseStatus.billingResult.responseCode}, debug message: ${purchaseStatus.billingResult.debugMessage}"))
                     showSnackbar(R.string.failure_buying_gold_using_in_app_billing)
                 }
                 is PurchaseStatus.CanceledByUser -> {

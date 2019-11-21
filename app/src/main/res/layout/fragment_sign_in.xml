@@ -23,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:focusableInTouchMode="true"
                 android:paddingStart="@dimen/sign_in_flow_start_padding"
                 android:paddingEnd="@dimen/sign_in_flow_end_padding">
 
@@ -70,7 +71,7 @@
         <TextView
             style="@style/LoginErrorText"
             android:id="@+id/form_error_text_view"
-            android:layout_width="@dimen/big_button_width"
+            android:layout_width="@dimen/medium_button_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/sign_in_button_top_margin"

@@ -1,5 +1,6 @@
 package tv.caffeine.app.di
 
+import com.apollographql.apollo.ApolloClient
 import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
@@ -27,12 +28,11 @@ import javax.inject.Singleton
 
 @Module(includes = [
     GsonModule::class,
-    OkHttpModule::class,
     FakeApiModule::class,
     FakeWebRtcModule::class,
     FakeImageLoadingModule::class,
     ServerConfigModule::class,
-    GraphqlModule::class
+    FakeGraphqlModule::class
 ])
 class TestNetworkModule
 
@@ -82,4 +82,11 @@ class FakeImageLoadingModule {
     @Provides
     @Singleton
     fun providesPicasso(): Picasso = mockk(relaxed = true)
+}
+
+@Module
+class FakeGraphqlModule {
+    @Provides
+    @Singleton
+    fun providesLobbyApolloAgent(): ApolloClient = mockk(relaxed = true)
 }

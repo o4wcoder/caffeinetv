@@ -6,18 +6,31 @@ import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import tv.caffeine.app.R
+import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stream.type.ContentRating
 import tv.caffeine.app.ui.CaffeineViewModel
 
-class StageViewModel(
-    val releaseDesignConfig: ReleaseDesignConfig,
-    val onAvatarButtonClick: () -> Unit
+class StageViewModel @AssistedInject constructor(
+    @Assisted val broadcasterUsername: String,
+    @Assisted val releaseDesignConfig: ReleaseDesignConfig,
+    @Assisted val onAvatarButtonClick: () -> Unit,
+    val followManager: FollowManager
 ) : CaffeineViewModel() {
 
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(
+            broadcasterUsername: String,
+            releaseDesignConfig: ReleaseDesignConfig,
+            onAvatarButtonClick: () -> Unit
+        ): StageViewModel
+    }
+
     private var feedQuality = FeedQuality.GOOD
-    private var isMe = false
     private var overlayIsVisible = false
     private var stageIsLive = false
     private var appbarIsVisible = false
@@ -63,9 +76,9 @@ class StageViewModel(
 
     fun getAppBarVisibility() = overlayIsVisible && appbarIsVisible
 
-    fun getAvatarUsernameContainerVisibility() = !isMe && overlayIsVisible && feedQuality != FeedQuality.BAD
+    fun getAvatarUsernameContainerVisibility() = overlayIsVisible && feedQuality != FeedQuality.BAD
 
-    fun getWeakConnnectionContainerVisibility() = feedQuality == FeedQuality.POOR
+    fun getWeakConnectionContainerVisibility() = feedQuality == FeedQuality.POOR
 
     fun getBadConnectionOverlayVisibility() = feedQuality == FeedQuality.BAD
 
@@ -74,10 +87,6 @@ class StageViewModel(
     fun updateFeedQuality(quality: FeedQuality) {
         feedQuality = quality
         updatePoorConnectionAnimation()
-    }
-
-    fun updateIsMe(isMe: Boolean) {
-        this.isMe = isMe
     }
 
     fun updateStageIsLive(isLive: Boolean) {
@@ -115,6 +124,9 @@ class StageViewModel(
 
     @Bindable
     fun getAvatarVisibility() = if (isViewingProfile) View.INVISIBLE else View.VISIBLE
+
+    @Bindable
+    fun getFollowButtonVisibility() = if (followManager.isSelf(broadcasterUsername)) View.GONE else View.VISIBLE
 
     @Bindable
     fun getChatToggleVisibility() = if (isViewingProfile) View.VISIBLE else View.INVISIBLE

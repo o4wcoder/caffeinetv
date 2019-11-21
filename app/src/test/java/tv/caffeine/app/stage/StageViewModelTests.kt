@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import tv.caffeine.app.R
+import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.stream.type.ContentRating
 
@@ -22,15 +23,15 @@ class StageViewModelTests {
 
     lateinit var subject: StageViewModel
 
-    @MockK
-    lateinit var fakeReleaseDesignConfig: ReleaseDesignConfig
+    @MockK private lateinit var fakeReleaseDesignConfig: ReleaseDesignConfig
+    @MockK private lateinit var followManager: FollowManager
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         every { fakeReleaseDesignConfig.isReleaseDesignActive() } returns true
-
-        subject = StageViewModel(fakeReleaseDesignConfig, mockk())
+        every { followManager.isSelf(any()) } returns false
+        subject = StageViewModel("broadcaster", fakeReleaseDesignConfig, mockk(), followManager)
     }
 
     @Test
@@ -38,7 +39,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertTrue(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
@@ -47,7 +47,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.POOR)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertTrue(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
@@ -56,7 +55,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertFalse(subject.getAvatarOverlapLiveBadgeVisibility())
     }
 
@@ -65,7 +63,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertFalse(subject.getClassicLiveIndicatorTextViewVisibility())
     }
 
@@ -74,7 +71,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertFalse(subject.getGameLogoVisibility())
     }
 
@@ -83,7 +79,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertTrue(subject.getGameLogoVisibility())
     }
 
@@ -92,7 +87,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertFalse(subject.getGameLogoVisibility())
     }
 
@@ -102,7 +96,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertTrue(subject.getSwipeButtonVisibility())
     }
 
@@ -111,7 +104,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(false, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertFalse(subject.getLiveIndicatorAndAvatarContainerVisibility())
     }
 
@@ -120,7 +112,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertTrue(subject.getLiveIndicatorAndAvatarContainerVisibility())
     }
 
@@ -129,7 +120,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         subject.updateOverlayIsVisible(false, false)
         assertFalse(subject.getAppBarVisibility())
     }
@@ -139,7 +129,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertTrue(subject.getAppBarVisibility())
     }
 
@@ -148,7 +137,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertFalse(subject.getAppBarVisibility())
     }
 
@@ -157,26 +145,7 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(true)
-        subject.updateIsMe(false)
         assertTrue(subject.getAvatarUsernameContainerVisibility())
-    }
-
-    @Test
-    fun `showing overlays on a live stage hides avatar username container when user is me`() {
-        subject.updateOverlayIsVisible(true, false)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(true)
-        subject.updateIsMe(true)
-        assertFalse(subject.getAvatarUsernameContainerVisibility())
-    }
-
-    @Test
-    fun `showing overlays on an offline stage hides avatar username container when user is me`() {
-        subject.updateOverlayIsVisible(true, false)
-        subject.updateFeedQuality(FeedQuality.GOOD)
-        subject.updateStageIsLive(false)
-        subject.updateIsMe(true)
-        assertFalse(subject.getAvatarUsernameContainerVisibility())
     }
 
     @Test
@@ -184,7 +153,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, false)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertTrue(subject.getAvatarUsernameContainerVisibility())
     }
 
@@ -193,8 +161,7 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.POOR)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
-        assertTrue(subject.getWeakConnnectionContainerVisibility())
+        assertTrue(subject.getWeakConnectionContainerVisibility())
     }
 
     @Test
@@ -202,8 +169,7 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
-        assertFalse(subject.getWeakConnnectionContainerVisibility())
+        assertFalse(subject.getWeakConnectionContainerVisibility())
     }
 
     @Test
@@ -211,8 +177,7 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.BAD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
-        assertFalse(subject.getWeakConnnectionContainerVisibility())
+        assertFalse(subject.getWeakConnectionContainerVisibility())
     }
 
     @Test
@@ -220,7 +185,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.BAD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertTrue(subject.getBadConnectionOverlayVisibility())
     }
 
@@ -229,7 +193,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.GOOD)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertFalse(subject.getBadConnectionOverlayVisibility())
     }
 
@@ -238,7 +201,6 @@ class StageViewModelTests {
         subject.updateOverlayIsVisible(true, true)
         subject.updateFeedQuality(FeedQuality.POOR)
         subject.updateStageIsLive(false)
-        subject.updateIsMe(false)
         assertFalse(subject.getBadConnectionOverlayVisibility())
     }
 
@@ -361,6 +323,18 @@ class StageViewModelTests {
         subject.updateIsFollowed(false)
         subject.updateAvatarImageBackground()
         assertEquals(subject.avatarImageBackground, R.drawable.circle_white)
+    }
+
+    @Test
+    fun `the follow button is visible if the broadcaster is not me`() {
+        every { followManager.isSelf(any()) } returns false
+        assertEquals(View.VISIBLE, subject.getFollowButtonVisibility())
+    }
+
+    @Test
+    fun `the follow button is gone if the broadcaster is me`() {
+        every { followManager.isSelf(any()) } returns true
+        assertEquals(View.GONE, subject.getFollowButtonVisibility())
     }
 
     private fun turnOnBasicIndicatorVisibility() {

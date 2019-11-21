@@ -84,43 +84,41 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageButton
-                style="@android:style/Widget.Material.ActionButton"
+                style="@style/StageActionButton"
                 android:id="@+id/gift_button"
                 android:layout_width="@dimen/stage_bottom_icon"
                 android:layout_height="@dimen/stage_bottom_icon"
                 android:layout_marginEnd="@dimen/stage_chat_controls_internal_margin"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/gift_button_content_description"
-                android:visibility="@{viewModel.giftButtonVisibility}"
                 android:src="@{viewModel.digitalItemsIcon}"
+                android:visibility="@{viewModel.giftButtonVisibility}"
+                android:contentDescription="@string/gift_button_content_description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/react_button"
-                app:layout_constraintStart_toEndOf="@+id/chat_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                style="@style/ChatReactButtonText"
+                style="@style/StageActionButton"
                 android:id="@+id/react_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:background="@drawable/ic_chat_react"
+                android:src="@drawable/ic_chat_react"
+                android:contentDescription="@string/chat_react_button_content_description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/share_button"
                 app:layout_constraintStart_toEndOf="@+id/gift_button"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                style="@android:style/Widget.Material.ActionButton"
+                style="@style/StageActionButton"
                 android:id="@+id/share_button"
                 android:layout_width="@dimen/stage_bottom_icon"
                 android:layout_height="@dimen/stage_bottom_icon"
                 android:layout_marginStart="@dimen/stage_chat_controls_internal_margin"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/share_button_content_description"
-                android:src="@{viewModel.shareIcon}"
                 android:paddingTop="4dp"
+                android:src="@{viewModel.shareIcon}"
+                android:contentDescription="@string/share_button_content_description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/react_button"

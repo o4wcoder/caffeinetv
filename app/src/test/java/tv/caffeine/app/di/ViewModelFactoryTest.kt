@@ -34,7 +34,6 @@ import tv.caffeine.app.settings.NotificationSettingsViewModel
 import tv.caffeine.app.settings.SettingsViewModel
 import tv.caffeine.app.settings.TransactionHistoryViewModel
 import tv.caffeine.app.settings.authentication.TwoStepAuthViewModel
-import tv.caffeine.app.stage.ChatViewModel
 import tv.caffeine.app.stage.DICatalogViewModel
 import tv.caffeine.app.stage.FriendsWatchingViewModel
 import tv.caffeine.app.stage.SendDigitalItemViewModel
@@ -74,7 +73,6 @@ class ViewModelFactoryTest(private val modelClass: Class<out ViewModel>) {
                 TransactionHistoryViewModel::class.java,
                 GoldBundlesViewModel::class.java,
                 UpdateProfileViewModel::class.java,
-                ChatViewModel::class.java,
                 FriendsWatchingViewModel::class.java,
                 SendDigitalItemViewModel::class.java,
                 GuideViewModel::class.java,

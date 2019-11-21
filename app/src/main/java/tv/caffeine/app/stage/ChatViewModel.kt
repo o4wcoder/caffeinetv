@@ -13,6 +13,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -35,7 +37,6 @@ import tv.caffeine.app.session.FollowManager
 import tv.caffeine.app.settings.ReleaseDesignConfig
 import tv.caffeine.app.ui.CaffeineViewModel
 import tv.caffeine.app.util.getHexColor
-import javax.inject.Inject
 
 private const val MESSAGE_EXPIRATION_CHECK_PERIOD = 3 * 1000L // milliseconds
 
@@ -62,7 +63,8 @@ fun setSaySomethingText(textView: TextView, broadcasterUserName: String?, userPr
     }
 }
 
-class ChatViewModel @Inject constructor(
+class ChatViewModel @AssistedInject constructor(
+    @Assisted val broadcasterUsername: String,
     val context: Context,
     private val tokenStore: TokenStore,
     private val getSignedUserDetailsUseCase: GetSignedUserDetailsUseCase,
@@ -73,6 +75,14 @@ class ChatViewModel @Inject constructor(
     @VisibleForTesting
     val releaseDesignConfig: ReleaseDesignConfig
 ) : CaffeineViewModel() {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(
+            broadcasterUsername: String
+        ): ChatViewModel
+    }
+
     private val latestMessages: MutableList<MessageWrapper> = mutableListOf()
 
     private val columns = context.resources.getInteger(R.integer.chat_column_count)
@@ -81,8 +91,6 @@ class ChatViewModel @Inject constructor(
     private val maxVisibleReactions = columns * rows
     private val preferredPositions = (0 until maxVisibleReactions).toList()
     private val _messages = MutableLiveData<List<Message>>()
-
-    private var broadcasterUserName = ""
 
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile> = _userProfile.map { it }
@@ -129,7 +137,7 @@ class ChatViewModel @Inject constructor(
         if (messages.value?.all { it.type == Message.Type.dummy } ?: true) View.VISIBLE else View.GONE
 
     @Bindable
-    fun getBroadcasterUserName() = broadcasterUserName
+    fun getBroadcasterUserName() = broadcasterUsername
 
     fun load(stageIdentifier: String) {
         viewModelScope.launch {
@@ -146,7 +154,6 @@ class ChatViewModel @Inject constructor(
     }
 
     fun loadUserProfile(broadcasterUserName: String): LiveData<UserProfile> {
-        this.broadcasterUserName = broadcasterUserName
         viewModelScope.launch {
             val result = profileRepository.getUserProfile(broadcasterUserName)
             _userProfile.value = result
@@ -184,7 +191,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun getButtonVisibility() = if (userProfile.value?.isMe == true) View.GONE else View.VISIBLE
+    @VisibleForTesting fun getButtonVisibility() = if (followManager.isSelf(broadcasterUsername)) View.INVISIBLE else View.VISIBLE
 
     private val stageReducer = StageReducer()
 

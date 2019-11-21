@@ -17,6 +17,7 @@
         android:id="@+id/online_broadcaster_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
         android:onClick="@{() -> viewModel.cardClicked()}">
 
         <org.webrtc.SurfaceViewRenderer

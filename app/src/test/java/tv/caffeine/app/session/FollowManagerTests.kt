@@ -7,6 +7,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
@@ -23,6 +25,9 @@ import retrofit2.Response
 import tv.caffeine.app.api.BroadcastsService
 import tv.caffeine.app.api.UsersService
 import tv.caffeine.app.api.model.CaffeineEmptyResult
+import tv.caffeine.app.api.model.CaffeineResult
+import tv.caffeine.app.api.model.UserContainer
+import tv.caffeine.app.api.model.awaitAndParseErrors
 import tv.caffeine.app.api.model.isCAID
 import tv.caffeine.app.auth.TokenStore
 import tv.caffeine.app.util.CoroutinesTestRule
@@ -161,5 +166,34 @@ class FollowManagerTests {
             followManager.userDetails(caid2)
         }
         assertEquals(user2, user2Details)
+    }
+
+    @Test
+    fun `the CAID converted from the user handle is the same as the user handle if the user handle is the caid`() {
+        val caid = "CAID12345678901234567890123456789012"
+        assertEquals(caid, followManager.getCaidFromUserHandle(caid))
+    }
+
+    @Test
+    fun `the CAID converted from the user handle is the username associated with the user handle if the user handle is the username`() {
+        val username = "username"
+        val caid = "CAID12345678901234567890123456789012"
+
+        val userContainer = UserContainer(makeGenericUser(caid))
+        val result = CaffeineResult.Success(userContainer)
+        val deferredResult = mockk<Deferred<Response<UserContainer>>>()
+        coEvery { usersService.userDetails(any()) } returns deferredResult
+        mockkStatic("tv.caffeine.app.api.model.CaffeineResultKt")
+        coEvery { deferredResult.awaitAndParseErrors(any()) } returns result
+        runBlocking {
+            followManager.loadUserDetails(username)
+        }
+        assertEquals(caid, followManager.getCaidFromUserHandle(username))
+    }
+
+    @Test
+    fun `the CAID converted from the user handle is null if the user handle is the username and it is not in the cache`() {
+        val username = "username_not_in_the_cache"
+        assertNull(followManager.getCaidFromUserHandle(username))
     }
 }

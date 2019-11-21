@@ -42,12 +42,13 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
     @Inject lateinit var picasso: Picasso
     @Inject lateinit var clock: Clock
     @Inject lateinit var releaseDesignConfig: ReleaseDesignConfig
+    @Inject lateinit var chatViewModelFactory: ChatViewModel.Factory
 
     @VisibleForTesting
     lateinit var binding: FragmentChatBinding
     protected var isMe = false
     protected val friendsWatchingViewModel: FriendsWatchingViewModel by viewModels { viewModelFactory }
-    private val chatViewModel: ChatViewModel by viewModels { viewModelFactory }
+    private lateinit var chatViewModel: ChatViewModel
     private val args by navArgs<ChatFragmentArgs>()
 
     private var broadcasterUsername = ""
@@ -68,11 +69,16 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        chatViewModel = chatViewModelFactory.create(broadcasterUsername)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentChatBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = chatViewModel
         broadcasterUsername = args.broadcastUsername
+        binding.viewModel = chatViewModel
         chatViewModel.loadUserProfile(broadcasterUsername)
             .observe(viewLifecycleOwner, Observer { userProfile ->
                 userProfile?.let {

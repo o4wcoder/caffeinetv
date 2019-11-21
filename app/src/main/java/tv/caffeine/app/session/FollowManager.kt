@@ -1,5 +1,6 @@
 package tv.caffeine.app.session
 
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -41,7 +42,7 @@ class FollowManager @Inject constructor(
 
     fun isFollowing(caidFollower: CAID) = tokenStore.caid?.let { followedUsers[it]?.contains(caidFollower) } ?: false
 
-    fun isSelf(caid: CAID) = tokenStore.caid == caid
+    fun isSelf(userHandle: String): Boolean = (tokenStore.caid == getCaidFromUserHandle(userHandle))
 
     fun currentUserDetails(): User? {
         val caid = tokenStore.caid ?: return null
@@ -89,14 +90,11 @@ class FollowManager @Inject constructor(
         return result
     }
 
-    // / can be called with CAID or username
+    /**
+     * Can be called with CAID or username.
+     */
     suspend fun userDetails(userHandle: String): User? {
-        val caid = if (userHandle.isCAID()) {
-            userHandle
-        } else {
-            usernameToCAID[userHandle]
-        }
-        userDetails[caid]?.let { return it }
+        userDetails[getCaidFromUserHandle(userHandle)]?.let { return it }
         return loadUserDetails(userHandle)
     }
 
@@ -151,6 +149,14 @@ class FollowManager @Inject constructor(
             is CaffeineResult.Success -> result.value.broadcast
             is CaffeineResult.Error -> Timber.e("Failure loading broadcast details ${result.error}").let { null }
             is CaffeineResult.Failure -> Timber.e(result.throwable).let { null }
+        }
+    }
+
+    @VisibleForTesting fun getCaidFromUserHandle(userHandle: String): String? {
+        return if (userHandle.isCAID()) {
+            userHandle
+        } else {
+            usernameToCAID[userHandle]
         }
     }
 
