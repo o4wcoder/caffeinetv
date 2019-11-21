@@ -69,11 +69,15 @@ abstract class ChatFragment : CaffeineFragment(R.layout.fragment_chat),
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        chatViewModel = chatViewModelFactory.create(broadcasterUsername)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentChatBinding.bind(view)
         binding.lifecycleOwner = viewLifecycleOwner
         broadcasterUsername = args.broadcastUsername
-        chatViewModel = chatViewModelFactory.create(broadcasterUsername)
         binding.viewModel = chatViewModel
         chatViewModel.loadUserProfile(broadcasterUsername)
             .observe(viewLifecycleOwner, Observer { userProfile ->
